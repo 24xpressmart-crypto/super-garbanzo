@@ -194,7 +194,7 @@
   .clockbtn .s{font-size:20px; font-weight:900; font-family:"JetBrains Mono",monospace;}
   .clockbtn:disabled{opacity:.55;}
 
-  input[type=text], input[type=number], input[type=date], input[type=time], input[type=tel], select, textarea{
+  input[type=text], input[type=number], input[type=date], input[type=time], input[type=tel], input[type=password], select, textarea{
     width:100%; background:var(--surface-2); border:1px solid var(--border); color:var(--ink);
     border-radius:10px; padding:10px 12px; font-size:14px; outline:none;
   }
@@ -376,6 +376,12 @@ const I18N = {
     btn_create_admin:'创建管理员账号并开始使用', btn_creating:'创建中…', err_fill_name:'请填写姓名', err_db_disconnected:'数据未连接',
     toast_welcome:'欢迎，',
     who_am_i:'我是谁', no_active_employees:'没有启用中的员工，请联系管理员',
+    field_new_pin:'设置密码（至少4位）', field_confirm_pin:'确认密码', btn_set_pin:'设置密码并继续',
+    err_pin_len:'密码至少需要4位', err_pin_mismatch:'两次输入的密码不一致', toast_pin_set:'密码已设置',
+    sheet_set_pin_prefix:'首次登录 · ', pin_set_hint:'这是你第一次使用这个账号，请设置一个密码，之后每次选择自己的名字都需要输入。',
+    field_pin:'密码', btn_login:'登录', err_pin_wrong:'密码不正确，请重试',
+    btn_reset_pin:'重置该员工密码', confirm_reset_pin:'确定要重置该员工的密码吗？重置后对方下次登录需要重新设置密码。',
+    toast_pin_reset:'密码已重置',
     id_pick_hint:'选择你自己的名字即可继续。首次使用的同事请联系管理员在「我的」→人员管理中添加。',
     home_overview:'今日概览', home_worked_today:'今日已上班', home_low_stock:'低库存 / 缺货项',
     home_open_faults:'待处理故障', home_pending_requests:'待审批申请',
@@ -482,6 +488,12 @@ const I18N = {
     btn_create_admin:'Create admin account & get started', btn_creating:'Creating…', err_fill_name:'Please enter a name', err_db_disconnected:'Data not connected',
     toast_welcome:'Welcome, ',
     who_am_i:'Who am I', no_active_employees:'No active staff — please contact an admin',
+    field_new_pin:'Set a password (min. 4 characters)', field_confirm_pin:'Confirm password', btn_set_pin:'Set password & continue',
+    err_pin_len:'Password must be at least 4 characters', err_pin_mismatch:'Passwords don\'t match', toast_pin_set:'Password set',
+    sheet_set_pin_prefix:'First login · ', pin_set_hint:'This is your first time using this account — set a password. You\'ll need it every time you select your name.',
+    field_pin:'Password', btn_login:'Log in', err_pin_wrong:'Incorrect password, try again',
+    btn_reset_pin:'Reset this staff member\'s password', confirm_reset_pin:'Reset this staff member\'s password? They\'ll need to set a new one next time they log in.',
+    toast_pin_reset:'Password reset',
     id_pick_hint:'Select your own name to continue. First-time coworkers should ask an admin to add them under Me → Staff Management.',
     home_overview:'Today\'s Overview', home_worked_today:'Clocked In Today', home_low_stock:'Low / Out of Stock Items',
     home_open_faults:'Open Faults', home_pending_requests:'Pending Requests',
@@ -631,6 +643,19 @@ function haversine(lat1,lng1,lat2,lng2){
 function toast(msg){
   const t=$('toast'); t.textContent=msg; t.classList.add('show');
   clearTimeout(toast._h); toast._h=setTimeout(()=>t.classList.remove('show'),2200);
+}
+/* Simple salted SHA-256 PIN check — a deterrent against casual co-worker
+   impersonation (e.g. clocking in for someone else), NOT real security:
+   anyone with API access to the database can read the hash+salt directly,
+   bypassing the app entirely. Good enough for its actual job here. */
+async function hashPin(pin, salt){
+  if(!self.crypto || !crypto.subtle){ throw {code:'unavailable', message:'crypto.subtle unavailable (requires a secure https context)'}; }
+  const enc = new TextEncoder().encode(salt+':'+pin);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+function randomSalt(){
+  return (self.crypto&&crypto.randomUUID) ? crypto.randomUUID() : uidLocal();
 }
 function dbErrMsg(e){
   const m={invalid_argument:t('err_invalid_argument'), resource_exhausted:t('err_resource_exhausted'),
@@ -1017,18 +1042,25 @@ function readFields(container, fields){
 /* ============================ ONBOARDING / IDENTITY ============================ */
 function onboardingView(){
   const form=el('<div style="width:100%; max-width:280px; text-align:left;"></div>');
-  form.innerHTML = fieldsHTML([
+  const fields=[
     {key:'name', label:t('field_your_name'), ph:t('ph_your_name')},
     {key:'phone', label:t('field_phone_opt'), ph:t('ph_phone_hint')},
-  ]);
+    {key:'pin', label:t('field_new_pin'), type:'password'},
+    {key:'pin2', label:t('field_confirm_pin'), type:'password'},
+  ];
+  form.innerHTML = fieldsHTML(fields);
   const btn=el(`<button class="btn primary block">${esc(t('btn_create_admin'))}</button>`);
   btn.onclick=async ()=>{
-    const v = readFields(form, [{key:'name'},{key:'phone'}]);
+    const v = readFields(form, fields);
     if(!v.name || !v.name.trim()){ toast(t('err_fill_name')); return; }
+    if(!v.pin || v.pin.length<4){ toast(t('err_pin_len')); return; }
+    if(v.pin!==v.pin2){ toast(t('err_pin_mismatch')); return; }
     if(!S.db){ toast(t('err_db_disconnected')); return; }
     btn.disabled=true; btn.textContent=t('btn_creating');
     try{
-      const ref = await S.db.collection('employees').add({name:v.name.trim(), phone:v.phone||'', role:'admin', active:true, createdAt:new Date().toISOString()});
+      const salt=randomSalt();
+      const hash=await hashPin(v.pin, salt);
+      const ref = await S.db.collection('employees').add({name:v.name.trim(), phone:v.phone||'', role:'admin', active:true, pinHash:hash, pinSalt:salt, createdAt:new Date().toISOString()});
       S.employeeId=ref.id; LS.set('bgc_employee_id', ref.id);
       toast(t('toast_welcome')+v.name);
     }catch(e){ toast(dbErrMsg(e)); btn.disabled=false; btn.textContent=t('btn_create_admin'); }
@@ -1049,11 +1081,60 @@ function identityPickerView(){
     const row=el(`<div class="id-pick-row"><span class="avatar">${esc(e.name.slice(0,1))}</span>
       <div class="lr-main"><div class="lr-title">${esc(e.name)}</div><div class="lr-sub">${e.role==='admin'?esc(t('role_admin')):esc(t('role_staff'))}${e.phone?' · '+esc(e.phone):''}</div></div>
       ${ICONS.chev}</div>`);
-    row.onclick=()=>{ S.employeeId=e.id; LS.set('bgc_employee_id', e.id); renderApp(); };
+    row.onclick=()=>{ e.pinHash ? openVerifyPinForm(e) : openSetPinForm(e); };
     container.appendChild(row);
   });
   container.appendChild(el(`<p class="hint">${esc(t('id_pick_hint'))}</p>`));
   return container;
+}
+function selectIdentity(e){
+  S.employeeId=e.id; LS.set('bgc_employee_id', e.id); closeSheet(); renderApp();
+}
+function openSetPinForm(e){
+  const body=el('<div></div>');
+  body.appendChild(el(`<p class="hint" style="margin-top:0;">${esc(t('pin_set_hint'))}</p>`));
+  const f=[{key:'pin', label:t('field_new_pin'), type:'password'},{key:'pin2', label:t('field_confirm_pin'), type:'password'}];
+  const formEl=el('<div>'+fieldsHTML(f)+'</div>'); body.appendChild(formEl);
+  const foot=el('<div class="sheet-foot"></div>');
+  const btn=el(`<button class="btn primary block">${esc(t('btn_set_pin'))}</button>`);
+  btn.onclick=async ()=>{
+    const v=readFields(formEl,f);
+    if(!v.pin || v.pin.length<4){ toast(t('err_pin_len')); return; }
+    if(v.pin!==v.pin2){ toast(t('err_pin_mismatch')); return; }
+    btn.disabled=true; btn.textContent=t('toast_submitting');
+    try{
+      const salt=randomSalt();
+      const hash=await hashPin(v.pin, salt);
+      await S.db.doc('employees/'+e.id).update({pinHash:hash, pinSalt:salt});
+      toast(t('toast_pin_set'));
+      selectIdentity(e);
+    }catch(err){ toast(dbErrMsg(err)); btn.disabled=false; btn.textContent=t('btn_set_pin'); }
+  };
+  foot.appendChild(btn); body.appendChild(foot);
+  openSheet(t('sheet_set_pin_prefix')+e.name, body);
+}
+function openVerifyPinForm(e){
+  const body=el('<div></div>');
+  const f=[{key:'pin', label:t('field_pin'), type:'password'}];
+  const formEl=el('<div>'+fieldsHTML(f)+'</div>'); body.appendChild(formEl);
+  const errMsg=el('<div class="hint" style="color:var(--critical);"></div>'); body.appendChild(errMsg);
+  const foot=el('<div class="sheet-foot"></div>');
+  const btn=el(`<button class="btn primary block">${esc(t('btn_login'))}</button>`);
+  const attempt=async ()=>{
+    const v=readFields(formEl,f);
+    if(!v.pin){ return; }
+    btn.disabled=true;
+    try{
+      const hash=await hashPin(v.pin, e.pinSalt);
+      if(hash===e.pinHash){ selectIdentity(e); }
+      else { errMsg.textContent=t('err_pin_wrong'); btn.disabled=false; }
+    }catch(err){ errMsg.textContent=dbErrMsg(err); btn.disabled=false; }
+  };
+  btn.onclick=attempt;
+  formEl.querySelector('input').addEventListener('keydown', ev=>{ if(ev.key==='Enter') attempt(); });
+  foot.appendChild(btn); body.appendChild(foot);
+  openSheet(e.name, body);
+  setTimeout(()=>{ const inp=formEl.querySelector('input'); if(inp) inp.focus(); }, 50);
 }
 
 /* ============================ HOME ============================ */
@@ -1746,6 +1827,15 @@ function openEmployeeForm(emp){
     {key:'role', label:t('field_role'), type:'select', options:[{v:'staff',l:t('role_staff')},{v:'admin',l:t('role_admin')}]},
   ];
   const body=el('<div>'+fieldsHTML(fields, emp||{})+'</div>');
+  if(emp && emp.pinHash){
+    const resetBtn=el(`<button class="btn danger block" style="margin-bottom:12px;">${esc(t('btn_reset_pin'))}</button>`);
+    resetBtn.onclick=async ()=>{
+      if(!confirm(t('confirm_reset_pin'))) return;
+      try{ await S.db.doc('employees/'+emp.id).update({pinHash:null, pinSalt:null}); toast(t('toast_pin_reset')); }
+      catch(e){ toast(dbErrMsg(e)); }
+    };
+    body.appendChild(resetBtn);
+  }
   const foot=el('<div class="sheet-foot"></div>');
   const btn=el(`<button class="btn primary block">${esc(t('btn_save'))}</button>`);
   btn.onclick=async ()=>{
