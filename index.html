@@ -166,6 +166,7 @@
   .pill.critical{background:var(--critical-soft); color:var(--critical-ink);}
   .pill.accent{background:var(--accent-soft); color:var(--accent-soft-ink);}
   .pill .dot{width:6px; height:6px; border-radius:50%; background:currentColor;}
+  .icon-sm svg{width:16px; height:16px; display:block;}
 
   .btn{
     display:inline-flex; align-items:center; justify-content:center; gap:6px;
@@ -399,7 +400,7 @@ const I18N = {
     geo_err_timeout:'⚠ 获取定位超时，请到空旷处或靠近窗户后重试。',
     geo_err_unsupported:'⚠ 此浏览器不支持定位功能。',
     geo_err_insecure:'⚠ 当前页面不是安全连接（https），无法获取定位。',
-    empty_no_records:'暂无记录', flag_out_of_range:'超出范围', flag_in_range:'范围内',
+    empty_no_records:'暂无记录', flag_out_of_range:'超出范围', flag_in_range:'范围内', no_photo_taken:'打卡时未拍照',
     clock_in_short:'上班', clock_out_short:'下班', dist_to_device:' · 距点位 ', dist_meters:'米',
     stock_title:'库存与补货', btn_back_to_list:'返回列表', btn_view_report:'查看报表', zone_all:'全部区域',
     empty_add_device:'请先在「我的」中添加点位', empty_add_product:'请先在「我的」中添加商品',
@@ -516,7 +517,7 @@ const I18N = {
     geo_err_timeout:'⚠ Getting your location timed out — try again somewhere more open, e.g. near a window.',
     geo_err_unsupported:'⚠ This browser doesn\'t support location services.',
     geo_err_insecure:'⚠ This page isn\'t a secure (https) connection, so location can\'t be accessed.',
-    empty_no_records:'No records yet', flag_out_of_range:'Out of Range', flag_in_range:'In Range',
+    empty_no_records:'No records yet', flag_out_of_range:'Out of Range', flag_in_range:'In Range', no_photo_taken:'No photo taken at clock-in',
     clock_in_short:'In', clock_out_short:'Out', dist_to_device:' · ', dist_meters:'m from machine',
     stock_title:'Stock & Restocking', btn_back_to_list:'Back to List', btn_view_report:'View Report', zone_all:'All Zones',
     empty_add_device:'Please add a machine under Me first', empty_add_product:'Please add a product under Me first',
@@ -1305,10 +1306,22 @@ function clockView(){
   if(rows.length===0){ list.appendChild(el(`<div class="empty">${ICONS.inbox}<div>${esc(t('empty_no_records'))}</div></div>`)); }
   rows.forEach(a=>{
     const flag = a.geoFlag==='out_of_range' ? `<span class="pill warn">${esc(t('flag_out_of_range'))}</span>` : (a.geoFlag==='in_range' ? `<span class="pill ok">${esc(t('flag_in_range'))}</span>` : '');
-    list.appendChild(el(`<div class="list-row" style="cursor:default;"><div class="lr-main"><div class="lr-title">${esc(a.employeeName)} · ${a.type==='in'?esc(t('clock_in_short')):esc(t('clock_out_short'))}</div><div class="lr-sub">${fmtDateTime(a.createdAt)}${a.distanceM!=null?esc(t('dist_to_device'))+a.distanceM+esc(t('dist_meters')):''}</div></div>${flag}</div>`));
+    const row=el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(a.employeeName)} · ${a.type==='in'?esc(t('clock_in_short')):esc(t('clock_out_short'))}</div><div class="lr-sub">${fmtDateTime(a.createdAt)}${a.distanceM!=null?esc(t('dist_to_device'))+a.distanceM+esc(t('dist_meters')):''}</div></div>${a.photo?`<span class="icon-sm" style="color:var(--ink-faint); flex-shrink:0;">${ICONS.camera}</span>`:''}${flag}</div>`);
+    row.onclick=()=>openAttendanceDetail(a);
+    list.appendChild(row);
   });
   c.appendChild(list);
   return c;
+}
+function openAttendanceDetail(a){
+  const body=el('<div></div>');
+  const flag = a.geoFlag==='out_of_range' ? `<span class="pill warn">${esc(t('flag_out_of_range'))}</span>` : (a.geoFlag==='in_range' ? `<span class="pill ok">${esc(t('flag_in_range'))}</span>` : '');
+  body.innerHTML = `<div class="row" style="margin-bottom:10px;"><span class="pill accent">${a.type==='in'?esc(t('clock_in_short')):esc(t('clock_out_short'))}</span>${flag}</div>
+    <div class="hint">${fmtDateTime(a.createdAt)}${a.nearestDeviceId?' · '+esc(devName(a.nearestDeviceId)):''}${a.distanceM!=null?esc(t('dist_to_device'))+a.distanceM+esc(t('dist_meters')):''}</div>`;
+  if(a.geo) body.appendChild(el(`<p class="hint num">${a.geo.lat.toFixed(6)}, ${a.geo.lng.toFixed(6)} (±${a.geo.accuracy}m)</p>`));
+  if(a.photo) body.appendChild(el(`<img class="photow" src="${a.photo}">`));
+  else body.appendChild(el(`<p class="hint">${esc(t('no_photo_taken'))}</p>`));
+  openSheet(a.employeeName, body);
 }
 
 /* ============================ STOCK ============================ */
