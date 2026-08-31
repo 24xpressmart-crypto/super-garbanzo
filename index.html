@@ -394,6 +394,11 @@ const I18N = {
     toast_clock_in_ok:'上班打卡成功', toast_clock_out_ok:'下班打卡成功',
     geo_out_of_range:'⚠ 定位显示距离点位较远（约', geo_out_of_range_suffix:'米）',
     geo_in_range:'定位正常，在点位附近', geo_no_coords:'已记录定位（未设置点位坐标，无法比对）', geo_none:'未能获取定位，已跳过',
+    geo_err_denied:'⚠ 定位权限被拒绝。请到手机/浏览器设置里，允许此网站访问位置信息后重试。',
+    geo_err_unavailable:'⚠ 无法获取定位信息，请检查设备GPS/定位服务是否已开启。',
+    geo_err_timeout:'⚠ 获取定位超时，请到空旷处或靠近窗户后重试。',
+    geo_err_unsupported:'⚠ 此浏览器不支持定位功能。',
+    geo_err_insecure:'⚠ 当前页面不是安全连接（https），无法获取定位。',
     empty_no_records:'暂无记录', flag_out_of_range:'超出范围', flag_in_range:'范围内',
     clock_in_short:'上班', clock_out_short:'下班', dist_to_device:' · 距点位 ', dist_meters:'米',
     stock_title:'库存与补货', btn_back_to_list:'返回列表', btn_view_report:'查看报表', zone_all:'全部区域',
@@ -506,6 +511,11 @@ const I18N = {
     toast_clock_in_ok:'Clocked in successfully', toast_clock_out_ok:'Clocked out successfully',
     geo_out_of_range:'⚠ Location is far from the machine (about ', geo_out_of_range_suffix:'m)',
     geo_in_range:'Location confirmed, near the machine', geo_no_coords:'Location recorded (machine has no coordinates set, can\'t compare)', geo_none:'Could not get location, skipped',
+    geo_err_denied:'⚠ Location permission denied. Allow this site to access your location in your phone/browser settings, then try again.',
+    geo_err_unavailable:'⚠ Could not get a location fix — check that GPS/location services are turned on.',
+    geo_err_timeout:'⚠ Getting your location timed out — try again somewhere more open, e.g. near a window.',
+    geo_err_unsupported:'⚠ This browser doesn\'t support location services.',
+    geo_err_insecure:'⚠ This page isn\'t a secure (https) connection, so location can\'t be accessed.',
     empty_no_records:'No records yet', flag_out_of_range:'Out of Range', flag_in_range:'In Range',
     clock_in_short:'In', clock_out_short:'Out', dist_to_device:' · ', dist_meters:'m from machine',
     stock_title:'Stock & Restocking', btn_back_to_list:'Back to List', btn_view_report:'View Report', zone_all:'All Zones',
@@ -986,12 +996,21 @@ function compressImage(file, maxW, quality){
 }
 
 /* ============================ GEO HELPER ============================ */
+function geoErrorMessage(reason){
+  const m={denied:t('geo_err_denied'), unavailable:t('geo_err_unavailable'), timeout:t('geo_err_timeout'),
+    unsupported:t('geo_err_unsupported'), insecure:t('geo_err_insecure')};
+  return (reason && m[reason]) || t('geo_none');
+}
 function getGeo(){
   return new Promise(resolve=>{
-    if(!navigator.geolocation){ resolve(null); return; }
+    if(!self.isSecureContext){ resolve({error:'insecure'}); return; }
+    if(!navigator.geolocation){ resolve({error:'unsupported'}); return; }
     navigator.geolocation.getCurrentPosition(
       pos=>resolve({lat:pos.coords.latitude, lng:pos.coords.longitude, accuracy:Math.round(pos.coords.accuracy)}),
-      ()=>resolve(null),
+      err=>{
+        const reason = err.code===1 ? 'denied' : err.code===2 ? 'unavailable' : err.code===3 ? 'timeout' : 'unknown';
+        resolve({error:reason});
+      },
       {enableHighAccuracy:true, timeout:8000, maximumAge:20000}
     );
   });
@@ -1002,7 +1021,7 @@ function deviceCoords(d){
   return (site && site.lat!=null && site.lng!=null) ? {lat:site.lat, lng:site.lng} : null;
 }
 function nearestDeviceInfo(geo){
-  if(!geo) return null;
+  if(!geo || geo.error) return null;
   const withCoords = S.devices.map(d=>({d, c:deviceCoords(d)})).filter(x=>x.c);
   if(withCoords.length===0) return {configured:false};
   let best=null, bestD=Infinity;
@@ -1238,13 +1257,14 @@ function clockView(){
     bigBtn.disabled=true;
     geoStatus.textContent=t('clock_geo_getting');
     const geo = await getGeo();
+    const geoOk = geo && !geo.error;
     const near = nearestDeviceInfo(geo);
     const photo = photoWrap.getPhoto();
     const rec = {employeeId:e.id, employeeName:e.name, type:nextType, createdAt:new Date().toISOString(), note:''};
-    if(geo) rec.geo=geo;
+    if(geoOk) rec.geo=geo;
     if(near && near.configured){ rec.nearestDeviceId=near.device.id; rec.distanceM=near.distance; rec.geoFlag = near.inRange?'in_range':'out_of_range'; }
-    else if(geo) rec.geoFlag='not_configured';
-    else rec.geoFlag='no_location';
+    else if(geoOk) rec.geoFlag='not_configured';
+    else { rec.geoFlag='no_location'; if(geo && geo.error) rec.geoErrorReason=geo.error; }
     if(photo) rec.photo=photo;
     try{
       await S.db.collection('attendance').add(rec);
@@ -1252,7 +1272,7 @@ function clockView(){
       photoWrap.remove();
     }catch(err){ toast(dbErrMsg(err)); }
     bigBtn.disabled=false;
-    geoStatus.textContent = geo ? (near&&near.configured ? (near.inRange?t('geo_in_range'):t('geo_out_of_range')+near.distance+t('geo_out_of_range_suffix')) : t('geo_no_coords')) : t('geo_none');
+    geoStatus.textContent = geoOk ? (near&&near.configured ? (near.inRange?t('geo_in_range'):t('geo_out_of_range')+near.distance+t('geo_out_of_range_suffix')) : t('geo_no_coords')) : geoErrorMessage(geo&&geo.error);
   };
 
   // history
