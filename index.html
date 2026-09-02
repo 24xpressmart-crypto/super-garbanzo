@@ -154,6 +154,7 @@
   .list-row .lr-title{font-weight:700; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
   .list-row .lr-sub{font-size:12px; color:var(--ink-soft); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
   .list-row .lr-end{text-align:right; flex-shrink:0;}
+  .lr-thumb{width:38px; height:38px; border-radius:9px; object-fit:cover; flex-shrink:0; background:var(--surface-2);}
 
   .pill{
     display:inline-flex; align-items:center; gap:4px;
@@ -469,6 +470,8 @@ const I18N = {
     btn_save_schedule:'保存排班', err_need_employee:'请先添加员工', err_fill_all:'请完整填写', toast_added:'已添加',
     sheet_add_schedule:'添加排班',
     photo_pick:'拍照 / 选择图片（可选）', photo_compressing:'压缩中…', photo_retake:'重新拍照 / 选择',
+    photo_take:'拍照（可选）', photo_retake_cam:'重新拍照', btn_remove_photo:'移除',
+    field_product_image:'商品图片（可选）',
     toast_photo_too_large:'图片体积过大，已跳过，请换一张试试', toast_photo_failed:'图片处理失败',
     toast_deleted:'已删除',
   },
@@ -586,6 +589,8 @@ const I18N = {
     btn_save_schedule:'Save Shift', err_need_employee:'Please add staff first', err_fill_all:'Please fill in all fields', toast_added:'Added',
     sheet_add_schedule:'Add Shift',
     photo_pick:'Take Photo / Choose Image (optional)', photo_compressing:'Compressing…', photo_retake:'Retake / Choose Again',
+    photo_take:'Take Photo (optional)', photo_retake_cam:'Retake Photo', btn_remove_photo:'Remove',
+    field_product_image:'Product Photo (optional)',
     toast_photo_too_large:'Image too large, skipped — please try another one', toast_photo_failed:'Failed to process image',
     toast_deleted:'Deleted',
   },
@@ -948,13 +953,22 @@ function openSheet(title, bodyHTML, footNode){
 function closeSheet(){ $('modalWrap').classList.remove('show'); $('sheet').innerHTML=''; }
 
 /* ============================ PHOTO HELPER ============================ */
-function photoPicker(onReady){
+function photoPicker(onReady, cameraOnly, existingUrl){
+  const pickLabel = cameraOnly ? t('photo_take') : t('photo_pick');
+  const retakeLabel = cameraOnly ? t('photo_retake_cam') : t('photo_retake');
   const wrap=el('<div></div>');
-  const input=el('<input type="file" accept="image/*" capture="environment" style="display:none">');
-  const btn=el(`<button type="button" class="btn">${ICONS.camera}<span>${esc(t('photo_pick'))}</span></button>`);
-  const preview=el('<img class="photow" style="display:none">');
-  let dataUrl=null;
+  const input=el(`<input type="file" accept="image/*" ${cameraOnly?'capture="environment"':''} style="display:none">`);
+  const btnRow=el('<div class="row"></div>');
+  const btn=el(`<button type="button" class="btn" style="flex:1;">${ICONS.camera}<span>${esc(existingUrl?retakeLabel:pickLabel)}</span></button>`);
+  const removeBtn=el(`<button type="button" class="btn danger sm" style="display:${existingUrl?'inline-flex':'none'};">${esc(t('btn_remove_photo'))}</button>`);
+  const preview=el(`<img class="photow" style="display:${existingUrl?'block':'none'};" ${existingUrl?`src="${existingUrl}"`:''}>`);
+  let dataUrl=existingUrl||null;
   btn.onclick=()=>input.click();
+  removeBtn.onclick=()=>{
+    dataUrl=null; preview.style.display='none'; preview.removeAttribute('src');
+    removeBtn.style.display='none'; btn.querySelector('span').textContent=pickLabel;
+    onReady && onReady(null);
+  };
   input.onchange=async ()=>{
     const f=input.files[0]; if(!f) return;
     btn.querySelector('span').textContent=t('photo_compressing');
@@ -962,16 +976,18 @@ function photoPicker(onReady){
       dataUrl = await compressImage(f);
       if(dataUrl){
         preview.src=dataUrl; preview.style.display='block';
-        btn.querySelector('span').textContent=t('photo_retake');
+        btn.querySelector('span').textContent=retakeLabel;
+        removeBtn.style.display='inline-flex';
         onReady && onReady(dataUrl);
       } else {
         preview.style.display='none';
-        btn.querySelector('span').textContent=t('photo_pick');
+        btn.querySelector('span').textContent=pickLabel;
         toast(t('toast_photo_too_large'));
       }
-    }catch(e){ toast(t('toast_photo_failed')); btn.querySelector('span').textContent=t('photo_pick'); }
+    }catch(e){ toast(t('toast_photo_failed')); btn.querySelector('span').textContent=pickLabel; }
   };
-  wrap.appendChild(btn); wrap.appendChild(input); wrap.appendChild(preview);
+  btnRow.appendChild(btn); btnRow.appendChild(removeBtn);
+  wrap.appendChild(btnRow); wrap.appendChild(input); wrap.appendChild(preview);
   wrap.getPhoto=()=>dataUrl;
   return wrap;
 }
@@ -1246,7 +1262,7 @@ function clockView(){
   card.innerHTML = `<div style="font-size:13px; color:var(--ink-soft); font-weight:700;">${weekdayLabel(now)} · ${todayStr(now)}</div>`;
   const bigBtn=el(`<button class="clockbtn ${nextType==='out'?'out':''}"><span class="t">${nextType==='in'?esc(t('btn_clock_in')):esc(t('btn_clock_out'))}</span><span class="s" id="clockNow">${pad2(now.getHours())}:${pad2(now.getMinutes())}</span></button>`);
   card.appendChild(bigBtn);
-  const photoWrap = photoPicker();
+  const photoWrap = photoPicker(null, true);
   photoWrap.style.margin='12px auto 0'; photoWrap.style.maxWidth='260px';
   card.appendChild(photoWrap);
   const geoStatus=el(`<div class="hint" id="geoStatus">${esc(t('clock_geo_hint'))}</div>`);
@@ -1359,7 +1375,7 @@ function stockView(){
       const inv = invRow(dv.id,p.id);
       const qty = inv ? inv.qty : 0;
       const st = stockStatus(qty, lowThreshold(p));
-      const row=el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(p.name)}</div><div class="lr-sub">${esc(p.spec||'')}</div></div>
+      const row=el(`<div class="list-row">${p.image?`<img class="lr-thumb" src="${p.image}">`:''}<div class="lr-main"><div class="lr-title">${esc(p.name)}</div><div class="lr-sub">${esc(p.spec||'')}</div></div>
         <div class="lr-end"><div class="num" style="font-weight:900; font-size:15px;">${qty}${esc(p.unit||'')}</div><span class="pill ${st.c}" style="margin-top:3px;">${st.t}</span></div></div>`);
       row.onclick=()=>openRestockForm(dv,p,qty);
       list.appendChild(row);
@@ -1766,6 +1782,7 @@ function adminSection(){
 
   c.appendChild(adminBlock(t('admin_product_mgmt'), ()=>openProductForm(), S.products.map(p=>({
     title:p.name+(p.spec?' · '+p.spec:''), sub:t('label_unit_price')+fmtMoney(p.price)+t('label_threshold')+lowThreshold(p),
+    thumb: p.image,
     onClick: ()=>openProductForm(p),
     onDelete: async()=>{ try{ await S.db.doc('products/'+p.id).delete(); toast(t('toast_deleted')); }catch(e){toast(dbErrMsg(e));} }
   }))));
@@ -1840,7 +1857,7 @@ function adminBlock(title, onAdd, items, extraBtn){
   const list=el('<div class="list"></div>');
   if(items.length===0) list.appendChild(el(`<div class="hint">${esc(t('empty_no_data'))}</div>`));
   items.forEach(it=>{
-    const row=el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(it.title)}</div><div class="lr-sub">${esc(it.sub||'')}</div></div></div>`);
+    const row=el(`<div class="list-row">${it.thumb?`<img class="lr-thumb" src="${it.thumb}">`:''}<div class="lr-main"><div class="lr-title">${esc(it.title)}</div><div class="lr-sub">${esc(it.sub||'')}</div></div></div>`);
     if(it.right) row.appendChild(it.right);
     if(it.onDelete){
       const delBtn=el(`<button class="btn sm danger" style="flex-shrink:0;">${esc(t('btn_delete'))}</button>`);
@@ -2032,11 +2049,16 @@ function openProductForm(p){
     {key:'lowStockThreshold', label:t('field_low_stock_threshold'), type:'number'},
   ];
   const body=el('<div>'+fieldsHTML(fields, p||{})+'</div>');
+  const imgLabel=el(`<label class="field"><span class="fl">${esc(t('field_product_image'))}</span></label>`);
+  const photoWrap=photoPicker(null, false, p&&p.image);
+  imgLabel.appendChild(photoWrap);
+  body.appendChild(imgLabel);
   const foot=el('<div class="sheet-foot"></div>');
   const btn=el(`<button class="btn primary block">${esc(t('btn_save'))}</button>`);
   btn.onclick=async ()=>{
     const v=readFields(body,fields);
     if(!v.name||!v.name.trim()){ toast(t('err_fill_product_name')); return; }
+    v.image = photoWrap.getPhoto();
     try{
       if(p) await S.db.doc('products/'+p.id).update(v);
       else await S.db.collection('products').add(Object.assign({createdAt:new Date().toISOString()}, v));
