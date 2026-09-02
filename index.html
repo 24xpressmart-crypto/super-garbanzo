@@ -422,7 +422,8 @@ const I18N = {
     field_keg_size:'桶容量（公升）', field_freshness_days:'开桶后保鲜天数', label_freshness_days:'保鲜 ',
     field_cost_per_keg_opt:'每桶成本（可选）', field_deposit_per_keg_opt:'每桶押金（可选，留空=不收押金）',
     field_low_stock_kegs:'低库存预警桶数', sheet_edit_beer_product:'编辑啤酒品项', sheet_add_beer_product:'添加啤酒品项',
-    field_tap_name:'龙头名称', field_cleaning_interval:'管路清洗周期（天）', err_fill_tap_name:'请填写龙头名称',
+    field_tap_name:'龙头名称', field_branch:'所属分店（可选）', field_cleaning_interval:'管路清洗周期（天）', err_fill_tap_name:'请填写龙头名称',
+    branch_all:'全部分店',
     sheet_edit_tap:'编辑酒龙头', sheet_add_tap:'添加酒龙头', admin_beer_mgmt:'啤酒品项管理', admin_tap_mgmt:'酒龙头管理',
     label_last_cleaned:'上次清洗 ',
     clock_in_short:'上班', clock_out_short:'下班', dist_to_device:' · 距点位 ', dist_meters:'米',
@@ -565,7 +566,8 @@ const I18N = {
     field_keg_size:'Keg Size (liters)', field_freshness_days:'Freshness After Opening (days)', label_freshness_days:'Fresh for ',
     field_cost_per_keg_opt:'Cost per Keg (optional)', field_deposit_per_keg_opt:'Deposit per Keg (optional, blank = no deposit)',
     field_low_stock_kegs:'Low-Stock Alert (kegs)', sheet_edit_beer_product:'Edit Beer Product', sheet_add_beer_product:'Add Beer Product',
-    field_tap_name:'Tap Name', field_cleaning_interval:'Line Cleaning Interval (days)', err_fill_tap_name:'Please enter a tap name',
+    field_tap_name:'Tap Name', field_branch:'Branch (optional)', field_cleaning_interval:'Line Cleaning Interval (days)', err_fill_tap_name:'Please enter a tap name',
+    branch_all:'All Branches',
     sheet_edit_tap:'Edit Tap', sheet_add_tap:'Add Tap', admin_beer_mgmt:'Beer Product Management', admin_tap_mgmt:'Tap Management',
     label_last_cleaned:'Last cleaned ',
     clock_in_short:'In', clock_out_short:'Out', dist_to_device:' · ', dist_meters:'m from machine',
@@ -1573,7 +1575,22 @@ function beerStockView(){
   qr.appendChild(receiveBtn); qr.appendChild(tapBtn);
   c.appendChild(qr);
 
-  const tappedKegs = S.kegs.filter(k=>k.status==='tapped');
+  const branches = [...new Set(S.taps.map(tp=>tp.zone).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'zh'));
+  if(branches.length>0){
+    const chipRow=el('<div class="chiprow"></div>');
+    const allChip=el(`<button class="chip ${S.beerZoneFilter==='all'?'on':''}">${esc(t('branch_all'))}</button>`);
+    allChip.onclick=()=>{ S.beerZoneFilter='all'; renderApp(); };
+    chipRow.appendChild(allChip);
+    branches.forEach(z=>{
+      const chip=el(`<button class="chip ${S.beerZoneFilter===z?'on':''}">${esc(z)}</button>`);
+      chip.onclick=()=>{ S.beerZoneFilter=z; renderApp(); };
+      chipRow.appendChild(chip);
+    });
+    c.appendChild(chipRow);
+  }
+  const tapInBranch=(tapId)=>{ if(S.beerZoneFilter==='all') return true; const tp=byId(S.taps,tapId); return tp && tp.zone===S.beerZoneFilter; };
+
+  const tappedKegs = S.kegs.filter(k=>k.status==='tapped' && tapInBranch(k.tapId));
   c.appendChild(el(`<h2 class="sec">${esc(t('beer_on_tap'))}</h2>`));
   const tapList=el('<div class="list"></div>');
   if(tappedKegs.length===0) tapList.appendChild(el(`<div class="hint">${esc(t('beer_no_kegs_on_tap'))}</div>`));
@@ -1605,7 +1622,7 @@ function beerStockView(){
   });
   c.appendChild(stockList);
 
-  const dueTaps = S.taps.filter(tp=>tapCleanInfo(tp).overdue);
+  const dueTaps = S.taps.filter(tp=>tapCleanInfo(tp).overdue && (S.beerZoneFilter==='all' || tp.zone===S.beerZoneFilter));
   if(dueTaps.length>0){
     c.appendChild(el(`<h2 class="sec">${esc(t('beer_taps_need_clean'))}</h2>`));
     const cleanList=el('<div class="list"></div>');
@@ -1753,7 +1770,7 @@ function openTapKegForm(){
       const p=byId(S.beerProducts,k.productId);
       return {v:k.id, l:(p?p.name:'?')+(k.batchNo?' · '+k.batchNo:'')+' · '+fmtDateTime(k.receivedDate)};
     })},
-    {key:'tapId', label:t('field_which_tap'), type:'select', options:S.taps.map(tp=>({v:tp.id,l:tp.name}))},
+    {key:'tapId', label:t('field_which_tap'), type:'select', options:S.taps.map(tp=>({v:tp.id,l:tp.name+(tp.zone?' · '+tp.zone:'')}))},
   ];
   const formEl=el('<div>'+fieldsHTML(f)+'</div>'); body.appendChild(formEl);
   const foot=el('<div class="sheet-foot"></div>');
@@ -1810,6 +1827,7 @@ function openBeerProductForm(p){
 function openTapForm(tap){
   const fields=[
     {key:'name', label:t('field_tap_name'), ph:'Tap 1'},
+    {key:'zone', label:t('field_branch'), ph:'BR19'},
     {key:'location', label:t('field_location_opt')},
     {key:'cleaningIntervalDays', label:t('field_cleaning_interval'), type:'number', default:14},
   ];
@@ -2148,7 +2166,7 @@ function adminSection(){
   }))));
 
   c.appendChild(adminBlock(t('admin_tap_mgmt'), ()=>openTapForm(), S.taps.map(tp=>({
-    title:tp.name, sub:(tp.location||'')+(tp.lastCleanedAt?' · '+t('label_last_cleaned')+fmtDateTime(tp.lastCleanedAt):''),
+    title:tp.name+(tp.zone?' · '+tp.zone:''), sub:(tp.location||'')+(tp.lastCleanedAt?' · '+t('label_last_cleaned')+fmtDateTime(tp.lastCleanedAt):''),
     onClick: ()=>openTapForm(tp),
     onDelete: async()=>{ try{ await S.db.doc('taps/'+tp.id).delete(); toast(t('toast_deleted')); }catch(e){toast(dbErrMsg(e));} }
   }))));
