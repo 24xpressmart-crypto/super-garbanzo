@@ -402,6 +402,29 @@ const I18N = {
     geo_err_unsupported:'⚠ 此浏览器不支持定位功能。',
     geo_err_insecure:'⚠ 当前页面不是安全连接（https），无法获取定位。',
     empty_no_records:'暂无记录', flag_out_of_range:'超出范围', flag_in_range:'范围内', no_photo_taken:'打卡时未拍照',
+    seg_snacks:'零食饮料', seg_beer:'鲜啤酒', beer_title:'鲜啤酒库存', empty_add_beer_product:'请先在「我的」中添加啤酒品项',
+    btn_receive_kegs:'登记到货', btn_tap_keg:'开桶上线', beer_on_tap:'使用中的酒桶', beer_no_kegs_on_tap:'目前没有开桶使用中',
+    beer_remaining:'剩余', beer_expired:'已过保鲜期', beer_expiring_soon:'即将到期', beer_fresh:'新鲜',
+    beer_in_stock:'未开桶库存', beer_no_stock:'暂无库存', beer_kegs_unit:'桶',
+    beer_taps_need_clean:'需要清洗管路', beer_days_since_clean_prefix:'距上次清洗 ', beer_days_since_clean_suffix:' 天',
+    beer_never_cleaned:'从未记录清洗', btn_mark_cleaned:'标记已清洗',
+    beer_pending_deposit:'待退押金', btn_mark_deposit_returned:'标记已退押金',
+    beer_opened_at:'开桶时间：', beer_expiry_at:'保鲜期至：',
+    btn_check_level:'盘点剩余量', btn_empty_keg:'空桶下线',
+    field_remaining_liters:'剩余容量（公升）', sheet_check_level:'盘点剩余量',
+    beer_empty_hint:'确认这个酒桶已经用完，将从使用中移除。', field_waste_liters:'报损容量（公升，可选）',
+    btn_confirm_empty:'确认下线', sheet_empty_keg:'空桶下线',
+    err_need_beer_product:'请先添加啤酒品项', field_beer_product:'啤酒品项', field_keg_qty:'到货桶数',
+    field_batch_no_opt:'批次号（可选）', field_supplier_opt:'供应商（可选）', sheet_receive_kegs:'登记到货',
+    err_no_kegs_in_stock:'没有未开桶的库存', err_need_tap:'请先添加酒龙头', field_which_keg:'选择酒桶',
+    field_which_tap:'选择龙头', confirm_tap_replace:'该龙头上还有一桶正在使用中，确定要更换吗？', sheet_tap_keg:'开桶上线',
+    field_beer_name:'啤酒名称', field_brand_opt:'品牌（可选）', field_abv_opt:'酒精度 ABV%（可选）',
+    field_keg_size:'桶容量（公升）', field_freshness_days:'开桶后保鲜天数', label_freshness_days:'保鲜 ',
+    field_cost_per_keg_opt:'每桶成本（可选）', field_deposit_per_keg_opt:'每桶押金（可选，留空=不收押金）',
+    field_low_stock_kegs:'低库存预警桶数', sheet_edit_beer_product:'编辑啤酒品项', sheet_add_beer_product:'添加啤酒品项',
+    field_tap_name:'龙头名称', field_cleaning_interval:'管路清洗周期（天）', err_fill_tap_name:'请填写龙头名称',
+    sheet_edit_tap:'编辑酒龙头', sheet_add_tap:'添加酒龙头', admin_beer_mgmt:'啤酒品项管理', admin_tap_mgmt:'酒龙头管理',
+    label_last_cleaned:'上次清洗 ',
     clock_in_short:'上班', clock_out_short:'下班', dist_to_device:' · 距点位 ', dist_meters:'米',
     stock_title:'库存与补货', btn_back_to_list:'返回列表', btn_view_report:'查看报表', zone_all:'全部区域',
     empty_add_device:'请先在「我的」中添加点位', empty_add_product:'请先在「我的」中添加商品',
@@ -521,6 +544,29 @@ const I18N = {
     geo_err_unsupported:'⚠ This browser doesn\'t support location services.',
     geo_err_insecure:'⚠ This page isn\'t a secure (https) connection, so location can\'t be accessed.',
     empty_no_records:'No records yet', flag_out_of_range:'Out of Range', flag_in_range:'In Range', no_photo_taken:'No photo taken at clock-in',
+    seg_snacks:'Snacks & Drinks', seg_beer:'Draft Beer', beer_title:'Draft Beer Stock', empty_add_beer_product:'Add a beer product under "Me" first',
+    btn_receive_kegs:'Receive Kegs', btn_tap_keg:'Tap a Keg', beer_on_tap:'On Tap', beer_no_kegs_on_tap:'Nothing on tap right now',
+    beer_remaining:'remaining', beer_expired:'Past Freshness', beer_expiring_soon:'Expiring Soon', beer_fresh:'Fresh',
+    beer_in_stock:'Unopened Stock', beer_no_stock:'No stock yet', beer_kegs_unit:'kegs',
+    beer_taps_need_clean:'Lines Need Cleaning', beer_days_since_clean_prefix:'', beer_days_since_clean_suffix:' days since last clean',
+    beer_never_cleaned:'No cleaning recorded yet', btn_mark_cleaned:'Mark Cleaned',
+    beer_pending_deposit:'Deposit Pending Return', btn_mark_deposit_returned:'Mark Deposit Returned',
+    beer_opened_at:'Tapped: ', beer_expiry_at:'Fresh until: ',
+    btn_check_level:'Check Remaining Level', btn_empty_keg:'Take Offline (Empty)',
+    field_remaining_liters:'Remaining (liters)', sheet_check_level:'Check Remaining Level',
+    beer_empty_hint:'Confirm this keg is finished and remove it from active service.', field_waste_liters:'Wastage (liters, optional)',
+    btn_confirm_empty:'Confirm Empty', sheet_empty_keg:'Take Keg Offline',
+    err_need_beer_product:'Add a beer product first', field_beer_product:'Beer', field_keg_qty:'Kegs Received',
+    field_batch_no_opt:'Batch # (optional)', field_supplier_opt:'Supplier (optional)', sheet_receive_kegs:'Receive Kegs',
+    err_no_kegs_in_stock:'No unopened kegs in stock', err_need_tap:'Add a tap first', field_which_keg:'Which Keg',
+    field_which_tap:'Which Tap', confirm_tap_replace:'This tap already has a keg in use — replace it?', sheet_tap_keg:'Tap a Keg',
+    field_beer_name:'Beer Name', field_brand_opt:'Brand (optional)', field_abv_opt:'ABV % (optional)',
+    field_keg_size:'Keg Size (liters)', field_freshness_days:'Freshness After Opening (days)', label_freshness_days:'Fresh for ',
+    field_cost_per_keg_opt:'Cost per Keg (optional)', field_deposit_per_keg_opt:'Deposit per Keg (optional, blank = no deposit)',
+    field_low_stock_kegs:'Low-Stock Alert (kegs)', sheet_edit_beer_product:'Edit Beer Product', sheet_add_beer_product:'Add Beer Product',
+    field_tap_name:'Tap Name', field_cleaning_interval:'Line Cleaning Interval (days)', err_fill_tap_name:'Please enter a tap name',
+    sheet_edit_tap:'Edit Tap', sheet_add_tap:'Add Tap', admin_beer_mgmt:'Beer Product Management', admin_tap_mgmt:'Tap Management',
+    label_last_cleaned:'Last cleaned ',
     clock_in_short:'In', clock_out_short:'Out', dist_to_device:' · ', dist_meters:'m from machine',
     stock_title:'Stock & Restocking', btn_back_to_list:'Back to List', btn_view_report:'View Report', zone_all:'All Zones',
     empty_add_device:'Please add a machine under Me first', empty_add_product:'Please add a product under Me first',
@@ -607,6 +653,8 @@ const S = {
   restockLogs:[], attendance:[], inspections:[], faults:[], schedules:[], leaveRequests:[],
   settings:{businessName:'24 Xpress', lowStockDefault:5, geofenceRadius:300},
   stockDeviceFilter:'all', equipTab:'devices', faultFilter:'open', historyRange:'today', attnScope:'mine',
+  stockSection:'snacks', kegFilter:'tapped', beerZoneFilter:'all',
+  beerProducts:[], taps:[], kegs:[], kegLogs:[],
   showReport:false, meAdmin:false,
   geoCache:null,
 };
@@ -650,6 +698,22 @@ function groupByZone(devices){
   return [...map.entries()].sort((a,b)=>a[0].localeCompare(b[0],'zh'));
 }
 function prodName(id){const p=byId(S.products,id); return p?p.name:t('deleted_placeholder');}
+function beerProdName(id){const p=byId(S.beerProducts,id); return p?p.name:t('deleted_placeholder');}
+function tapName(id){const tp=byId(S.taps,id); return tp?tp.name:t('deleted_placeholder');}
+function kegFreshness(keg, product){
+  if(!keg.openedAt) return null;
+  const days = (product && product.freshnessDays!=null) ? product.freshnessDays : 30;
+  const opened = new Date(keg.openedAt);
+  const expiry = new Date(opened.getTime() + days*86400000);
+  const hoursLeft = (expiry - new Date())/3600000;
+  return {expiry, hoursLeft, expired: hoursLeft<0, soon: hoursLeft>=0 && hoursLeft<=48};
+}
+function tapCleanInfo(tap){
+  const interval = tap.cleaningIntervalDays!=null ? tap.cleaningIntervalDays : 14;
+  if(!tap.lastCleanedAt) return {overdue:true, daysSince:null};
+  const daysSince = (new Date()-new Date(tap.lastCleanedAt))/86400000;
+  return {overdue: daysSince>=interval, daysSince: Math.floor(daysSince)};
+}
 function haversine(lat1,lng1,lat2,lng2){
   const R=6371000, toRad=x=>x*Math.PI/180;
   const dLat=toRad(lat2-lat1), dLng=toRad(lng2-lng1);
@@ -886,6 +950,10 @@ function subscribeAll(){
   sub('faults','faults',{order:'createdAt',limit:300});
   sub('schedules','schedules',{order:'date',dir:'asc',limit:400});
   sub('leaveRequests','leaveRequests',{order:'createdAt',limit:300});
+  sub('beerProducts','beerProducts',{limit:200});
+  sub('taps','taps',{limit:100});
+  sub('kegs','kegs',{order:'createdAt',dir:'desc',limit:500});
+  sub('kegLogs','kegLogs',{order:'createdAt',limit:400});
   S.db.doc('meta/settings').onSnapshot(snap=>{
     if(snap.exists){ S.settings = Object.assign({}, S.settings, snap.data()); }
     renderApp();
@@ -1343,6 +1411,15 @@ function openAttendanceDetail(a){
 /* ============================ STOCK ============================ */
 function stockView(){
   const c=el('<div></div>');
+  c.appendChild(el(`<div class="seg" style="margin:2px 0 14px;">
+    <button data-v="snacks" class="${S.stockSection!=='beer'?'on':''}">${esc(t('seg_snacks'))}</button>
+    <button data-v="beer" class="${S.stockSection==='beer'?'on':''}">${esc(t('seg_beer'))}</button></div>`));
+  [...c.lastChild.querySelectorAll('button')].forEach(b=>{ b.onclick=()=>{ S.stockSection=b.dataset.v; S.showReport=false; renderApp(); }; });
+  c.appendChild(S.stockSection==='beer' ? beerStockView() : snackStockView());
+  return c;
+}
+function snackStockView(){
+  const c=el('<div></div>');
   const head=el('<div class="sec-row"><h2 class="sec">'+esc(t('stock_title'))+'</h2></div>');
   const rbtn=el(`<button class="sec-link">${S.showReport?esc(t('btn_back_to_list')):esc(t('btn_view_report'))}</button>`);
   rbtn.onclick=()=>{ S.showReport=!S.showReport; renderApp(); };
@@ -1474,6 +1551,280 @@ function stockReport(){
   if(S.restockLogs.length===0) list.appendChild(el(`<div class="empty">${ICONS.inbox}<div>${esc(t('empty_no_records'))}</div></div>`));
   c.appendChild(list);
   return c;
+}
+
+/* ============================ DRAFT BEER (鲜啤) ============================ */
+function beerStockView(){
+  const c=el('<div></div>');
+  c.appendChild(el(`<h2 class="sec" style="margin-top:0;">${esc(t('beer_title'))}</h2>`));
+
+  if(S.beerProducts.length===0){
+    c.appendChild(el(`<div class="empty">${ICONS.box}<div>${esc(t('empty_add_beer_product'))}</div></div>`));
+    return c;
+  }
+
+  const qr=el('<div class="row" style="margin-bottom:16px;"></div>');
+  const receiveBtn=el(`<button class="btn block">${ICONS.plus}<span>${esc(t('btn_receive_kegs'))}</span></button>`);
+  receiveBtn.onclick=()=>openReceiveKegsForm();
+  const tapBtn=el(`<button class="btn primary block">${esc(t('btn_tap_keg'))}</button>`);
+  tapBtn.onclick=()=>openTapKegForm();
+  qr.appendChild(receiveBtn); qr.appendChild(tapBtn);
+  c.appendChild(qr);
+
+  const tappedKegs = S.kegs.filter(k=>k.status==='tapped');
+  c.appendChild(el(`<h2 class="sec">${esc(t('beer_on_tap'))}</h2>`));
+  const tapList=el('<div class="list"></div>');
+  if(tappedKegs.length===0) tapList.appendChild(el(`<div class="hint">${esc(t('beer_no_kegs_on_tap'))}</div>`));
+  tappedKegs.forEach(k=>{
+    const p=byId(S.beerProducts,k.productId);
+    const fresh=kegFreshness(k,p);
+    const pct = k.sizeLiters ? Math.max(0,Math.min(100, Math.round((k.remainingLiters/k.sizeLiters)*100))) : null;
+    let freshPill='';
+    if(fresh){
+      freshPill = fresh.expired ? `<span class="pill critical">${esc(t('beer_expired'))}</span>`
+        : fresh.soon ? `<span class="pill warn">${esc(t('beer_expiring_soon'))}</span>`
+        : `<span class="pill ok">${esc(t('beer_fresh'))}</span>`;
+    }
+    const row=el(`<div class="list-row">${p&&p.image?`<img class="lr-thumb" src="${p.image}">`:''}<div class="lr-main"><div class="lr-title">${esc(p?p.name:t('deleted_placeholder'))} · ${esc(tapName(k.tapId))}</div><div class="lr-sub">${pct!=null?pct+'% '+esc(t('beer_remaining')):''}</div></div>${freshPill}</div>`);
+    row.onclick=()=>openKegDetail(k);
+    tapList.appendChild(row);
+  });
+  c.appendChild(tapList);
+
+  c.appendChild(el(`<h2 class="sec">${esc(t('beer_in_stock'))}</h2>`));
+  const stockList=el('<div class="list"></div>');
+  const grouped={};
+  S.kegs.filter(k=>k.status==='in_stock').forEach(k=>{ grouped[k.productId]=(grouped[k.productId]||0)+1; });
+  S.beerProducts.forEach(p=>{
+    const count = grouped[p.id]||0;
+    const low = count <= (p.lowStockKegs!=null?p.lowStockKegs:1);
+    const row=el(`<div class="list-row" style="cursor:default;">${p.image?`<img class="lr-thumb" src="${p.image}">`:''}<div class="lr-main"><div class="lr-title">${esc(p.name)}</div><div class="lr-sub">${esc(p.brand||'')}</div></div><span class="pill ${count===0?'critical':(low?'warn':'ok')}">${count} ${esc(t('beer_kegs_unit'))}</span></div>`);
+    stockList.appendChild(row);
+  });
+  c.appendChild(stockList);
+
+  const dueTaps = S.taps.filter(tp=>tapCleanInfo(tp).overdue);
+  if(dueTaps.length>0){
+    c.appendChild(el(`<h2 class="sec">${esc(t('beer_taps_need_clean'))}</h2>`));
+    const cleanList=el('<div class="list"></div>');
+    dueTaps.forEach(tp=>{
+      const info=tapCleanInfo(tp);
+      const row=el(`<div class="list-row" style="cursor:default;"><div class="lr-main"><div class="lr-title">${esc(tp.name)}</div><div class="lr-sub">${info.daysSince!=null?esc(t('beer_days_since_clean_prefix'))+info.daysSince+esc(t('beer_days_since_clean_suffix')):esc(t('beer_never_cleaned'))}</div></div></div>`);
+      const btn=el(`<button class="btn sm ok">${esc(t('btn_mark_cleaned'))}</button>`);
+      btn.onclick=async(ev)=>{ ev.stopPropagation(); try{ await S.db.doc('taps/'+tp.id).update({lastCleanedAt:new Date().toISOString()}); toast(t('toast_saved')); }catch(e){toast(dbErrMsg(e));} };
+      row.appendChild(btn);
+      cleanList.appendChild(row);
+    });
+    c.appendChild(cleanList);
+  }
+
+  const pendingDeposit = S.kegs.filter(k=>k.status==='empty' && k.depositStatus==='held');
+  if(pendingDeposit.length>0){
+    c.appendChild(el(`<h2 class="sec">${esc(t('beer_pending_deposit'))}</h2>`));
+    const depList=el('<div class="list"></div>');
+    pendingDeposit.forEach(k=>{
+      const p=byId(S.beerProducts,k.productId);
+      const row=el(`<div class="list-row" style="cursor:default;"><div class="lr-main"><div class="lr-title">${esc(p?p.name:t('deleted_placeholder'))}</div><div class="lr-sub">${k.batchNo?esc(k.batchNo)+' · ':''}${fmtDateTime(k.emptiedAt||k.createdAt)}</div></div></div>`);
+      const btn=el(`<button class="btn sm ok">${esc(t('btn_mark_deposit_returned'))}</button>`);
+      btn.onclick=async(ev)=>{ ev.stopPropagation(); try{ await S.db.doc('kegs/'+k.id).update({depositStatus:'returned'}); toast(t('toast_saved')); }catch(e){toast(dbErrMsg(e));} };
+      row.appendChild(btn);
+      depList.appendChild(row);
+    });
+    c.appendChild(depList);
+  }
+
+  return c;
+}
+function openKegDetail(k){
+  const p=byId(S.beerProducts,k.productId);
+  const fresh=kegFreshness(k,p);
+  const body=el('<div></div>');
+  const pct = k.sizeLiters ? Math.max(0,Math.min(100, Math.round((k.remainingLiters/k.sizeLiters)*100))) : null;
+  let freshPill='';
+  if(fresh){
+    freshPill = fresh.expired ? `<span class="pill critical">${esc(t('beer_expired'))}</span>`
+      : fresh.soon ? `<span class="pill warn">${esc(t('beer_expiring_soon'))}</span>`
+      : `<span class="pill ok">${esc(t('beer_fresh'))}</span>`;
+  }
+  body.innerHTML = `<div class="row" style="margin-bottom:10px;"><span class="pill accent">${esc(tapName(k.tapId))}</span>${freshPill}</div>
+    <div class="hint">${esc(t('beer_opened_at'))}${fmtDateTime(k.openedAt)}${fresh?' · '+esc(t('beer_expiry_at'))+fmtDateTime(fresh.expiry.toISOString()):''}</div>`;
+  if(pct!=null){
+    body.appendChild(el(`<div class="minibar-row" style="margin-top:12px;"><div class="minibar-track" style="height:14px;"><div class="minibar-fill" style="width:${pct}%; height:100%;"></div></div><div class="num" style="width:44px; text-align:right;">${pct}%</div></div>`));
+  }
+  const foot=el('<div class="sheet-foot" style="flex-direction:column; gap:8px;"></div>');
+  const checkBtn=el(`<button class="btn block">${esc(t('btn_check_level'))}</button>`);
+  checkBtn.onclick=()=>{ closeSheet(); setTimeout(()=>openLevelCheckForm(k),150); };
+  const emptyBtn=el(`<button class="btn danger block">${esc(t('btn_empty_keg'))}</button>`);
+  emptyBtn.onclick=()=>{ closeSheet(); setTimeout(()=>openEmptyKegForm(k),150); };
+  foot.appendChild(checkBtn); foot.appendChild(emptyBtn);
+  body.appendChild(foot);
+  openSheet(p?p.name:t('deleted_placeholder'), body);
+}
+function openLevelCheckForm(k){
+  const body=el('<div></div>');
+  const f=[{key:'remainingLiters', label:t('field_remaining_liters'), type:'number', step:'0.1', default:k.remainingLiters},
+    {key:'note', label:t('field_note_opt2'), type:'textarea'}];
+  const formEl=el('<div>'+fieldsHTML(f)+'</div>'); body.appendChild(formEl);
+  const foot=el('<div class="sheet-foot"></div>');
+  const btn=el(`<button class="btn primary block">${esc(t('btn_submit'))}</button>`);
+  btn.onclick=async()=>{
+    const v=readFields(formEl,f);
+    if(v.remainingLiters==null || v.remainingLiters<0){ toast(t('err_valid_qty')); return; }
+    btn.disabled=true; btn.textContent=t('toast_submitting');
+    const e=currentEmployee();
+    try{
+      const delta = v.remainingLiters - (k.remainingLiters||0);
+      await S.db.collection('kegLogs').add({kegId:k.id, productId:k.productId, type:'level_check', deltaLiters:delta, remainingAfter:v.remainingLiters, employeeId:e.id, employeeName:e.name, note:v.note||'', createdAt:new Date().toISOString()});
+      await S.db.doc('kegs/'+k.id).update({remainingLiters:v.remainingLiters});
+      toast(t('toast_saved')); closeSheet();
+    }catch(err){ toast(dbErrMsg(err)); btn.disabled=false; btn.textContent=t('btn_submit'); }
+  };
+  foot.appendChild(btn); body.appendChild(foot);
+  openSheet(t('sheet_check_level'), body);
+}
+function openEmptyKegForm(k){
+  const body=el('<div></div>');
+  body.appendChild(el(`<p class="hint" style="margin-top:0;">${esc(t('beer_empty_hint'))}</p>`));
+  const f=[{key:'wasteLiters', label:t('field_waste_liters'), type:'number', step:'0.1', default:0},
+    {key:'note', label:t('field_note_opt2'), type:'textarea'}];
+  const formEl=el('<div>'+fieldsHTML(f)+'</div>'); body.appendChild(formEl);
+  const foot=el('<div class="sheet-foot"></div>');
+  const btn=el(`<button class="btn danger block">${esc(t('btn_confirm_empty'))}</button>`);
+  btn.onclick=async()=>{
+    const v=readFields(formEl,f);
+    btn.disabled=true; btn.textContent=t('toast_submitting');
+    const e=currentEmployee();
+    try{
+      await S.db.collection('kegLogs').add({kegId:k.id, productId:k.productId, type:'emptied', deltaLiters:-(v.wasteLiters||0), employeeId:e.id, employeeName:e.name, note:v.note||'', createdAt:new Date().toISOString()});
+      await S.db.doc('kegs/'+k.id).update({status:'empty', remainingLiters:0, emptiedAt:new Date().toISOString(), tapId:null});
+      toast(t('toast_saved')); closeSheet();
+    }catch(err){ toast(dbErrMsg(err)); btn.disabled=false; btn.textContent=t('btn_confirm_empty'); }
+  };
+  foot.appendChild(btn); body.appendChild(foot);
+  openSheet(t('sheet_empty_keg'), body);
+}
+function openReceiveKegsForm(){
+  if(S.beerProducts.length===0){ toast(t('err_need_beer_product')); return; }
+  const body=el('<div></div>');
+  const f=[
+    {key:'productId', label:t('field_beer_product'), type:'select', options:S.beerProducts.map(p=>({v:p.id,l:p.name}))},
+    {key:'qty', label:t('field_keg_qty'), type:'number', default:1},
+    {key:'batchNo', label:t('field_batch_no_opt')},
+    {key:'supplierName', label:t('field_supplier_opt')},
+    {key:'cost', label:t('field_cost_opt'), type:'number', step:'0.01'},
+  ];
+  const formEl=el('<div>'+fieldsHTML(f)+'</div>'); body.appendChild(formEl);
+  const foot=el('<div class="sheet-foot"></div>');
+  const btn=el(`<button class="btn primary block">${esc(t('btn_submit'))}</button>`);
+  btn.onclick=async()=>{
+    const v=readFields(formEl,f);
+    if(!v.productId){ toast(t('err_need_beer_product')); return; }
+    const qty=Math.max(1, Math.round(v.qty||1));
+    const prod=byId(S.beerProducts,v.productId);
+    btn.disabled=true; btn.textContent=t('toast_submitting');
+    const e=currentEmployee();
+    try{
+      const writes=[];
+      for(let i=0;i<qty;i++){
+        writes.push(S.db.collection('kegs').add({
+          productId:v.productId, batchNo:v.batchNo||'', supplierName:v.supplierName||'', cost:v.cost!=null?v.cost:null,
+          sizeLiters: prod&&prod.kegSizeLiters!=null?prod.kegSizeLiters:30,
+          status:'in_stock', depositStatus: prod&&prod.depositPerKeg?'held':'none',
+          receivedDate:new Date().toISOString(), createdAt:new Date().toISOString(),
+        }));
+      }
+      await Promise.all(writes);
+      await S.db.collection('kegLogs').add({productId:v.productId, type:'received', qty, employeeId:e.id, employeeName:e.name, note:v.batchNo||'', createdAt:new Date().toISOString()});
+      toast(t('toast_saved')); closeSheet();
+    }catch(err){ toast(dbErrMsg(err)); btn.disabled=false; btn.textContent=t('btn_submit'); }
+  };
+  foot.appendChild(btn); body.appendChild(foot);
+  openSheet(t('sheet_receive_kegs'), body);
+}
+function openTapKegForm(){
+  const availKegs = S.kegs.filter(k=>k.status==='in_stock');
+  if(availKegs.length===0){ toast(t('err_no_kegs_in_stock')); return; }
+  if(S.taps.length===0){ toast(t('err_need_tap')); return; }
+  const body=el('<div></div>');
+  const f=[
+    {key:'kegId', label:t('field_which_keg'), type:'select', options:availKegs.map(k=>{
+      const p=byId(S.beerProducts,k.productId);
+      return {v:k.id, l:(p?p.name:'?')+(k.batchNo?' · '+k.batchNo:'')+' · '+fmtDateTime(k.receivedDate)};
+    })},
+    {key:'tapId', label:t('field_which_tap'), type:'select', options:S.taps.map(tp=>({v:tp.id,l:tp.name}))},
+  ];
+  const formEl=el('<div>'+fieldsHTML(f)+'</div>'); body.appendChild(formEl);
+  const foot=el('<div class="sheet-foot"></div>');
+  const btn=el(`<button class="btn primary block">${esc(t('btn_tap_keg'))}</button>`);
+  btn.onclick=async()=>{
+    const v=readFields(formEl,f);
+    if(!v.kegId||!v.tapId){ toast(t('err_fill_all')); return; }
+    const keg=byId(S.kegs,v.kegId);
+    const alreadyOn = S.kegs.find(x=>x.tapId===v.tapId && x.status==='tapped');
+    if(alreadyOn && !confirm(t('confirm_tap_replace'))) return;
+    btn.disabled=true; btn.textContent=t('toast_submitting');
+    const e=currentEmployee();
+    try{
+      await S.db.doc('kegs/'+v.kegId).update({status:'tapped', tapId:v.tapId, openedAt:new Date().toISOString(), remainingLiters:keg.sizeLiters});
+      await S.db.collection('kegLogs').add({kegId:v.kegId, productId:keg.productId, type:'tapped', tapId:v.tapId, employeeId:e.id, employeeName:e.name, note:'', createdAt:new Date().toISOString()});
+      toast(t('toast_saved')); closeSheet();
+    }catch(err){ toast(dbErrMsg(err)); btn.disabled=false; btn.textContent=t('btn_tap_keg'); }
+  };
+  foot.appendChild(btn); body.appendChild(foot);
+  openSheet(t('sheet_tap_keg'), body);
+}
+function openBeerProductForm(p){
+  const fields=[
+    {key:'name', label:t('field_beer_name')},
+    {key:'brand', label:t('field_brand_opt')},
+    {key:'abv', label:t('field_abv_opt'), type:'number', step:'0.1'},
+    {key:'kegSizeLiters', label:t('field_keg_size'), type:'number', default:30},
+    {key:'freshnessDays', label:t('field_freshness_days'), type:'number', default:30},
+    {key:'supplier', label:t('field_supplier_opt')},
+    {key:'costPerKeg', label:t('field_cost_per_keg_opt'), type:'number', step:'0.01'},
+    {key:'depositPerKeg', label:t('field_deposit_per_keg_opt'), type:'number', step:'0.01'},
+    {key:'lowStockKegs', label:t('field_low_stock_kegs'), type:'number', default:1},
+  ];
+  const body=el('<div>'+fieldsHTML(fields, p||{})+'</div>');
+  const imgLabel=el(`<label class="field"><span class="fl">${esc(t('field_product_image'))}</span></label>`);
+  const photoWrap=photoPicker(null, false, p&&p.image);
+  imgLabel.appendChild(photoWrap);
+  body.appendChild(imgLabel);
+  const foot=el('<div class="sheet-foot"></div>');
+  const btn=el(`<button class="btn primary block">${esc(t('btn_save'))}</button>`);
+  btn.onclick=async()=>{
+    const v=readFields(body,fields);
+    if(!v.name||!v.name.trim()){ toast(t('err_fill_product_name')); return; }
+    v.image=photoWrap.getPhoto();
+    try{
+      if(p) await S.db.doc('beerProducts/'+p.id).update(v);
+      else await S.db.collection('beerProducts').add(Object.assign({createdAt:new Date().toISOString()},v));
+      toast(t('toast_saved')); closeSheet();
+    }catch(e){ toast(dbErrMsg(e)); }
+  };
+  foot.appendChild(btn); body.appendChild(foot);
+  openSheet(p?t('sheet_edit_beer_product'):t('sheet_add_beer_product'), body);
+}
+function openTapForm(tap){
+  const fields=[
+    {key:'name', label:t('field_tap_name'), ph:'Tap 1'},
+    {key:'location', label:t('field_location_opt')},
+    {key:'cleaningIntervalDays', label:t('field_cleaning_interval'), type:'number', default:14},
+  ];
+  const body=el('<div>'+fieldsHTML(fields, tap||{})+'</div>');
+  const foot=el('<div class="sheet-foot"></div>');
+  const btn=el(`<button class="btn primary block">${esc(t('btn_save'))}</button>`);
+  btn.onclick=async()=>{
+    const v=readFields(body,fields);
+    if(!v.name||!v.name.trim()){ toast(t('err_fill_tap_name')); return; }
+    try{
+      if(tap) await S.db.doc('taps/'+tap.id).update(v);
+      else await S.db.collection('taps').add(Object.assign({createdAt:new Date().toISOString()},v));
+      toast(t('toast_saved')); closeSheet();
+    }catch(e){ toast(dbErrMsg(e)); }
+  };
+  foot.appendChild(btn); body.appendChild(foot);
+  openSheet(tap?t('sheet_edit_tap'):t('sheet_add_tap'), body);
 }
 
 /* ============================ EQUIP ============================ */
@@ -1785,6 +2136,19 @@ function adminSection(){
     thumb: p.image,
     onClick: ()=>openProductForm(p),
     onDelete: async()=>{ try{ await S.db.doc('products/'+p.id).delete(); toast(t('toast_deleted')); }catch(e){toast(dbErrMsg(e));} }
+  }))));
+
+  c.appendChild(adminBlock(t('admin_beer_mgmt'), ()=>openBeerProductForm(), S.beerProducts.map(p=>({
+    title:p.name+(p.brand?' · '+p.brand:''), sub:(p.kegSizeLiters!=null?p.kegSizeLiters+'L':'')+(p.freshnessDays!=null?' · '+t('label_freshness_days')+p.freshnessDays:''),
+    thumb: p.image,
+    onClick: ()=>openBeerProductForm(p),
+    onDelete: async()=>{ try{ await S.db.doc('beerProducts/'+p.id).delete(); toast(t('toast_deleted')); }catch(e){toast(dbErrMsg(e));} }
+  }))));
+
+  c.appendChild(adminBlock(t('admin_tap_mgmt'), ()=>openTapForm(), S.taps.map(tp=>({
+    title:tp.name, sub:(tp.location||'')+(tp.lastCleanedAt?' · '+t('label_last_cleaned')+fmtDateTime(tp.lastCleanedAt):''),
+    onClick: ()=>openTapForm(tp),
+    onDelete: async()=>{ try{ await S.db.doc('taps/'+tp.id).delete(); toast(t('toast_deleted')); }catch(e){toast(dbErrMsg(e));} }
   }))));
 
   c.appendChild(el(`<h2 class="sec">${esc(t('admin_settings'))}</h2>`));
