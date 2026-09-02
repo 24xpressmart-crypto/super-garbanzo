@@ -470,6 +470,7 @@ const I18N = {
     btn_save_settings:'保存设置', toast_saved:'已保存',
     export_attendance:'打卡记录', export_restock:'进货补货记录', export_faults:'故障记录',
     export_inspections:'巡检记录', export_leave:'请假记录', btn_export_csv:'导出CSV',
+    export_kegs:'酒桶记录', export_keg_logs:'酒桶操作记录',
     toast_no_downloads:'当前视图不支持文件下载', toast_exported:'已导出', toast_export_failed:'导出失败',
     btn_add:'添加', empty_no_data:'暂无数据', btn_delete:'删除',
     confirm_delete_prefix:'确定删除「', confirm_delete_suffix:'」吗？此操作无法撤销。',
@@ -612,6 +613,7 @@ const I18N = {
     btn_save_settings:'Save Settings', toast_saved:'Saved',
     export_attendance:'Clock Records', export_restock:'Restock Log', export_faults:'Fault Log',
     export_inspections:'Inspection Log', export_leave:'Leave Requests', btn_export_csv:'Export CSV',
+    export_kegs:'Keg Records', export_keg_logs:'Keg Activity Log',
     toast_no_downloads:'This view does not support file downloads', toast_exported:'Exported', toast_export_failed:'Export failed',
     btn_add:'Add', empty_no_data:'No data yet', btn_delete:'Delete',
     confirm_delete_prefix:'Delete "', confirm_delete_suffix:'"? This cannot be undone.',
@@ -2175,6 +2177,8 @@ function adminSection(){
     [t('export_faults'),'faults', S.faults, ['deviceId','description','severity','status','employeeName','createdAt']],
     [t('export_inspections'),'inspections', S.inspections, ['deviceId','employeeName','issuesFound','note','createdAt']],
     [t('export_leave'),'leaveRequests', S.leaveRequests, ['employeeName','type','startDate','endDate','reason','status']],
+    [t('export_kegs'),'kegs', S.kegs, ['productId','batchNo','status','sizeLiters','remainingLiters','tapId','depositStatus','receivedDate','openedAt','emptiedAt']],
+    [t('export_keg_logs'),'kegLogs', S.kegLogs, ['kegId','productId','type','deltaLiters','tapId','employeeName','note','createdAt']],
   ];
   exports.forEach(([label,key,data,cols])=>{
     const row=el(`<div class="row" style="justify-content:space-between; padding:8px 0;"><span style="font-size:13.5px;">${esc(label)}</span></div>`);
