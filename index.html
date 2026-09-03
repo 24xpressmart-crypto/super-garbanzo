@@ -365,7 +365,11 @@ const I18N = {
     leave_pending:'待审批', leave_approved:'已批准', leave_rejected:'已驳回',
     stock_out:'缺货', stock_low:'低库存', stock_ok:'正常',
     deleted_placeholder:'(已删除)', unzoned:'未分区',
-    role_admin:'管理员', role_staff:'员工',
+    role_admin:'管理员', role_staff:'员工', role_manager:'分店经理',
+    field_home_branch:'所属分店（可选）', ph_home_branch:'例如：S01',
+    branch_unassigned:'未分配分店', who_am_i_pick_branch:'选择你的分店',
+    btn_change_branch:'切换分店', admin_functions_manager:'分店经理功能',
+    empty_no_branches:'还没有员工设置分店',
     connecting_title:'正在连接…', connecting_body:'正在建立数据连接，请稍候。',
     unavailable_title:'暂时无法连接数据库', unavailable_body:'请检查网络连接后刷新重试；如果问题持续，请联系管理员确认后台数据库设置是否正确。',
     who_unselected:'未选择',
@@ -477,6 +481,11 @@ const I18N = {
     confirm_delete_prefix:'确定删除「', confirm_delete_suffix:'」吗？此操作无法撤销。',
     field_name:'姓名', field_phone_opt2:'手机号（可选）', field_role:'角色', btn_save:'保存',
     err_fill_name2:'请填写姓名', sheet_edit_employee:'编辑员工', sheet_add_employee:'添加员工',
+    emp_bulk_hint:'每行一位员工，可以从表格里复制粘贴「姓名、电话、所属分店、角色」四列（用 Tab 分隔），电话/分店/角色都可留空。角色留空默认为「员工」，可填 staff/manager/admin。',
+    field_paste_employees:'粘贴员工名单', emp_bulk_branch_locked_prefix:'所属分店已固定为：',
+    emp_bulk_will_import:'将导入 ', emp_bulk_people:' 人',
+    err_bulk_min_people:'请至少输入一位员工', toast_all_exist_people:'这些员工都已存在',
+    sheet_bulk_add_employees:'批量添加员工',
     field_device_name:'机台名称', ph_device_name:'例如：H1 (1)', field_zone:'所属区域', ph_zone:'例如：H1 / P3 / P5 / P8A / P8B / P8W / A1',
     field_machine_id:'机器编号 Machine ID（可选）', ph_machine_id:'例如：2505001764', field_location_opt:'位置描述（可选）',
     field_lat:'纬度（可选，单独覆盖该机器的定位坐标）', field_lng:'经度（可选）',
@@ -509,7 +518,11 @@ const I18N = {
     leave_pending:'Pending Approval', leave_approved:'Approved', leave_rejected:'Rejected',
     stock_out:'Out of Stock', stock_low:'Low Stock', stock_ok:'Normal',
     deleted_placeholder:'(deleted)', unzoned:'Unzoned',
-    role_admin:'Admin', role_staff:'Staff',
+    role_admin:'Admin', role_staff:'Staff', role_manager:'Branch Manager',
+    field_home_branch:'Home Branch (optional)', ph_home_branch:'e.g. S01',
+    branch_unassigned:'No Branch Assigned', who_am_i_pick_branch:'Choose Your Branch',
+    btn_change_branch:'Change Branch', admin_functions_manager:'Branch Manager Tools',
+    empty_no_branches:'No staff have a branch set yet',
     connecting_title:'Connecting…', connecting_body:'Establishing the data connection, please wait.',
     unavailable_title:'Can\'t connect to the database right now', unavailable_body:'Check your internet connection and refresh. If this keeps happening, ask an admin to confirm the backend database is set up correctly.',
     who_unselected:'Not selected',
@@ -621,6 +634,11 @@ const I18N = {
     confirm_delete_prefix:'Delete "', confirm_delete_suffix:'"? This cannot be undone.',
     field_name:'Name', field_phone_opt2:'Phone (optional)', field_role:'Role', btn_save:'Save',
     err_fill_name2:'Please enter a name', sheet_edit_employee:'Edit Staff', sheet_add_employee:'Add Staff',
+    emp_bulk_hint:'One staff member per line. Paste "Name, Phone, Branch, Role" columns straight from a spreadsheet (Tab-separated) — phone/branch/role can be left blank. Role defaults to Staff if blank; valid values are staff/manager/admin.',
+    field_paste_employees:'Paste Staff List', emp_bulk_branch_locked_prefix:'Home branch is fixed to: ',
+    emp_bulk_will_import:'Will import ', emp_bulk_people:' people',
+    err_bulk_min_people:'Please enter at least one staff member', toast_all_exist_people:'These staff already exist',
+    sheet_bulk_add_employees:'Bulk Add Staff',
     field_device_name:'Machine Name', ph_device_name:'e.g. H1 (1)', field_zone:'Zone', ph_zone:'e.g. H1 / P3 / P5 / P8A / P8B / P8W / A1',
     field_machine_id:'Machine ID (optional)', ph_machine_id:'e.g. 2505001764', field_location_opt:'Location Notes (optional)',
     field_lat:'Latitude (optional, overrides this machine only)', field_lng:'Longitude (optional)',
@@ -657,7 +675,7 @@ const S = {
   restockLogs:[], attendance:[], inspections:[], faults:[], schedules:[], leaveRequests:[],
   settings:{businessName:'24 Xpress', lowStockDefault:5, geofenceRadius:300},
   stockDeviceFilter:'all', equipTab:'devices', faultFilter:'open', historyRange:'today', attnScope:'mine',
-  stockSection:'snacks', kegFilter:'tapped', beerZoneFilter:'all',
+  stockSection:'snacks', kegFilter:'tapped', beerZoneFilter:'all', pickerBranch:null, staffBranchFilter:'all',
   beerProducts:[], taps:[], kegs:[], kegLogs:[],
   showReport:false, meAdmin:false,
   geoCache:null,
@@ -749,6 +767,13 @@ function dbErrMsg(e){
 }
 function currentEmployee(){return byId(S.employees, S.employeeId);}
 function isAdmin(){const e=currentEmployee(); return !!(e && e.role==='admin');}
+function isManager(){const e=currentEmployee(); return !!(e && e.role==='manager');}
+function canManageStaff(){return isAdmin()||isManager();}
+function myBranch(){const e=currentEmployee(); return e&&e.homeBranch;}
+function branchList(){
+  const set = new Set(S.employees.map(e=>e.homeBranch).filter(Boolean));
+  return [...set].sort((a,b)=>a.localeCompare(b,'zh'));
+}
 function lowThreshold(product){return (product && product.lowStockThreshold!=null) ? product.lowStockThreshold : S.settings.lowStockDefault;}
 function invRow(deviceId, productId){return S.inventory.find(i=>i.deviceId===deviceId && i.productId===productId);}
 function stockStatus(qty, threshold){
@@ -999,7 +1024,7 @@ function renderTopbar(){
   $('whoAvatar').textContent = e.name.slice(0,1);
   $('whoName').textContent = e.name;
   $('whoRole').textContent = e.role==='admin' ? t('role_admin') : t('role_staff');
-  who.onclick = ()=>{ S.employeeId=null; LS.remove('bgc_employee_id'); renderApp(); };
+  who.onclick = ()=>{ S.employeeId=null; S.pickerBranch=null; LS.remove('bgc_employee_id'); renderApp(); };
 }
 function renderNav(){
   const nav=$('nav'); nav.innerHTML='';
@@ -1180,18 +1205,53 @@ function onboardingView(){
   container.appendChild(btn);
   return container;
 }
+function identityRow(e){
+  const roleLabel = e.role==='admin'?t('role_admin'):e.role==='manager'?t('role_manager'):t('role_staff');
+  const row=el(`<div class="id-pick-row"><span class="avatar">${esc(e.name.slice(0,1))}</span>
+    <div class="lr-main"><div class="lr-title">${esc(e.name)}</div><div class="lr-sub">${esc(roleLabel)}${e.phone?' · '+esc(e.phone):''}</div></div>
+    ${ICONS.chev}</div>`);
+  row.onclick=()=>{ e.pinHash ? openVerifyPinForm(e) : openSetPinForm(e); };
+  return row;
+}
 function identityPickerView(){
   const container=el('<div></div>');
-  container.appendChild(el(`<h2 class="sec" style="margin-top:14px;">${esc(t('who_am_i'))}</h2>`));
   const active = S.employees.filter(e=>e.active!==false);
-  if(active.length===0){ container.appendChild(el(`<div class="empty">${ICONS.inbox}<div>${esc(t('no_active_employees'))}</div></div>`)); return container; }
-  active.forEach(e=>{
-    const row=el(`<div class="id-pick-row"><span class="avatar">${esc(e.name.slice(0,1))}</span>
-      <div class="lr-main"><div class="lr-title">${esc(e.name)}</div><div class="lr-sub">${e.role==='admin'?esc(t('role_admin')):esc(t('role_staff'))}${e.phone?' · '+esc(e.phone):''}</div></div>
-      ${ICONS.chev}</div>`);
-    row.onclick=()=>{ e.pinHash ? openVerifyPinForm(e) : openSetPinForm(e); };
-    container.appendChild(row);
-  });
+  if(active.length===0){ container.appendChild(el(`<h2 class="sec" style="margin-top:14px;">${esc(t('who_am_i'))}</h2>`)); container.appendChild(el(`<div class="empty">${ICONS.inbox}<div>${esc(t('no_active_employees'))}</div></div>`)); return container; }
+
+  const branches = branchList();
+  // Small teams with no branches set: keep the simple flat list.
+  if(branches.length===0){
+    container.appendChild(el(`<h2 class="sec" style="margin-top:14px;">${esc(t('who_am_i'))}</h2>`));
+    active.forEach(e=>container.appendChild(identityRow(e)));
+    container.appendChild(el(`<p class="hint">${esc(t('id_pick_hint'))}</p>`));
+    return container;
+  }
+
+  // Larger, multi-branch teams: pick branch first, then name within it.
+  if(!S.pickerBranch){
+    container.appendChild(el(`<h2 class="sec" style="margin-top:14px;">${esc(t('who_am_i_pick_branch'))}</h2>`));
+    branches.forEach(z=>{
+      const count = active.filter(e=>e.homeBranch===z).length;
+      const row=el(`<div class="id-pick-row"><span class="avatar">${esc(z.slice(0,2))}</span><div class="lr-main"><div class="lr-title">${esc(z)}</div><div class="lr-sub">${count}</div></div>${ICONS.chev}</div>`);
+      row.onclick=()=>{ S.pickerBranch=z; renderApp(); };
+      container.appendChild(row);
+    });
+    const unassigned = active.filter(e=>!e.homeBranch);
+    if(unassigned.length>0){
+      const row=el(`<div class="id-pick-row"><span class="avatar">?</span><div class="lr-main"><div class="lr-title">${esc(t('branch_unassigned'))}</div><div class="lr-sub">${unassigned.length}</div></div>${ICONS.chev}</div>`);
+      row.onclick=()=>{ S.pickerBranch='__unassigned__'; renderApp(); };
+      container.appendChild(row);
+    }
+    return container;
+  }
+  const head=el(`<div class="row" style="margin:14px 0 10px;"></div>`);
+  const backBtn=el(`<button class="btn sm">${ICONS.chev}</button>`); backBtn.style.transform='scaleX(-1)';
+  backBtn.onclick=()=>{ S.pickerBranch=null; renderApp(); };
+  head.appendChild(backBtn);
+  head.appendChild(el(`<h2 class="sec" style="margin:0;">${esc(S.pickerBranch==='__unassigned__'?t('branch_unassigned'):S.pickerBranch)}</h2>`));
+  container.appendChild(head);
+  const inBranch = S.pickerBranch==='__unassigned__' ? active.filter(e=>!e.homeBranch) : active.filter(e=>e.homeBranch===S.pickerBranch);
+  inBranch.forEach(e=>container.appendChild(identityRow(e)));
   container.appendChild(el(`<p class="hint">${esc(t('id_pick_hint'))}</p>`));
   return container;
 }
@@ -2044,7 +2104,7 @@ function meView(){
   const idCard=el(`<div class="card row"><span class="avatar" style="width:44px;height:44px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;">${esc(e.name.slice(0,1))}</span>
     <div class="lr-main"><div style="font-weight:900; font-size:16px;">${esc(e.name)}</div><div class="lr-sub">${e.role==='admin'?esc(t('role_admin')):esc(t('role_staff'))}${e.phone?' · '+esc(e.phone):''}</div></div></div>`);
   const switchBtn=el(`<button class="btn sm">${esc(t('btn_switch_identity'))}</button>`);
-  switchBtn.onclick=()=>{ S.employeeId=null; LS.remove('bgc_employee_id'); renderApp(); };
+  switchBtn.onclick=()=>{ S.employeeId=null; S.pickerBranch=null; LS.remove('bgc_employee_id'); renderApp(); };
   idCard.appendChild(switchBtn);
   c.appendChild(idCard);
 
@@ -2071,7 +2131,48 @@ function meView(){
     c.appendChild(el('<div class="divider"></div>'));
     c.appendChild(el(`<h2 class="sec">${esc(t('admin_functions'))}</h2>`));
     c.appendChild(adminSection());
+  } else if(isManager()){
+    c.appendChild(el('<div class="divider"></div>'));
+    c.appendChild(el(`<h2 class="sec">${esc(t('admin_functions_manager'))}</h2>`));
+    c.appendChild(managerSection());
   }
+  return c;
+}
+function managerSection(){
+  const c=el('<div></div>');
+  const branch = myBranch();
+  if(!branch){
+    c.appendChild(el(`<div class="hint">${esc(t('empty_no_branches'))}</div>`));
+    return c;
+  }
+  const branchEmpIds = new Set(S.employees.filter(e=>e.homeBranch===branch).map(e=>e.id));
+
+  const pending = S.leaveRequests.filter(l=>l.status==='pending' && branchEmpIds.has(l.employeeId));
+  c.appendChild(el(`<div class="sec-row"><h2 class="sec" style="margin:0;">${esc(t('admin_pending_prefix')+pending.length+t('admin_pending_suffix'))}</h2></div>`));
+  const list=el('<div class="list"></div>');
+  if(pending.length===0) list.appendChild(el(`<div class="hint">${esc(t('empty_no_pending'))}</div>`));
+  pending.forEach(l=>{
+    const row=el(`<div class="card card-tight"><div class="lr-title">${esc(l.employeeName)} · ${l.type==='leave'?esc(t('leave_type_leave')):esc(t('leave_type_swap'))}</div><div class="lr-sub">${l.startDate}${l.endDate&&l.endDate!==l.startDate?' ~ '+l.endDate:''} · ${esc(l.reason||'')}</div></div>`);
+    const btns=el('<div class="row" style="margin-top:-6px; margin-bottom:10px;"></div>');
+    const ok=el(`<button class="btn ok sm">${esc(t('btn_approve'))}</button>`), no=el(`<button class="btn danger sm">${esc(t('btn_reject'))}</button>`);
+    ok.onclick=async ()=>{ try{ await S.db.doc('leaveRequests/'+l.id).update({status:'approved', reviewedAt:new Date().toISOString(), reviewedBy:currentEmployee().name}); toast(t('toast_saved')); }catch(e){toast(dbErrMsg(e));} };
+    no.onclick=async ()=>{ try{ await S.db.doc('leaveRequests/'+l.id).update({status:'rejected', reviewedAt:new Date().toISOString(), reviewedBy:currentEmployee().name}); toast(t('toast_saved')); }catch(e){toast(dbErrMsg(e));} };
+    btns.appendChild(ok); btns.appendChild(no);
+    list.appendChild(row); list.appendChild(btns);
+  });
+  c.appendChild(list);
+
+  c.appendChild(adminBlock(t('admin_schedule_mgmt'), ()=>openScheduleAddForm(branch), S.schedules.filter(s=>branchEmpIds.has(s.employeeId)).slice(0,8).map(s=>({
+    title:empName(s.employeeId)+' · '+s.date, sub:(s.shiftStart||'')+' - '+(s.shiftEnd||''),
+    onDelete: async()=>{ try{ await S.db.doc('schedules/'+s.id).delete(); toast(t('toast_deleted')); }catch(e){toast(dbErrMsg(e));} }
+  }))));
+
+  c.appendChild(adminBlock(t('admin_staff_mgmt'), ()=>openEmployeeForm(null,branch), S.employees.filter(e=>e.homeBranch===branch).map(emp=>({
+    title:emp.name+' · '+(emp.role==='manager'?t('role_manager'):t('role_staff')), sub:emp.phone||'',
+    right: toggleSwitch(emp.active!==false, async(v)=>{ try{ await S.db.doc('employees/'+emp.id).update({active:v}); }catch(e){toast(dbErrMsg(e));} }),
+    onClick: ()=>openEmployeeForm(emp,branch)
+  })), {label:t('btn_bulk_import'), onClick:()=>openEmployeeBulkForm(branch)}));
+
   return c;
 }
 function openLeaveForm(){
@@ -2125,11 +2226,28 @@ function adminSection(){
     onDelete: async()=>{ try{ await S.db.doc('schedules/'+s.id).delete(); toast(t('toast_deleted')); }catch(e){toast(dbErrMsg(e));} }
   }))));
 
-  c.appendChild(adminBlock(t('admin_staff_mgmt'), ()=>openEmployeeForm(), S.employees.map(emp=>({
-    title:emp.name+(emp.role==='admin'?' · '+t('role_admin'):' · '+t('role_staff')), sub:emp.phone||'',
-    right: toggleSwitch(emp.active!==false, async(v)=>{ try{ await S.db.doc('employees/'+emp.id).update({active:v}); }catch(e){toast(dbErrMsg(e));} }),
-    onClick: ()=>openEmployeeForm(emp)
-  }))));
+  {
+    const allBranches = branchList();
+    if(allBranches.length>0){
+      const chipRow=el('<div class="chiprow" style="margin-top:14px;"></div>');
+      const allChip=el(`<button class="chip ${S.staffBranchFilter==='all'?'on':''}">${esc(t('branch_all'))}</button>`);
+      allChip.onclick=()=>{ S.staffBranchFilter='all'; renderApp(); };
+      chipRow.appendChild(allChip);
+      allBranches.forEach(z=>{
+        const chip=el(`<button class="chip ${S.staffBranchFilter===z?'on':''}">${esc(z)}</button>`);
+        chip.onclick=()=>{ S.staffBranchFilter=z; renderApp(); };
+        chipRow.appendChild(chip);
+      });
+      c.appendChild(chipRow);
+    }
+    const filteredEmployees = S.staffBranchFilter==='all' ? S.employees : S.employees.filter(e=>e.homeBranch===S.staffBranchFilter);
+    c.appendChild(adminBlock(t('admin_staff_mgmt'), ()=>openEmployeeForm(), filteredEmployees.map(emp=>({
+      title:emp.name+' · '+(emp.role==='admin'?t('role_admin'):emp.role==='manager'?t('role_manager'):t('role_staff'))+(emp.homeBranch?' · '+emp.homeBranch:''),
+      sub:emp.phone||'',
+      right: toggleSwitch(emp.active!==false, async(v)=>{ try{ await S.db.doc('employees/'+emp.id).update({active:v}); }catch(e){toast(dbErrMsg(e));} }),
+      onClick: ()=>openEmployeeForm(emp)
+    })), {label:t('btn_bulk_import'), onClick:()=>openEmployeeBulkForm()}));
+  }
 
   {
     const allZones = [...new Set([...zoneList(), ...S.sites.map(s=>s.id)])].sort((a,b)=>a.localeCompare(b,'zh'));
@@ -2256,13 +2374,22 @@ function adminBlock(title, onAdd, items, extraBtn){
   c.appendChild(list);
   return c;
 }
-function openEmployeeForm(emp){
+function openEmployeeForm(emp, lockBranch){
+  const managerMode = !isAdmin(); // a branch manager creating/editing within their own branch
+  const roleOptions = managerMode
+    ? [{v:'staff',l:t('role_staff')}]
+    : [{v:'staff',l:t('role_staff')},{v:'manager',l:t('role_manager')},{v:'admin',l:t('role_admin')}];
   const fields=[
     {key:'name', label:t('field_name')},
     {key:'phone', label:t('field_phone_opt2')},
-    {key:'role', label:t('field_role'), type:'select', options:[{v:'staff',l:t('role_staff')},{v:'admin',l:t('role_admin')}]},
+    {key:'homeBranch', label:t('field_home_branch'), ph:t('ph_home_branch')},
+    {key:'role', label:t('field_role'), type:'select', options:roleOptions},
   ];
   const body=el('<div>'+fieldsHTML(fields, emp||{})+'</div>');
+  if(lockBranch){
+    const branchInput = body.querySelector('[data-k="homeBranch"]');
+    if(branchInput){ branchInput.value = lockBranch; branchInput.disabled = true; }
+  }
   if(emp && emp.pinHash){
     const resetBtn=el(`<button class="btn danger block" style="margin-bottom:12px;">${esc(t('btn_reset_pin'))}</button>`);
     resetBtn.onclick=async ()=>{
@@ -2285,6 +2412,57 @@ function openEmployeeForm(emp){
   };
   foot.appendChild(btn); body.appendChild(foot);
   openSheet(emp?t('sheet_edit_employee'):t('sheet_add_employee'), body);
+}
+function parseEmployeeLine(line, lockBranch){
+  line = line.trim();
+  if(!line) return null;
+  const parts = line.split('\t').map(s=>s.trim());
+  const name = parts[0];
+  if(!name) return null;
+  const phone = parts[1]||'';
+  const homeBranch = lockBranch || parts[2] || '';
+  let role = (parts[3]||'staff').toLowerCase();
+  if(!['staff','manager','admin'].includes(role)) role='staff';
+  if(!isAdmin() && role!=='staff') role='staff'; // managers can only bulk-add staff
+  return {name, phone, homeBranch, role};
+}
+function openEmployeeBulkForm(lockBranch){
+  const body=el('<div></div>');
+  body.appendChild(el(`<p class="hint" style="margin-top:0;">${esc(t('emp_bulk_hint'))}</p>`));
+  const wrap=el(`<label class="field"><span class="fl">${esc(t('field_paste_employees'))}</span></label>`);
+  const sample = lockBranch
+    ? ['张三\t0123456789','李四\t0129876543'].join('\n')
+    : ['张三\t0123456789\tS01\tstaff','李四\t0129876543\tS01\tmanager','王五\t\tS02\tstaff'].join('\n');
+  const ta=el('<textarea rows="8"></textarea>'); ta.value=sample;
+  wrap.appendChild(ta); body.appendChild(wrap);
+  if(lockBranch) body.appendChild(el(`<p class="hint">${esc(t('emp_bulk_branch_locked_prefix'))}${esc(lockBranch)}</p>`));
+  const preview=el('<div class="hint"></div>'); body.appendChild(preview);
+  const updatePreview=()=>{
+    const parsed = ta.value.split('\n').map(l=>parseEmployeeLine(l, lockBranch)).filter(Boolean);
+    preview.textContent = parsed.length ? t('emp_bulk_will_import')+parsed.length+t('emp_bulk_people') : '';
+  };
+  ta.oninput = updatePreview; updatePreview();
+  const foot=el('<div class="sheet-foot"></div>');
+  const btn=el(`<button class="btn primary block">${esc(t('btn_bulk_add'))}</button>`);
+  btn.onclick=async ()=>{
+    const parsed = ta.value.split('\n').map(l=>parseEmployeeLine(l, lockBranch)).filter(Boolean);
+    if(parsed.length===0){ toast(t('err_bulk_min_people')); return; }
+    const existingNames = new Set(S.employees.map(e=>e.name.toLowerCase()));
+    const toAdd = parsed.filter(p=>!existingNames.has(p.name.toLowerCase()));
+    const skipped = parsed.length - toAdd.length;
+    if(toAdd.length===0){ toast(t('toast_all_exist_people')); return; }
+    btn.disabled=true; btn.textContent=t('toast_adding');
+    const results = await Promise.allSettled(toAdd.map(p =>
+      S.db.collection('employees').add(Object.assign({active:true, createdAt:new Date().toISOString()}, p))
+    ));
+    const failed = results.filter(r=>r.status==='rejected').length;
+    const ok = toAdd.length-failed;
+    toast(t('toast_added_prefix')+ok+t('emp_bulk_people')+(skipped?t('toast_skipped_prefix')+skipped+t('toast_skipped_suffix'):'')+(failed?t('toast_failed_prefix')+failed+t('toast_failed_suffix'):''));
+    if(failed===0) closeSheet();
+    else { btn.disabled=false; btn.textContent=t('btn_bulk_add'); }
+  };
+  foot.appendChild(btn); body.appendChild(foot);
+  openSheet(t('sheet_bulk_add_employees'), body);
 }
 function openDeviceForm(d){
   const fields=[
@@ -2454,16 +2632,17 @@ function openProductForm(p){
   foot.appendChild(btn); body.appendChild(foot);
   openSheet(p?t('sheet_edit_product'):t('sheet_add_product'), body);
 }
-function openScheduleAddForm(){
+function openScheduleAddForm(lockBranch){
+  const pool = lockBranch ? S.employees.filter(e=>e.homeBranch===lockBranch) : S.employees;
   const fields=[
-    {key:'employeeId', label:t('field_employee'), type:'select', options:S.employees.map(e=>({v:e.id,l:e.name}))},
+    {key:'employeeId', label:t('field_employee'), type:'select', options:pool.map(e=>({v:e.id,l:e.name}))},
     {key:'date', label:t('field_date'), type:'date', default:todayStr()},
     {key:'shiftStart', label:t('field_shift_start'), type:'time', default:'09:00'},
     {key:'shiftEnd', label:t('field_shift_end'), type:'time', default:'18:00'},
     {key:'deviceId', label:t('field_assigned_device_opt'), type:'select', options:[{v:'',l:t('opt_unspecified')}].concat(S.devices.map(d=>({v:d.id,l:d.name})))},
     {key:'note', label:t('field_note_opt2'), type:'textarea'},
   ];
-  if(S.employees.length===0){ toast(t('err_need_employee')); return; }
+  if(pool.length===0){ toast(t('err_need_employee')); return; }
   const body=el('<div>'+fieldsHTML(fields)+'</div>');
   const foot=el('<div class="sheet-foot"></div>');
   const btn=el(`<button class="btn primary block">${esc(t('btn_save_schedule'))}</button>`);
