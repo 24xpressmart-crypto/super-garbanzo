@@ -1023,7 +1023,7 @@ function renderTopbar(){
   who.style.visibility='visible';
   $('whoAvatar').textContent = e.name.slice(0,1);
   $('whoName').textContent = e.name;
-  $('whoRole').textContent = e.role==='admin' ? t('role_admin') : t('role_staff');
+  $('whoRole').textContent = e.role==='admin' ? t('role_admin') : e.role==='manager' ? t('role_manager') : t('role_staff');
   who.onclick = ()=>{ S.employeeId=null; S.pickerBranch=null; LS.remove('bgc_employee_id'); renderApp(); };
 }
 function renderNav(){
@@ -2102,7 +2102,7 @@ function meView(){
   const e=currentEmployee();
   const c=el('<div></div>');
   const idCard=el(`<div class="card row"><span class="avatar" style="width:44px;height:44px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;">${esc(e.name.slice(0,1))}</span>
-    <div class="lr-main"><div style="font-weight:900; font-size:16px;">${esc(e.name)}</div><div class="lr-sub">${e.role==='admin'?esc(t('role_admin')):esc(t('role_staff'))}${e.phone?' · '+esc(e.phone):''}</div></div></div>`);
+    <div class="lr-main"><div style="font-weight:900; font-size:16px;">${esc(e.name)}</div><div class="lr-sub">${e.role==='admin'?esc(t('role_admin')):e.role==='manager'?esc(t('role_manager')):esc(t('role_staff'))}${e.homeBranch?' · '+esc(e.homeBranch):''}${e.phone?' · '+esc(e.phone):''}</div></div></div>`);
   const switchBtn=el(`<button class="btn sm">${esc(t('btn_switch_identity'))}</button>`);
   switchBtn.onclick=()=>{ S.employeeId=null; S.pickerBranch=null; LS.remove('bgc_employee_id'); renderApp(); };
   idCard.appendChild(switchBtn);
