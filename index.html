@@ -96,6 +96,18 @@
     font-weight:700; font-size:11.5px; cursor:pointer;
     display:flex; align-items:center; justify-content:center;
   }
+  #topbar .notifbtn{position:relative; width:30px; padding:0;}
+  #topbar .notifbtn svg{width:16px; height:16px;}
+  .notif-badge{
+    position:absolute; top:-5px; right:-5px; min-width:17px; height:17px; padding:0 4px;
+    border-radius:999px; background:var(--critical); color:#fff; font-size:10px; font-weight:800;
+    display:flex; align-items:center; justify-content:center; font-family:"JetBrains Mono",monospace;
+  }
+  .notif-row{display:flex; gap:10px; padding:11px 0; border-bottom:1px solid var(--border); cursor:pointer;}
+  .notif-row:last-child{border-bottom:none;}
+  .notif-dot{width:8px; height:8px; border-radius:50%; background:var(--accent); flex-shrink:0; margin-top:6px;}
+  .notif-dot.seen{background:transparent; border:1px solid var(--border);}
+  .memo-body{white-space:pre-wrap; line-height:1.65; font-size:14px; margin:10px 0;}
   #topbar .who{
     display:flex; align-items:center; gap:8px;
     background:var(--surface); border:1px solid var(--border);
@@ -297,6 +309,7 @@
     </div>
     <div class="side">
       <button type="button" class="langbtn" id="langBtn">中</button>
+      <button type="button" class="langbtn notifbtn" id="notifBtn" style="display:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><span class="notif-badge" id="notifBadge" style="display:none;">0</span></button>
       <div class="who" id="whoBtn" style="visibility:hidden;">
         <span class="avatar" id="whoAvatar">?</span>
         <span class="meta"><span class="n" id="whoName">未选择</span><span class="r" id="whoRole">-</span></span>
@@ -382,6 +395,16 @@ const I18N = {
     btn_create_admin:'创建管理员账号并开始使用', btn_creating:'创建中…', err_fill_name:'请填写姓名', err_db_disconnected:'数据未连接',
     toast_welcome:'欢迎，',
     who_am_i:'我是谁', no_active_employees:'没有启用中的员工，请联系管理员',
+    memos_title:'公告', home_memos:'公告', btn_view_all:'查看全部', btn_post_memo:'发布公告', empty_no_memos:'暂无公告',
+    memo_audience_all:'全公司', memo_audience_label:'发布对象', memo_priority:'优先级', memo_priority_normal:'普通', memo_priority_important:'重要',
+    field_memo_title:'标题', field_memo_body:'内容', sheet_post_memo:'发布公告', err_fill_memo:'请填写标题和内容', toast_memo_posted:'公告已发布',
+    memo_unread:'未读', memo_important:'重要', memo_read_stats_prefix:'已读 ', memo_unread_by:'未读人员', memo_all_read:'所有人都已读',
+    btn_delete_memo:'删除公告', confirm_delete_memo:'确定删除这条公告？', memo_posted_by:'发布人：',
+    notif_title:'通知', notif_empty:'暂无新通知', notif_new_memo:'新公告', notif_leave_approved:'请假申请已批准', notif_leave_rejected:'请假申请已驳回',
+    notif_new_schedule:'新排班', notif_pending_leave:'待审批申请', notif_new_fault:'新故障报修', notif_keg_expiring:'鲜啤即将到期', notif_keg_expired:'鲜啤已过保鲜期',
+    btn_enable_browser_notif:'开启浏览器通知', btn_disable_browser_notif:'关闭浏览器通知',
+    notif_browser_hint:'浏览器通知只在本 App 打开着的时候弹出；App 关闭后收不到。',
+    toast_notif_enabled:'浏览器通知已开启', toast_notif_denied:'浏览器拒绝了通知权限，请在浏览器设置中允许后重试', notif_unsupported:'此浏览器不支持通知',
     field_new_pin:'设置密码（至少4位）', field_confirm_pin:'确认密码', btn_set_pin:'设置密码并继续',
     err_pin_len:'密码至少需要4位', err_pin_mismatch:'两次输入的密码不一致', toast_pin_set:'密码已设置',
     sheet_set_pin_prefix:'首次登录 · ', pin_set_hint:'这是你第一次使用这个账号，请设置一个密码，之后每次选择自己的名字都需要输入。',
@@ -535,6 +558,16 @@ const I18N = {
     btn_create_admin:'Create admin account & get started', btn_creating:'Creating…', err_fill_name:'Please enter a name', err_db_disconnected:'Data not connected',
     toast_welcome:'Welcome, ',
     who_am_i:'Who am I', no_active_employees:'No active staff — please contact an admin',
+    memos_title:'Announcements', home_memos:'Announcements', btn_view_all:'View All', btn_post_memo:'Post Announcement', empty_no_memos:'No announcements yet',
+    memo_audience_all:'Whole Company', memo_audience_label:'Send To', memo_priority:'Priority', memo_priority_normal:'Normal', memo_priority_important:'Important',
+    field_memo_title:'Title', field_memo_body:'Message', sheet_post_memo:'Post Announcement', err_fill_memo:'Please enter a title and message', toast_memo_posted:'Announcement posted',
+    memo_unread:'Unread', memo_important:'Important', memo_read_stats_prefix:'Read ', memo_unread_by:'Not yet read by', memo_all_read:'Everyone has read this',
+    btn_delete_memo:'Delete Announcement', confirm_delete_memo:'Delete this announcement?', memo_posted_by:'Posted by: ',
+    notif_title:'Notifications', notif_empty:'No new notifications', notif_new_memo:'New announcement', notif_leave_approved:'Leave request approved', notif_leave_rejected:'Leave request rejected',
+    notif_new_schedule:'New shift scheduled', notif_pending_leave:'Leave request to review', notif_new_fault:'New fault report', notif_keg_expiring:'Keg expiring soon', notif_keg_expired:'Keg past freshness',
+    btn_enable_browser_notif:'Enable Browser Notifications', btn_disable_browser_notif:'Disable Browser Notifications',
+    notif_browser_hint:'Browser notifications only pop up while this app is open; nothing arrives once it\'s closed.',
+    toast_notif_enabled:'Browser notifications enabled', toast_notif_denied:'The browser blocked notification permission — allow it in browser settings and try again', notif_unsupported:'This browser doesn\'t support notifications',
     field_new_pin:'Set a password (min. 4 characters)', field_confirm_pin:'Confirm password', btn_set_pin:'Set password & continue',
     err_pin_len:'Password must be at least 4 characters', err_pin_mismatch:'Passwords don\'t match', toast_pin_set:'Password set',
     sheet_set_pin_prefix:'First login · ', pin_set_hint:'This is your first time using this account — set a password. You\'ll need it every time you select your name.',
@@ -676,7 +709,8 @@ const S = {
   settings:{businessName:'24 Xpress', lowStockDefault:5, geofenceRadius:300},
   stockDeviceFilter:'all', equipTab:'devices', faultFilter:'open', historyRange:'today', attnScope:'mine',
   stockSection:'snacks', kegFilter:'tapped', beerZoneFilter:'all', pickerBranch:null, staffBranchFilter:'all',
-  beerProducts:[], taps:[], kegs:[], kegLogs:[],
+  beerProducts:[], taps:[], kegs:[], kegLogs:[], memos:[], memoReads:[],
+  notifKnown:null, pageLoadedAt:new Date().toISOString(), notifBrowser:(function(){ try{ return localStorage.getItem('bgc_notif')==='1'; }catch(e){ return false; } })(),
   showReport:false, meAdmin:false,
   geoCache:null,
 };
@@ -979,6 +1013,8 @@ function subscribeAll(){
   sub('faults','faults',{order:'createdAt',limit:300});
   sub('schedules','schedules',{order:'date',dir:'asc',limit:400});
   sub('leaveRequests','leaveRequests',{order:'createdAt',limit:300});
+  sub('memos','memos',{order:'createdAt',limit:200});
+  sub('memoReads','memoReads',{limit:500}); // one doc per employee: {readIds:{memoId:readAt}}
   sub('beerProducts','beerProducts',{limit:200});
   sub('taps','taps',{limit:100});
   sub('kegs','kegs',{order:'createdAt',dir:'desc',limit:500});
@@ -1006,7 +1042,7 @@ function renderApp(){
   if(S.employees.length===0){ view.innerHTML=''; view.appendChild(onboardingView()); return; }
   if(!currentEmployee()){ view.innerHTML=''; view.appendChild(identityPickerView()); return; }
   view.innerHTML='';
-  const map={home:homeView, clock:clockView, stock:stockView, equip:equipView, me:meView};
+  const map={home:homeView, clock:clockView, stock:stockView, equip:equipView, me:meView, memos:memosView};
   view.appendChild((map[S.tab]||homeView)());
 }
 function screenMsg(icon,title,body){
@@ -1017,10 +1053,17 @@ function renderTopbar(){
   const langBtn=$('langBtn');
   langBtn.textContent = S.lang==='en' ? '中' : 'EN';
   langBtn.onclick = ()=>{ S.lang = S.lang==='en' ? 'zh' : 'en'; LS.set('bgc_lang', S.lang); renderApp(); };
-  const who=$('whoBtn'), e=currentEmployee();
+  const who=$('whoBtn'), e=currentEmployee(), notifBtn=$('notifBtn');
   $('whoName').textContent = t('who_unselected');
-  if(S.dbState!=='ready' || S.employees.length===0 || !e){ who.style.visibility='hidden'; return; }
+  if(S.dbState!=='ready' || S.employees.length===0 || !e){ who.style.visibility='hidden'; notifBtn.style.display='none'; return; }
   who.style.visibility='visible';
+  notifBtn.style.display='flex';
+  const unread = buildNotifications().filter(n=>n.unread).length;
+  const badge=$('notifBadge');
+  badge.style.display = unread>0 ? 'flex' : 'none';
+  badge.textContent = unread>99 ? '99+' : String(unread);
+  notifBtn.onclick = ()=>openNotifSheet();
+  maybeBrowserNotify();
   $('whoAvatar').textContent = e.name.slice(0,1);
   $('whoName').textContent = e.name;
   $('whoRole').textContent = e.role==='admin' ? t('role_admin') : e.role==='manager' ? t('role_manager') : t('role_staff');
@@ -1351,6 +1394,17 @@ function homeView(){
   faultQ.onclick=()=>{ location.hash='#equip'; setTimeout(()=>openFaultForm(),50); };
   qr.appendChild(clockQ); qr.appendChild(faultQ);
   c.appendChild(qr);
+
+  const myMemos = visibleMemos().slice(0,3);
+  if(myMemos.length>0){
+    const mh=el(`<div class="sec-row"><h2 class="sec">${esc(t('home_memos'))}</h2></div>`);
+    const allBtn=el(`<button class="sec-link">${esc(t('btn_view_all'))}</button>`);
+    allBtn.onclick=()=>{ location.hash='#memos'; };
+    mh.appendChild(allBtn); c.appendChild(mh);
+    const ml=el('<div class="list"></div>');
+    myMemos.forEach(m=>ml.appendChild(memoRow(m)));
+    c.appendChild(ml);
+  }
 
   if(lowCount>0){
     c.appendChild(el(`<h2 class="sec">${esc(t('home_stock_alert'))}</h2>`));
@@ -1907,6 +1961,185 @@ function openTapForm(tap){
   openSheet(tap?t('sheet_edit_tap'):t('sheet_add_tap'), body);
 }
 
+/* ============================ MEMOS (公告) ============================ */
+function memoReadMap(empId){ const d=byId(S.memoReads, empId); return (d && d.readIds) || {}; }
+function memoIsReadBy(memoId, empId){ return !!memoReadMap(empId)[memoId]; }
+function memoAudienceMembers(m){
+  const active=S.employees.filter(e=>e.active!==false);
+  return m.audience==='all' ? active : active.filter(e=>e.homeBranch===m.audience);
+}
+function memoVisibleTo(m, e){
+  if(!e) return false;
+  if(e.role==='admin') return true;
+  return m.audience==='all' || m.audience===e.homeBranch;
+}
+function visibleMemos(){
+  const e=currentEmployee();
+  return S.memos.filter(m=>memoVisibleTo(m,e)).sort((a,b)=>{
+    if(!!a.important!==!!b.important) return a.important?-1:1;
+    return a.createdAt<b.createdAt?1:-1;
+  });
+}
+function memoRow(m){
+  const e=currentEmployee();
+  const unread = !memoIsReadBy(m.id, e.id);
+  const members=memoAudienceMembers(m);
+  const readCount=members.filter(x=>memoIsReadBy(m.id,x.id)).length;
+  const audienceLabel = m.audience==='all' ? t('memo_audience_all') : m.audience;
+  const stats = canManageStaff() ? ` · ${t('memo_read_stats_prefix')}${readCount}/${members.length}` : '';
+  const pill = m.important ? `<span class="pill critical">${esc(t('memo_important'))}</span>` : (unread ? `<span class="pill accent">${esc(t('memo_unread'))}</span>` : '');
+  const row=el(`<div class="list-row">${m.image?`<img class="lr-thumb" src="${m.image}">`:''}<div class="lr-main"><div class="lr-title" style="${unread?'':'font-weight:500;'}">${esc(m.title)}</div><div class="lr-sub">${esc(m.authorName||'')} · ${fmtDateTime(m.createdAt)} · ${esc(audienceLabel)}${esc(stats)}</div></div>${pill}</div>`);
+  row.onclick=()=>openMemoDetail(m);
+  return row;
+}
+function memosView(){
+  const c=el('<div></div>');
+  const head=el(`<div class="sec-row"><h2 class="sec">${esc(t('memos_title'))}</h2></div>`);
+  if(canManageStaff()){
+    const post=el(`<button class="sec-link">${ICONS.plus} ${esc(t('btn_post_memo'))}</button>`);
+    post.onclick=()=>openMemoForm();
+    head.appendChild(post);
+  }
+  c.appendChild(head);
+  const list=el('<div class="list"></div>');
+  const memos=visibleMemos();
+  if(memos.length===0) list.appendChild(el(`<div class="empty">${ICONS.inbox}<div>${esc(t('empty_no_memos'))}</div></div>`));
+  memos.forEach(m=>list.appendChild(memoRow(m)));
+  c.appendChild(list);
+  return c;
+}
+async function markMemoRead(memoId){
+  const e=currentEmployee(); if(!e) return;
+  const cur=memoReadMap(e.id);
+  if(cur[memoId]) return;
+  const readIds=Object.assign({}, cur, {[memoId]:new Date().toISOString()});
+  try{ await S.db.doc('memoReads/'+e.id).set({employeeId:e.id, employeeName:e.name, readIds}); }catch(err){ console.warn(err); }
+}
+function openMemoDetail(m){
+  const e=currentEmployee();
+  const body=el('<div></div>');
+  const audienceLabel = m.audience==='all' ? t('memo_audience_all') : m.audience;
+  body.innerHTML=`<div class="row" style="margin-bottom:8px;">${m.important?`<span class="pill critical">${esc(t('memo_important'))}</span>`:''}<span class="pill n">${esc(audienceLabel)}</span></div>
+    <div class="hint">${esc(t('memo_posted_by'))}${esc(m.authorName||'')} · ${fmtDateTime(m.createdAt)}</div>
+    <div class="memo-body">${esc(m.body||'')}</div>`;
+  if(m.image) body.appendChild(el(`<img class="photow" src="${m.image}">`));
+  if(canManageStaff()){
+    const members=memoAudienceMembers(m);
+    const unreadPeople=members.filter(x=>!memoIsReadBy(m.id,x.id));
+    body.appendChild(el('<div class="divider"></div>'));
+    body.appendChild(el(`<div style="font-weight:800; font-size:12.5px; color:var(--ink-soft); margin-bottom:6px;">${esc(t('memo_read_stats_prefix'))}${members.length-unreadPeople.length}/${members.length}</div>`));
+    body.appendChild(el(`<p class="hint" style="margin-top:0;">${unreadPeople.length? esc(t('memo_unread_by'))+'：'+esc(unreadPeople.map(x=>x.name).join('、')) : esc(t('memo_all_read'))}</p>`));
+    if(isAdmin() || m.authorId===e.id){
+      const del=el(`<button class="btn danger block" style="margin-top:10px;">${esc(t('btn_delete_memo'))}</button>`);
+      del.onclick=async()=>{ if(!confirm(t('confirm_delete_memo'))) return; try{ await S.db.doc('memos/'+m.id).delete(); toast(t('toast_deleted')); closeSheet(); }catch(err){ toast(dbErrMsg(err)); } };
+      body.appendChild(del);
+    }
+  }
+  openSheet(m.title, body);
+  markMemoRead(m.id);
+}
+function openMemoForm(){
+  const e=currentEmployee();
+  const audienceOpts = isAdmin()
+    ? [{v:'all',l:t('memo_audience_all')}].concat(branchList().map(z=>({v:z,l:z})))
+    : [{v:myBranch()||'', l:myBranch()||t('branch_unassigned')}];
+  if(!isAdmin() && !myBranch()){ toast(t('empty_no_branches')); return; }
+  const fields=[
+    {key:'title', label:t('field_memo_title')},
+    {key:'body', label:t('field_memo_body'), type:'textarea'},
+    {key:'audience', label:t('memo_audience_label'), type:'select', options:audienceOpts},
+    {key:'priority', label:t('memo_priority'), type:'select', options:[{v:'normal',l:t('memo_priority_normal')},{v:'important',l:t('memo_priority_important')}]},
+  ];
+  const body=el('<div>'+fieldsHTML(fields)+'</div>');
+  const imgLabel=el(`<label class="field"><span class="fl">${esc(t('field_product_image'))}</span></label>`);
+  const photoWrap=photoPicker(null,false);
+  imgLabel.appendChild(photoWrap); body.appendChild(imgLabel);
+  const foot=el('<div class="sheet-foot"></div>');
+  const btn=el(`<button class="btn primary block">${esc(t('btn_post_memo'))}</button>`);
+  btn.onclick=async()=>{
+    const v=readFields(body,fields);
+    if(!v.title||!v.title.trim()||!v.body||!v.body.trim()){ toast(t('err_fill_memo')); return; }
+    btn.disabled=true; btn.textContent=t('toast_submitting');
+    try{
+      await S.db.collection('memos').add({title:v.title.trim(), body:v.body.trim(), audience:v.audience||'all', important:v.priority==='important', image:photoWrap.getPhoto(), authorId:e.id, authorName:e.name, createdAt:new Date().toISOString()});
+      toast(t('toast_memo_posted')); closeSheet();
+    }catch(err){ toast(dbErrMsg(err)); btn.disabled=false; btn.textContent=t('btn_post_memo'); }
+  };
+  foot.appendChild(btn); body.appendChild(foot);
+  openSheet(t('sheet_post_memo'), body);
+}
+
+/* ============================ NOTIFICATIONS ============================ */
+function buildNotifications(){
+  const e=currentEmployee(); if(!e) return [];
+  const seen = e.notifSeenAt || '';
+  const out=[];
+  visibleMemos().forEach(m=>{
+    out.push({id:'memo:'+m.id, ts:m.createdAt, title:t('notif_new_memo')+'：'+m.title, sub:(m.authorName||'')+' · '+fmtDateTime(m.createdAt),
+      unread:!memoIsReadBy(m.id,e.id), onClick:()=>openMemoDetail(m)});
+  });
+  S.leaveRequests.filter(l=>l.employeeId===e.id && l.status!=='pending' && l.reviewedAt).forEach(l=>{
+    out.push({id:'leave:'+l.id, ts:l.reviewedAt, title:l.status==='approved'?t('notif_leave_approved'):t('notif_leave_rejected'),
+      sub:l.startDate+(l.endDate&&l.endDate!==l.startDate?' ~ '+l.endDate:''), unread:l.reviewedAt>seen, onClick:()=>{ location.hash='#me'; }});
+  });
+  S.schedules.filter(s=>s.employeeId===e.id && s.createdAt && s.date>=todayStr()).forEach(s=>{
+    out.push({id:'sched:'+s.id, ts:s.createdAt, title:t('notif_new_schedule'), sub:s.date+' '+(s.shiftStart||'')+' - '+(s.shiftEnd||''), unread:s.createdAt>seen, onClick:()=>{ location.hash='#me'; }});
+  });
+  if(canManageStaff()){
+    const scopeIds = isAdmin() ? null : new Set(S.employees.filter(x=>x.homeBranch===myBranch()).map(x=>x.id));
+    S.leaveRequests.filter(l=>l.status==='pending' && (!scopeIds || scopeIds.has(l.employeeId))).forEach(l=>{
+      out.push({id:'pending:'+l.id, ts:l.createdAt, title:t('notif_pending_leave')+'：'+l.employeeName, sub:l.startDate, unread:l.createdAt>seen, onClick:()=>{ location.hash='#me'; }});
+    });
+  }
+  if(isAdmin()){
+    S.faults.filter(f=>f.status==='open').forEach(f=>{
+      out.push({id:'fault:'+f.id, ts:f.createdAt, title:t('notif_new_fault')+'：'+devName(f.deviceId), sub:f.description||'', unread:f.createdAt>seen, onClick:()=>{ location.hash='#equip'; }});
+    });
+  }
+  if(canManageStaff()){
+    S.kegs.filter(k=>k.status==='tapped').forEach(k=>{
+      const p=byId(S.beerProducts,k.productId); const fr=kegFreshness(k,p);
+      if(fr && (fr.expired||fr.soon)){
+        const ts=new Date(fr.expiry.getTime()-48*3600000).toISOString();
+        out.push({id:'keg:'+k.id, ts, title:(fr.expired?t('notif_keg_expired'):t('notif_keg_expiring'))+'：'+(p?p.name:''), sub:tapName(k.tapId), unread:ts>seen, onClick:()=>{ S.stockSection='beer'; location.hash='#stock'; }});
+      }
+    });
+  }
+  out.sort((a,b)=>a.ts<b.ts?1:-1);
+  return out.slice(0,60);
+}
+function openNotifSheet(){
+  const e=currentEmployee();
+  const items=buildNotifications();
+  const body=el('<div></div>');
+  if(items.length===0) body.appendChild(el(`<div class="empty">${ICONS.inbox}<div>${esc(t('notif_empty'))}</div></div>`));
+  items.forEach(n=>{
+    const row=el(`<div class="notif-row"><span class="notif-dot ${n.unread?'':'seen'}"></span><div class="lr-main"><div class="lr-title" style="white-space:normal; ${n.unread?'':'font-weight:500;'}">${esc(n.title)}</div><div class="lr-sub" style="white-space:normal;">${esc(n.sub||'')}</div></div></div>`);
+    row.onclick=()=>{ closeSheet(); n.onClick && n.onClick(); renderApp(); };
+    body.appendChild(row);
+  });
+  openSheet(t('notif_title'), body);
+  // Everything currently listed counts as seen from now on (memos stay unread until opened).
+  S.db.doc('employees/'+e.id).update({notifSeenAt:new Date().toISOString()}).catch(()=>{});
+}
+function maybeBrowserNotify(){
+  const items=buildNotifications();
+  const ids=new Set(items.map(n=>n.id));
+  if(S.notifKnown===null){ S.notifKnown=ids; return; } // first paint: don't fire for history
+  if(S.notifBrowser && self.Notification && Notification.permission==='granted'){
+    items.forEach(n=>{ if(!S.notifKnown.has(n.id) && n.unread && n.ts>S.pageLoadedAt){ try{ new Notification(n.title, {body:n.sub||''}); }catch(e){} } });
+  }
+  S.notifKnown=ids;
+}
+async function toggleBrowserNotif(){
+  if(!self.Notification){ toast(t('notif_unsupported')); return; }
+  if(S.notifBrowser){ S.notifBrowser=false; LS.set('bgc_notif','0'); renderApp(); return; }
+  const perm = await Notification.requestPermission();
+  if(perm==='granted'){ S.notifBrowser=true; LS.set('bgc_notif','1'); toast(t('toast_notif_enabled')); }
+  else toast(t('toast_notif_denied'));
+  renderApp();
+}
+
 /* ============================ EQUIP ============================ */
 function equipView(){
   const c=el('<div></div>');
@@ -2106,7 +2339,13 @@ function meView(){
   const switchBtn=el(`<button class="btn sm">${esc(t('btn_switch_identity'))}</button>`);
   switchBtn.onclick=()=>{ S.employeeId=null; S.pickerBranch=null; LS.remove('bgc_employee_id'); renderApp(); };
   idCard.appendChild(switchBtn);
+  const notifToggle=el(`<button class="btn block" style="margin-bottom:12px;">${esc(S.notifBrowser?t('btn_disable_browser_notif'):t('btn_enable_browser_notif'))}</button>`);
+  notifToggle.onclick=()=>toggleBrowserNotif();
+  const notifWrap=el('<div style="margin-top:-4px;"></div>');
+  notifWrap.appendChild(notifToggle);
+  notifWrap.appendChild(el(`<p class="hint" style="margin-top:-6px;">${esc(t('notif_browser_hint'))}</p>`));
   c.appendChild(idCard);
+  c.appendChild(notifWrap);
 
   // my schedule
   c.appendChild(el(`<h2 class="sec">${esc(t('my_schedule'))}</h2>`));
@@ -2649,7 +2888,7 @@ function openScheduleAddForm(lockBranch){
   btn.onclick=async ()=>{
     const v=readFields(body,fields);
     if(!v.employeeId||!v.date){ toast(t('err_fill_all')); return; }
-    try{ await S.db.collection('schedules').add(v); toast(t('toast_added')); closeSheet(); }
+    try{ await S.db.collection('schedules').add(Object.assign({createdAt:new Date().toISOString()}, v)); toast(t('toast_added')); closeSheet(); }
     catch(e){ toast(dbErrMsg(e)); }
   };
   foot.appendChild(btn); body.appendChild(foot);
