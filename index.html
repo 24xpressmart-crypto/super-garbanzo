@@ -87,7 +87,7 @@
   #topbar .logo-badge{
     flex-shrink:0; height:26px; width:auto; display:block;
   }
-  #topbar .brand .name{font-weight:900; font-size:18px; letter-spacing:.2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  #topbar .brand .name{font-weight:900; font-size:16px; letter-spacing:.2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
   #topbar .brand .date{font-size:11.5px; color:var(--ink-faint); font-family:"JetBrains Mono",monospace;}
   #topbar .side{display:flex; align-items:center; gap:8px; flex-shrink:0;}
   #topbar .langbtn{
@@ -121,7 +121,7 @@
     font-weight:700; font-size:12px; flex-shrink:0;
   }
   #topbar .who .meta{display:flex; flex-direction:column; line-height:1.2;}
-  #topbar .who .meta .n{font-size:12.5px; font-weight:700;}
+  #topbar .who .meta .n{font-size:12.5px; font-weight:700; max-width:84px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   #topbar .who .meta .r{font-size:10.5px; color:var(--ink-faint);}
 
   #view{flex:1; padding:2px 16px 100px; overflow-y:auto;}
@@ -700,7 +700,7 @@ function t(key){ return (I18N[S.lang] && I18N[S.lang][key]) || I18N.zh[key] || k
 
 /* ============================ STATE ============================ */
 const S = {
-  db:null, downloads:null, dbState:'connecting', dbErrorDetail:null, // connecting | ready | unavailable
+  db:null, downloads:null, dbState:'connecting', dbErrorDetail:null, realtimeOk:false, // connecting | ready | unavailable
   tab:'home',
   lang: (function(){ try{ return localStorage.getItem('bgc_lang')||'zh'; }catch(e){ return 'zh'; } })(),
   employeeId: (function(){ try{ return localStorage.getItem('bgc_employee_id') || null; }catch(e){ return null; } })(),
@@ -708,7 +708,7 @@ const S = {
   restockLogs:[], attendance:[], inspections:[], faults:[], schedules:[], leaveRequests:[],
   settings:{businessName:'24 Xpress', lowStockDefault:5, geofenceRadius:300},
   stockDeviceFilter:'all', equipTab:'devices', faultFilter:'open', historyRange:'today', attnScope:'mine',
-  stockSection:'snacks', kegFilter:'tapped', beerZoneFilter:'all', pickerBranch:null, staffBranchFilter:'all',
+  stockSection:'snacks', kegFilter:'tapped', beerZoneFilter:'all', pickerBranch:null, staffBranchFilter:'all', lastGeoMsg:null,
   beerProducts:[], taps:[], kegs:[], kegLogs:[], memos:[], memoReads:[],
   notifKnown:null, pageLoadedAt:new Date().toISOString(), notifBrowser:(function(){ try{ return localStorage.getItem('bgc_notif')==='1'; }catch(e){ return false; } })(),
   showReport:false, meAdmin:false,
@@ -860,7 +860,9 @@ function makeSupabaseDb(sb){
         const row = payload.new || payload.old;
         if(row && row.collection) refreshCollection(row.collection);
       })
-      .subscribe();
+      .subscribe(status=>{ S.realtimeOk = (status==="SUBSCRIBED"); });
+    // Fallback: if realtime is not connected (blocked WebSockets), poll every 25s.
+    setInterval(()=>{ if(!S.realtimeOk){ [...collListeners.keys()].forEach(c=>refreshCollection(c)); } }, 25000);
   }
   async function refreshCollection(collection){
     let rows;
@@ -897,6 +899,7 @@ function makeSupabaseDb(sb){
       async set(data){
         const {error} = await sb.from('store').upsert({collection, id, data, updated_at:new Date().toISOString()}, {onConflict:'collection,id'});
         if(error) throw Object.assign(error, {code:'unavailable'});
+        refreshCollection(collection);
       },
       async update(data){
         const {data:cur, error:e1} = await sb.from('store').select('data').eq('collection',collection).eq('id',id).maybeSingle();
@@ -905,10 +908,12 @@ function makeSupabaseDb(sb){
         const merged = Object.assign({}, cur.data, data);
         const {error} = await sb.from('store').update({data:merged, updated_at:new Date().toISOString()}).eq('collection',collection).eq('id',id);
         if(error) throw Object.assign(error, {code:'unavailable'});
+        refreshCollection(collection);
       },
       async delete(){
         const {error} = await sb.from('store').delete().eq('collection',collection).eq('id',id);
         if(error) throw Object.assign(error, {code:'unavailable'});
+        refreshCollection(collection);
       },
       onSnapshot(next, err){
         ensureChannel();
@@ -1451,7 +1456,7 @@ function clockView(){
   const photoWrap = photoPicker(null, true);
   photoWrap.style.margin='12px auto 0'; photoWrap.style.maxWidth='260px';
   card.appendChild(photoWrap);
-  const geoStatus=el(`<div class="hint" id="geoStatus">${esc(t('clock_geo_hint'))}</div>`);
+  const geoStatus=el(`<div class="hint" id="geoStatus">${esc(S.lastGeoMsg||t('clock_geo_hint'))}</div>`);
   card.appendChild(geoStatus);
   c.appendChild(card);
 
@@ -1475,7 +1480,7 @@ function clockView(){
       photoWrap.remove();
     }catch(err){ toast(dbErrMsg(err)); }
     bigBtn.disabled=false;
-    geoStatus.textContent = geoOk ? (near&&near.configured ? (near.inRange?t('geo_in_range'):t('geo_out_of_range')+near.distance+t('geo_out_of_range_suffix')) : t('geo_no_coords')) : geoErrorMessage(geo&&geo.error);
+    S.lastGeoMsg = geoStatus.textContent = geoOk ? (near&&near.configured ? (near.inRange?t('geo_in_range'):t('geo_out_of_range')+near.distance+t('geo_out_of_range_suffix')) : t('geo_no_coords')) : geoErrorMessage(geo&&geo.error);
   };
 
   // history
