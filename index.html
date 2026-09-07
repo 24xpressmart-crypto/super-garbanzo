@@ -389,6 +389,12 @@ function leaveBalanceSuffix(l){
 /* ============================ I18N ============================ */
 const I18N = {
   zh: {
+    temp_title:'温度记录', admin_equipment:'温控设备', sheet_equipment:'温控设备', field_equipment_name:'设备名称', field_kind:'类型',
+    kind_chiller:'冷柜', kind_freezer:'冰柜', kind_hot:'热柜', kind_beer:'鲜啤', kind_coffee:'咖啡机', kind_other:'其他', field_min:'最低 (°C)', field_max:'最高 (°C)', field_branch:'门店',
+    btn_log_temp:'记录', temp_none:'尚无记录', temp_out_of_range:'超出范围', temp_ok:'正常', toast_temp_saved:'已记录', toast_temp_alert:'温度超出范围，请检查设备并通知店经理', notif_temp_alert:'温度超标',
+    temp_no_equipment:'该门店尚未设定温控设备（店经理或管理员可在「我的」→ 温控设备 添加）',
+    field_passport_expiry:'护照到期日', field_permit_expiry:'工作准证到期日', field_contract_expiry:'合同到期日', admin_doc_expiry:'证件到期提醒（60 天内）',
+    doc_expired:'已过期', doc_days_ago:'天', doc_today:'今天到期', doc_days_prefix:'还有', doc_days_suffix:'天到期', notif_doc_expiry:'证件即将到期', doc_none:'60 天内没有到期的证件', doc_passport:'护照', doc_permit:'工作准证', doc_contract:'合同',
     nav_tasks:'任务', tasks_title:'今日任务', shift_open:'开店', shift_mid:'交班', shift_close:'闭店', task_not_started:'未开始', task_in_progress:'进行中', task_done:'已完成',
     btn_complete_checklist:'完成清单', task_photo_required:'需拍照', task_need_photo:'此项需要先拍照', toast_checklist_done:'清单已完成',
     btn_handover:'写交接班记录', sheet_handover:'交接班记录', field_shift:'班次', field_cash:'现金交接 (RM)', field_pending_items:'待办事项', field_issues:'异常情况',
@@ -576,6 +582,12 @@ const I18N = {
     toast_deleted:'已删除',
   },
   en: {
+    temp_title:'Temperature log', admin_equipment:'Temperature equipment', sheet_equipment:'Equipment', field_equipment_name:'Equipment name', field_kind:'Type',
+    kind_chiller:'Chiller', kind_freezer:'Freezer', kind_hot:'Hot cabinet', kind_beer:'Draft beer', kind_coffee:'Coffee machine', kind_other:'Other', field_min:'Min (°C)', field_max:'Max (°C)', field_branch:'Store',
+    btn_log_temp:'Log', temp_none:'No reading yet', temp_out_of_range:'Out of range', temp_ok:'OK', toast_temp_saved:'Logged', toast_temp_alert:'Out of range: check the unit and tell the store manager', notif_temp_alert:'Temperature alert',
+    temp_no_equipment:'No equipment set for this store yet (manager or admin adds it under Me → Temperature equipment)',
+    field_passport_expiry:'Passport expiry', field_permit_expiry:'Work permit expiry', field_contract_expiry:'Contract expiry', admin_doc_expiry:'Document expiry (next 60 days)',
+    doc_expired:'Expired', doc_days_ago:' days ago', doc_today:'Expires today', doc_days_prefix:'in ', doc_days_suffix:' days', notif_doc_expiry:'Document expiring', doc_none:'Nothing expiring within 60 days', doc_passport:'Passport', doc_permit:'Work permit', doc_contract:'Contract',
     nav_tasks:'Tasks', tasks_title:'Tasks today', shift_open:'Opening', shift_mid:'Mid-shift', shift_close:'Closing', task_not_started:'Not started', task_in_progress:'In progress', task_done:'Done',
     btn_complete_checklist:'Complete checklist', task_photo_required:'Photo required', task_need_photo:'Take a photo for this item first', toast_checklist_done:'Checklist completed',
     btn_handover:'Write handover note', sheet_handover:'Shift handover', field_shift:'Shift', field_cash:'Cash handed over (RM)', field_pending_items:'Pending items', field_issues:'Issues',
@@ -777,7 +789,7 @@ const S = {
   stockDeviceFilter:'all', equipTab:'devices', faultFilter:'open', historyRange:'today', attnScope:'mine',
   stockSection:'snacks', kegFilter:'tapped', beerZoneFilter:'all', pickerBranch:null, staffBranchFilter:'all', lastGeoMsg:null, clockSub:'records', reportMonth:(function(){const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');})(), reportBranch:'all', reportData:null, reportLoading:false,
   beerProducts:[], taps:[], kegs:[], kegLogs:[], memos:[], memoReads:[],
-  punchRequests:[], swapRequests:[], clockBranch:null, taskTemplates:[], taskRuns:[], handovers:[], taskBranch:null,
+  punchRequests:[], swapRequests:[], clockBranch:null, taskTemplates:[], taskRuns:[], handovers:[], taskBranch:null, equipment:[], tempLogs:[],
   notifKnown:null, pageLoadedAt:new Date().toISOString(), notifBrowser:(function(){ try{ return localStorage.getItem('bgc_notif')==='1'; }catch(e){ return false; } })(),
   showReport:false, meAdmin:false,
   geoCache:null,
@@ -1134,6 +1146,8 @@ function subscribeAll(){
   sub('taskTemplates','taskTemplates',{limit:200});
   sub('taskRuns','taskRuns',{order:'date',limit:800,sinceDays:30,sinceField:'date',sinceDate:true});
   sub('handovers','handovers',{order:'createdAt',limit:200,sinceDays:14});
+  sub('equipment','equipment',{limit:300});
+  sub('tempLogs','tempLogs',{order:'createdAt',limit:800,sinceDays:14});
   sub('beerProducts','beerProducts',{limit:200});
   sub('taps','taps',{limit:100});
   sub('kegs','kegs',{order:'createdAt',dir:'desc',limit:500});
@@ -2341,6 +2355,12 @@ function buildNotifications(){
     S.punchRequests.filter(r=>r.status==='pending' && (!scopeIds2 || scopeIds2.has(r.employeeId))).forEach(r=>{ out.push({id:'ppunch:'+r.id, ts:r.createdAt, title:t('notif_pending_punch')+'：'+r.employeeName, sub:punchSummary(r), unread:r.createdAt>seen, onClick:()=>{ location.hash='#me'; }}); });
     S.swapRequests.filter(r=>r.status==='pending' && (!scopeIds2 || scopeIds2.has(r.employeeId))).forEach(r=>{ out.push({id:'pswap:'+r.id, ts:r.createdAt, title:t('notif_pending_swap')+'：'+r.employeeName, sub:swapSummary(r), unread:r.createdAt>seen, onClick:()=>{ location.hash='#me'; }}); });
   }
+  if(canManageStaff()){
+    const scopeIds3 = isAdmin() ? null : new Set(S.employees.filter(x=>x.homeBranch===myBranch()).map(x=>x.id));
+    docExpiryItems(scopeIds3, 60).forEach(it=>{ const ts=new Date(new Date(it.date).getTime()-60*86400000).toISOString(); out.push({id:'docexp:'+it.emp.id+':'+it.field, ts, title:t('notif_doc_expiry')+'：'+it.emp.name+' · '+it.label, sub:it.date+' · '+docDaysLabel(it.days), unread:ts>seen, onClick:()=>{ location.hash='#me'; }}); });
+    const since24=new Date(Date.now()-24*3600000).toISOString();
+    S.tempLogs.filter(l=>l.ok===false && l.createdAt>=since24 && (isAdmin() || l.branch===myBranch())).forEach(l=>{ out.push({id:'temp:'+l.id, ts:l.createdAt, title:t('notif_temp_alert')+'：'+l.equipmentName+' '+l.value+'°C', sub:(l.branch||'')+' · '+(l.employeeName||'')+' · '+fmtDateTime(l.createdAt), unread:l.createdAt>seen, onClick:()=>{ S.taskBranch=l.branch; location.hash='#tasks'; }}); });
+  }
   if(isAdmin()){
     S.faults.filter(f=>f.status==='open').forEach(f=>{
       out.push({id:'fault:'+f.id, ts:f.createdAt, title:t('notif_new_fault')+'：'+devName(f.deviceId), sub:f.description||'', unread:f.createdAt>seen, onClick:()=>{ location.hash='#equip'; }});
@@ -2659,6 +2679,8 @@ function managerSection(){
   c.appendChild(list);
   c.appendChild(pendingRequestsBlock(branchEmpIds));
   c.appendChild(branchLocationCard(branch));
+  c.appendChild(docExpiryBlock(branchEmpIds));
+  c.appendChild(equipmentAdminBlock(branch));
 
   c.appendChild(adminBlock(t('admin_schedule_mgmt'), ()=>openScheduleAddForm(branch), S.schedules.filter(s=>branchEmpIds.has(s.employeeId)).slice(0,8).map(s=>({
     title:empName(s.employeeId)+' · '+s.date, sub:(s.shiftStart||'')+' - '+(s.shiftEnd||''),
@@ -2749,6 +2771,8 @@ function adminSection(){
     })), {label:t('btn_bulk_import'), onClick:()=>openEmployeeBulkForm()}));
   }
 
+  c.appendChild(docExpiryBlock(null));
+  c.appendChild(equipmentAdminBlock(null));
   c.appendChild(adminBlock(t('admin_task_templates'), ()=>openTaskTemplateForm(), S.taskTemplates.map(tp=>({
     title:tp.name+' · '+shiftKindLabel(tp.shift), sub:(tp.items||[]).length+' '+t('label_items')+' · '+(tp.branches||'all'),
     right: toggleSwitch(tp.active!==false, async(v)=>{ try{ await S.db.doc('taskTemplates/'+tp.id).update({active:v}); }catch(e){toast(dbErrMsg(e));} }),
@@ -2913,6 +2937,7 @@ function openEmployeeForm(emp, lockBranch){
     {key:'role', label:t('field_role'), type:'select', options:roleOptions},
   ];
   if(isAdmin()){ fields.push({key:'annualLeaveDays', label:t('field_annual_leave'), type:'number'}, {key:'sickLeaveDays', label:t('field_sick_leave'), type:'number'}); }
+  fields.push({key:'passportExpiry', label:t('field_passport_expiry'), type:'date'}, {key:'permitExpiry', label:t('field_permit_expiry'), type:'date'}, {key:'contractExpiry', label:t('field_contract_expiry'), type:'date'});
   const body=el('<div>'+fieldsHTML(fields, emp||{})+'</div>');
   if(lockBranch){
     const branchInput = body.querySelector('[data-k="homeBranch"]');
@@ -3431,6 +3456,7 @@ function tasksView(){
     list.appendChild(row);
   });
   c.appendChild(list);
+  c.appendChild(temperatureBlock(branch));
   const recent=S.handovers.filter(h=>h.branch===branch).slice(0,5);
   if(recent.length){
     c.appendChild(el(`<h2 class="sec">${esc(t('handover_recent'))}</h2>`));
@@ -3547,6 +3573,109 @@ function homeTasksBlock(){
   const row=el(`<div class="list-row" style="margin-top:12px;"><div class="lr-main"><div class="lr-title">${esc(t('home_tasks_today'))} · ${esc(branch)}</div><div class="lr-sub">${tasksSummaryText(tps,branch,today)}</div></div><span class="pill ${done===tps.length?'ok':'warn'}">${done}/${tps.length}</span>${ICONS.chev}</div>`);
   row.onclick=()=>{ location.hash='#tasks'; };
   return row;
+}
+
+/* ============================ PHASE 1C: TEMPERATURE LOG / DOCUMENT EXPIRY ============================ */
+const EQUIP_KINDS=['chiller','freezer','hot','beer','coffee','other'];
+const EQUIP_DEFAULTS={chiller:{min:0,max:5}, freezer:{min:-25,max:-15}, hot:{min:60,max:80}, beer:{min:0,max:4}, coffee:{min:null,max:null}, other:{min:null,max:null}};
+function equipKindLabel(k){ return t('kind_'+(EQUIP_KINDS.includes(k)?k:'other')); }
+function equipmentFor(branch){ return S.equipment.filter(e=>e.active!==false && e.branch===branch).sort((a,b)=>(a.name||'').localeCompare(b.name||'','zh')); }
+function lastTempFor(eqId){ return S.tempLogs.find(l=>l.equipmentId===eqId); }
+function hasNum(v){ return v!=null && v!=='' && !isNaN(Number(v)); }
+function tempOk(eq, v){ if(v==null||isNaN(v)) return true; if(hasNum(eq.min) && v<Number(eq.min)) return false; if(hasNum(eq.max) && v>Number(eq.max)) return false; return true; }
+function rangeLabel(eq){ return (hasNum(eq.min)?eq.min:'')+' ~ '+(hasNum(eq.max)?eq.max:'')+' °C'; }
+function temperatureBlock(branch){
+  const c=el('<div></div>');
+  c.appendChild(el(`<h2 class="sec">${esc(t('temp_title'))}</h2>`));
+  const eqs=equipmentFor(branch);
+  if(eqs.length===0){ c.appendChild(el(`<div class="hint">${esc(t('temp_no_equipment'))}</div>`)); return c; }
+  const list=el('<div class="list"></div>');
+  eqs.forEach(eq=>{
+    const last=lastTempFor(eq.id);
+    const lastTxt = last ? fmtDateTime(last.createdAt)+' · '+last.value+' °C · '+esc(last.employeeName||'') : esc(t('temp_none'));
+    const pill = last ? `<span class="pill ${last.ok===false?'critical':'ok'}">${esc(last.ok===false?t('temp_out_of_range'):t('temp_ok'))}</span>` : '';
+    const row=el(`<div class="list-row" style="flex-wrap:wrap; cursor:default;"><div class="lr-main" style="min-width:160px;"><div class="lr-title">${esc(eq.name)} <span class="pill n" style="font-size:10px;">${esc(equipKindLabel(eq.kind))}</span></div><div class="lr-sub">${esc(rangeLabel(eq))} · ${lastTxt}</div></div>${pill}<div class="row" style="gap:6px; flex-basis:100%;"><input type="number" step="0.1" placeholder="°C" style="flex:1; min-width:80px;"><button class="btn sm primary">${esc(t('btn_log_temp'))}</button></div></div>`);
+    const inp=row.querySelector('input'), btn=row.querySelector('button');
+    btn.onclick=async ()=>{
+      if(inp.value===''){ inp.focus(); return; }
+      const v=Number(inp.value); const ok=tempOk(eq,v); const me=currentEmployee();
+      btn.disabled=true;
+      try{
+        await S.db.collection('tempLogs').add({equipmentId:eq.id, equipmentName:eq.name, branch, kind:eq.kind||'other', value:v, min:hasNum(eq.min)?Number(eq.min):'', max:hasNum(eq.max)?Number(eq.max):'', ok, employeeId:me.id, employeeName:me.name, createdAt:new Date().toISOString()});
+        toast(ok?t('toast_temp_saved'):t('toast_temp_alert'));
+      }catch(e){ toast(dbErrMsg(e)); }
+      btn.disabled=false;
+    };
+    list.appendChild(row);
+  });
+  c.appendChild(list);
+  return c;
+}
+function openEquipmentForm(eq, lockBranch){
+  const branches=allBranchIds();
+  const f=[
+    {key:'name', label:t('field_equipment_name'), ph:'Chiller 1'},
+    {key:'kind', label:t('field_kind'), type:'select', options:EQUIP_KINDS.map(k=>({v:k,l:equipKindLabel(k)}))},
+    {key:'branch', label:t('field_branch'), type:'select', options:branches.map(b=>({v:b,l:b}))},
+    {key:'min', label:t('field_min'), type:'number', step:'0.1'},
+    {key:'max', label:t('field_max'), type:'number', step:'0.1'},
+  ];
+  const vals = eq ? eq : {branch:lockBranch||branches[0]||'', kind:'chiller', min:0, max:5};
+  const body=el('<div>'+fieldsHTML(f, vals)+'</div>');
+  if(lockBranch){ const b=body.querySelector('[data-k="branch"]'); if(b){ b.value=lockBranch; b.disabled=true; } }
+  const kindSel=body.querySelector('[data-k="kind"]');
+  kindSel.onchange=()=>{ const d=EQUIP_DEFAULTS[kindSel.value]; if(d){ body.querySelector('[data-k="min"]').value=d.min==null?'':d.min; body.querySelector('[data-k="max"]').value=d.max==null?'':d.max; } };
+  const foot=el('<div class="sheet-foot"></div>');
+  const btn=el(`<button class="btn primary block">${esc(t('btn_save'))}</button>`);
+  btn.onclick=async ()=>{
+    const v=readFields(body,f); if(lockBranch) v.branch=lockBranch;
+    if(!v.name||!v.name.trim()||!v.branch){ toast(t('err_fill_all')); return; }
+    v.name=v.name.trim();
+    try{
+      if(eq) await S.db.doc('equipment/'+eq.id).update(v);
+      else await S.db.collection('equipment').add(Object.assign({active:true, createdAt:new Date().toISOString()}, v));
+      toast(t('toast_saved')); closeSheet();
+    }catch(e){ toast(dbErrMsg(e)); }
+  };
+  foot.appendChild(btn); body.appendChild(foot);
+  openSheet(t('sheet_equipment'), body);
+}
+function equipmentAdminBlock(lockBranch){
+  const items = lockBranch ? S.equipment.filter(e=>e.branch===lockBranch) : S.equipment.slice();
+  items.sort((a,b)=>(a.branch||'').localeCompare(b.branch||'')||(a.name||'').localeCompare(b.name||'','zh'));
+  return adminBlock(t('admin_equipment'), ()=>openEquipmentForm(null, lockBranch), items.map(eq=>({
+    title:eq.name+' · '+equipKindLabel(eq.kind)+(lockBranch?'':' · '+(eq.branch||'')), sub:rangeLabel(eq),
+    right: toggleSwitch(eq.active!==false, async(v)=>{ try{ await S.db.doc('equipment/'+eq.id).update({active:v}); }catch(e){toast(dbErrMsg(e));} }),
+    onClick: ()=>openEquipmentForm(eq, lockBranch),
+    onDelete: async()=>{ try{ await S.db.doc('equipment/'+eq.id).delete(); toast(t('toast_deleted')); }catch(e){toast(dbErrMsg(e));} }
+  })));
+}
+const DOC_FIELDS=[['passportExpiry','doc_passport'],['permitExpiry','doc_permit'],['contractExpiry','doc_contract']];
+function docExpiryItems(scopeIds, horizonDays){
+  const today=todayStr(); const out=[];
+  S.employees.filter(e=>e.active!==false && (!scopeIds || scopeIds.has(e.id))).forEach(e=>{
+    DOC_FIELDS.forEach(([k,label])=>{
+      const d=e[k]; if(!d) return;
+      const days=Math.round((new Date(d)-new Date(today))/86400000);
+      if(!isNaN(days) && days<=horizonDays) out.push({emp:e, field:k, label:t(label), date:d, days});
+    });
+  });
+  return out.sort((a,b)=>a.days-b.days);
+}
+function docDaysLabel(days){ return days<0 ? t('doc_expired')+' '+Math.abs(days)+t('doc_days_ago') : (days===0 ? t('doc_today') : t('doc_days_prefix')+days+t('doc_days_suffix')); }
+function docExpiryBlock(scopeIds){
+  const c=el('<div></div>');
+  c.appendChild(el(`<div class="sec-row"><h2 class="sec" style="margin:0;">${esc(t('admin_doc_expiry'))}</h2></div>`));
+  const items=docExpiryItems(scopeIds, 60);
+  const list=el('<div class="list"></div>');
+  if(items.length===0) list.appendChild(el(`<div class="hint">${esc(t('doc_none'))}</div>`));
+  items.forEach(it=>{
+    const row=el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(it.emp.name)}${it.emp.homeBranch?' <span class="num" style="font-weight:500; font-size:11px; color:var(--ink-faint);">'+esc(it.emp.homeBranch)+'</span>':''}</div><div class="lr-sub">${esc(it.label)} · ${esc(it.date)}</div></div><span class="pill ${it.days<0?'critical':(it.days<=30?'warn':'n')}">${esc(docDaysLabel(it.days))}</span></div>`);
+    row.onclick=()=>openEmployeeForm(it.emp, isAdmin()?null:myBranch());
+    list.appendChild(row);
+  });
+  c.appendChild(list);
+  return c;
 }
 
 /* ============================ START ============================ */
