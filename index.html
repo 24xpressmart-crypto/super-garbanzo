@@ -366,6 +366,23 @@ const INSPECTION_ITEMS = [
 const SEVERITY = {low:{t:'sev_low', c:'ok'}, medium:{t:'sev_medium', c:'warn'}, high:{t:'sev_high', c:'critical'}};
 const FAULT_STATUS = {open:{t:'fault_open', c:'critical'}, in_progress:{t:'fault_in_progress', c:'warn'}, resolved:{t:'fault_resolved', c:'ok'}};
 const LEAVE_STATUS = {pending:{t:'leave_pending', c:'warn'}, approved:{t:'leave_approved', c:'ok'}, rejected:{t:'leave_rejected', c:'critical'}};
+const LEAVE_KINDS = ['annual','sick','unpaid','swap'];
+function leaveKindLabel(l){ const k=l.kind||(l.type==='swap'?'swap':'leave'); return t('leave_kind_'+k); }
+function leaveDays(l){ const s=new Date(l.startDate), e=new Date(l.endDate||l.startDate); return Math.max(1, Math.round((e-s)/86400000)+1); }
+function leaveUsed(empId, kind, year){
+  return S.leaveRequests.filter(l=>l.employeeId===empId && l.status==='approved' && l.kind===kind && String(l.startDate||'').slice(0,4)===String(year)).reduce((a,l)=>a+leaveDays(l),0);
+}
+function leaveBalance(emp, kind){
+  const allow = kind==='annual' ? emp.annualLeaveDays : emp.sickLeaveDays;
+  if(allow==null || allow==='') return null;
+  const used=leaveUsed(emp.id, kind, new Date().getFullYear());
+  return {allow:Number(allow), used, left:Number(allow)-used};
+}
+function leaveBalanceSuffix(l){
+  const emp=byId(S.employees,l.employeeId); if(!emp || !(l.kind==='annual'||l.kind==='sick')) return '';
+  const b=leaveBalance(emp,l.kind); if(!b) return '';
+  return ' · '+t('balance_prefix')+b.left+'/'+b.allow+t('leave_this_request_prefix')+leaveDays(l)+t('leave_days_suffix');
+}
 
 /* ============================ I18N ============================ */
 const I18N = {
@@ -479,6 +496,14 @@ const I18N = {
     btn_switch_identity:'切换身份', my_schedule:'我的排班', no_upcoming_shifts:'近期暂无排班安排',
     btn_leave_request:'请假 / 调班申请', my_requests:'我的申请记录', empty_no_requests:'暂无申请记录',
     leave_type_leave:'请假', leave_type_swap:'调班', admin_functions:'管理员功能',
+    leave_kind_annual:'年假', leave_kind_sick:'病假', leave_kind_unpaid:'无薪假', leave_kind_swap:'调班', leave_kind_leave:'请假',
+    field_leave_kind:'假别', balance_annual:'年假余额', balance_sick:'病假余额', balance_prefix:'余额 ', leave_this_request_prefix:'（本次 ', leave_days_suffix:' 天）',
+    field_annual_leave:'年假天数（每年）', field_sick_leave:'病假天数（每年）',
+    clock_tab_records:'打卡记录', clock_tab_report:'考勤月报', report_loading:'正在加载该月数据…', report_empty:'该月没有打卡记录',
+    report_days:'出勤', report_hours:'工时', report_late:'迟到', report_early:'早退', report_missing:'缺卡',
+    report_grace_note_prefix:'迟到/早退按当天排班比对，宽限 ', report_grace_note_suffix:' 分钟；可在业务设置中修改。',
+    field_late_grace:'迟到/早退宽限（分钟）', export_by_month:'按月导出历史记录', export_by_month_hint:'App 只加载最近约 3 个月的记录；更早的数据仍在数据库里，选月份即可导出。',
+    err_pick_month:'请选择月份', export_empty:'该月没有数据',
     field_start_date:'开始日期', field_end_date:'结束日期', field_reason:'事由', btn_submit_request:'提交申请',
     err_pick_date:'请选择日期', toast_leave_submitted:'已提交，等待审批', sheet_leave:'请假 / 调班申请',
     admin_pending_prefix:'待审批（', admin_pending_suffix:'）', empty_no_pending:'暂无待审批申请',
@@ -642,6 +667,14 @@ const I18N = {
     btn_switch_identity:'Switch Identity', my_schedule:'My Schedule', no_upcoming_shifts:'No upcoming shifts',
     btn_leave_request:'Leave / Shift Swap Request', my_requests:'My Requests', empty_no_requests:'No requests yet',
     leave_type_leave:'Leave', leave_type_swap:'Shift Swap', admin_functions:'Admin Functions',
+    leave_kind_annual:'Annual Leave', leave_kind_sick:'Sick Leave', leave_kind_unpaid:'Unpaid Leave', leave_kind_swap:'Shift Swap', leave_kind_leave:'Leave',
+    field_leave_kind:'Leave Type', balance_annual:'Annual Leave Left', balance_sick:'Sick Leave Left', balance_prefix:'Balance ', leave_this_request_prefix:' (this request: ', leave_days_suffix:' days)',
+    field_annual_leave:'Annual Leave Days (per year)', field_sick_leave:'Sick Leave Days (per year)',
+    clock_tab_records:'Records', clock_tab_report:'Monthly Report', report_loading:'Loading that month…', report_empty:'No clock records for that month',
+    report_days:'Days', report_hours:'Hours', report_late:'Late', report_early:'Left early', report_missing:'Missing punch',
+    report_grace_note_prefix:'Late/early is judged against that day’s shift with a ', report_grace_note_suffix:'-minute grace period; change it in Business Settings.',
+    field_late_grace:'Late / Early-Leave Grace (minutes)', export_by_month:'Export History by Month', export_by_month_hint:'The app only loads about the last 3 months; older data is still in the database — pick a month to export it.',
+    err_pick_month:'Please pick a month', export_empty:'No data for that month',
     field_start_date:'Start Date', field_end_date:'End Date', field_reason:'Reason', btn_submit_request:'Submit Request',
     err_pick_date:'Please select dates', toast_leave_submitted:'Submitted, awaiting approval', sheet_leave:'Leave / Shift Swap Request',
     admin_pending_prefix:'Pending Approval (', admin_pending_suffix:')', empty_no_pending:'No pending requests',
@@ -706,9 +739,9 @@ const S = {
   employeeId: (function(){ try{ return localStorage.getItem('bgc_employee_id') || null; }catch(e){ return null; } })(),
   employees:[], devices:[], sites:[], products:[], inventory:[],
   restockLogs:[], attendance:[], inspections:[], faults:[], schedules:[], leaveRequests:[],
-  settings:{businessName:'24 Xpress', lowStockDefault:5, geofenceRadius:300},
+  settings:{businessName:'24 Xpress', lowStockDefault:5, geofenceRadius:300, lateGraceMin:10},
   stockDeviceFilter:'all', equipTab:'devices', faultFilter:'open', historyRange:'today', attnScope:'mine',
-  stockSection:'snacks', kegFilter:'tapped', beerZoneFilter:'all', pickerBranch:null, staffBranchFilter:'all', lastGeoMsg:null,
+  stockSection:'snacks', kegFilter:'tapped', beerZoneFilter:'all', pickerBranch:null, staffBranchFilter:'all', lastGeoMsg:null, clockSub:'records', reportMonth:(function(){const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');})(), reportBranch:'all', reportData:null, reportLoading:false,
   beerProducts:[], taps:[], kegs:[], kegLogs:[], memos:[], memoReads:[],
   notifKnown:null, pageLoadedAt:new Date().toISOString(), notifBrowser:(function(){ try{ return localStorage.getItem('bgc_notif')==='1'; }catch(e){ return false; } })(),
   showReport:false, meAdmin:false,
@@ -848,10 +881,43 @@ function makeSupabaseDb(sb){
     });
     return list;
   }
-  async function fetchRows(collection){
-    const {data, error} = await sb.from('store').select('id,data').eq('collection', collection);
+  function buildQuery(collection, opts){
+    opts=opts||{};
+    let q = sb.from('store').select('id,data').eq('collection', collection);
+    (opts.filters||[]).forEach(f=>{
+      const col='data->>'+f.field;
+      if(f.op==='>=') q=q.gte(col,f.value); else if(f.op==='<=') q=q.lte(col,f.value);
+      else if(f.op==='>') q=q.gt(col,f.value); else if(f.op==='<') q=q.lt(col,f.value);
+      else if(f.op==='==') q=q.eq(col,f.value);
+    });
+    if(opts.order) q=q.order('data->>'+opts.order, {ascending: opts.dir!=='desc'});
+    return q;
+  }
+  async function fetchRows(collection, opts){
+    opts=opts||{};
+    let q=buildQuery(collection, opts);
+    if(opts.limit) q=q.limit(opts.limit);
+    const {data, error} = await q;
     if(error) throw error;
     return data||[];
+  }
+  // Page through every matching row (PostgREST caps a single response at 1000).
+  async function fetchAll(collection, opts){
+    const out=[]; let from=0; const page=1000;
+    while(true){
+      const {data, error} = await buildQuery(collection, opts).range(from, from+page-1);
+      if(error) throw error;
+      out.push(...(data||[]));
+      if(!data || data.length<page) break;
+      from+=page;
+    }
+    return out;
+  }
+  function matchFilters(row, filters){
+    return (filters||[]).every(f=>{
+      const v=row.data[f.field]; if(v==null) return false;
+      switch(f.op){ case '>=': return v>=f.value; case '<=': return v<=f.value; case '>': return v>f.value; case '<': return v<f.value; case '==': return v==f.value; default: return true; }
+    });
   }
   function ensureChannel(){
     if(channel) return;
@@ -865,15 +931,17 @@ function makeSupabaseDb(sb){
     setInterval(()=>{ if(!S.realtimeOk){ [...collListeners.keys()].forEach(c=>refreshCollection(c)); } }, 25000);
   }
   async function refreshCollection(collection){
+    const subs=[...(collListeners.get(collection)||[])];
+    const lead=subs[0]||{};
     let rows;
-    try{ rows = await fetchRows(collection); }
+    try{ rows = await fetchRows(collection, {filters:lead.filters, order:lead.order, dir:lead.dir, limit:(subs.length===1?lead.limit:null)}); }
     catch(e){
       const err = {code:'unavailable', message:String((e&&e.message)||e)};
       (collListeners.get(collection)||[]).forEach(s=>s.err && s.err(err));
       return;
     }
     (collListeners.get(collection)||new Set()).forEach(s=>{
-      let list = sortRows(rows, s.order, s.dir);
+      let list = sortRows(rows.filter(r=>matchFilters(r, s.filters)), s.order, s.dir);
       if(s.limit) list = list.slice(0, s.limit);
       const docs = list.map(toDocSnap);
       s.next({docs, size:docs.length, empty:docs.length===0, docChanges:()=>[], metadata:{fromCache:false,hasPendingWrites:false}});
@@ -930,18 +998,19 @@ function makeSupabaseDb(sb){
     };
   }
   function collectionRef(collection){
-    let orderField=null, orderDir='asc', limitN=null;
+    let orderField=null, orderDir='asc', limitN=null; const filters=[];
     const api = {
+      where(field,op,value){ filters.push({field,op,value}); return api; },
       orderBy(field,dir){ orderField=field; orderDir=dir||'asc'; return api; },
       limit(n){ limitN=n; return api; },
       async get(){
-        const rows = sortRows(await fetchRows(collection), orderField, orderDir);
+        const rows = sortRows(await fetchRows(collection, {filters, order:orderField, dir:orderDir, limit:limitN}), orderField, orderDir);
         const docs = (limitN?rows.slice(0,limitN):rows).map(toDocSnap);
         return {docs, size:docs.length, empty:docs.length===0};
       },
       onSnapshot(next, err){
         ensureChannel();
-        const sub = {order:orderField, dir:orderDir, limit:limitN, next, err};
+        const sub = {order:orderField, dir:orderDir, limit:limitN, filters, next, err};
         if(!collListeners.has(collection)) collListeners.set(collection, new Set());
         collListeners.get(collection).add(sub);
         refreshCollection(collection);
@@ -956,7 +1025,8 @@ function makeSupabaseDb(sb){
     };
     return api;
   }
-  return { collection: collectionRef, doc: docRef };
+  return { collection: collectionRef, doc: docRef,
+    rawFetch: (collection, filters, order, dir)=>fetchAll(collection, {filters, order, dir}) };
 }
 function makeBrowserDownloads(){
   return {
@@ -996,9 +1066,11 @@ function tickClock(){
   $('topDate').textContent = todayStr(d)+' '+weekdayLabel(d)+' '+pad2(d.getHours())+':'+pad2(d.getMinutes());
 }
 
+function isoDaysAgo(n){ const d=new Date(); d.setDate(d.getDate()-n); return d.toISOString(); }
 function sub(colPath, key, opts){
   opts = opts||{};
   let q = S.db.collection(colPath);
+  if(opts.sinceDays){ const v=isoDaysAgo(opts.sinceDays); q = q.where(opts.sinceField||'createdAt','>=', opts.sinceDate?v.slice(0,10):v); }
   if(opts.order) q = q.orderBy(opts.order, opts.dir||'desc');
   if(opts.limit) q = q.limit(opts.limit);
   q.onSnapshot(snap=>{
@@ -1012,18 +1084,20 @@ function subscribeAll(){
   sub('sites','sites',{limit:200});
   sub('products','products',{limit:500});
   sub('inventory','inventory',{limit:1000});
-  sub('restockLogs','restockLogs',{order:'createdAt',limit:400});
-  sub('attendance','attendance',{order:'createdAt',limit:400});
-  sub('inspections','inspections',{order:'createdAt',limit:200});
+  // Live views keep a rolling window (about 3 months); older history stays in the
+  // database and is reachable through the month export / monthly report.
+  sub('restockLogs','restockLogs',{order:'createdAt',limit:600,sinceDays:92});
+  sub('attendance','attendance',{order:'createdAt',limit:1000,sinceDays:92});
+  sub('inspections','inspections',{order:'createdAt',limit:300,sinceDays:92});
   sub('faults','faults',{order:'createdAt',limit:300});
-  sub('schedules','schedules',{order:'date',dir:'asc',limit:400});
-  sub('leaveRequests','leaveRequests',{order:'createdAt',limit:300});
+  sub('schedules','schedules',{order:'date',dir:'asc',limit:600,sinceDays:30,sinceField:'date',sinceDate:true});
+  sub('leaveRequests','leaveRequests',{order:'createdAt',limit:400,sinceDays:400});
   sub('memos','memos',{order:'createdAt',limit:200});
   sub('memoReads','memoReads',{limit:500}); // one doc per employee: {readIds:{memoId:readAt}}
   sub('beerProducts','beerProducts',{limit:200});
   sub('taps','taps',{limit:100});
   sub('kegs','kegs',{order:'createdAt',dir:'desc',limit:500});
-  sub('kegLogs','kegLogs',{order:'createdAt',limit:400});
+  sub('kegLogs','kegLogs',{order:'createdAt',limit:400,sinceDays:92});
   S.db.doc('meta/settings').onSnapshot(snap=>{
     if(snap.exists){ S.settings = Object.assign({}, S.settings, snap.data()); }
     renderApp();
@@ -1483,10 +1557,18 @@ function clockView(){
     S.lastGeoMsg = geoStatus.textContent = geoOk ? (near&&near.configured ? (near.inRange?t('geo_in_range'):t('geo_out_of_range')+near.distance+t('geo_out_of_range_suffix')) : t('geo_no_coords')) : geoErrorMessage(geo&&geo.error);
   };
 
-  // history
-  c.appendChild(el(`<div class="sec-row"><h2 class="sec">${esc(t('clock_records'))}</h2></div>`));
+  // history / monthly report
+  if(canManageStaff()){
+    const seg=el(`<div class="seg" style="margin:18px 0 10px;"><button data-v="records" class="${S.clockSub!=='report'?'on':''}">${esc(t('clock_tab_records'))}</button><button data-v="report" class="${S.clockSub==='report'?'on':''}">${esc(t('clock_tab_report'))}</button></div>`);
+    seg.querySelectorAll('button').forEach(b=>b.onclick=()=>{ S.clockSub=b.dataset.v; renderApp(); });
+    c.appendChild(seg);
+    if(S.clockSub==='report'){ c.appendChild(attendanceReportView()); return c; }
+  } else {
+    c.appendChild(el(`<div class="sec-row"><h2 class="sec">${esc(t('clock_records'))}</h2></div>`));
+  }
+  const branchIds = isManager() ? new Set(S.employees.filter(x=>x.homeBranch===myBranch()).map(x=>x.id)) : null;
   const scopeRow=el('<div class="chiprow"></div>');
-  const scopes = isAdmin() ? [['mine',t('scope_mine')],['all',t('scope_all')]] : [['mine',t('scope_mine')]];
+  const scopes = canManageStaff() ? [['mine',t('scope_mine')],['all',t('scope_all')]] : [['mine',t('scope_mine')]];
   scopes.forEach(([id,l])=>{
     const chip=el(`<button class="chip ${S.attnScope===id?'on':''}">${esc(l)}</button>`);
     chip.onclick=()=>{ S.attnScope=id; renderApp(); };
@@ -1494,11 +1576,11 @@ function clockView(){
   });
   c.appendChild(scopeRow);
 
-  if(S.attnScope==='all' && isAdmin()){
-    // today status grid for all active employees
+  if(S.attnScope==='all' && canManageStaff()){
+    // today status grid for active employees (managers: own branch only)
     const todayAll = S.attendance.filter(a=>a.createdAt.slice(0,10)===todayStr());
     const statusList=el('<div class="list" style="margin-top:10px;"></div>');
-    S.employees.filter(x=>x.active!==false).forEach(emp=>{
+    S.employees.filter(x=>x.active!==false && (!branchIds || branchIds.has(x.id))).forEach(emp=>{
       const recs=todayAll.filter(a=>a.employeeId===emp.id);
       const lastRec=recs[0];
       const label = !lastRec ? t('home_status_none') : (lastRec.type==='in'?t('home_status_working')+' · '+fmtTime(lastRec.createdAt):t('home_status_off')+' · '+fmtTime(lastRec.createdAt));
@@ -1508,7 +1590,7 @@ function clockView(){
     c.appendChild(statusList);
   }
 
-  const rows = (S.attnScope==='all' ? S.attendance : S.attendance.filter(a=>a.employeeId===e.id)).slice(0,60);
+  const rows = (S.attnScope==='all' ? S.attendance.filter(a=>!branchIds || branchIds.has(a.employeeId)) : S.attendance.filter(a=>a.employeeId===e.id)).slice(0,60);
   const list=el('<div class="list" style="margin-top:10px;"></div>');
   if(rows.length===0){ list.appendChild(el(`<div class="empty">${ICONS.inbox}<div>${esc(t('empty_no_records'))}</div></div>`)); }
   rows.forEach(a=>{
@@ -1516,6 +1598,95 @@ function clockView(){
     const row=el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(a.employeeName)} · ${a.type==='in'?esc(t('clock_in_short')):esc(t('clock_out_short'))}</div><div class="lr-sub">${fmtDateTime(a.createdAt)}${a.distanceM!=null?esc(t('dist_to_device'))+a.distanceM+esc(t('dist_meters')):''}</div></div>${a.photo?`<span class="icon-sm" style="color:var(--ink-faint); flex-shrink:0;">${ICONS.camera}</span>`:''}${flag}</div>`);
     row.onclick=()=>openAttendanceDetail(a);
     list.appendChild(row);
+  });
+  c.appendChild(list);
+  return c;
+}
+function monthFilters(ym, field){
+  const [y,m]=ym.split('-').map(Number);
+  const start=new Date(y,m-1,1), end=new Date(y,m,1);
+  field=field||'createdAt';
+  const fmt = field==='date' ? d=>todayStr(d) : d=>d.toISOString();
+  return [{field, op:'>=', value:fmt(start)},{field, op:'<', value:fmt(end)}];
+}
+async function loadReport(){
+  if(S.reportLoading) return;
+  S.reportLoading=true; renderApp();
+  try{
+    const [att, sched] = await Promise.all([
+      S.db.rawFetch('attendance', monthFilters(S.reportMonth), 'createdAt', 'asc'),
+      S.db.rawFetch('schedules', monthFilters(S.reportMonth,'date'), 'date', 'asc'),
+    ]);
+    S.reportData={month:S.reportMonth, att:att.map(r=>Object.assign({id:r.id}, r.data)), sched:sched.map(r=>Object.assign({id:r.id}, r.data))};
+  }catch(e){ toast(dbErrMsg(e)); S.reportData={month:S.reportMonth, att:[], sched:[]}; }
+  S.reportLoading=false; renderApp();
+}
+function reportScopeEmployees(){
+  let emps = S.employees;
+  if(isManager()) emps = emps.filter(x=>x.homeBranch===myBranch());
+  else if(S.reportBranch!=='all') emps = emps.filter(x=>x.homeBranch===S.reportBranch);
+  return emps;
+}
+function computeReport(){
+  const d=S.reportData; if(!d) return [];
+  const grace = S.settings.lateGraceMin!=null ? S.settings.lateGraceMin : 10;
+  const toMin = t=>{ const [h,m]=String(t||'').split(':').map(Number); return isNaN(h)?null:h*60+(m||0); };
+  const schedMap={}; d.sched.forEach(s=>{ schedMap[s.employeeId+'|'+s.date]=s; });
+  const byEmpDay={};
+  d.att.forEach(a=>{ const day=todayStr(new Date(a.createdAt)); const k=a.employeeId+'|'+day; (byEmpDay[k]=byEmpDay[k]||[]).push(a); });
+  const stats={};
+  Object.keys(byEmpDay).forEach(k=>{
+    const [empId, day]=k.split('|');
+    const recs=byEmpDay[k].sort((a,b)=>a.createdAt<b.createdAt?-1:1);
+    const st = stats[empId] = stats[empId] || {days:0, minutes:0, late:0, early:0, missing:0};
+    let hadIn=false, openIn=null, firstIn=null, lastOut=null;
+    recs.forEach(r=>{
+      const tm=new Date(r.createdAt);
+      if(r.type==='in'){ if(openIn){ st.missing++; } openIn=tm; hadIn=true; if(!firstIn) firstIn=tm; }
+      else { if(openIn){ st.minutes += (tm-openIn)/60000; openIn=null; } lastOut=tm; }
+    });
+    if(openIn) st.missing++;
+    if(hadIn) st.days++;
+    const sc=schedMap[empId+'|'+day];
+    if(sc){
+      const ss=toMin(sc.shiftStart), se=toMin(sc.shiftEnd);
+      if(ss!=null && firstIn && (firstIn.getHours()*60+firstIn.getMinutes()) > ss+grace) st.late++;
+      if(se!=null && lastOut && (lastOut.getHours()*60+lastOut.getMinutes()) < se-grace) st.early++;
+    }
+  });
+  return reportScopeEmployees().map(e=>Object.assign({emp:e}, stats[e.id]||{days:0,minutes:0,late:0,early:0,missing:0}))
+    .filter(r=>r.days>0 || r.emp.active!==false)
+    .sort((a,b)=>b.days-a.days || a.emp.name.localeCompare(b.emp.name,'zh'));
+}
+function attendanceReportView(){
+  const c=el('<div></div>');
+  const ctl=el('<div class="row" style="margin-bottom:10px;"></div>');
+  const mi=el(`<input type="month" value="${S.reportMonth}" style="flex:1;">`);
+  mi.onchange=()=>{ if(mi.value){ S.reportMonth=mi.value; S.reportData=null; loadReport(); } };
+  const exp=el(`<button class="btn sm">${ICONS.download}<span>${esc(t('btn_export_csv'))}</span></button>`);
+  exp.onclick=async()=>{
+    const rows=computeReport().map(r=>({name:r.emp.name, branch:r.emp.homeBranch||'', days:r.days, hours:(r.minutes/60).toFixed(1), late:r.late, early:r.early, missing:r.missing}));
+    if(rows.length===0){ toast(t('report_empty')); return; }
+    try{ await S.downloads.save({filename:'attendance_report_'+S.reportMonth+'.csv', data:toCSV(rows,['name','branch','days','hours','late','early','missing'])}); toast(t('toast_exported')); }catch(e){ if(!(e&&e.code==='declined')) toast(t('toast_export_failed')); }
+  };
+  ctl.appendChild(mi); ctl.appendChild(exp); c.appendChild(ctl);
+  if(isAdmin() && branchList().length>0){
+    const chipRow=el('<div class="chiprow"></div>');
+    [['all',t('branch_all')]].concat(branchList().map(z=>[z,z])).forEach(([id,l])=>{
+      const chip=el(`<button class="chip ${S.reportBranch===id?'on':''}">${esc(l)}</button>`);
+      chip.onclick=()=>{ S.reportBranch=id; renderApp(); }; chipRow.appendChild(chip);
+    });
+    c.appendChild(chipRow);
+  }
+  if(!S.reportData || S.reportData.month!==S.reportMonth){ if(!S.reportLoading) loadReport(); c.appendChild(el(`<div class="hint">${esc(t('report_loading'))}</div>`)); return c; }
+  const rows=computeReport();
+  c.appendChild(el(`<p class="hint">${esc(t('report_grace_note_prefix'))}${S.settings.lateGraceMin!=null?S.settings.lateGraceMin:10}${esc(t('report_grace_note_suffix'))}</p>`));
+  const list=el('<div class="list"></div>');
+  if(rows.length===0) list.appendChild(el(`<div class="empty">${ICONS.inbox}<div>${esc(t('report_empty'))}</div></div>`));
+  rows.forEach(r=>{
+    const h=(r.minutes/60).toFixed(1);
+    const flags=(r.late?`<span class="pill warn">${esc(t('report_late'))} ${r.late}</span>`:'')+(r.early?`<span class="pill warn">${esc(t('report_early'))} ${r.early}</span>`:'')+(r.missing?`<span class="pill critical">${esc(t('report_missing'))} ${r.missing}</span>`:'');
+    list.appendChild(el(`<div class="list-row" style="cursor:default; flex-wrap:wrap;"><div class="lr-main"><div class="lr-title">${esc(r.emp.name)}${r.emp.homeBranch?' <span class="num" style="font-weight:500; font-size:11px; color:var(--ink-faint);">'+esc(r.emp.homeBranch)+'</span>':''}</div><div class="lr-sub">${esc(t('report_days'))} ${r.days} · ${esc(t('report_hours'))} ${h}h</div></div><div class="row" style="gap:4px; flex-wrap:wrap;">${flags}</div></div>`));
   });
   c.appendChild(list);
   return c;
@@ -2362,13 +2533,15 @@ function meView(){
 
   const leaveBtn=el(`<button class="btn block" style="margin:12px 0;">${ICONS.plus}<span>${esc(t('btn_leave_request'))}</span></button>`);
   leaveBtn.onclick=()=>openLeaveForm();
+  { const bal=['annual','sick'].map(k=>({k, b:leaveBalance(e,k)})).filter(x=>x.b);
+    if(bal.length){ const g=el('<div class="grid2" style="margin-top:12px;"></div>'); bal.forEach(x=>g.appendChild(el(`<div class="tile ${x.b.left<=0?'critical':''}"><div class="tv">${x.b.left}<span style="font-size:13px; color:var(--ink-faint);">/${x.b.allow}</span></div><div class="tl">${esc(t(x.k==='annual'?'balance_annual':'balance_sick'))}</div></div>`))); c.appendChild(g); } }
   c.appendChild(leaveBtn);
 
   c.appendChild(el(`<h2 class="sec">${esc(t('my_requests'))}</h2>`));
   const myLeaves=S.leaveRequests.filter(l=>l.employeeId===e.id).slice(0,8);
   const leaveList=el('<div class="list"></div>');
   if(myLeaves.length===0) leaveList.appendChild(el(`<div class="hint">${esc(t('empty_no_requests'))}</div>`));
-  myLeaves.forEach(l=>leaveList.appendChild(el(`<div class="list-row" style="cursor:default;"><div class="lr-main"><div class="lr-title">${l.type==='leave'?esc(t('leave_type_leave')):esc(t('leave_type_swap'))} · ${l.startDate}${l.endDate&&l.endDate!==l.startDate?' ~ '+l.endDate:''}</div><div class="lr-sub">${esc(l.reason||'')}</div></div><span class="pill ${LEAVE_STATUS[l.status].c}">${esc(t(LEAVE_STATUS[l.status].t))}</span></div>`)));
+  myLeaves.forEach(l=>leaveList.appendChild(el(`<div class="list-row" style="cursor:default;"><div class="lr-main"><div class="lr-title">${esc(leaveKindLabel(l))} · ${l.startDate}${l.endDate&&l.endDate!==l.startDate?' ~ '+l.endDate:''}</div><div class="lr-sub">${esc(l.reason||'')}</div></div><span class="pill ${LEAVE_STATUS[l.status].c}">${esc(t(LEAVE_STATUS[l.status].t))}</span></div>`)));
   c.appendChild(leaveList);
 
   if(isAdmin()){
@@ -2396,7 +2569,7 @@ function managerSection(){
   const list=el('<div class="list"></div>');
   if(pending.length===0) list.appendChild(el(`<div class="hint">${esc(t('empty_no_pending'))}</div>`));
   pending.forEach(l=>{
-    const row=el(`<div class="card card-tight"><div class="lr-title">${esc(l.employeeName)} · ${l.type==='leave'?esc(t('leave_type_leave')):esc(t('leave_type_swap'))}</div><div class="lr-sub">${l.startDate}${l.endDate&&l.endDate!==l.startDate?' ~ '+l.endDate:''} · ${esc(l.reason||'')}</div></div>`);
+    const row=el(`<div class="card card-tight"><div class="lr-title">${esc(l.employeeName)} · ${esc(leaveKindLabel(l))}</div><div class="lr-sub">${l.startDate}${l.endDate&&l.endDate!==l.startDate?' ~ '+l.endDate:''} · ${esc(l.reason||'')}${esc(leaveBalanceSuffix(l))}</div></div>`);
     const btns=el('<div class="row" style="margin-top:-6px; margin-bottom:10px;"></div>');
     const ok=el(`<button class="btn ok sm">${esc(t('btn_approve'))}</button>`), no=el(`<button class="btn danger sm">${esc(t('btn_reject'))}</button>`);
     ok.onclick=async ()=>{ try{ await S.db.doc('leaveRequests/'+l.id).update({status:'approved', reviewedAt:new Date().toISOString(), reviewedBy:currentEmployee().name}); toast(t('toast_saved')); }catch(e){toast(dbErrMsg(e));} };
@@ -2421,11 +2594,11 @@ function managerSection(){
 }
 function openLeaveForm(){
   const body=el('<div></div>');
-  const seg=el(`<div class="seg" style="margin-bottom:14px;"><button class="on" data-v="leave">${esc(t('leave_type_leave'))}</button><button data-v="swap">${esc(t('leave_type_swap'))}</button></div>`);
-  let type='leave';
-  seg.querySelectorAll('button').forEach(b=>b.onclick=()=>{ type=b.dataset.v; seg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b)); });
-  body.appendChild(seg);
+  const me=currentEmployee();
+  const bal=['annual','sick'].map(k=>({k, b:leaveBalance(me,k)})).filter(x=>x.b);
+  if(bal.length) body.appendChild(el(`<div class="row" style="margin-bottom:12px;">${bal.map(x=>`<span class="pill ${x.b.left>0?'ok':'critical'}">${esc(t(x.k==='annual'?'balance_annual':'balance_sick'))} ${x.b.left}/${x.b.allow}</span>`).join('')}</div>`));
   const f = [
+    {key:'kind', label:t('field_leave_kind'), type:'select', options:LEAVE_KINDS.map(k=>({v:k,l:t('leave_kind_'+k)}))},
     {key:'startDate', label:t('field_start_date'), type:'date', default:todayStr()},
     {key:'endDate', label:t('field_end_date'), type:'date', default:todayStr()},
     {key:'reason', label:t('field_reason'), type:'textarea'},
@@ -2439,7 +2612,8 @@ function openLeaveForm(){
     btn.disabled=true; btn.textContent=t('toast_submitting');
     const e=currentEmployee();
     try{
-      await S.db.collection('leaveRequests').add({employeeId:e.id, employeeName:e.name, type, startDate:v.startDate, endDate:v.endDate, reason:v.reason||'', status:'pending', createdAt:new Date().toISOString()});
+      const kind=v.kind||'annual';
+      await S.db.collection('leaveRequests').add({employeeId:e.id, employeeName:e.name, type:kind==='swap'?'swap':'leave', kind, startDate:v.startDate, endDate:v.endDate, reason:v.reason||'', status:'pending', createdAt:new Date().toISOString()});
       toast(t('toast_leave_submitted')); closeSheet();
     }catch(err){ toast(dbErrMsg(err)); btn.disabled=false; btn.textContent=t('btn_submit_request'); }
   };
@@ -2455,7 +2629,7 @@ function adminSection(){
   const list=el('<div class="list"></div>');
   if(pending.length===0) list.appendChild(el(`<div class="hint">${esc(t('empty_no_pending'))}</div>`));
   pending.forEach(l=>{
-    const row=el(`<div class="card card-tight"><div class="lr-title">${esc(l.employeeName)} · ${l.type==='leave'?esc(t('leave_type_leave')):esc(t('leave_type_swap'))}</div><div class="lr-sub">${l.startDate}${l.endDate&&l.endDate!==l.startDate?' ~ '+l.endDate:''} · ${esc(l.reason||'')}</div></div>`);
+    const row=el(`<div class="card card-tight"><div class="lr-title">${esc(l.employeeName)} · ${esc(leaveKindLabel(l))}</div><div class="lr-sub">${l.startDate}${l.endDate&&l.endDate!==l.startDate?' ~ '+l.endDate:''} · ${esc(l.reason||'')}${esc(leaveBalanceSuffix(l))}</div></div>`);
     const btns=el('<div class="row" style="margin-top:-6px; margin-bottom:10px;"></div>');
     const ok=el(`<button class="btn ok sm">${esc(t('btn_approve'))}</button>`), no=el(`<button class="btn danger sm">${esc(t('btn_reject'))}</button>`);
     ok.onclick=async ()=>{ try{ await S.db.doc('leaveRequests/'+l.id).update({status:'approved', reviewedAt:new Date().toISOString(), reviewedBy:currentEmployee().name}); toast(t('leave_approved')); }catch(e){toast(dbErrMsg(e));} };
@@ -2539,6 +2713,7 @@ function adminSection(){
     {key:'businessName', label:t('field_business_name'), default:S.settings.businessName},
     {key:'lowStockDefault', label:t('field_low_stock_default'), type:'number', default:S.settings.lowStockDefault},
     {key:'geofenceRadius', label:t('field_geofence_radius'), type:'number', default:S.settings.geofenceRadius},
+    {key:'lateGraceMin', label:t('field_late_grace'), type:'number', default:S.settings.lateGraceMin!=null?S.settings.lateGraceMin:10},
   ];
   setCard.innerHTML = fieldsHTML(setFields);
   const saveBtn=el(`<button class="btn primary block">${esc(t('btn_save_settings'))}</button>`);
@@ -2560,6 +2735,25 @@ function adminSection(){
     [t('export_kegs'),'kegs', S.kegs, ['productId','batchNo','status','sizeLiters','remainingLiters','tapId','depositStatus','receivedDate','openedAt','emptiedAt']],
     [t('export_keg_logs'),'kegLogs', S.kegLogs, ['kegId','productId','type','deltaLiters','tapId','employeeName','note','createdAt']],
   ];
+  const monthBlock=el(`<div style="margin-bottom:10px;"><div class="divider" style="margin:6px 0 12px;"></div><div style="font-weight:800; font-size:12.5px; color:var(--ink-soft); margin-bottom:6px;">${esc(t('export_by_month'))}</div><p class="hint" style="margin:0 0 8px;">${esc(t('export_by_month_hint'))}</p></div>`);
+  const monthInput=el(`<input type="month" value="${S.reportMonth}" style="margin-bottom:8px;">`);
+  monthBlock.appendChild(monthInput);
+  [[t('export_attendance'),'attendance',['employeeName','type','createdAt','distanceM','geoFlag']],[t('export_restock'),'restockLogs',['deviceId','productId','type','deltaQty','qtyAfter','employeeName','note','createdAt']]].forEach(([label,col,cols])=>{
+    const row=el(`<div class="row" style="justify-content:space-between; padding:6px 0;"><span style="font-size:13.5px;">${esc(label)}</span></div>`);
+    const b=el(`<button class="btn sm">${ICONS.download}<span>${esc(t('btn_export_csv'))}</span></button>`);
+    b.onclick=async()=>{
+      const ym=monthInput.value; if(!ym){ toast(t('err_pick_month')); return; }
+      b.disabled=true;
+      try{
+        const rows=(await S.db.rawFetch(col, monthFilters(ym), 'createdAt', 'asc')).map(r=>Object.assign({id:r.id}, r.data));
+        if(rows.length===0){ toast(t('export_empty')); }
+        else { await S.downloads.save({filename:col+'_'+ym+'.csv', data:toCSV(rows,cols)}); toast(t('toast_exported')); }
+      }catch(e){ if(!(e&&e.code==='declined')) toast(t('toast_export_failed')); }
+      b.disabled=false;
+    };
+    row.appendChild(b); monthBlock.appendChild(row);
+  });
+  expCard.appendChild(monthBlock);
   exports.forEach(([label,key,data,cols])=>{
     const row=el(`<div class="row" style="justify-content:space-between; padding:8px 0;"><span style="font-size:13.5px;">${esc(label)}</span></div>`);
     const btn=el(`<button class="btn sm">${ICONS.download}<span>${esc(t('btn_export_csv'))}</span></button>`);
@@ -2629,6 +2823,7 @@ function openEmployeeForm(emp, lockBranch){
     {key:'homeBranch', label:t('field_home_branch'), ph:t('ph_home_branch')},
     {key:'role', label:t('field_role'), type:'select', options:roleOptions},
   ];
+  if(isAdmin()){ fields.push({key:'annualLeaveDays', label:t('field_annual_leave'), type:'number'}, {key:'sickLeaveDays', label:t('field_sick_leave'), type:'number'}); }
   const body=el('<div>'+fieldsHTML(fields, emp||{})+'</div>');
   if(lockBranch){
     const branchInput = body.querySelector('[data-k="homeBranch"]');
