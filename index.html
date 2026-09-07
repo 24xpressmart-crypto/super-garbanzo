@@ -1330,7 +1330,7 @@ function onboardingView(){
 function identityRow(e){
   const roleLabel = e.role==='admin'?t('role_admin'):e.role==='manager'?t('role_manager'):t('role_staff');
   const row=el(`<div class="id-pick-row"><span class="avatar">${esc(e.name.slice(0,1))}</span>
-    <div class="lr-main"><div class="lr-title">${esc(e.name)}</div><div class="lr-sub">${esc(roleLabel)}${e.phone?' · '+esc(e.phone):''}</div></div>
+    <div class="lr-main"><div class="lr-title">${esc(e.name)}</div><div class="lr-sub">${esc(roleLabel)}${e.jobTitle?" · "+esc(e.jobTitle):""}${e.phone?' · '+esc(e.phone):''}</div></div>
     ${ICONS.chev}</div>`);
   row.onclick=()=>{ e.pinHash ? openVerifyPinForm(e) : openSetPinForm(e); };
   return row;
@@ -2511,7 +2511,7 @@ function meView(){
   const e=currentEmployee();
   const c=el('<div></div>');
   const idCard=el(`<div class="card row"><span class="avatar" style="width:44px;height:44px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;">${esc(e.name.slice(0,1))}</span>
-    <div class="lr-main"><div style="font-weight:900; font-size:16px;">${esc(e.name)}</div><div class="lr-sub">${e.role==='admin'?esc(t('role_admin')):e.role==='manager'?esc(t('role_manager')):esc(t('role_staff'))}${e.homeBranch?' · '+esc(e.homeBranch):''}${e.phone?' · '+esc(e.phone):''}</div></div></div>`);
+    <div class="lr-main"><div style="font-weight:900; font-size:16px;">${esc(e.name)}</div><div class="lr-sub">${e.role==='admin'?esc(t('role_admin')):e.role==='manager'?esc(t('role_manager')):esc(t('role_staff'))}${e.jobTitle?' · '+esc(e.jobTitle):''}${e.homeBranch?' · '+esc(e.homeBranch):''}${e.phone?' · '+esc(e.phone):''}</div></div></div>`);
   const switchBtn=el(`<button class="btn sm">${esc(t('btn_switch_identity'))}</button>`);
   switchBtn.onclick=()=>{ S.employeeId=null; S.pickerBranch=null; LS.remove('bgc_employee_id'); renderApp(); };
   idCard.appendChild(switchBtn);
@@ -2585,7 +2585,7 @@ function managerSection(){
   }))));
 
   c.appendChild(adminBlock(t('admin_staff_mgmt'), ()=>openEmployeeForm(null,branch), S.employees.filter(e=>e.homeBranch===branch).map(emp=>({
-    title:emp.name+' · '+(emp.role==='manager'?t('role_manager'):t('role_staff')), sub:emp.phone||'',
+    title:emp.name+' · '+(emp.role==='manager'?t('role_manager'):t('role_staff')), sub:[emp.staffCode, emp.jobTitle, emp.phone].filter(Boolean).join(' · '),
     right: toggleSwitch(emp.active!==false, async(v)=>{ try{ await S.db.doc('employees/'+emp.id).update({active:v}); }catch(e){toast(dbErrMsg(e));} }),
     onClick: ()=>openEmployeeForm(emp,branch)
   })), {label:t('btn_bulk_import'), onClick:()=>openEmployeeBulkForm(branch)}));
@@ -2661,7 +2661,7 @@ function adminSection(){
     const filteredEmployees = S.staffBranchFilter==='all' ? S.employees : S.employees.filter(e=>e.homeBranch===S.staffBranchFilter);
     c.appendChild(adminBlock(t('admin_staff_mgmt'), ()=>openEmployeeForm(), filteredEmployees.map(emp=>({
       title:emp.name+' · '+(emp.role==='admin'?t('role_admin'):emp.role==='manager'?t('role_manager'):t('role_staff'))+(emp.homeBranch?' · '+emp.homeBranch:''),
-      sub:emp.phone||'',
+      sub:[emp.staffCode, emp.jobTitle, emp.phone].filter(Boolean).join(' · '),
       right: toggleSwitch(emp.active!==false, async(v)=>{ try{ await S.db.doc('employees/'+emp.id).update({active:v}); }catch(e){toast(dbErrMsg(e));} }),
       onClick: ()=>openEmployeeForm(emp)
     })), {label:t('btn_bulk_import'), onClick:()=>openEmployeeBulkForm()}));
