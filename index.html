@@ -345,12 +345,14 @@ const ICONS = {
   inbox:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h4l1.8 3h4.4l1.8-3h4"/><path d="M5.5 5h13l2 7v6a1.5 1.5 0 0 1-1.5 1.5h-14A1.5 1.5 0 0 1 3.5 18v-6z"/></svg>',
   cloudOff:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 18.5H7a4 4 0 0 1-.4-8 5.5 5.5 0 0 1 10.4-2.2 4.2 4.2 0 0 1 .5 10.2z"/><path d="M3 3l18 18"/></svg>',
   download:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0-4-4m4 4 4-4"/><path d="M4 19h16"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3.5" width="16" height="17" rx="2"/><path d="m8 12 2.5 2.5L16 9"/></svg>',
 };
 
 /* ============================ CONFIG ============================ */
 const TABS = [
   {id:'home', label:'nav_home', icon:ICONS.home},
   {id:'clock', label:'nav_clock', icon:ICONS.clock},
+  {id:'tasks', label:'nav_tasks', icon:ICONS.check},
   {id:'stock', label:'nav_stock', icon:ICONS.box},
   {id:'equip', label:'nav_equip', icon:ICONS.wrench},
   {id:'me', label:'nav_me', icon:ICONS.user},
@@ -387,6 +389,13 @@ function leaveBalanceSuffix(l){
 /* ============================ I18N ============================ */
 const I18N = {
   zh: {
+    nav_tasks:'任务', tasks_title:'今日任务', shift_open:'开店', shift_mid:'交班', shift_close:'闭店', task_not_started:'未开始', task_in_progress:'进行中', task_done:'已完成',
+    btn_complete_checklist:'完成清单', task_photo_required:'需拍照', task_need_photo:'此项需要先拍照', toast_checklist_done:'清单已完成',
+    btn_handover:'写交接班记录', sheet_handover:'交接班记录', field_shift:'班次', field_cash:'现金交接 (RM)', field_pending_items:'待办事项', field_issues:'异常情况',
+    handover_last:'上一班交接', handover_none:'过去 24 小时没有交接记录', handover_recent:'最近交接',
+    tasks_no_templates:'该门店暂无任务清单（管理员可在「我的」→ 任务清单模板 添加）', admin_task_templates:'任务清单模板', sheet_task_template:'任务清单模板',
+    field_template_name:'清单名称', field_branches_opt:'适用门店（all = 全部，或用逗号分隔门店代码）', field_items:'清单项目（每行一项，行首加 * 表示必须拍照）',
+    tasks_overview:'各店完成情况', tasks_pick_branch:'请先在打卡页选择门店', home_tasks_today:'今日任务', label_items:'项',
     clock_branch_label:'打卡门店', clock_branch_none:'不选门店（按最近售货机核对）', clock_branch_home:'本店', geo_branch_no_coords:'该门店尚未设定位置，无法核对距离',
     flag_cover:'支援', flag_manual:'补卡', report_cover:'支援', btn_export_detail:'导出每日明细',
     btn_punch_request:'补卡申请', btn_swap_request:'换班申请', sheet_punch:'补卡申请', sheet_swap:'换班申请',
@@ -567,6 +576,13 @@ const I18N = {
     toast_deleted:'已删除',
   },
   en: {
+    nav_tasks:'Tasks', tasks_title:'Tasks today', shift_open:'Opening', shift_mid:'Mid-shift', shift_close:'Closing', task_not_started:'Not started', task_in_progress:'In progress', task_done:'Done',
+    btn_complete_checklist:'Complete checklist', task_photo_required:'Photo required', task_need_photo:'Take a photo for this item first', toast_checklist_done:'Checklist completed',
+    btn_handover:'Write handover note', sheet_handover:'Shift handover', field_shift:'Shift', field_cash:'Cash handed over (RM)', field_pending_items:'Pending items', field_issues:'Issues',
+    handover_last:'Last handover', handover_none:'No handover note in the last 24 hours', handover_recent:'Recent handovers',
+    tasks_no_templates:'No checklist for this store yet (admins add them under Me → Checklist templates)', admin_task_templates:'Checklist templates', sheet_task_template:'Checklist template',
+    field_template_name:'Checklist name', field_branches_opt:'Stores (all, or comma-separated store codes)', field_items:'Items (one per line, start with * if a photo is required)',
+    tasks_overview:'Completion by store', tasks_pick_branch:'Pick a store on the Clock page first', home_tasks_today:'Tasks today', label_items:'items',
     clock_branch_label:'Store', clock_branch_none:'No store (check nearest machine)', clock_branch_home:'home', geo_branch_no_coords:'This store has no location set yet, distance not checked',
     flag_cover:'Cover', flag_manual:'Manual', report_cover:'Cover', btn_export_detail:'Export daily detail',
     btn_punch_request:'Missed punch', btn_swap_request:'Shift swap', sheet_punch:'Missed punch request', sheet_swap:'Shift swap request',
@@ -761,7 +777,7 @@ const S = {
   stockDeviceFilter:'all', equipTab:'devices', faultFilter:'open', historyRange:'today', attnScope:'mine',
   stockSection:'snacks', kegFilter:'tapped', beerZoneFilter:'all', pickerBranch:null, staffBranchFilter:'all', lastGeoMsg:null, clockSub:'records', reportMonth:(function(){const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');})(), reportBranch:'all', reportData:null, reportLoading:false,
   beerProducts:[], taps:[], kegs:[], kegLogs:[], memos:[], memoReads:[],
-  punchRequests:[], swapRequests:[], clockBranch:null,
+  punchRequests:[], swapRequests:[], clockBranch:null, taskTemplates:[], taskRuns:[], handovers:[], taskBranch:null,
   notifKnown:null, pageLoadedAt:new Date().toISOString(), notifBrowser:(function(){ try{ return localStorage.getItem('bgc_notif')==='1'; }catch(e){ return false; } })(),
   showReport:false, meAdmin:false,
   geoCache:null,
@@ -1115,6 +1131,9 @@ function subscribeAll(){
   sub('memoReads','memoReads',{limit:500}); // one doc per employee: {readIds:{memoId:readAt}}
   sub('punchRequests','punchRequests',{order:'createdAt',limit:300,sinceDays:120});
   sub('swapRequests','swapRequests',{order:'createdAt',limit:300,sinceDays:120});
+  sub('taskTemplates','taskTemplates',{limit:200});
+  sub('taskRuns','taskRuns',{order:'date',limit:800,sinceDays:30,sinceField:'date',sinceDate:true});
+  sub('handovers','handovers',{order:'createdAt',limit:200,sinceDays:14});
   sub('beerProducts','beerProducts',{limit:200});
   sub('taps','taps',{limit:100});
   sub('kegs','kegs',{order:'createdAt',dir:'desc',limit:500});
@@ -1142,7 +1161,7 @@ function renderApp(){
   if(S.employees.length===0){ view.innerHTML=''; view.appendChild(onboardingView()); return; }
   if(!currentEmployee()){ view.innerHTML=''; view.appendChild(identityPickerView()); return; }
   view.innerHTML='';
-  const map={home:homeView, clock:clockView, stock:stockView, equip:equipView, me:meView, memos:memosView};
+  const map={home:homeView, clock:clockView, tasks:tasksView, stock:stockView, equip:equipView, me:meView, memos:memosView};
   view.appendChild((map[S.tab]||homeView)());
 }
 function screenMsg(icon,title,body){
@@ -1494,6 +1513,7 @@ function homeView(){
   faultQ.onclick=()=>{ location.hash='#equip'; setTimeout(()=>openFaultForm(),50); };
   qr.appendChild(clockQ); qr.appendChild(faultQ);
   c.appendChild(qr);
+  { const tb=homeTasksBlock(); if(tb) c.appendChild(tb); }
 
   const myMemos = visibleMemos().slice(0,3);
   if(myMemos.length>0){
@@ -2729,6 +2749,13 @@ function adminSection(){
     })), {label:t('btn_bulk_import'), onClick:()=>openEmployeeBulkForm()}));
   }
 
+  c.appendChild(adminBlock(t('admin_task_templates'), ()=>openTaskTemplateForm(), S.taskTemplates.map(tp=>({
+    title:tp.name+' · '+shiftKindLabel(tp.shift), sub:(tp.items||[]).length+' '+t('label_items')+' · '+(tp.branches||'all'),
+    right: toggleSwitch(tp.active!==false, async(v)=>{ try{ await S.db.doc('taskTemplates/'+tp.id).update({active:v}); }catch(e){toast(dbErrMsg(e));} }),
+    onClick: ()=>openTaskTemplateForm(tp),
+    onDelete: async()=>{ try{ await S.db.doc('taskTemplates/'+tp.id).delete(); toast(t('toast_deleted')); }catch(e){toast(dbErrMsg(e));} }
+  }))));
+
   {
     const allZones = [...new Set([...zoneList(), ...branchList(), ...S.sites.map(s=>s.id)])].sort((a,b)=>a.localeCompare(b,'zh'));
     c.appendChild(adminBlock(t('admin_site_mgmt'), ()=>openSiteForm(null), allZones.map(z=>{
@@ -3328,6 +3355,198 @@ function computeReportDetail(){
     out.push({date:day, name:emp?emp.name:recs[0].employeeName, homeBranch:emp?(emp.homeBranch||''):'', workedAt:[...branches].join('/'), in:firstIn?fmtTime(firstIn.toISOString()):'', out:lastOut?fmtTime(lastOut.toISOString()):'', hours:(minutes/60).toFixed(2), cover:cover?'Y':'', manual:manual?'Y':'', punches:recs.length});
   });
   return out.sort((a,b)=>a.name.localeCompare(b.name,'zh') || (a.date<b.date?-1:1));
+}
+
+/* ============================ PHASE 1B: TASK CHECKLISTS / SHIFT HANDOVER ============================ */
+const SHIFT_KINDS=['open','mid','close'];
+function shiftKindLabel(k){ return t('shift_'+(SHIFT_KINDS.includes(k)?k:'open')); }
+function taskBranch(){ if(S.taskBranch!=null) return S.taskBranch; return defaultClockBranch() || ''; }
+function templatesForBranch(branch){
+  return S.taskTemplates.filter(tp=>tp.active!==false && (!tp.branches || tp.branches==='all' || String(tp.branches).split(',').map(s=>s.trim().toUpperCase()).includes(String(branch).toUpperCase())))
+    .sort((a,b)=>SHIFT_KINDS.indexOf(a.shift)-SHIFT_KINDS.indexOf(b.shift) || (a.name||'').localeCompare(b.name||'','zh'));
+}
+function runIdFor(tp, branch, date){ return (tp.id+'__'+branch+'__'+date).replace(/[^A-Za-z0-9_\-]/g,'-'); }
+function runFor(tp, branch, date){ return byId(S.taskRuns, runIdFor(tp,branch,date)); }
+function runProgress(run, tp){ const items=run?run.items:(tp.items||[]); const done=items.filter(i=>i.done).length; return {done, total:items.length}; }
+function runStatus(run, tp){ if(!run) return 'not_started'; if(run.status==='done') return 'done'; return runProgress(run,tp).done>0?'in_progress':'not_started'; }
+const TASK_STATUS={not_started:{t:'task_not_started',c:'n'}, in_progress:{t:'task_in_progress',c:'warn'}, done:{t:'task_done',c:'ok'}};
+async function saveRun(run){ const {id, ...data}=run; await S.db.doc('taskRuns/'+id).set(data); }
+function newRun(tp, branch, date){
+  const me=currentEmployee();
+  return {id:runIdFor(tp,branch,date), templateId:tp.id, templateName:tp.name, shift:tp.shift||'open', branch, date, status:'open', startedBy:me.name, startedById:me.id, createdAt:new Date().toISOString(),
+    items:(tp.items||[]).map(i=>({text:i.text, photo:!!i.photo, done:false}))};
+}
+function tasksSummaryText(tps, branch, today){ return tps.map(tp=>esc(shiftKindLabel(tp.shift))+' '+esc(t(TASK_STATUS[runStatus(runFor(tp,branch,today),tp)].t))).join(' · '); }
+function tasksView(){
+  const c=el('<div></div>');
+  const branches=allBranchIds();
+  const today=todayStr();
+  let branch=taskBranch();
+  if(isAdmin()){
+    if(!branch) branch='__all__';
+    const chipRow=el('<div class="chiprow" style="margin-bottom:10px;"></div>');
+    [['__all__',t('branch_all')]].concat(branches.map(b=>[b,b])).forEach(([id,l])=>{ const ch=el(`<button class="chip ${branch===id?'on':''}">${esc(l)}</button>`); ch.onclick=()=>{ S.taskBranch=id; renderApp(); }; chipRow.appendChild(ch); });
+    c.appendChild(chipRow);
+  } else if(branches.length>1){
+    const sel=el('<select style="margin-bottom:10px;"></select>');
+    branches.forEach(b=>{ const o=document.createElement('option'); o.value=b; o.textContent=b+(b===myBranch()?' · '+t('clock_branch_home'):''); sel.appendChild(o); });
+    if(!branch) branch=myBranch()||branches[0];
+    sel.value=branch; sel.onchange=()=>{ S.taskBranch=sel.value; S.clockBranch=sel.value; renderApp(); };
+    c.appendChild(sel);
+  }
+  if(branch==='__all__'){
+    c.appendChild(el(`<h2 class="sec" style="margin-top:0;">${esc(t('tasks_overview'))} · ${today}</h2>`));
+    const list=el('<div class="list"></div>');
+    branches.forEach(b=>{
+      const tps=templatesForBranch(b); if(tps.length===0) return;
+      const done=tps.filter(tp=>runStatus(runFor(tp,b,today),tp)==='done').length;
+      const started=tps.filter(tp=>runStatus(runFor(tp,b,today),tp)!=='not_started').length;
+      const cls = done===tps.length?'ok':(started>0?'warn':'n');
+      const row=el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(b)}</div><div class="lr-sub">${tasksSummaryText(tps,b,today)}</div></div><span class="pill ${cls}">${done}/${tps.length}</span></div>`);
+      row.onclick=()=>{ S.taskBranch=b; renderApp(); };
+      list.appendChild(row);
+    });
+    if(!list.children.length) list.appendChild(el(`<div class="hint">${esc(t('tasks_no_templates'))}</div>`));
+    c.appendChild(list);
+    return c;
+  }
+  if(!branch){ c.appendChild(el(`<div class="empty">${ICONS.inbox}<div>${esc(t('tasks_pick_branch'))}</div></div>`)); return c; }
+  const since=new Date(Date.now()-24*3600000).toISOString();
+  const lastHo=S.handovers.filter(h=>h.branch===branch && h.createdAt>=since)[0];
+  const hoRow=el(`<div class="card card-tight" style="cursor:${lastHo?'pointer':'default'};"><div class="lr-title">${esc(t('handover_last'))}${lastHo?' · '+esc(lastHo.employeeName)+' · '+fmtDateTime(lastHo.createdAt):''}</div><div class="lr-sub" style="white-space:normal;">${lastHo?esc([lastHo.cash?t('field_cash')+' '+lastHo.cash:'', lastHo.pending, lastHo.issues].filter(Boolean).join(' · ')||'—'):esc(t('handover_none'))}</div></div>`);
+  if(lastHo) hoRow.onclick=()=>openHandoverDetail(lastHo);
+  c.appendChild(hoRow);
+  const hoBtn=el(`<button class="btn block" style="margin:8px 0 14px;">${ICONS.plus}<span>${esc(t('btn_handover'))}</span></button>`);
+  hoBtn.onclick=()=>openHandoverForm(branch);
+  c.appendChild(hoBtn);
+  c.appendChild(el(`<h2 class="sec" style="margin-top:0;">${esc(t('tasks_title'))} · ${esc(branch)} · ${today}</h2>`));
+  const tps=templatesForBranch(branch);
+  const list=el('<div class="list"></div>');
+  if(tps.length===0) list.appendChild(el(`<div class="hint">${esc(t('tasks_no_templates'))}</div>`));
+  tps.forEach(tp=>{
+    const run=runFor(tp,branch,today); const st=runStatus(run,tp); const p=runProgress(run,tp);
+    const who = run ? (st==='done' ? (run.completedBy||'')+' '+fmtTime(run.completedAt||run.createdAt) : (run.startedBy||'')) : '';
+    const row=el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(tp.name)} <span class="pill n" style="font-size:10px;">${esc(shiftKindLabel(tp.shift))}</span></div><div class="lr-sub">${p.done}/${p.total}${who?' · '+esc(who):''}</div></div><span class="pill ${TASK_STATUS[st].c}">${esc(t(TASK_STATUS[st].t))}</span></div>`);
+    row.onclick=()=>openTaskRun(tp, branch, today);
+    list.appendChild(row);
+  });
+  c.appendChild(list);
+  const recent=S.handovers.filter(h=>h.branch===branch).slice(0,5);
+  if(recent.length){
+    c.appendChild(el(`<h2 class="sec">${esc(t('handover_recent'))}</h2>`));
+    const hl=el('<div class="list"></div>');
+    recent.forEach(h=>{ const r=el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(h.employeeName)} · ${esc(shiftKindLabel(h.shift))}</div><div class="lr-sub">${fmtDateTime(h.createdAt)}${h.issues?' · '+esc(h.issues):''}</div></div>${h.photo?`<span class="icon-sm" style="color:var(--ink-faint);">${ICONS.camera}</span>`:''}</div>`); r.onclick=()=>openHandoverDetail(h); hl.appendChild(r); });
+    c.appendChild(hl);
+  }
+  return c;
+}
+function openTaskRun(tp, branch, date){
+  const me=currentEmployee();
+  let run = runFor(tp,branch,date) || newRun(tp,branch,date);
+  run = JSON.parse(JSON.stringify(run));
+  const body=el('<div></div>');
+  body.appendChild(el(`<div class="hint" style="margin-bottom:8px;">${esc(branch)} · ${date} · ${esc(shiftKindLabel(tp.shift))}</div>`));
+  const list=el('<div class="list"></div>'); body.appendChild(list);
+  const foot=el('<div class="sheet-foot"></div>');
+  const doneBtn=el('<button class="btn primary block"></button>');
+  let saving=false;
+  async function persist(){ if(saving) return; saving=true; try{ await saveRun(run); }catch(e){ toast(dbErrMsg(e)); } saving=false; }
+  function refresh(){
+    list.innerHTML='';
+    run.items.forEach(it=>{
+      const row=el(`<div class="list-row" style="align-items:flex-start; cursor:default;"><button class="btn sm ${it.done?'ok':''}" style="flex-shrink:0; min-width:44px;">${it.done?'✓':''}</button><div class="lr-main"><div class="lr-title" style="white-space:normal; ${it.done?'color:var(--ink-faint); text-decoration:line-through;':''}">${esc(it.text)}</div><div class="lr-sub">${it.photo?esc(t('task_photo_required')):''}${it.by?' · '+esc(it.by)+' '+fmtTime(it.at):''}</div></div></div>`);
+      const tick=row.querySelector('button');
+      tick.onclick=async ()=>{
+        if(run.status==='done') return;
+        if(!it.done && it.photo && !it.photoUrl){ toast(t('task_need_photo')); return; }
+        it.done=!it.done; it.by=it.done?me.name:''; it.at=it.done?new Date().toISOString():'';
+        refresh(); await persist();
+      };
+      if(it.photo && run.status!=='done'){
+        const pw=photoPicker(async (url)=>{ if(url){ it.photoUrl=url; it.done=true; it.by=me.name; it.at=new Date().toISOString(); refresh(); await persist(); } }, true, it.photoUrl||null);
+        pw.style.width='100%'; row.querySelector('.lr-main').appendChild(pw);
+      } else if(it.photoUrl){ row.querySelector('.lr-main').appendChild(el(`<img class="photow" src="${it.photoUrl}" style="max-width:160px;">`)); }
+      list.appendChild(row);
+    });
+    const p=runProgress(run,tp);
+    if(run.status==='done'){ doneBtn.textContent=t('task_done')+' · '+(run.completedBy||'')+' '+fmtTime(run.completedAt||run.createdAt); doneBtn.disabled=true; }
+    else { doneBtn.textContent=t('btn_complete_checklist')+' ('+p.done+'/'+p.total+')'; doneBtn.disabled = p.done<p.total; }
+  }
+  doneBtn.onclick=async ()=>{
+    run.status='done'; run.completedBy=me.name; run.completedById=me.id; run.completedAt=new Date().toISOString();
+    doneBtn.disabled=true;
+    try{ await saveRun(run); toast(t('toast_checklist_done')); closeSheet(); }catch(e){ toast(dbErrMsg(e)); doneBtn.disabled=false; }
+  };
+  refresh();
+  foot.appendChild(doneBtn); body.appendChild(foot);
+  openSheet(tp.name, body);
+}
+function openHandoverForm(branch){
+  const me=currentEmployee(); const hr=new Date().getHours();
+  const f=[
+    {key:'shift', label:t('field_shift'), type:'select', options:SHIFT_KINDS.map(k=>({v:k,l:shiftKindLabel(k)}))},
+    {key:'cash', label:t('field_cash'), type:'number', step:'0.01'},
+    {key:'pending', label:t('field_pending_items'), type:'textarea'},
+    {key:'issues', label:t('field_issues'), type:'textarea'},
+  ];
+  const body=el('<div>'+fieldsHTML(f, {shift: hr<12?'open':(hr<18?'mid':'close')})+'</div>');
+  const pw=photoPicker(null, true); body.appendChild(pw);
+  const foot=el('<div class="sheet-foot"></div>');
+  const btn=el(`<button class="btn primary block">${esc(t('btn_save'))}</button>`);
+  btn.onclick=async ()=>{
+    const v=readFields(body,f);
+    btn.disabled=true;
+    try{
+      const rec={branch, shift:v.shift, employeeId:me.id, employeeName:me.name, cash:v.cash==null?'':String(v.cash), pending:(v.pending||'').trim(), issues:(v.issues||'').trim(), createdAt:new Date().toISOString()};
+      const photo=pw.getPhoto(); if(photo) rec.photo=photo;
+      await S.db.collection('handovers').add(rec);
+      toast(t('toast_saved')); closeSheet();
+    }catch(e){ toast(dbErrMsg(e)); btn.disabled=false; }
+  };
+  foot.appendChild(btn); body.appendChild(foot);
+  openSheet(t('sheet_handover')+' · '+branch, body);
+}
+function openHandoverDetail(h){
+  const body=el('<div></div>');
+  body.innerHTML=`<div class="hint">${esc(h.branch)} · ${esc(shiftKindLabel(h.shift))} · ${fmtDateTime(h.createdAt)} · ${esc(h.employeeName)}</div>
+    <div class="card card-tight" style="margin-top:8px;"><div class="lr-sub" style="white-space:normal;">${esc(t('field_cash'))}: ${esc(h.cash||'—')}</div><div class="lr-sub" style="white-space:normal;">${esc(t('field_pending_items'))}: ${esc(h.pending||'—')}</div><div class="lr-sub" style="white-space:normal;">${esc(t('field_issues'))}: ${esc(h.issues||'—')}</div></div>`;
+  if(h.photo) body.appendChild(el(`<img class="photow" src="${h.photo}">`));
+  openSheet(t('sheet_handover'), body);
+}
+function openTaskTemplateForm(tp){
+  const f=[
+    {key:'name', label:t('field_template_name')},
+    {key:'shift', label:t('field_shift'), type:'select', options:SHIFT_KINDS.map(k=>({v:k,l:shiftKindLabel(k)}))},
+    {key:'branches', label:t('field_branches_opt'), ph:'all'},
+    {key:'itemsText', label:t('field_items'), type:'textarea'},
+  ];
+  const vals = tp ? Object.assign({}, tp, {itemsText:(tp.items||[]).map(i=>(i.photo?'* ':'')+i.text).join('\n')}) : {branches:'all'};
+  const body=el('<div>'+fieldsHTML(f, vals)+'</div>');
+  const ta=body.querySelector('[data-k="itemsText"]'); if(ta) ta.style.minHeight='180px';
+  const foot=el('<div class="sheet-foot"></div>');
+  const btn=el(`<button class="btn primary block">${esc(t('btn_save'))}</button>`);
+  btn.onclick=async ()=>{
+    const v=readFields(body,f);
+    if(!v.name||!v.name.trim()){ toast(t('err_fill_all')); return; }
+    const items=(v.itemsText||'').split('\n').map(s=>s.trim()).filter(Boolean).map(s=>({text:s.replace(/^\*\s*/,''), photo:/^\*/.test(s)}));
+    if(items.length===0){ toast(t('err_fill_all')); return; }
+    const data={name:v.name.trim(), shift:v.shift, branches:(v.branches||'all').trim()||'all', items};
+    try{
+      if(tp) await S.db.doc('taskTemplates/'+tp.id).update(data);
+      else await S.db.collection('taskTemplates').add(Object.assign({active:true, createdAt:new Date().toISOString()}, data));
+      toast(t('toast_saved')); closeSheet();
+    }catch(e){ toast(dbErrMsg(e)); }
+  };
+  foot.appendChild(btn); body.appendChild(foot);
+  openSheet(t('sheet_task_template'), body);
+}
+function homeTasksBlock(){
+  const branch=taskBranch(); if(!branch || branch==='__all__') return null;
+  const today=todayStr(); const tps=templatesForBranch(branch); if(tps.length===0) return null;
+  const done=tps.filter(tp=>runStatus(runFor(tp,branch,today),tp)==='done').length;
+  const row=el(`<div class="list-row" style="margin-top:12px;"><div class="lr-main"><div class="lr-title">${esc(t('home_tasks_today'))} · ${esc(branch)}</div><div class="lr-sub">${tasksSummaryText(tps,branch,today)}</div></div><span class="pill ${done===tps.length?'ok':'warn'}">${done}/${tps.length}</span>${ICONS.chev}</div>`);
+  row.onclick=()=>{ location.hash='#tasks'; };
+  return row;
 }
 
 /* ============================ START ============================ */
