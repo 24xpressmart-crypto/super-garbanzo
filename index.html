@@ -387,6 +387,15 @@ function leaveBalanceSuffix(l){
 /* ============================ I18N ============================ */
 const I18N = {
   zh: {
+    clock_branch_label:'打卡门店', clock_branch_none:'不选门店（按最近售货机核对）', clock_branch_home:'本店', geo_branch_no_coords:'该门店尚未设定位置，无法核对距离',
+    flag_cover:'支援', flag_manual:'补卡', report_cover:'支援', btn_export_detail:'导出每日明细',
+    btn_punch_request:'补卡申请', btn_swap_request:'换班申请', sheet_punch:'补卡申请', sheet_swap:'换班申请',
+    field_punch_type:'补卡类型', field_time:'时间', field_branch_opt:'门店（可选）', field_my_shift:'要换出的班', field_swap_with:'换给谁', field_take_shift:'接手对方的班（可选）', opt_none:'不接手',
+    err_no_upcoming_shift:'你没有可换的排班', err_take_shift_owner:'接手的班必须属于换班对象', punch_label:'补卡', swap_label:'换班', toast_request_submitted:'申请已提交',
+    pending_punch_title:'待审批补卡', pending_swap_title:'待审批换班',
+    notif_punch_approved:'补卡已批准', notif_punch_rejected:'补卡被拒绝', notif_swap_approved:'换班已批准', notif_swap_rejected:'换班被拒绝', notif_pending_punch:'待审批补卡', notif_pending_swap:'待审批换班',
+    branch_location_title:'本店位置', branch_location_set:'已设定', branch_location_unset:'尚未设定：请在店内点击下方按钮，打卡才能核对距离', btn_set_branch_location:'用当前位置设为本店坐标', btn_use_my_location:'使用当前位置',
+    toast_location_saved:'门店位置已保存', toast_location_filled:'已填入当前坐标', swap_gives:'换出', swap_takes:'接手',
     nav_home:'首页', nav_clock:'打卡', nav_stock:'库存', nav_equip:'设备', nav_me:'我的',
     insp_clean:'外观 / 玻璃清洁', insp_lane:'货道、出货口正常', insp_pay:'扫码 / 刷卡支付正常',
     insp_lock:'门锁、防盗完好', insp_change:'找零 / 退币正常', insp_temp:'制冷 / 温度正常（如适用）',
@@ -558,6 +567,15 @@ const I18N = {
     toast_deleted:'已删除',
   },
   en: {
+    clock_branch_label:'Store', clock_branch_none:'No store (check nearest machine)', clock_branch_home:'home', geo_branch_no_coords:'This store has no location set yet, distance not checked',
+    flag_cover:'Cover', flag_manual:'Manual', report_cover:'Cover', btn_export_detail:'Export daily detail',
+    btn_punch_request:'Missed punch', btn_swap_request:'Shift swap', sheet_punch:'Missed punch request', sheet_swap:'Shift swap request',
+    field_punch_type:'Punch type', field_time:'Time', field_branch_opt:'Store (optional)', field_my_shift:'My shift to give', field_swap_with:'Swap with', field_take_shift:'Take their shift (optional)', opt_none:'None',
+    err_no_upcoming_shift:'You have no upcoming shifts', err_take_shift_owner:'The shift to take must belong to the swap partner', punch_label:'Punch', swap_label:'Swap', toast_request_submitted:'Request submitted',
+    pending_punch_title:'Pending punch requests', pending_swap_title:'Pending shift swaps',
+    notif_punch_approved:'Punch request approved', notif_punch_rejected:'Punch request rejected', notif_swap_approved:'Shift swap approved', notif_swap_rejected:'Shift swap rejected', notif_pending_punch:'Punch request pending', notif_pending_swap:'Swap request pending',
+    branch_location_title:'Store location', branch_location_set:'Set', branch_location_unset:'Not set: tap the button below while at the store so clock-ins can be checked', btn_set_branch_location:'Use my location as store position', btn_use_my_location:'Use my location',
+    toast_location_saved:'Store location saved', toast_location_filled:'Coordinates filled in', swap_gives:'gives', swap_takes:'takes',
     nav_home:'Home', nav_clock:'Clock', nav_stock:'Stock', nav_equip:'Equipment', nav_me:'Me',
     insp_clean:'Exterior / glass clean', insp_lane:'Lanes & dispense chute working', insp_pay:'QR / card payment working',
     insp_lock:'Door lock & security intact', insp_change:'Change / coin return working', insp_temp:'Refrigeration / temperature normal (if applicable)',
@@ -743,6 +761,7 @@ const S = {
   stockDeviceFilter:'all', equipTab:'devices', faultFilter:'open', historyRange:'today', attnScope:'mine',
   stockSection:'snacks', kegFilter:'tapped', beerZoneFilter:'all', pickerBranch:null, staffBranchFilter:'all', lastGeoMsg:null, clockSub:'records', reportMonth:(function(){const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');})(), reportBranch:'all', reportData:null, reportLoading:false,
   beerProducts:[], taps:[], kegs:[], kegLogs:[], memos:[], memoReads:[],
+  punchRequests:[], swapRequests:[], clockBranch:null,
   notifKnown:null, pageLoadedAt:new Date().toISOString(), notifBrowser:(function(){ try{ return localStorage.getItem('bgc_notif')==='1'; }catch(e){ return false; } })(),
   showReport:false, meAdmin:false,
   geoCache:null,
@@ -1094,6 +1113,8 @@ function subscribeAll(){
   sub('leaveRequests','leaveRequests',{order:'createdAt',limit:400,sinceDays:400});
   sub('memos','memos',{order:'createdAt',limit:200});
   sub('memoReads','memoReads',{limit:500}); // one doc per employee: {readIds:{memoId:readAt}}
+  sub('punchRequests','punchRequests',{order:'createdAt',limit:300,sinceDays:120});
+  sub('swapRequests','swapRequests',{order:'createdAt',limit:300,sinceDays:120});
   sub('beerProducts','beerProducts',{limit:200});
   sub('taps','taps',{limit:100});
   sub('kegs','kegs',{order:'createdAt',dir:'desc',limit:500});
@@ -1442,7 +1463,7 @@ function homeView(){
     if(st.c!=='ok'){ lowCount++; }
   });
   const openFaults = S.faults.filter(f=>f.status==='open').length;
-  const pendingLeave = S.leaveRequests.filter(l=>l.status==='pending');
+  const pendingLeave = S.leaveRequests.filter(l=>l.status==='pending').concat(S.punchRequests.filter(r=>r.status==='pending'), S.swapRequests.filter(r=>r.status==='pending'));
 
   c.appendChild(el(`<h2 class="sec">${esc(t('home_overview'))}</h2>`));
   const tiles=el('<div class="grid2"></div>');
@@ -1457,7 +1478,7 @@ function homeView(){
       <div class="tile ${pendingLeave.length?'warn':''}"><div class="tv">${pendingLeave.length}</div><div class="tl">${esc(t('home_pending_requests'))}</div></div>`;
   } else {
     const mySched = S.schedules.filter(sc=>sc.employeeId===e.id && sc.date>=todayStr()).sort((a,b)=>a.date<b.date?-1:1)[0];
-    const myPending = S.leaveRequests.filter(l=>l.employeeId===e.id && l.status==='pending').length;
+    const myPending = S.leaveRequests.filter(l=>l.employeeId===e.id && l.status==='pending').length + S.punchRequests.filter(r=>r.employeeId===e.id && r.status==='pending').length + S.swapRequests.filter(r=>r.employeeId===e.id && r.status==='pending').length;
     tiles.innerHTML = `
       <div class="tile ${clockedIn?'ok':''}"><div class="tv" style="font-size:16px;">${clockedIn?esc(t('home_status_working')):(last?esc(t('home_status_off')):esc(t('home_status_none')))}</div><div class="tl">${esc(t('home_clock_status'))}</div></div>
       <div class="tile"><div class="tv" style="font-size:16px;">${mySched?mySched.date.slice(5)+' '+(mySched.shiftStart||''):'—'}</div><div class="tl">${esc(t('home_next_shift'))}</div></div>
@@ -1525,6 +1546,16 @@ function clockView(){
   const card=el('<div class="card" style="text-align:center;"></div>');
   const now=new Date();
   card.innerHTML = `<div style="font-size:13px; color:var(--ink-soft); font-weight:700;">${weekdayLabel(now)} · ${todayStr(now)}</div>`;
+  let clockSel=null;
+  { const branches=allBranchIds();
+    if(branches.length>0){
+      clockSel=el('<select style="margin:8px auto 2px; display:block; max-width:240px;"></select>');
+      [{v:'',l:t('clock_branch_none')}].concat(branches.map(b=>({v:b, l:b+(b===myBranch()?' · '+t('clock_branch_home'):'')}))).forEach(o=>{ const op=document.createElement('option'); op.value=o.v; op.textContent=o.l; clockSel.appendChild(op); });
+      clockSel.value=defaultClockBranch(); if(clockSel.value!==defaultClockBranch()) clockSel.value='';
+      clockSel.onchange=()=>{ S.clockBranch=clockSel.value; };
+      card.appendChild(el(`<div class="hint" style="margin:6px 0 0;">${esc(t('clock_branch_label'))}</div>`));
+      card.appendChild(clockSel);
+    } }
   const bigBtn=el(`<button class="clockbtn ${nextType==='out'?'out':''}"><span class="t">${nextType==='in'?esc(t('btn_clock_in')):esc(t('btn_clock_out'))}</span><span class="s" id="clockNow">${pad2(now.getHours())}:${pad2(now.getMinutes())}</span></button>`);
   card.appendChild(bigBtn);
   const photoWrap = photoPicker(null, true);
@@ -1540,11 +1571,15 @@ function clockView(){
     geoStatus.textContent=t('clock_geo_getting');
     const geo = await getGeo();
     const geoOk = geo && !geo.error;
-    const near = nearestDeviceInfo(geo);
+    const branch = clockSel ? clockSel.value : defaultClockBranch();
+    const bInfo = branchGeoInfo(geo, branch);
+    const near = bInfo ? null : nearestDeviceInfo(geo);
     const photo = photoWrap.getPhoto();
     const rec = {employeeId:e.id, employeeName:e.name, type:nextType, createdAt:new Date().toISOString(), note:''};
     if(geoOk) rec.geo=geo;
-    if(near && near.configured){ rec.nearestDeviceId=near.device.id; rec.distanceM=near.distance; rec.geoFlag = near.inRange?'in_range':'out_of_range'; }
+    if(branch){ rec.branch=branch; if(myBranch() && branch!==myBranch()) rec.cover=true; }
+    if(bInfo){ rec.distanceM=bInfo.distance; rec.geoFlag=bInfo.inRange?'in_range':'out_of_range'; }
+    else if(near && near.configured){ rec.nearestDeviceId=near.device.id; rec.distanceM=near.distance; rec.geoFlag = near.inRange?'in_range':'out_of_range'; }
     else if(geoOk) rec.geoFlag='not_configured';
     else { rec.geoFlag='no_location'; if(geo && geo.error) rec.geoErrorReason=geo.error; }
     if(photo) rec.photo=photo;
@@ -1554,7 +1589,8 @@ function clockView(){
       photoWrap.remove();
     }catch(err){ toast(dbErrMsg(err)); }
     bigBtn.disabled=false;
-    S.lastGeoMsg = geoStatus.textContent = geoOk ? (near&&near.configured ? (near.inRange?t('geo_in_range'):t('geo_out_of_range')+near.distance+t('geo_out_of_range_suffix')) : t('geo_no_coords')) : geoErrorMessage(geo&&geo.error);
+    const gi = bInfo || (near&&near.configured ? near : null);
+    S.lastGeoMsg = geoStatus.textContent = geoOk ? (gi ? (gi.inRange?t('geo_in_range'):t('geo_out_of_range')+gi.distance+t('geo_out_of_range_suffix')) : (branch ? t('geo_branch_no_coords') : t('geo_no_coords'))) : geoErrorMessage(geo&&geo.error);
   };
 
   // history / monthly report
@@ -1590,12 +1626,12 @@ function clockView(){
     c.appendChild(statusList);
   }
 
-  const rows = (S.attnScope==='all' ? S.attendance.filter(a=>!branchIds || branchIds.has(a.employeeId)) : S.attendance.filter(a=>a.employeeId===e.id)).slice(0,60);
+  const rows = (S.attnScope==='all' ? S.attendance.filter(a=>!branchIds || branchIds.has(a.employeeId) || (isManager() && a.branch===myBranch())) : S.attendance.filter(a=>a.employeeId===e.id)).slice(0,60);
   const list=el('<div class="list" style="margin-top:10px;"></div>');
   if(rows.length===0){ list.appendChild(el(`<div class="empty">${ICONS.inbox}<div>${esc(t('empty_no_records'))}</div></div>`)); }
   rows.forEach(a=>{
     const flag = a.geoFlag==='out_of_range' ? `<span class="pill warn">${esc(t('flag_out_of_range'))}</span>` : (a.geoFlag==='in_range' ? `<span class="pill ok">${esc(t('flag_in_range'))}</span>` : '');
-    const row=el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(a.employeeName)} · ${a.type==='in'?esc(t('clock_in_short')):esc(t('clock_out_short'))}</div><div class="lr-sub">${fmtDateTime(a.createdAt)}${a.distanceM!=null?esc(t('dist_to_device'))+a.distanceM+esc(t('dist_meters')):''}</div></div>${a.photo?`<span class="icon-sm" style="color:var(--ink-faint); flex-shrink:0;">${ICONS.camera}</span>`:''}${flag}</div>`);
+    const row=el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(a.employeeName)} · ${a.type==='in'?esc(t('clock_in_short')):esc(t('clock_out_short'))}</div><div class="lr-sub">${fmtDateTime(a.createdAt)}${a.branch?' · '+esc(a.branch):''}${a.distanceM!=null?esc(t('dist_to_device'))+a.distanceM+esc(t('dist_meters')):''}${a.manual?' · '+esc(t('flag_manual')):''}</div></div>${a.cover?`<span class="pill accent">${esc(t('flag_cover'))}</span>`:''}${a.photo?`<span class="icon-sm" style="color:var(--ink-faint); flex-shrink:0;">${ICONS.camera}</span>`:''}${flag}</div>`);
     row.onclick=()=>openAttendanceDetail(a);
     list.appendChild(row);
   });
@@ -1638,7 +1674,7 @@ function computeReport(){
   Object.keys(byEmpDay).forEach(k=>{
     const [empId, day]=k.split('|');
     const recs=byEmpDay[k].sort((a,b)=>a.createdAt<b.createdAt?-1:1);
-    const st = stats[empId] = stats[empId] || {days:0, minutes:0, late:0, early:0, missing:0};
+    const st = stats[empId] = stats[empId] || {days:0, minutes:0, late:0, early:0, missing:0, cover:0};
     let hadIn=false, openIn=null, firstIn=null, lastOut=null;
     recs.forEach(r=>{
       const tm=new Date(r.createdAt);
@@ -1647,6 +1683,7 @@ function computeReport(){
     });
     if(openIn) st.missing++;
     if(hadIn) st.days++;
+    if(recs.some(r=>r.cover)) st.cover++;
     const sc=schedMap[empId+'|'+day];
     if(sc){
       const ss=toMin(sc.shiftStart), se=toMin(sc.shiftEnd);
@@ -1654,7 +1691,7 @@ function computeReport(){
       if(se!=null && lastOut && (lastOut.getHours()*60+lastOut.getMinutes()) < se-grace) st.early++;
     }
   });
-  return reportScopeEmployees().map(e=>Object.assign({emp:e}, stats[e.id]||{days:0,minutes:0,late:0,early:0,missing:0}))
+  return reportScopeEmployees().map(e=>Object.assign({emp:e}, stats[e.id]||{days:0,minutes:0,late:0,early:0,missing:0,cover:0}))
     .filter(r=>r.days>0 || r.emp.active!==false)
     .sort((a,b)=>b.days-a.days || a.emp.name.localeCompare(b.emp.name,'zh'));
 }
@@ -1665,11 +1702,17 @@ function attendanceReportView(){
   mi.onchange=()=>{ if(mi.value){ S.reportMonth=mi.value; S.reportData=null; loadReport(); } };
   const exp=el(`<button class="btn sm">${ICONS.download}<span>${esc(t('btn_export_csv'))}</span></button>`);
   exp.onclick=async()=>{
-    const rows=computeReport().map(r=>({name:r.emp.name, branch:r.emp.homeBranch||'', days:r.days, hours:(r.minutes/60).toFixed(1), late:r.late, early:r.early, missing:r.missing}));
+    const rows=computeReport().map(r=>({name:r.emp.name, branch:r.emp.homeBranch||'', days:r.days, hours:(r.minutes/60).toFixed(1), late:r.late, early:r.early, missing:r.missing, cover:r.cover||0}));
     if(rows.length===0){ toast(t('report_empty')); return; }
-    try{ await S.downloads.save({filename:'attendance_report_'+S.reportMonth+'.csv', data:toCSV(rows,['name','branch','days','hours','late','early','missing'])}); toast(t('toast_exported')); }catch(e){ if(!(e&&e.code==='declined')) toast(t('toast_export_failed')); }
+    try{ await S.downloads.save({filename:'attendance_report_'+S.reportMonth+'.csv', data:toCSV(rows,['name','branch','days','hours','late','early','missing','cover'])}); toast(t('toast_exported')); }catch(e){ if(!(e&&e.code==='declined')) toast(t('toast_export_failed')); }
   };
-  ctl.appendChild(mi); ctl.appendChild(exp); c.appendChild(ctl);
+  const expD=el(`<button class="btn sm">${ICONS.download}<span>${esc(t('btn_export_detail'))}</span></button>`);
+  expD.onclick=async()=>{
+    const rows=computeReportDetail();
+    if(rows.length===0){ toast(t('report_empty')); return; }
+    try{ await S.downloads.save({filename:'attendance_detail_'+S.reportMonth+'.csv', data:toCSV(rows,['date','name','homeBranch','workedAt','in','out','hours','cover','manual','punches'])}); toast(t('toast_exported')); }catch(e){ if(!(e&&e.code==='declined')) toast(t('toast_export_failed')); }
+  };
+  ctl.appendChild(mi); ctl.appendChild(exp); ctl.appendChild(expD); c.appendChild(ctl);
   if(isAdmin() && branchList().length>0){
     const chipRow=el('<div class="chiprow"></div>');
     [['all',t('branch_all')]].concat(branchList().map(z=>[z,z])).forEach(([id,l])=>{
@@ -1685,7 +1728,7 @@ function attendanceReportView(){
   if(rows.length===0) list.appendChild(el(`<div class="empty">${ICONS.inbox}<div>${esc(t('report_empty'))}</div></div>`));
   rows.forEach(r=>{
     const h=(r.minutes/60).toFixed(1);
-    const flags=(r.late?`<span class="pill warn">${esc(t('report_late'))} ${r.late}</span>`:'')+(r.early?`<span class="pill warn">${esc(t('report_early'))} ${r.early}</span>`:'')+(r.missing?`<span class="pill critical">${esc(t('report_missing'))} ${r.missing}</span>`:'');
+    const flags=(r.late?`<span class="pill warn">${esc(t('report_late'))} ${r.late}</span>`:'')+(r.early?`<span class="pill warn">${esc(t('report_early'))} ${r.early}</span>`:'')+(r.missing?`<span class="pill critical">${esc(t('report_missing'))} ${r.missing}</span>`:'')+(r.cover?`<span class="pill accent">${esc(t('report_cover'))} ${r.cover}</span>`:'');
     list.appendChild(el(`<div class="list-row" style="cursor:default; flex-wrap:wrap;"><div class="lr-main"><div class="lr-title">${esc(r.emp.name)}${r.emp.homeBranch?' <span class="num" style="font-weight:500; font-size:11px; color:var(--ink-faint);">'+esc(r.emp.homeBranch)+'</span>':''}</div><div class="lr-sub">${esc(t('report_days'))} ${r.days} · ${esc(t('report_hours'))} ${h}h</div></div><div class="row" style="gap:4px; flex-wrap:wrap;">${flags}</div></div>`));
   });
   c.appendChild(list);
@@ -2267,6 +2310,17 @@ function buildNotifications(){
       out.push({id:'pending:'+l.id, ts:l.createdAt, title:t('notif_pending_leave')+'：'+l.employeeName, sub:l.startDate, unread:l.createdAt>seen, onClick:()=>{ location.hash='#me'; }});
     });
   }
+  S.punchRequests.filter(r=>r.employeeId===e.id && r.status!=='pending' && r.reviewedAt).forEach(r=>{
+    out.push({id:'punch:'+r.id, ts:r.reviewedAt, title:r.status==='approved'?t('notif_punch_approved'):t('notif_punch_rejected'), sub:punchSummary(r), unread:r.reviewedAt>seen, onClick:()=>{ location.hash='#me'; }});
+  });
+  S.swapRequests.filter(r=>r.employeeId===e.id && r.status!=='pending' && r.reviewedAt).forEach(r=>{
+    out.push({id:'swap:'+r.id, ts:r.reviewedAt, title:r.status==='approved'?t('notif_swap_approved'):t('notif_swap_rejected'), sub:swapSummary(r), unread:r.reviewedAt>seen, onClick:()=>{ location.hash='#me'; }});
+  });
+  if(canManageStaff()){
+    const scopeIds2 = isAdmin() ? null : new Set(S.employees.filter(x=>x.homeBranch===myBranch()).map(x=>x.id));
+    S.punchRequests.filter(r=>r.status==='pending' && (!scopeIds2 || scopeIds2.has(r.employeeId))).forEach(r=>{ out.push({id:'ppunch:'+r.id, ts:r.createdAt, title:t('notif_pending_punch')+'：'+r.employeeName, sub:punchSummary(r), unread:r.createdAt>seen, onClick:()=>{ location.hash='#me'; }}); });
+    S.swapRequests.filter(r=>r.status==='pending' && (!scopeIds2 || scopeIds2.has(r.employeeId))).forEach(r=>{ out.push({id:'pswap:'+r.id, ts:r.createdAt, title:t('notif_pending_swap')+'：'+r.employeeName, sub:swapSummary(r), unread:r.createdAt>seen, onClick:()=>{ location.hash='#me'; }}); });
+  }
   if(isAdmin()){
     S.faults.filter(f=>f.status==='open').forEach(f=>{
       out.push({id:'fault:'+f.id, ts:f.createdAt, title:t('notif_new_fault')+'：'+devName(f.deviceId), sub:f.description||'', unread:f.createdAt>seen, onClick:()=>{ location.hash='#equip'; }});
@@ -2536,6 +2590,10 @@ function meView(){
   { const bal=['annual','sick'].map(k=>({k, b:leaveBalance(e,k)})).filter(x=>x.b);
     if(bal.length){ const g=el('<div class="grid2" style="margin-top:12px;"></div>'); bal.forEach(x=>g.appendChild(el(`<div class="tile ${x.b.left<=0?'critical':''}"><div class="tv">${x.b.left}<span style="font-size:13px; color:var(--ink-faint);">/${x.b.allow}</span></div><div class="tl">${esc(t(x.k==='annual'?'balance_annual':'balance_sick'))}</div></div>`))); c.appendChild(g); } }
   c.appendChild(leaveBtn);
+  { const rr=el('<div class="row" style="margin:-4px 0 12px;"></div>');
+    const pb=el(`<button class="btn block">${esc(t('btn_punch_request'))}</button>`); pb.onclick=()=>openPunchRequestForm();
+    const sb=el(`<button class="btn block">${esc(t('btn_swap_request'))}</button>`); sb.onclick=()=>openSwapRequestForm();
+    rr.appendChild(pb); rr.appendChild(sb); c.appendChild(rr); }
 
   c.appendChild(el(`<h2 class="sec">${esc(t('my_requests'))}</h2>`));
   const myLeaves=S.leaveRequests.filter(l=>l.employeeId===e.id).slice(0,8);
@@ -2543,6 +2601,7 @@ function meView(){
   if(myLeaves.length===0) leaveList.appendChild(el(`<div class="hint">${esc(t('empty_no_requests'))}</div>`));
   myLeaves.forEach(l=>leaveList.appendChild(el(`<div class="list-row" style="cursor:default;"><div class="lr-main"><div class="lr-title">${esc(leaveKindLabel(l))} · ${l.startDate}${l.endDate&&l.endDate!==l.startDate?' ~ '+l.endDate:''}</div><div class="lr-sub">${esc(l.reason||'')}</div></div><span class="pill ${LEAVE_STATUS[l.status].c}">${esc(t(LEAVE_STATUS[l.status].t))}</span></div>`)));
   c.appendChild(leaveList);
+  c.appendChild(myOtherRequestsList());
 
   if(isAdmin()){
     c.appendChild(el('<div class="divider"></div>'));
@@ -2578,6 +2637,8 @@ function managerSection(){
     list.appendChild(row); list.appendChild(btns);
   });
   c.appendChild(list);
+  c.appendChild(pendingRequestsBlock(branchEmpIds));
+  c.appendChild(branchLocationCard(branch));
 
   c.appendChild(adminBlock(t('admin_schedule_mgmt'), ()=>openScheduleAddForm(branch), S.schedules.filter(s=>branchEmpIds.has(s.employeeId)).slice(0,8).map(s=>({
     title:empName(s.employeeId)+' · '+s.date, sub:(s.shiftStart||'')+' - '+(s.shiftEnd||''),
@@ -2638,6 +2699,7 @@ function adminSection(){
     list.appendChild(row); list.appendChild(btns);
   });
   c.appendChild(list);
+  c.appendChild(pendingRequestsBlock(null));
 
   c.appendChild(adminBlock(t('admin_schedule_mgmt'), ()=>openScheduleAddForm(), S.schedules.slice(0,8).map(s=>({
     title:empName(s.employeeId)+' · '+s.date, sub:(s.shiftStart||'')+' - '+(s.shiftEnd||'')+(s.deviceId?' · '+devName(s.deviceId):''),
@@ -2668,7 +2730,7 @@ function adminSection(){
   }
 
   {
-    const allZones = [...new Set([...zoneList(), ...S.sites.map(s=>s.id)])].sort((a,b)=>a.localeCompare(b,'zh'));
+    const allZones = [...new Set([...zoneList(), ...branchList(), ...S.sites.map(s=>s.id)])].sort((a,b)=>a.localeCompare(b,'zh'));
     c.appendChild(adminBlock(t('admin_site_mgmt'), ()=>openSiteForm(null), allZones.map(z=>{
       const site = siteFor(z);
       return {
@@ -2952,6 +3014,9 @@ function openSiteForm(existing, zoneHint){
   ];
   const body=el('<div>'+fieldsHTML(fields, existing||{})+'</div>');
   if(existing){ const zn=body.querySelector('[data-k="id"]'); if(zn) zn.disabled=true; }
+  { const locBtn=el(`<button class="btn block" style="margin-bottom:10px;">${ICONS.pin}<span>${esc(t('btn_use_my_location'))}</span></button>`);
+    locBtn.onclick=async ()=>{ locBtn.disabled=true; const g=await getGeo(); locBtn.disabled=false; if(!g||g.error){ toast(geoErrorMessage(g&&g.error)); return; } body.querySelector('[data-k="lat"]').value=g.lat; body.querySelector('[data-k="lng"]').value=g.lng; toast(t('toast_location_filled')+' (±'+g.accuracy+'m)'); };
+    body.appendChild(locBtn); }
   const foot=el('<div class="sheet-foot"></div>');
   const btn=el(`<button class="btn primary block">${esc(t('btn_save'))}</button>`);
   btn.onclick=async ()=>{
@@ -3093,6 +3158,176 @@ function openScheduleAddForm(lockBranch){
   };
   foot.appendChild(btn); body.appendChild(foot);
   openSheet(t('sheet_add_schedule'), body);
+}
+
+/* ============================ PHASE 1A: STORE LOCATIONS / COVER CLOCK-IN / PUNCH & SWAP REQUESTS ============================ */
+function allBranchIds(){
+  // Store branches known to the app: employees' home branches plus site records that are not vending zones.
+  const zones = new Set(zoneList());
+  const set = new Set(branchList());
+  S.sites.forEach(s=>{ if(!zones.has(s.id)) set.add(s.id); });
+  return [...set].sort((a,b)=>a.localeCompare(b,'zh'));
+}
+function siteCoordsFor(branch){ const s=siteFor(branch||''); return (s && s.lat!=null && s.lng!=null && s.lat!=='' && s.lng!=='') ? {lat:Number(s.lat), lng:Number(s.lng)} : null; }
+function defaultClockBranch(){ if(S.clockBranch!=null) return S.clockBranch; return myBranch()||''; }
+function branchGeoInfo(geo, branch){
+  if(!geo || geo.error || !branch) return null;
+  const c=siteCoordsFor(branch); if(!c) return null;
+  const dist=Math.round(haversine(geo.lat,geo.lng,c.lat,c.lng));
+  return {configured:true, branch, distance:dist, inRange: dist<=(S.settings.geofenceRadius||300)};
+}
+async function saveBranchLocation(branch){
+  const geo=await getGeo();
+  if(!geo || geo.error){ toast(geoErrorMessage(geo&&geo.error)); return false; }
+  const existing=siteFor(branch);
+  const data={lat:geo.lat, lng:geo.lng, locSetBy:currentEmployee().name, locSetAt:new Date().toISOString(), locAccuracy:geo.accuracy};
+  try{
+    if(existing) await S.db.doc('sites/'+existing.id).update(data);
+    else await S.db.doc('sites/'+branch).set(Object.assign({address:'', city:''}, data));
+    toast(t('toast_location_saved')+' (±'+geo.accuracy+'m)'); return true;
+  }catch(e){ toast(dbErrMsg(e)); return false; }
+}
+function branchLocationCard(branch){
+  const site=siteFor(branch); const has=!!siteCoordsFor(branch);
+  const card=el(`<div class="card card-tight"><div class="lr-title">${esc(t('branch_location_title'))} · ${esc(branch)}</div><div class="lr-sub" style="white-space:normal;">${has ? esc(t('branch_location_set'))+' · '+Number(site.lat).toFixed(5)+', '+Number(site.lng).toFixed(5)+(site.locSetBy?' · '+esc(site.locSetBy):'') : esc(t('branch_location_unset'))}</div></div>`);
+  const btn=el(`<button class="btn ${has?'':'primary'} block" style="margin:8px 0 14px;">${ICONS.pin}<span>${esc(t('btn_set_branch_location'))}</span></button>`);
+  btn.onclick=async ()=>{ btn.disabled=true; await saveBranchLocation(branch); btn.disabled=false; };
+  const wrap=el('<div></div>'); wrap.appendChild(card); wrap.appendChild(btn);
+  return wrap;
+}
+function localIso(date, time){ const d=new Date(date+'T'+(time||'00:00')+':00'); return isNaN(d) ? null : d.toISOString(); }
+function openPunchRequestForm(){
+  const me=currentEmployee();
+  const branches=allBranchIds();
+  const f=[
+    {key:'type', label:t('field_punch_type'), type:'select', options:[{v:'in',l:t('clock_in_short')},{v:'out',l:t('clock_out_short')}]},
+    {key:'date', label:t('field_date'), type:'date', default:todayStr()},
+    {key:'time', label:t('field_time'), type:'time', default:'09:00'},
+    {key:'branch', label:t('field_branch_opt'), type:'select', options:[{v:'',l:t('opt_unspecified')}].concat(branches.map(b=>({v:b,l:b})))},
+    {key:'reason', label:t('field_reason'), type:'textarea'},
+  ];
+  const body=el('<div>'+fieldsHTML(f, {branch:defaultClockBranch()})+'</div>');
+  const foot=el('<div class="sheet-foot"></div>');
+  const btn=el(`<button class="btn primary block">${esc(t('btn_submit_request'))}</button>`);
+  btn.onclick=async ()=>{
+    const v=readFields(body,f);
+    const at=v.date && v.time ? localIso(v.date, v.time) : null;
+    if(!at){ toast(t('err_fill_all')); return; }
+    if(!v.reason||!v.reason.trim()){ toast(t('err_fill_all')); return; }
+    btn.disabled=true;
+    try{
+      await S.db.collection('punchRequests').add({employeeId:me.id, employeeName:me.name, type:v.type, at, date:v.date, time:v.time, branch:v.branch||'', homeBranch:me.homeBranch||'', reason:v.reason.trim(), status:'pending', createdAt:new Date().toISOString()});
+      toast(t('toast_request_submitted')); closeSheet();
+    }catch(e){ toast(dbErrMsg(e)); btn.disabled=false; }
+  };
+  foot.appendChild(btn); body.appendChild(foot);
+  openSheet(t('sheet_punch'), body);
+}
+function shiftLabel(s){ return s.date+' '+(s.shiftStart||'')+'-'+(s.shiftEnd||''); }
+function openSwapRequestForm(){
+  const me=currentEmployee();
+  const mine=S.schedules.filter(s=>s.employeeId===me.id && s.date>=todayStr()).sort((a,b)=>a.date<b.date?-1:1);
+  if(mine.length===0){ toast(t('err_no_upcoming_shift')); return; }
+  const pool=S.employees.filter(e=>e.id!==me.id && e.active!==false && (!me.homeBranch || e.homeBranch===me.homeBranch));
+  const theirs=S.schedules.filter(s=>s.employeeId!==me.id && s.date>=todayStr() && pool.some(e=>e.id===s.employeeId)).sort((a,b)=>a.date<b.date?-1:1);
+  const f=[
+    {key:'scheduleId', label:t('field_my_shift'), type:'select', options:mine.map(s=>({v:s.id,l:shiftLabel(s)}))},
+    {key:'withEmployeeId', label:t('field_swap_with'), type:'select', options:pool.map(e=>({v:e.id,l:e.name}))},
+    {key:'takeScheduleId', label:t('field_take_shift'), type:'select', options:[{v:'',l:t('opt_none')}].concat(theirs.map(s=>({v:s.id,l:empName(s.employeeId)+' · '+shiftLabel(s)})))},
+    {key:'reason', label:t('field_reason'), type:'textarea'},
+  ];
+  if(pool.length===0){ toast(t('err_need_employee')); return; }
+  const body=el('<div>'+fieldsHTML(f)+'</div>');
+  const foot=el('<div class="sheet-foot"></div>');
+  const btn=el(`<button class="btn primary block">${esc(t('btn_submit_request'))}</button>`);
+  btn.onclick=async ()=>{
+    const v=readFields(body,f);
+    const s=byId(S.schedules,v.scheduleId); const w=byId(S.employees,v.withEmployeeId);
+    if(!s||!w){ toast(t('err_fill_all')); return; }
+    const take=v.takeScheduleId?byId(S.schedules,v.takeScheduleId):null;
+    if(take && take.employeeId!==w.id){ toast(t('err_take_shift_owner')); return; }
+    btn.disabled=true;
+    try{
+      await S.db.collection('swapRequests').add({employeeId:me.id, employeeName:me.name, homeBranch:me.homeBranch||'', scheduleId:s.id, date:s.date, shift:(s.shiftStart||'')+'-'+(s.shiftEnd||''), withEmployeeId:w.id, withName:w.name, takeScheduleId:take?take.id:'', takeDate:take?take.date:'', takeShift:take?(take.shiftStart||'')+'-'+(take.shiftEnd||''):'', reason:(v.reason||'').trim(), status:'pending', createdAt:new Date().toISOString()});
+      toast(t('toast_request_submitted')); closeSheet();
+    }catch(e){ toast(dbErrMsg(e)); btn.disabled=false; }
+  };
+  foot.appendChild(btn); body.appendChild(foot);
+  openSheet(t('sheet_swap'), body);
+}
+function punchSummary(r){ return (r.type==='in'?t('clock_in_short'):t('clock_out_short'))+' · '+r.date+' '+r.time+(r.branch?' · '+r.branch:''); }
+function swapSummary(r){ return t('swap_gives')+' '+r.date+' '+r.shift+' → '+r.withName+(r.takeDate?' · '+t('swap_takes')+' '+r.takeDate+' '+r.takeShift:''); }
+async function reviewPunch(r, approve){
+  const me=currentEmployee(); const now=new Date().toISOString();
+  try{
+    if(approve){
+      const rec={employeeId:r.employeeId, employeeName:r.employeeName, type:r.type, createdAt:r.at, note:r.reason||'', manual:true, geoFlag:'manual', approvedBy:me.name, requestId:r.id};
+      if(r.branch){ rec.branch=r.branch; if(r.homeBranch && r.branch!==r.homeBranch) rec.cover=true; }
+      await S.db.collection('attendance').add(rec);
+    }
+    await S.db.doc('punchRequests/'+r.id).update({status:approve?'approved':'rejected', reviewedAt:now, reviewedBy:me.name});
+    toast(approve?t('leave_approved'):t('leave_rejected'));
+  }catch(e){ toast(dbErrMsg(e)); }
+}
+async function reviewSwap(r, approve){
+  const me=currentEmployee(); const now=new Date().toISOString();
+  try{
+    if(approve){
+      await S.db.doc('schedules/'+r.scheduleId).update({employeeId:r.withEmployeeId, swappedFrom:r.employeeName, note:t('swap_label')+': '+r.employeeName+' → '+r.withName});
+      if(r.takeScheduleId) await S.db.doc('schedules/'+r.takeScheduleId).update({employeeId:r.employeeId, swappedFrom:r.withName, note:t('swap_label')+': '+r.withName+' → '+r.employeeName});
+    }
+    await S.db.doc('swapRequests/'+r.id).update({status:approve?'approved':'rejected', reviewedAt:now, reviewedBy:me.name});
+    toast(approve?t('leave_approved'):t('leave_rejected'));
+  }catch(e){ toast(dbErrMsg(e)); }
+}
+function pendingRequestsBlock(scopeIds){
+  const c=el('<div></div>');
+  const inScope = r => !scopeIds || scopeIds.has(r.employeeId);
+  const punch=S.punchRequests.filter(r=>r.status==='pending' && inScope(r));
+  const swap=S.swapRequests.filter(r=>r.status==='pending' && inScope(r));
+  if(punch.length===0 && swap.length===0) return c;
+  const mk=(title, rows, summary, review)=>{
+    if(rows.length===0) return;
+    c.appendChild(el(`<div class="sec-row"><h2 class="sec" style="margin:0;">${esc(title)} · ${rows.length}</h2></div>`));
+    const list=el('<div class="list"></div>');
+    rows.forEach(r=>{
+      list.appendChild(el(`<div class="card card-tight"><div class="lr-title">${esc(r.employeeName)}</div><div class="lr-sub" style="white-space:normal;">${esc(summary(r))}${r.reason?' · '+esc(r.reason):''}</div></div>`));
+      const btns=el('<div class="row" style="margin-top:-6px; margin-bottom:10px;"></div>');
+      const ok=el(`<button class="btn ok sm">${esc(t('btn_approve'))}</button>`), no=el(`<button class="btn danger sm">${esc(t('btn_reject'))}</button>`);
+      ok.onclick=()=>review(r,true); no.onclick=()=>review(r,false);
+      btns.appendChild(ok); btns.appendChild(no); list.appendChild(btns);
+    });
+    c.appendChild(list);
+  };
+  mk(t('pending_punch_title'), punch, punchSummary, reviewPunch);
+  mk(t('pending_swap_title'), swap, swapSummary, reviewSwap);
+  return c;
+}
+function myOtherRequestsList(){
+  const e=currentEmployee();
+  const list=el('<div class="list"></div>');
+  const rows=[].concat(
+    S.punchRequests.filter(r=>r.employeeId===e.id).map(r=>({r, label:t('punch_label')+' · '+punchSummary(r)})),
+    S.swapRequests.filter(r=>r.employeeId===e.id).map(r=>({r, label:t('swap_label')+' · '+swapSummary(r)}))
+  ).sort((a,b)=>a.r.createdAt<b.r.createdAt?1:-1).slice(0,8);
+  rows.forEach(({r,label})=>list.appendChild(el(`<div class="list-row" style="cursor:default;"><div class="lr-main"><div class="lr-title" style="white-space:normal;">${esc(label)}</div><div class="lr-sub">${esc(r.reason||'')}</div></div><span class="pill ${LEAVE_STATUS[r.status].c}">${esc(t(LEAVE_STATUS[r.status].t))}</span></div>`)));
+  return list;
+}
+function computeReportDetail(){
+  const d=S.reportData; if(!d) return [];
+  const scope=new Set(reportScopeEmployees().map(e=>e.id));
+  const byEmpDay={};
+  d.att.filter(a=>scope.has(a.employeeId)).forEach(a=>{ const day=todayStr(new Date(a.createdAt)); const k=a.employeeId+'|'+day; (byEmpDay[k]=byEmpDay[k]||[]).push(a); });
+  const out=[];
+  Object.keys(byEmpDay).sort().forEach(k=>{
+    const [empId, day]=k.split('|'); const emp=byId(S.employees,empId);
+    const recs=byEmpDay[k].sort((a,b)=>a.createdAt<b.createdAt?-1:1);
+    let openIn=null, minutes=0, firstIn=null, lastOut=null; const branches=new Set(); let cover=false, manual=false;
+    recs.forEach(r=>{ const tm=new Date(r.createdAt); if(r.branch) branches.add(r.branch); if(r.cover) cover=true; if(r.manual) manual=true;
+      if(r.type==='in'){ openIn=tm; if(!firstIn) firstIn=tm; } else { if(openIn){ minutes+=(tm-openIn)/60000; openIn=null; } lastOut=tm; } });
+    out.push({date:day, name:emp?emp.name:recs[0].employeeName, homeBranch:emp?(emp.homeBranch||''):'', workedAt:[...branches].join('/'), in:firstIn?fmtTime(firstIn.toISOString()):'', out:lastOut?fmtTime(lastOut.toISOString()):'', hours:(minutes/60).toFixed(2), cover:cover?'Y':'', manual:manual?'Y':'', punches:recs.length});
+  });
+  return out.sort((a,b)=>a.name.localeCompare(b.name,'zh') || (a.date<b.date?-1:1));
 }
 
 /* ============================ START ============================ */
