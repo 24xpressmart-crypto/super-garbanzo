@@ -3570,7 +3570,7 @@ function homeTasksBlock(){
   const branch=taskBranch(); if(!branch || branch==='__all__') return null;
   const today=todayStr(); const tps=templatesForBranch(branch); if(tps.length===0) return null;
   const done=tps.filter(tp=>runStatus(runFor(tp,branch,today),tp)==='done').length;
-  const row=el(`<div class="list-row" style="margin-top:12px;"><div class="lr-main"><div class="lr-title">${esc(t('home_tasks_today'))} · ${esc(branch)}</div><div class="lr-sub">${tasksSummaryText(tps,branch,today)}</div></div><span class="pill ${done===tps.length?'ok':'warn'}">${done}/${tps.length}</span>${ICONS.chev}</div>`);
+  const row=el(`<div class="list-row" style="margin-top:12px;"><div class="lr-main"><div class="lr-title">${esc(t('home_tasks_today'))} · ${esc(branch)}</div><div class="lr-sub">${tasksSummaryText(tps,branch,today)}</div></div><span class="pill ${done===tps.length?'ok':'warn'}">${done}/${tps.length}</span><span class="icon-sm" style="color:var(--ink-faint); flex-shrink:0;">${ICONS.chev}</span></div>`);
   row.onclick=()=>{ location.hash='#tasks'; };
   return row;
 }
