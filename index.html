@@ -245,6 +245,26 @@
   #nav button svg{width:21px; height:21px;}
   #nav button .lb{font-size:10.5px; font-weight:700;}
   #nav button.on{color:var(--accent);}
+  .ib{display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:12px; flex-shrink:0;}
+  .ib svg{width:20px; height:20px;}
+  .ib.lg{width:50px; height:50px; border-radius:15px;} .ib.lg svg{width:25px; height:25px;}
+  .ib.sm{width:26px; height:26px; border-radius:8px;} .ib.sm svg{width:15px; height:15px;}
+  .sec .ib.sm{margin-right:8px; vertical-align:-7px;}
+  .list-row>.ib{margin-right:2px;}
+  .c-blue{background:rgba(47,111,163,.14); color:#2F6FA3;} .c-green{background:rgba(11,110,79,.14); color:#0B6E4F;} .c-teal{background:rgba(14,116,144,.14); color:#0E7490;}
+  .c-orange{background:rgba(200,90,20,.14); color:#C85A14;} .c-red{background:rgba(190,38,30,.14); color:#BE261E;} .c-purple{background:rgba(91,62,147,.14); color:#5B3E93;}
+  .c-amber{background:rgba(176,116,0,.16); color:#8A5A00;} .c-grey{background:rgba(120,128,136,.16); color:var(--ink-soft);}
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .c-blue{color:#8FC1EA;} :root:not([data-theme="light"]) .c-green{color:#5FCFA0;} :root:not([data-theme="light"]) .c-teal{color:#5FD3E6;} :root:not([data-theme="light"]) .c-orange{color:#F2A26B;} :root:not([data-theme="light"]) .c-red{color:#F08C84;} :root:not([data-theme="light"]) .c-purple{color:#C4A9F0;} :root:not([data-theme="light"]) .c-amber{color:#F0C15A;} }
+  :root[data-theme="dark"] .c-blue{color:#8FC1EA;} :root[data-theme="dark"] .c-green{color:#5FCFA0;} :root[data-theme="dark"] .c-teal{color:#5FD3E6;} :root[data-theme="dark"] .c-orange{color:#F2A26B;} :root[data-theme="dark"] .c-red{color:#F08C84;} :root[data-theme="dark"] .c-purple{color:#C4A9F0;} :root[data-theme="dark"] .c-amber{color:#F0C15A;}
+  .hello{display:flex; align-items:center; gap:12px; padding:14px 16px; border-radius:18px; background:linear-gradient(135deg, var(--accent) 0%, #1F5F8B 100%); color:#fff; margin-top:2px; box-shadow:0 8px 22px rgba(31,95,139,.22);}
+  .hello .av{width:46px; height:46px; border-radius:50%; background:rgba(255,255,255,.22); display:flex; align-items:center; justify-content:center; font-weight:900; font-size:18px; flex-shrink:0;}
+  .hello .g{font-size:16px; font-weight:900; line-height:1.3;} .hello .s{font-size:12.5px; opacity:.92; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .fgrid{display:grid; grid-template-columns:repeat(4,1fr); gap:12px 6px; margin-top:6px;}
+  .ftile{display:flex; flex-direction:column; align-items:center; gap:7px; background:transparent; border:0; padding:6px 2px; cursor:pointer; color:var(--ink); font:inherit; -webkit-tap-highlight-color:transparent;}
+  .ftile:active .ib{transform:scale(.94);} .ftile .ib{transition:transform .12s;}
+  .ftile .lb{font-size:11.5px; font-weight:700; line-height:1.2; text-align:center;}
+  .ftile .bd{position:relative;}
+  .ftile .cnt{position:absolute; top:-5px; right:-7px; min-width:18px; height:18px; border-radius:9px; background:var(--critical); color:#fff; font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; padding:0 5px; border:2px solid var(--paper);}
   .weekgrid{border-collapse:collapse; min-width:560px; font-size:12px; width:100%;}
   .weekgrid th,.weekgrid td{border-bottom:1px solid var(--line); padding:6px 4px; text-align:center; vertical-align:middle;}
   .weekgrid th{font-size:11px; color:var(--ink-soft); font-weight:700; line-height:1.3;}
@@ -356,6 +376,22 @@ const ICONS = {
   download:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0-4-4m4 4 4-4"/><path d="M4 19h16"/></svg>',
   check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3.5" width="16" height="17" rx="2"/><path d="m8 12 2.5 2.5L16 9"/></svg>',
   alert:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 21 19.5H3z"/><path d="M12 9.5v4.5M12 17h.01"/></svg>',
+  beer:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h9v13H6z"/><path d="M15 10h2.5a1.5 1.5 0 0 1 1.5 1.5v4a1.5 1.5 0 0 1-1.5 1.5H15"/><path d="M9 10v7M12 10v7"/></svg>',
+  bell:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>',
+  book:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5V5.5M20 18v3H6.5"/></svg>',
+  calendar:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>',
+  chart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>',
+  gear:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg>',
+  grid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>',
+  handover:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13l-3-3"/><path d="M20 16H7l3 3"/></svg>',
+  login:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/><path d="M12 4h6a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6"/></svg>',
+  logout:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 17l-5-5 5-5"/><path d="M12 12h9"/><path d="M12 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6"/></svg>',
+  machine:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M8 7h5M8 10h5M8 13h5M15.5 7v9"/></svg>',
+  megaphone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4a1 1 0 0 0 1 1h3l6 4V5L8 9H5a1 1 0 0 0-1 1z"/><path d="M17.5 9.5a3.5 3.5 0 0 1 0 5"/></svg>',
+  siren:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20h12"/><path d="M8 17v-5a4 4 0 0 1 8 0v5"/><path d="M12 3v2M5 6l1.5 1.5M19 6l-1.5 1.5"/></svg>',
+  swap:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v13"/><path d="m3.5 13.5 3.5 3.5 3.5-3.5"/><path d="M17 20V7"/><path d="m13.5 10.5 3.5-3.5 3.5 3.5"/></svg>',
+  thermo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4a2 2 0 0 0-2 2v8.5a4 4 0 1 0 4 0V6a2 2 0 0 0-2-2z"/><path d="M12 10v6"/></svg>',
+  users:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 19c.9-3 3.2-4.5 6-4.5s5.1 1.5 6 4.5"/><circle cx="17" cy="9" r="2.5"/><path d="M15.5 14.6c2.6.1 4.5 1.5 5.5 4.4"/></svg>',
 };
 
 /* ============================ CONFIG ============================ */
@@ -399,6 +435,8 @@ function leaveBalanceSuffix(l){
 /* ============================ I18N ============================ */
 const I18N = {
   zh: {
+    hello_morning:'早上好', hello_afternoon:'下午好', hello_evening:'晚上好', func_title:'功能',
+    tile_clock_in:'上班打卡', tile_clock_out:'下班打卡', tile_tasks:'任务清单', tile_handover:'交接班', tile_temp:'温度记录', tile_leave:'请假', tile_punch:'补卡', tile_swap:'换班', tile_memos:'公告', tile_fault:'报修', tile_incident:'客诉 / 事故', tile_sos:'SOS 求助', tile_stock:'库存', tile_beer:'鲜啤', tile_equip:'设备', tile_help:'使用手册', tile_approvals:'审批', tile_schedule:'排班', tile_report:'考勤月报', tile_staff:'人员', tile_overview:'各店任务', tile_settings:'设置',
     week_this:'本周', btn_copy_last_week:'复制上周', week_hint:'点格子添加或删除班次；用班次模板一键排班。', field_shift_template:'班次模板', toast_no_last_week:'上周没有排班可复制', toast_week_already:'本周已有相同的排班', confirm_copy_week_prefix:'将复制 ', confirm_copy_week_suffix:' 个班次到本周？',
     field_night_start:'夜班开始时间', field_night_end:'夜班结束时间', field_safety_interval:'夜班安全确认间隔（分钟）', field_emergency_phone:'HQ 紧急电话', field_shift_templates:'班次模板（每行一个：名称=开始-结束）',
     safety_title:'夜班安全确认', safety_first:'上班后请按一下，确认你在店里一切正常', safety_overdue:'已超时，请立即确认', safety_next_prefix:'下次确认还有 ', safety_next_suffix:' 分钟', btn_safety_ok:'我在店里，一切正常', toast_safety_ok:'已记录，注意安全',
@@ -599,6 +637,8 @@ const I18N = {
     toast_deleted:'已删除',
   },
   en: {
+    hello_morning:'Good morning', hello_afternoon:'Good afternoon', hello_evening:'Good evening', func_title:'Functions',
+    tile_clock_in:'Clock in', tile_clock_out:'Clock out', tile_tasks:'Checklists', tile_handover:'Handover', tile_temp:'Temperature', tile_leave:'Leave', tile_punch:'Missed punch', tile_swap:'Shift swap', tile_memos:'Memos', tile_fault:'Report fault', tile_incident:'Incident', tile_sos:'SOS', tile_stock:'Stock', tile_beer:'Draft beer', tile_equip:'Equipment', tile_help:'User guide', tile_approvals:'Approvals', tile_schedule:'Schedule', tile_report:'Attendance report', tile_staff:'Staff', tile_overview:'All stores', tile_settings:'Settings',
     week_this:'This week', btn_copy_last_week:'Copy last week', week_hint:'Tap a cell to add or remove a shift; use templates for one-tap scheduling.', field_shift_template:'Shift template', toast_no_last_week:'No shifts last week to copy', toast_week_already:'This week already has those shifts', confirm_copy_week_prefix:'Copy ', confirm_copy_week_suffix:' shifts into this week?',
     field_night_start:'Night shift starts', field_night_end:'Night shift ends', field_safety_interval:'Night safety check interval (minutes)', field_emergency_phone:'HQ emergency phone', field_shift_templates:'Shift templates (one per line: name=start-end)',
     safety_title:'Night safety check', safety_first:'After clocking in, tap once to confirm you are OK', safety_overdue:'Overdue, please confirm now', safety_next_prefix:'Next check in ', safety_next_suffix:' min', btn_safety_ok:'I am in the store and OK', toast_safety_ok:'Recorded, stay safe',
@@ -799,6 +839,8 @@ const I18N = {
     toast_deleted:'Deleted',
   },
   ms: {
+    hello_morning:'Selamat pagi', hello_afternoon:'Selamat petang', hello_evening:'Selamat malam', func_title:'Fungsi',
+    tile_clock_in:'Daftar masuk', tile_clock_out:'Daftar keluar', tile_tasks:'Senarai semak', tile_handover:'Serah tugas', tile_temp:'Suhu', tile_leave:'Cuti', tile_punch:'Terlupa daftar', tile_swap:'Tukar syif', tile_memos:'Pengumuman', tile_fault:'Lapor rosak', tile_incident:'Insiden', tile_sos:'SOS', tile_stock:'Stok', tile_beer:'Bir draf', tile_equip:'Peralatan', tile_help:'Panduan', tile_approvals:'Kelulusan', tile_schedule:'Jadual', tile_report:'Laporan kehadiran', tile_staff:'Staf', tile_overview:'Semua kedai', tile_settings:'Tetapan',
     week_this:'Minggu ini', btn_copy_last_week:'Salin minggu lepas', week_hint:'Ketik petak untuk tambah atau padam syif; guna templat untuk jadual satu ketikan.', field_shift_template:'Templat syif', toast_no_last_week:'Tiada syif minggu lepas untuk disalin', toast_week_already:'Minggu ini sudah ada syif yang sama', confirm_copy_week_prefix:'Salin ', confirm_copy_week_suffix:' syif ke minggu ini?',
     field_night_start:'Syif malam bermula', field_night_end:'Syif malam tamat', field_safety_interval:'Selang semakan keselamatan malam (minit)', field_emergency_phone:'Telefon kecemasan HQ', field_shift_templates:'Templat syif (satu sebaris: nama=mula-tamat)',
     safety_title:'Semakan keselamatan syif malam', safety_first:'Selepas daftar masuk, ketik sekali untuk sahkan anda OK', safety_overdue:'Sudah lewat, sila sahkan sekarang', safety_next_prefix:'Semakan seterusnya dalam ', safety_next_suffix:' minit', btn_safety_ok:'Saya di kedai dan OK', toast_safety_ok:'Direkod, jaga keselamatan',
@@ -1774,7 +1816,8 @@ function homeView(){
   const openFaults = S.faults.filter(f=>f.status==='open').length;
   const pendingLeave = S.leaveRequests.filter(l=>l.status==='pending').concat(S.punchRequests.filter(r=>r.status==='pending'), S.swapRequests.filter(r=>r.status==='pending'));
 
-  c.appendChild(el(`<h2 class="sec">${esc(t('home_overview'))}</h2>`));
+  c.appendChild(helloCard(e, clockedIn, last));
+  c.appendChild(secH('chart','c-green',t('home_overview')));
   const tiles=el('<div class="grid2"></div>');
   if(isAdmin()){
     const activeCount = S.employees.filter(x=>x.active!==false).length;
@@ -1796,16 +1839,9 @@ function homeView(){
   }
   c.appendChild(tiles);
 
-  const qr=el('<div class="row" style="margin-top:16px;"></div>');
-  const clockQ=el(`<button class="btn primary block">${ICONS.clock}<span>${clockedIn?esc(t('btn_clock_out')):esc(t('btn_clock_in'))}</span></button>`);
-  clockQ.onclick=()=>location.hash='#clock';
-  const faultQ=el(`<button class="btn block">${ICONS.wrench}<span>${esc(t('btn_report_fault'))}</span></button>`);
-  faultQ.onclick=()=>{ location.hash='#equip'; setTimeout(()=>openFaultForm(),50); };
-  qr.appendChild(clockQ); qr.appendChild(faultQ);
-  c.appendChild(qr);
-  { const tb=homeTasksBlock(); if(tb) c.appendChild(tb); }
-  c.appendChild(homeQuickRow2());
+  c.appendChild(funcGrid(clockedIn));
   { const sb=safetyBlock(); if(sb) c.appendChild(sb); }
+  { const tb=homeTasksBlock(); if(tb) c.appendChild(tb); }
 
   const myMemos = visibleMemos().slice(0,3);
   if(myMemos.length>0){
@@ -1943,7 +1979,7 @@ function clockView(){
   if(rows.length===0){ list.appendChild(el(`<div class="empty">${ICONS.inbox}<div>${esc(t('empty_no_records'))}</div></div>`)); }
   rows.forEach(a=>{
     const flag = a.geoFlag==='out_of_range' ? `<span class="pill warn">${esc(t('flag_out_of_range'))}</span>` : (a.geoFlag==='in_range' ? `<span class="pill ok">${esc(t('flag_in_range'))}</span>` : '');
-    const row=el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(a.employeeName)} · ${a.type==='in'?esc(t('clock_in_short')):esc(t('clock_out_short'))}</div><div class="lr-sub">${fmtDateTime(a.createdAt)}${a.branch?' · '+esc(a.branch):''}${a.distanceM!=null?esc(t('dist_to_device'))+a.distanceM+esc(t('dist_meters')):''}${a.manual?' · '+esc(t('flag_manual')):''}</div></div>${a.cover?`<span class="pill accent">${esc(t('flag_cover'))}</span>`:''}${a.photo?`<span class="icon-sm" style="color:var(--ink-faint); flex-shrink:0;">${ICONS.camera}</span>`:''}${flag}</div>`);
+    const row=el(`<div class="list-row">${ib(a.type==='in'?'login':'logout', a.type==='in'?'c-green':'c-grey')}<div class="lr-main"><div class="lr-title">${esc(a.employeeName)} · ${a.type==='in'?esc(t('clock_in_short')):esc(t('clock_out_short'))}</div><div class="lr-sub">${fmtDateTime(a.createdAt)}${a.branch?' · '+esc(a.branch):''}${a.distanceM!=null?esc(t('dist_to_device'))+a.distanceM+esc(t('dist_meters')):''}${a.manual?' · '+esc(t('flag_manual')):''}</div></div>${a.cover?`<span class="pill accent">${esc(t('flag_cover'))}</span>`:''}${a.photo?`<span class="icon-sm" style="color:var(--ink-faint); flex-shrink:0;">${ICONS.camera}</span>`:''}${flag}</div>`);
     row.onclick=()=>openAttendanceDetail(a);
     list.appendChild(row);
   });
@@ -2519,7 +2555,7 @@ function memoRow(m){
   const audienceLabel = m.audience==='all' ? t('memo_audience_all') : m.audience;
   const stats = canManageStaff() ? ` · ${t('memo_read_stats_prefix')}${readCount}/${members.length}` : '';
   const pill = m.important ? `<span class="pill critical">${esc(t('memo_important'))}</span>` : (unread ? `<span class="pill accent">${esc(t('memo_unread'))}</span>` : '');
-  const row=el(`<div class="list-row">${m.image?`<img class="lr-thumb" src="${m.image}">`:''}<div class="lr-main"><div class="lr-title" style="${unread?'':'font-weight:500;'}">${esc(m.title)}</div><div class="lr-sub">${esc(m.authorName||'')} · ${fmtDateTime(m.createdAt)} · ${esc(audienceLabel)}${esc(stats)}</div></div>${pill}</div>`);
+  const row=el(`<div class="list-row">${m.image?`<img class="lr-thumb" src="${m.image}">`:ib('megaphone', m.important?'c-red':'c-orange')}<div class="lr-main"><div class="lr-title" style="${unread?'':'font-weight:500;'}">${esc(m.title)}</div><div class="lr-sub">${esc(m.authorName||'')} · ${fmtDateTime(m.createdAt)} · ${esc(audienceLabel)}${esc(stats)}</div></div>${pill}</div>`);
   row.onclick=()=>openMemoDetail(m);
   return row;
 }
@@ -2668,7 +2704,7 @@ function openNotifSheet(){
   const body=el('<div></div>');
   if(items.length===0) body.appendChild(el(`<div class="empty">${ICONS.inbox}<div>${esc(t('notif_empty'))}</div></div>`));
   items.forEach(n=>{
-    const row=el(`<div class="notif-row"><span class="notif-dot ${n.unread?'':'seen'}"></span><div class="lr-main"><div class="lr-title" style="white-space:normal; ${n.unread?'':'font-weight:500;'}">${esc(n.title)}</div><div class="lr-sub" style="white-space:normal;">${esc(n.sub||'')}</div></div></div>`);
+    const row=el(`<div class="notif-row"><span class="notif-dot ${n.unread?'':'seen'}"></span>${notifIcon(n.id)}<div class="lr-main"><div class="lr-title" style="white-space:normal; ${n.unread?'':'font-weight:500;'}">${esc(n.title)}</div><div class="lr-sub" style="white-space:normal;">${esc(n.sub||'')}</div></div></div>`);
     row.onclick=()=>{ closeSheet(); n.onClick && n.onClick(); renderApp(); };
     body.appendChild(row);
   });
@@ -2903,7 +2939,7 @@ function meView(){
   c.appendChild(el(`<a class="btn block" style="margin:-4px 0 12px; text-decoration:none;" href="${GUIDE_URL}" target="_blank" rel="noopener">📖 ${esc(t('btn_help'))}</a>`));
 
   // my schedule
-  c.appendChild(el(`<h2 class="sec">${esc(t('my_schedule'))}</h2>`));
+  c.appendChild(secH('calendar','c-blue',t('my_schedule')));
   const mySched = S.schedules.filter(s=>s.employeeId===e.id && s.date>=todayStr()).slice(0,6);
   const schedList=el('<div class="list"></div>');
   if(mySched.length===0) schedList.appendChild(el(`<div class="hint">${esc(t('no_upcoming_shifts'))}</div>`));
@@ -3730,14 +3766,14 @@ function tasksView(){
   const hoBtn=el(`<button class="btn block" style="margin:8px 0 14px;">${ICONS.plus}<span>${esc(t('btn_handover'))}</span></button>`);
   hoBtn.onclick=()=>openHandoverForm(branch);
   c.appendChild(hoBtn);
-  c.appendChild(el(`<h2 class="sec" style="margin-top:0;">${esc(t('tasks_title'))} · ${esc(branch)} · ${today}</h2>`));
+  c.appendChild(el(`<h2 class="sec" style="margin-top:0;">${ib('check','c-green','sm')}${esc(t('tasks_title'))} · ${esc(branch)} · ${today}</h2>`));
   const tps=templatesForBranch(branch);
   const list=el('<div class="list"></div>');
   if(tps.length===0) list.appendChild(el(`<div class="hint">${esc(t('tasks_no_templates'))}</div>`));
   tps.forEach(tp=>{
     const run=runFor(tp,branch,today); const st=runStatus(run,tp); const p=runProgress(run,tp);
     const who = run ? (st==='done' ? (run.completedBy||'')+' '+fmtTime(run.completedAt||run.createdAt) : (run.startedBy||'')) : '';
-    const row=el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(tp.name)} <span class="pill n" style="font-size:10px;">${esc(shiftKindLabel(tp.shift))}</span></div><div class="lr-sub">${p.done}/${p.total}${who?' · '+esc(who):''}</div></div><span class="pill ${TASK_STATUS[st].c}">${esc(t(TASK_STATUS[st].t))}</span></div>`);
+    const row=el(`<div class="list-row">${ib('check', tp.shift==='open'?'c-amber':(tp.shift==='close'?'c-purple':'c-blue'))}<div class="lr-main"><div class="lr-title">${esc(tp.name)} <span class="pill n" style="font-size:10px;">${esc(shiftKindLabel(tp.shift))}</span></div><div class="lr-sub">${p.done}/${p.total}${who?' · '+esc(who):''}</div></div><span class="pill ${TASK_STATUS[st].c}">${esc(t(TASK_STATUS[st].t))}</span></div>`);
     row.onclick=()=>openTaskRun(tp, branch, today);
     list.appendChild(row);
   });
@@ -3872,7 +3908,7 @@ function tempOk(eq, v){ if(v==null||isNaN(v)) return true; if(hasNum(eq.min) && 
 function rangeLabel(eq){ return (hasNum(eq.min)?eq.min:'')+' ~ '+(hasNum(eq.max)?eq.max:'')+' °C'; }
 function temperatureBlock(branch){
   const c=el('<div></div>');
-  c.appendChild(el(`<h2 class="sec">${esc(t('temp_title'))}</h2>`));
+  c.appendChild(secH('thermo','c-teal',t('temp_title')));
   const eqs=equipmentFor(branch);
   if(eqs.length===0){ c.appendChild(el(`<div class="hint">${esc(t('temp_no_equipment'))}</div>`)); return c; }
   const list=el('<div class="list"></div>');
@@ -3880,7 +3916,7 @@ function temperatureBlock(branch){
     const last=lastTempFor(eq.id);
     const lastTxt = last ? fmtDateTime(last.createdAt)+' · '+last.value+' °C · '+esc(last.employeeName||'') : esc(t('temp_none'));
     const pill = last ? `<span class="pill ${last.ok===false?'critical':'ok'}">${esc(last.ok===false?t('temp_out_of_range'):t('temp_ok'))}</span>` : '';
-    const row=el(`<div class="list-row" style="flex-wrap:wrap; cursor:default;"><div class="lr-main" style="min-width:160px;"><div class="lr-title">${esc(eq.name)} <span class="pill n" style="font-size:10px;">${esc(equipKindLabel(eq.kind))}</span></div><div class="lr-sub">${esc(rangeLabel(eq))} · ${lastTxt}</div></div>${pill}<div class="row" style="gap:6px; flex-basis:100%;"><input type="number" step="0.1" placeholder="°C" style="flex:1; min-width:80px;"><button class="btn sm primary">${esc(t('btn_log_temp'))}</button></div></div>`);
+    const row=el(`<div class="list-row" style="flex-wrap:wrap; cursor:default;">${ib('thermo','c-teal')}<div class="lr-main" style="min-width:160px;"><div class="lr-title">${esc(eq.name)} <span class="pill n" style="font-size:10px;">${esc(equipKindLabel(eq.kind))}</span></div><div class="lr-sub">${esc(rangeLabel(eq))} · ${lastTxt}</div></div>${pill}<div class="row" style="gap:6px; flex-basis:100%;"><input type="number" step="0.1" placeholder="°C" style="flex:1; min-width:80px;"><button class="btn sm primary">${esc(t('btn_log_temp'))}</button></div></div>`);
     const inp=row.querySelector('input'), btn=row.querySelector('button');
     btn.onclick=async ()=>{
       if(inp.value===''){ inp.focus(); return; }
@@ -4128,8 +4164,68 @@ function incidentsBlock(branch){
   c.appendChild(el(`<div class="sec-row"><h2 class="sec" style="margin:0;">${esc(t('admin_incidents'))}</h2></div>`));
   const list=el('<div class="list"></div>');
   if(rows.length===0) list.appendChild(el(`<div class="hint">${esc(t('empty_no_data'))}</div>`));
-  rows.forEach(i=>{ const r=el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(incidentKindLabel(i.kind))}${!branch&&i.branch?' · '+esc(i.branch):''}</div><div class="lr-sub">${fmtDateTime(i.createdAt)} · ${esc(i.employeeName||'')} · ${esc((i.description||'').slice(0,40))}</div></div><span class="pill ${i.status==='open'?'critical':'ok'}">${esc(i.status==='open'?t('inc_open'):t('inc_resolved'))}</span></div>`); r.onclick=()=>openIncidentDetail(i); list.appendChild(r); });
+  rows.forEach(i=>{ const r=el(`<div class="list-row">${ib('alert','c-red')}<div class="lr-main"><div class="lr-title">${esc(incidentKindLabel(i.kind))}${!branch&&i.branch?' · '+esc(i.branch):''}</div><div class="lr-sub">${fmtDateTime(i.createdAt)} · ${esc(i.employeeName||'')} · ${esc((i.description||'').slice(0,40))}</div></div><span class="pill ${i.status==='open'?'critical':'ok'}">${esc(i.status==='open'?t('inc_open'):t('inc_resolved'))}</span></div>`); r.onclick=()=>openIncidentDetail(i); list.appendChild(r); });
   c.appendChild(list); return c;
+}
+
+/* ============================ VISUAL REFRESH: ICON BADGES, HELLO CARD, FUNCTION GRID ============================ */
+function ib(icon, cls, size){ return `<span class="ib ${cls||'c-grey'} ${size||''}">${ICONS[icon]||''}</span>`; }
+function secH(icon, cls, text){ return el(`<h2 class="sec">${ib(icon, cls, 'sm')}${esc(text)}</h2>`); }
+function helloCard(e, clockedIn, last){
+  const hr=new Date().getHours();
+  const greet = t(hr<11?'hello_morning':(hr<17?'hello_afternoon':'hello_evening'));
+  const status = clockedIn ? t('home_status_working') : (last ? t('home_status_off') : t('home_status_none'));
+  const card=el(`<div class="hello"><span class="av">${esc(e.name.slice(0,1))}</span><div class="lr-main"><div class="g">${esc(greet)}，${esc(e.name)}</div><div class="s">${esc(e.homeBranch||'')}${e.homeBranch?' · ':''}${esc(e.jobTitle||(e.role==='admin'?t('role_admin'):e.role==='manager'?t('role_manager'):t('role_staff')))}</div></div><span class="pill ${clockedIn?'ok':'n'}" style="background:rgba(255,255,255,.18); color:#fff; border-color:transparent;">${esc(status)}</span></div>`);
+  return card;
+}
+function funcGrid(clockedIn){
+  const e=currentEmployee(); const branch=defaultClockBranch()||e.homeBranch||'';
+  const unreadMemos = visibleMemos().filter(m=>!memoIsReadBy(m.id,e.id)).length;
+  const scopeIds = isAdmin() ? null : new Set(S.employees.filter(x=>x.homeBranch===myBranch()).map(x=>x.id));
+  const pendingCount = canManageStaff() ? (S.leaveRequests.filter(l=>l.status==='pending' && (!scopeIds||scopeIds.has(l.employeeId))).length + S.punchRequests.filter(r=>r.status==='pending' && (!scopeIds||scopeIds.has(r.employeeId))).length + S.swapRequests.filter(r=>r.status==='pending' && (!scopeIds||scopeIds.has(r.employeeId))).length) : 0;
+  const hasBeer = S.taps.some(tp=>tp.zone===branch) || S.beerProducts.length>0 && (branch==='BR19'||branch==='BR20');
+  const tiles=[
+    {k:'clock', icon: clockedIn?'logout':'login', cls: clockedIn?'c-grey':'c-blue', label: clockedIn?t('tile_clock_out'):t('tile_clock_in'), go:()=>{ location.hash='#clock'; }},
+    {k:'tasks', icon:'check', cls:'c-green', label:t('tile_tasks'), go:()=>{ location.hash='#tasks'; }},
+    {k:'handover', icon:'handover', cls:'c-teal', label:t('tile_handover'), go:()=>{ if(branch) openHandoverForm(branch); else location.hash='#tasks'; }},
+    {k:'temp', icon:'thermo', cls:'c-teal', label:t('tile_temp'), go:()=>{ location.hash='#tasks'; setTimeout(()=>{ const h=[...document.querySelectorAll('#view h2')].find(x=>x.textContent.includes(t('temp_title'))); if(h) h.scrollIntoView({behavior:'smooth'}); },300); }},
+    {k:'leave', icon:'calendar', cls:'c-purple', label:t('tile_leave'), go:()=>openLeaveForm()},
+    {k:'punch', icon:'clock', cls:'c-amber', label:t('tile_punch'), go:()=>openPunchRequestForm()},
+    {k:'swap', icon:'swap', cls:'c-amber', label:t('tile_swap'), go:()=>openSwapRequestForm()},
+    {k:'memos', icon:'megaphone', cls:'c-orange', label:t('tile_memos'), count:unreadMemos, go:()=>{ location.hash='#memos'; }},
+    {k:'fault', icon:'wrench', cls:'c-orange', label:t('tile_fault'), go:()=>openFaultForm()},
+    {k:'incident', icon:'alert', cls:'c-red', label:t('tile_incident'), go:()=>openIncidentForm()},
+    {k:'sos', icon:'siren', cls:'c-red', label:t('tile_sos'), go:()=>openSosSheet()},
+    {k:'stock', icon:'box', cls:'c-blue', label:t('tile_stock'), go:()=>{ S.stockSection='snacks'; location.hash='#stock'; }},
+  ];
+  if(hasBeer) tiles.push({k:'beer', icon:'beer', cls:'c-amber', label:t('tile_beer'), go:()=>{ S.stockSection='beer'; location.hash='#stock'; }});
+  tiles.push({k:'equip', icon:'machine', cls:'c-grey', label:t('tile_equip'), go:()=>{ location.hash='#equip'; }});
+  if(canManageStaff()){
+    tiles.push({k:'approvals', icon:'users', cls:'c-purple', label:t('tile_approvals'), count:pendingCount, go:()=>{ location.hash='#me'; setTimeout(()=>{ const h=[...document.querySelectorAll('#view h2')].find(x=>x.textContent.includes(t('admin_pending_prefix').replace(/[（(].*$/,''))); if(h) h.scrollIntoView({behavior:'smooth'}); },300); }});
+    tiles.push({k:'schedule', icon:'calendar', cls:'c-blue', label:t('tile_schedule'), go:()=>{ location.hash='#me'; setTimeout(()=>{ const h=[...document.querySelectorAll('#view h2')].find(x=>x.textContent.includes(t('admin_schedule_mgmt'))); if(h) h.scrollIntoView({behavior:'smooth'}); },300); }});
+    tiles.push({k:'report', icon:'chart', cls:'c-green', label:t('tile_report'), go:()=>{ S.clockSub='report'; location.hash='#clock'; }});
+    tiles.push({k:'staff', icon:'users', cls:'c-blue', label:t('tile_staff'), go:()=>{ location.hash='#me'; setTimeout(()=>{ const h=[...document.querySelectorAll('#view h2')].find(x=>x.textContent.includes(t('admin_staff_mgmt'))); if(h) h.scrollIntoView({behavior:'smooth'}); },300); }});
+  }
+  if(isAdmin()){
+    tiles.push({k:'overview', icon:'check', cls:'c-green', label:t('tile_overview'), go:()=>{ S.taskBranch='__all__'; location.hash='#tasks'; }});
+    tiles.push({k:'settings', icon:'gear', cls:'c-grey', label:t('tile_settings'), go:()=>{ location.hash='#me'; setTimeout(()=>{ const h=[...document.querySelectorAll('#view h2')].find(x=>x.textContent.includes(t('admin_settings'))); if(h) h.scrollIntoView({behavior:'smooth'}); },300); }});
+  }
+  tiles.push({k:'help', icon:'book', cls:'c-grey', label:t('tile_help'), go:()=>{ window.open(GUIDE_URL,'_blank','noopener'); }});
+  const wrap=el('<div></div>');
+  wrap.appendChild(secH('grid','c-blue',t('func_title')));
+  const grid=el('<div class="fgrid"></div>');
+  tiles.forEach(tl=>{
+    const b=el(`<button class="ftile" type="button"><span class="bd">${ib(tl.icon, tl.cls, 'lg')}${tl.count?`<span class="cnt">${tl.count>99?'99+':tl.count}</span>`:''}</span><span class="lb">${esc(tl.label)}</span></button>`);
+    b.onclick=tl.go; grid.appendChild(b);
+  });
+  wrap.appendChild(grid);
+  return wrap;
+}
+function notifIcon(id){
+  const p=String(id).split(':')[0];
+  const map={memo:['megaphone','c-orange'], leave:['calendar','c-purple'], pending:['calendar','c-purple'], sched:['calendar','c-blue'], punch:['clock','c-amber'], ppunch:['clock','c-amber'], swap:['swap','c-amber'], pswap:['swap','c-amber'], fault:['wrench','c-orange'], keg:['beer','c-amber'], docexp:['users','c-purple'], temp:['thermo','c-teal'], sos:['siren','c-red'], inc:['alert','c-red'], safety:['siren','c-red']};
+  const m=map[p]||['bell','c-grey'];
+  return ib(m[0], m[1], 'sm');
 }
 
 /* ============================ START ============================ */
