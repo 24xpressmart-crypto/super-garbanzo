@@ -245,6 +245,15 @@
   #nav button svg{width:21px; height:21px;}
   #nav button .lb{font-size:10.5px; font-weight:700;}
   #nav button.on{color:var(--accent);}
+  .weekgrid{border-collapse:collapse; min-width:560px; font-size:12px; width:100%;}
+  .weekgrid th,.weekgrid td{border-bottom:1px solid var(--line); padding:6px 4px; text-align:center; vertical-align:middle;}
+  .weekgrid th{font-size:11px; color:var(--ink-soft); font-weight:700; line-height:1.3;}
+  .weekgrid th.today{color:var(--accent);}
+  .weekgrid td.nm{text-align:left; font-weight:700; white-space:nowrap; max-width:120px; overflow:hidden; text-overflow:ellipsis; position:sticky; left:0; background:inherit; padding-left:10px;}
+  .weekgrid td{cursor:pointer; min-width:62px;}
+  .weekgrid td.has{background:var(--accent-soft);}
+  .weekgrid .sh{display:block; font-size:11px; font-weight:800;}
+  .weekgrid .plus{color:var(--ink-faint); font-size:14px;}
 
   #modalWrap{position:fixed; inset:0; z-index:100; display:none;}
   #modalWrap.show{display:block;}
@@ -346,6 +355,7 @@ const ICONS = {
   cloudOff:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 18.5H7a4 4 0 0 1-.4-8 5.5 5.5 0 0 1 10.4-2.2 4.2 4.2 0 0 1 .5 10.2z"/><path d="M3 3l18 18"/></svg>',
   download:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0-4-4m4 4 4-4"/><path d="M4 19h16"/></svg>',
   check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3.5" width="16" height="17" rx="2"/><path d="m8 12 2.5 2.5L16 9"/></svg>',
+  alert:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 21 19.5H3z"/><path d="M12 9.5v4.5M12 17h.01"/></svg>',
 };
 
 /* ============================ CONFIG ============================ */
@@ -389,6 +399,13 @@ function leaveBalanceSuffix(l){
 /* ============================ I18N ============================ */
 const I18N = {
   zh: {
+    week_this:'本周', btn_copy_last_week:'复制上周', week_hint:'点格子添加或删除班次；用班次模板一键排班。', field_shift_template:'班次模板', toast_no_last_week:'上周没有排班可复制', toast_week_already:'本周已有相同的排班', confirm_copy_week_prefix:'将复制 ', confirm_copy_week_suffix:' 个班次到本周？',
+    field_night_start:'夜班开始时间', field_night_end:'夜班结束时间', field_safety_interval:'夜班安全确认间隔（分钟）', field_emergency_phone:'HQ 紧急电话', field_shift_templates:'班次模板（每行一个：名称=开始-结束）',
+    safety_title:'夜班安全确认', safety_first:'上班后请按一下，确认你在店里一切正常', safety_overdue:'已超时，请立即确认', safety_next_prefix:'下次确认还有 ', safety_next_suffix:' 分钟', btn_safety_ok:'我在店里，一切正常', toast_safety_ok:'已记录，注意安全',
+    btn_incident:'客诉 / 事故', btn_sos:'紧急求助 SOS', sos_hint:'按下后店经理和 HQ 会立刻收到你的位置。遇到危险请先拨打 999。', btn_sos_send:'发送求助', sos_sent:'已发送，店经理与 HQ 已收到', sos_hq:'HQ 紧急电话', sheet_sos:'紧急求助',
+    field_incident_kind:'类型', inc_complaint:'顾客投诉', inc_accident:'事故 / 受伤', inc_theft:'盗窃 / 治安', inc_power:'停电 / 设备故障', inc_other:'其他', field_description:'描述', toast_incident_sent:'已提交，店经理与 HQ 已收到通知', sheet_incident:'客诉 / 事故记录', inc_open:'待处理', inc_resolved:'已处理', btn_mark_resolved:'标记已处理', admin_incidents:'客诉与事故',
+    notif_sos:'紧急求助', notif_incident:'新客诉 / 事故', notif_safety_missed:'夜班未确认安全', btn_help:'使用手册 / User Guide',
+    session_expired:'登录已过期，请重新登录', err_pin_locked:'尝试次数过多，请 15 分钟后再试', err_pin_exists:'PIN 已设置，请直接登录', err_pin_inactive:'此账号已停用，请联系管理员', confirm_logout:'确定退出登录？',
     temp_title:'温度记录', admin_equipment:'温控设备', sheet_equipment:'温控设备', field_equipment_name:'设备名称', field_kind:'类型',
     kind_chiller:'冷柜', kind_freezer:'冰柜', kind_hot:'热柜', kind_beer:'鲜啤', kind_coffee:'咖啡机', kind_other:'其他', field_min:'最低 (°C)', field_max:'最高 (°C)', field_branch:'门店',
     btn_log_temp:'记录', temp_none:'尚无记录', temp_out_of_range:'超出范围', temp_ok:'正常', toast_temp_saved:'已记录', toast_temp_alert:'温度超出范围，请检查设备并通知店经理', notif_temp_alert:'温度超标',
@@ -582,6 +599,13 @@ const I18N = {
     toast_deleted:'已删除',
   },
   en: {
+    week_this:'This week', btn_copy_last_week:'Copy last week', week_hint:'Tap a cell to add or remove a shift; use templates for one-tap scheduling.', field_shift_template:'Shift template', toast_no_last_week:'No shifts last week to copy', toast_week_already:'This week already has those shifts', confirm_copy_week_prefix:'Copy ', confirm_copy_week_suffix:' shifts into this week?',
+    field_night_start:'Night shift starts', field_night_end:'Night shift ends', field_safety_interval:'Night safety check interval (minutes)', field_emergency_phone:'HQ emergency phone', field_shift_templates:'Shift templates (one per line: name=start-end)',
+    safety_title:'Night safety check', safety_first:'After clocking in, tap once to confirm you are OK', safety_overdue:'Overdue, please confirm now', safety_next_prefix:'Next check in ', safety_next_suffix:' min', btn_safety_ok:'I am in the store and OK', toast_safety_ok:'Recorded, stay safe',
+    btn_incident:'Complaint / incident', btn_sos:'Emergency SOS', sos_hint:'Your manager and HQ receive your location immediately. In danger, call 999 first.', btn_sos_send:'Send SOS', sos_sent:'Sent, manager and HQ notified', sos_hq:'HQ emergency line', sheet_sos:'Emergency',
+    field_incident_kind:'Type', inc_complaint:'Customer complaint', inc_accident:'Accident / injury', inc_theft:'Theft / security', inc_power:'Power / equipment failure', inc_other:'Other', field_description:'Description', toast_incident_sent:'Submitted, manager and HQ notified', sheet_incident:'Complaint / incident', inc_open:'Open', inc_resolved:'Resolved', btn_mark_resolved:'Mark resolved', admin_incidents:'Complaints & incidents',
+    notif_sos:'Emergency SOS', notif_incident:'New complaint / incident', notif_safety_missed:'Night safety check missed', btn_help:'User guide / 使用手册',
+    session_expired:'Session expired, please log in again', err_pin_locked:'Too many attempts, try again in 15 minutes', err_pin_exists:'PIN already set, please log in', err_pin_inactive:'This account is inactive, contact an admin', confirm_logout:'Log out?',
     temp_title:'Temperature log', admin_equipment:'Temperature equipment', sheet_equipment:'Equipment', field_equipment_name:'Equipment name', field_kind:'Type',
     kind_chiller:'Chiller', kind_freezer:'Freezer', kind_hot:'Hot cabinet', kind_beer:'Draft beer', kind_coffee:'Coffee machine', kind_other:'Other', field_min:'Min (°C)', field_max:'Max (°C)', field_branch:'Store',
     btn_log_temp:'Log', temp_none:'No reading yet', temp_out_of_range:'Out of range', temp_ok:'OK', toast_temp_saved:'Logged', toast_temp_alert:'Out of range: check the unit and tell the store manager', notif_temp_alert:'Temperature alert',
@@ -774,8 +798,208 @@ const I18N = {
     toast_photo_too_large:'Image too large, skipped — please try another one', toast_photo_failed:'Failed to process image',
     toast_deleted:'Deleted',
   },
+  ms: {
+    week_this:'Minggu ini', btn_copy_last_week:'Salin minggu lepas', week_hint:'Ketik petak untuk tambah atau padam syif; guna templat untuk jadual satu ketikan.', field_shift_template:'Templat syif', toast_no_last_week:'Tiada syif minggu lepas untuk disalin', toast_week_already:'Minggu ini sudah ada syif yang sama', confirm_copy_week_prefix:'Salin ', confirm_copy_week_suffix:' syif ke minggu ini?',
+    field_night_start:'Syif malam bermula', field_night_end:'Syif malam tamat', field_safety_interval:'Selang semakan keselamatan malam (minit)', field_emergency_phone:'Telefon kecemasan HQ', field_shift_templates:'Templat syif (satu sebaris: nama=mula-tamat)',
+    safety_title:'Semakan keselamatan syif malam', safety_first:'Selepas daftar masuk, ketik sekali untuk sahkan anda OK', safety_overdue:'Sudah lewat, sila sahkan sekarang', safety_next_prefix:'Semakan seterusnya dalam ', safety_next_suffix:' minit', btn_safety_ok:'Saya di kedai dan OK', toast_safety_ok:'Direkod, jaga keselamatan',
+    btn_incident:'Aduan / insiden', btn_sos:'Kecemasan SOS', sos_hint:'Pengurus dan HQ akan terima lokasi anda serta-merta. Jika bahaya, telefon 999 dahulu.', btn_sos_send:'Hantar SOS', sos_sent:'Dihantar, pengurus dan HQ dimaklumkan', sos_hq:'Talian kecemasan HQ', sheet_sos:'Kecemasan',
+    field_incident_kind:'Jenis', inc_complaint:'Aduan pelanggan', inc_accident:'Kemalangan / kecederaan', inc_theft:'Kecurian / keselamatan', inc_power:'Bekalan elektrik / kerosakan peralatan', inc_other:'Lain-lain', field_description:'Keterangan', toast_incident_sent:'Dihantar, pengurus dan HQ dimaklumkan', sheet_incident:'Aduan / insiden', inc_open:'Belum selesai', inc_resolved:'Selesai', btn_mark_resolved:'Tanda selesai', admin_incidents:'Aduan & insiden',
+    notif_sos:'Kecemasan SOS', notif_incident:'Aduan / insiden baharu', notif_safety_missed:'Semakan keselamatan malam terlepas', btn_help:'Panduan pengguna / User guide',
+    session_expired:'Sesi tamat, sila log masuk semula', err_pin_locked:'Terlalu banyak percubaan, cuba lagi dalam 15 minit', err_pin_exists:'PIN sudah ditetapkan, sila log masuk', err_pin_inactive:'Akaun ini tidak aktif, hubungi admin', confirm_logout:'Log keluar?',
+    temp_title:'Rekod suhu', admin_equipment:'Peralatan suhu', sheet_equipment:'Peralatan', field_equipment_name:'Nama peralatan', field_kind:'Jenis',
+    kind_chiller:'Peti sejuk (chiller)', kind_freezer:'Peti beku', kind_hot:'Kabinet panas', kind_beer:'Bir draf', kind_coffee:'Mesin kopi', kind_other:'Lain-lain', field_min:'Min (°C)', field_max:'Maks (°C)', field_branch:'Kedai',
+    btn_log_temp:'Rekod', temp_none:'Belum ada bacaan', temp_out_of_range:'Luar julat', temp_ok:'OK', toast_temp_saved:'Direkod', toast_temp_alert:'Luar julat: periksa unit dan maklumkan pengurus kedai', notif_temp_alert:'Amaran suhu',
+    temp_no_equipment:'Belum ada peralatan ditetapkan untuk kedai ini (pengurus atau admin tambah di Saya → Peralatan suhu)',
+    field_passport_expiry:'Tarikh luput pasport', field_permit_expiry:'Tarikh luput permit kerja', field_contract_expiry:'Tarikh luput kontrak', admin_doc_expiry:'Dokumen akan luput (60 hari akan datang)',
+    doc_expired:'Luput', doc_days_ago:' hari lepas', doc_today:'Luput hari ini', doc_days_prefix:'dalam ', doc_days_suffix:' hari', notif_doc_expiry:'Dokumen hampir luput', doc_none:'Tiada dokumen luput dalam 60 hari', doc_passport:'Pasport', doc_permit:'Permit kerja', doc_contract:'Kontrak',
+    nav_tasks:'Tugas', tasks_title:'Tugas hari ini', shift_open:'Buka kedai', shift_mid:'Pertukaran syif', shift_close:'Tutup kedai', task_not_started:'Belum mula', task_in_progress:'Sedang dibuat', task_done:'Selesai',
+    btn_complete_checklist:'Selesaikan senarai semak', task_photo_required:'Perlu gambar', task_need_photo:'Ambil gambar untuk item ini dahulu', toast_checklist_done:'Senarai semak selesai',
+    btn_handover:'Tulis nota serah tugas', sheet_handover:'Serah tugas syif', field_shift:'Syif', field_cash:'Tunai diserahkan (RM)', field_pending_items:'Perkara tertunggak', field_issues:'Masalah',
+    handover_last:'Serah tugas terakhir', handover_none:'Tiada nota serah tugas dalam 24 jam lepas', handover_recent:'Serah tugas terkini',
+    tasks_no_templates:'Belum ada senarai semak untuk kedai ini (admin tambah di Saya → Templat senarai semak)', admin_task_templates:'Templat senarai semak', sheet_task_template:'Templat senarai semak',
+    field_template_name:'Nama senarai semak', field_branches_opt:'Kedai (all, atau kod kedai dipisah koma)', field_items:'Item (satu sebaris, mula dengan * jika perlu gambar)',
+    tasks_overview:'Penyiapan mengikut kedai', tasks_pick_branch:'Pilih kedai di halaman Daftar Masuk dahulu', home_tasks_today:'Tugas hari ini', label_items:'item',
+    clock_branch_label:'Kedai', clock_branch_none:'Tiada kedai (semak mesin terdekat)', clock_branch_home:'kedai sendiri', geo_branch_no_coords:'Kedai ini belum ada lokasi, jarak tidak disemak',
+    flag_cover:'Bantu kedai lain', flag_manual:'Manual', report_cover:'Bantu kedai lain', btn_export_detail:'Eksport butiran harian',
+    btn_punch_request:'Terlupa daftar', btn_swap_request:'Tukar syif', sheet_punch:'Permohonan terlupa daftar', sheet_swap:'Permohonan tukar syif',
+    field_punch_type:'Jenis daftar', field_time:'Masa', field_branch_opt:'Kedai (pilihan)', field_my_shift:'Syif saya untuk diserahkan', field_swap_with:'Tukar dengan', field_take_shift:'Ambil syif mereka (pilihan)', opt_none:'Tiada',
+    err_no_upcoming_shift:'Anda tiada syif akan datang', err_take_shift_owner:'Syif yang diambil mesti milik rakan tukar', punch_label:'Daftar', swap_label:'Tukar', toast_request_submitted:'Permohonan dihantar',
+    pending_punch_title:'Permohonan daftar menunggu', pending_swap_title:'Tukar syif menunggu',
+    notif_punch_approved:'Permohonan daftar diluluskan', notif_punch_rejected:'Permohonan daftar ditolak', notif_swap_approved:'Tukar syif diluluskan', notif_swap_rejected:'Tukar syif ditolak', notif_pending_punch:'Permohonan daftar menunggu', notif_pending_swap:'Permohonan tukar menunggu',
+    branch_location_title:'Lokasi kedai', branch_location_set:'Ditetapkan', branch_location_unset:'Belum ditetapkan: ketik butang di bawah semasa berada di kedai supaya daftar masuk boleh disemak', btn_set_branch_location:'Guna lokasi saya sebagai kedudukan kedai', btn_use_my_location:'Guna lokasi saya',
+    toast_location_saved:'Lokasi kedai disimpan', toast_location_filled:'Koordinat diisi', swap_gives:'serah', swap_takes:'ambil',
+    nav_home:'Utama', nav_clock:'Daftar', nav_stock:'Stok', nav_equip:'Peralatan', nav_me:'Saya',
+    insp_clean:'Luaran / kaca bersih', insp_lane:'Lorong & saluran keluar berfungsi', insp_pay:'Bayaran QR / kad berfungsi',
+    insp_lock:'Kunci pintu & keselamatan baik', insp_change:'Baki / pemulangan syiling berfungsi', insp_temp:'Penyejukan / suhu normal (jika berkenaan)',
+    sev_low:'Rendah', sev_medium:'Sederhana', sev_high:'Tinggi',
+    fault_open:'Menunggu', fault_in_progress:'Sedang dibaiki', fault_resolved:'Selesai',
+    leave_pending:'Menunggu kelulusan', leave_approved:'Diluluskan', leave_rejected:'Ditolak',
+    stock_out:'Kehabisan stok', stock_low:'Stok rendah', stock_ok:'Normal',
+    deleted_placeholder:'(dipadam)', unzoned:'Tiada zon',
+    role_admin:'Admin', role_staff:'Staf', role_manager:'Pengurus cawangan',
+    field_home_branch:'Cawangan asal (pilihan)', ph_home_branch:'cth. S01',
+    branch_unassigned:'Tiada cawangan', who_am_i_pick_branch:'Pilih cawangan anda',
+    btn_change_branch:'Tukar cawangan', admin_functions_manager:'Alat pengurus cawangan',
+    empty_no_branches:'Belum ada staf ditetapkan cawangan',
+    connecting_title:'Menyambung…', connecting_body:'Sedang menyambung ke data, sila tunggu.',
+    unavailable_title:'Tidak dapat sambung ke pangkalan data sekarang', unavailable_body:'Semak sambungan internet dan muat semula. Jika berterusan, minta admin semak tetapan pangkalan data.',
+    who_unselected:'Belum dipilih',
+    err_invalid_argument:'Data yang dihantar bermasalah — sila semak dan cuba lagi', err_resource_exhausted:'Terlalu banyak tindakan berturut-turut, cuba sebentar lagi',
+    err_quota_exceeded:'Had storan dicapai — minta admin kosongkan data lama', err_unavailable:'Rangkaian tidak tersedia buat sementara, cuba lagi',
+    err_revoked:'Anda tiada akses lagi — sila muat semula halaman', err_not_granted:'Paparan ini tidak diberi akses data',
+    err_generic:'Tindakan gagal, sila cuba lagi',
+    onboarding_welcome_prefix:'Selamat datang ke ', onboarding_intro:'Belum ada senarai staf. Tambah diri anda sebagai "Admin" dahulu, kemudian tambah staf, mesin dan produk lain.',
+    field_your_name:'Nama anda', ph_your_name:'cth. Pengurus Wang', field_phone_opt:'Telefon (pilihan)', ph_phone_hint:'Supaya rakan sekerja boleh hubungi anda',
+    btn_create_admin:'Cipta akaun admin & mula', btn_creating:'Mencipta…', err_fill_name:'Sila masukkan nama', err_db_disconnected:'Data tidak bersambung',
+    toast_welcome:'Selamat datang, ',
+    who_am_i:'Siapa saya', no_active_employees:'Tiada staf aktif — sila hubungi admin',
+    memos_title:'Pengumuman', home_memos:'Pengumuman', btn_view_all:'Lihat semua', btn_post_memo:'Hantar pengumuman', empty_no_memos:'Belum ada pengumuman',
+    memo_audience_all:'Seluruh syarikat', memo_audience_label:'Hantar kepada', memo_priority:'Keutamaan', memo_priority_normal:'Biasa', memo_priority_important:'Penting',
+    field_memo_title:'Tajuk', field_memo_body:'Mesej', sheet_post_memo:'Hantar pengumuman', err_fill_memo:'Sila masukkan tajuk dan mesej', toast_memo_posted:'Pengumuman dihantar',
+    memo_unread:'Belum dibaca', memo_important:'Penting', memo_read_stats_prefix:'Dibaca ', memo_unread_by:'Belum dibaca oleh', memo_all_read:'Semua sudah baca',
+    btn_delete_memo:'Padam pengumuman', confirm_delete_memo:'Padam pengumuman ini?', memo_posted_by:'Dihantar oleh: ',
+    notif_title:'Pemberitahuan', notif_empty:'Tiada pemberitahuan baharu', notif_new_memo:'Pengumuman baharu', notif_leave_approved:'Permohonan cuti diluluskan', notif_leave_rejected:'Permohonan cuti ditolak',
+    notif_new_schedule:'Syif baharu dijadualkan', notif_pending_leave:'Permohonan cuti untuk disemak', notif_new_fault:'Laporan kerosakan baharu', notif_keg_expiring:'Tong hampir tamat kesegaran', notif_keg_expired:'Tong sudah lepas kesegaran',
+    btn_enable_browser_notif:'Hidupkan pemberitahuan pelayar', btn_disable_browser_notif:'Matikan pemberitahuan pelayar',
+    notif_browser_hint:'Pemberitahuan pelayar hanya muncul semasa app ini dibuka; tiada apa-apa diterima selepas ditutup.',
+    toast_notif_enabled:'Pemberitahuan pelayar dihidupkan', toast_notif_denied:'Pelayar menyekat kebenaran pemberitahuan — benarkan dalam tetapan pelayar dan cuba lagi', notif_unsupported:'Pelayar ini tidak menyokong pemberitahuan',
+    field_new_pin:'Tetapkan kata laluan (min. 4 aksara)', field_confirm_pin:'Sahkan kata laluan', btn_set_pin:'Tetapkan kata laluan & teruskan',
+    err_pin_len:'Kata laluan mesti sekurang-kurangnya 4 aksara', err_pin_mismatch:'Kata laluan tidak sepadan', toast_pin_set:'Kata laluan ditetapkan',
+    sheet_set_pin_prefix:'Log masuk pertama · ', pin_set_hint:'Ini kali pertama akaun ini digunakan — tetapkan kata laluan. Anda perlukannya setiap kali memilih nama anda.',
+    field_pin:'Kata laluan', btn_login:'Log masuk', err_pin_wrong:'Kata laluan salah, cuba lagi',
+    btn_reset_pin:'Set semula kata laluan staf ini', confirm_reset_pin:'Set semula kata laluan staf ini? Mereka perlu tetapkan yang baharu semasa log masuk seterusnya.',
+    toast_pin_reset:'Kata laluan diset semula',
+    id_pick_hint:'Pilih nama anda sendiri untuk teruskan. Rakan sekerja baharu minta admin tambah di Saya → Pengurusan Staf.',
+    home_overview:'Ringkasan hari ini', home_worked_today:'Daftar masuk hari ini', home_low_stock:'Item stok rendah / habis',
+    home_open_faults:'Kerosakan belum selesai', home_pending_requests:'Permohonan menunggu',
+    home_status_working:'Sedang bekerja', home_status_off:'Tamat syif', home_status_none:'Belum daftar masuk',
+    home_clock_status:'Status daftar hari ini', home_next_shift:'Syif seterusnya', home_my_pending:'Permohonan saya menunggu',
+    home_my_faults:'Laporan saya belum selesai', btn_clock_out:'Daftar keluar', btn_clock_in:'Daftar masuk', btn_report_fault:'Lapor kerosakan',
+    home_stock_alert:'Amaran stok', home_open_faults_h:'Kerosakan belum selesai',
+    clock_records:'Rekod daftar', scope_mine:'Saya', scope_all:'Semua',
+    clock_geo_hint:'Lokasi akan diminta semasa daftar masuk atau keluar', clock_geo_getting:'Mendapatkan lokasi…',
+    toast_clock_in_ok:'Daftar masuk berjaya', toast_clock_out_ok:'Daftar keluar berjaya',
+    geo_out_of_range:'⚠ Lokasi jauh dari mesin (kira-kira ', geo_out_of_range_suffix:'m)',
+    geo_in_range:'Lokasi disahkan, berhampiran mesin', geo_no_coords:'Lokasi direkod (mesin tiada koordinat, tidak dapat dibandingkan)', geo_none:'Tidak dapat lokasi, dilangkau',
+    geo_err_denied:'⚠ Kebenaran lokasi ditolak. Benarkan laman ini mengakses lokasi dalam tetapan telefon/pelayar, kemudian cuba lagi.',
+    geo_err_unavailable:'⚠ Tidak dapat kunci lokasi — pastikan GPS/perkhidmatan lokasi dihidupkan.',
+    geo_err_timeout:'⚠ Mendapatkan lokasi tamat masa — cuba di tempat lebih terbuka, cth. berhampiran tingkap.',
+    geo_err_unsupported:'⚠ Pelayar ini tidak menyokong perkhidmatan lokasi.',
+    geo_err_insecure:'⚠ Halaman ini bukan sambungan selamat (https), jadi lokasi tidak boleh diakses.',
+    empty_no_records:'Belum ada rekod', flag_out_of_range:'Luar julat', flag_in_range:'Dalam julat', no_photo_taken:'Tiada gambar semasa daftar masuk',
+    seg_snacks:'Snek & minuman', seg_beer:'Bir draf', beer_title:'Stok bir draf', empty_add_beer_product:'Tambah produk bir di "Saya" dahulu',
+    btn_receive_kegs:'Terima tong', btn_tap_keg:'Pasang tong', beer_on_tap:'Sedang digunakan', beer_no_kegs_on_tap:'Tiada tong dipasang sekarang',
+    beer_remaining:'berbaki', beer_expired:'Lepas kesegaran', beer_expiring_soon:'Hampir tamat', beer_fresh:'Segar',
+    beer_in_stock:'Stok belum dibuka', beer_no_stock:'Belum ada stok', beer_kegs_unit:'tong',
+    beer_taps_need_clean:'Saluran perlu dicuci', beer_days_since_clean_prefix:'', beer_days_since_clean_suffix:' hari sejak cucian terakhir',
+    beer_never_cleaned:'Belum ada rekod cucian', btn_mark_cleaned:'Tanda sudah dicuci',
+    beer_pending_deposit:'Deposit belum dipulangkan', btn_mark_deposit_returned:'Tanda deposit dipulangkan',
+    beer_opened_at:'Dibuka: ', beer_expiry_at:'Segar sehingga: ',
+    btn_check_level:'Semak baki', btn_empty_keg:'Tanggalkan (kosong)',
+    field_remaining_liters:'Baki (liter)', sheet_check_level:'Semak baki',
+    beer_empty_hint:'Sahkan tong ini sudah habis dan keluarkan daripada penggunaan.', field_waste_liters:'Pembaziran (liter, pilihan)',
+    btn_confirm_empty:'Sahkan kosong', sheet_empty_keg:'Tanggalkan tong',
+    err_need_beer_product:'Tambah produk bir dahulu', field_beer_product:'Bir', field_keg_qty:'Tong diterima',
+    field_batch_no_opt:'No. kelompok (pilihan)', field_supplier_opt:'Pembekal (pilihan)', sheet_receive_kegs:'Terima tong',
+    err_no_kegs_in_stock:'Tiada tong belum dibuka dalam stok', err_need_tap:'Tambah kepala paip dahulu', field_which_keg:'Tong yang mana',
+    field_which_tap:'Kepala paip yang mana', confirm_tap_replace:'Kepala paip ini sudah ada tong digunakan — gantikan?', sheet_tap_keg:'Pasang tong',
+    field_beer_name:'Nama bir', field_brand_opt:'Jenama (pilihan)', field_abv_opt:'ABV % (pilihan)',
+    field_keg_size:'Saiz tong (liter)', field_freshness_days:'Kesegaran selepas dibuka (hari)', label_freshness_days:'Segar selama ',
+    field_cost_per_keg_opt:'Kos setong (pilihan)', field_deposit_per_keg_opt:'Deposit setong (pilihan, kosong = tiada deposit)',
+    field_low_stock_kegs:'Amaran stok rendah (tong)', sheet_edit_beer_product:'Edit produk bir', sheet_add_beer_product:'Tambah produk bir',
+    field_tap_name:'Nama kepala paip', field_cleaning_interval:'Selang cucian saluran (hari)', err_fill_tap_name:'Sila masukkan nama kepala paip',
+    branch_all:'Semua cawangan',
+    sheet_edit_tap:'Edit kepala paip', sheet_add_tap:'Tambah kepala paip', admin_beer_mgmt:'Pengurusan produk bir', admin_tap_mgmt:'Pengurusan kepala paip',
+    label_last_cleaned:'Terakhir dicuci ',
+    clock_in_short:'Masuk', clock_out_short:'Keluar', dist_to_device:' · ', dist_meters:'m dari mesin',
+    stock_title:'Stok & pengisian semula', btn_back_to_list:'Kembali ke senarai', btn_view_report:'Lihat laporan', zone_all:'Semua zon',
+    empty_add_device:'Sila tambah mesin di Saya dahulu', empty_add_product:'Sila tambah produk di Saya dahulu',
+    stock_current:'Semasa ', seg_restock:'Isi semula +', seg_out:'Keluar/jual −', seg_adjust:'Pelarasan kiraan =',
+    field_qty:'Kuantiti', ph_adjust_qty:'Kiraan sebenar selepas stok dikira', field_note_opt:'Nota (pilihan)', ph_restock_note:'cth. penghantaran pembekal, hapus kira luput…',
+    btn_submit:'Hantar', err_valid_qty:'Sila masukkan kuantiti yang sah', toast_submitting:'Menghantar…', toast_stock_updated:'Stok dikemas kini',
+    sheet_stock_adjust:' · Pelarasan stok',
+    report_7day_restock:'Diisi semula, 7 hari lepas', report_consume_rank:'Paling banyak dijual', report_no_out:'Belum ada rekod jualan',
+    report_recent:'Rekod terkini', log_restock:'Isi semula', log_out:'Keluar', log_adjust:'Pelarasan kiraan',
+    equip_title:'Peralatan', tab_devices:'Mesin', tab_faults:'Kerosakan', tab_inspections:'Log pemeriksaan',
+    device_last_insp:' · Diperiksa terakhir ', device_no_insp:' · Belum diperiksa', device_fault_count:' kerosakan', device_ok:'Normal',
+    btn_inspect:'Periksa', btn_report_fault2:'Lapor kerosakan', recent_activity:'Aktiviti terkini',
+    insp_by:'Pemeriksaan · ', fault_by:'Kerosakan · ', flag_issue:'Masalah ditemui',
+    field_pick_device:'Pilih mesin', field_device:'Mesin', item_ok:'OK', item_bad:'Masalah',
+    ph_insp_note:'Terangkan masalah…', btn_submit_insp:'Hantar pemeriksaan', err_pick_device:'Sila pilih mesin',
+    toast_insp_submitted:'Pemeriksaan dihantar', confirm_issue_fault:'Masalah ditemui — hantar laporan kerosakan juga?', sheet_inspect:'Pemeriksaan peralatan',
+    field_severity:'Tahap', field_fault_desc:'Keterangan kerosakan', ph_fault_desc:'cth. lorong 3 tersekat, bayaran QR tidak berfungsi…',
+    btn_submit_fault:'Hantar laporan', err_fault_desc:'Sila terangkan kerosakan', toast_fault_submitted:'Laporan kerosakan dihantar', sheet_fault:'Laporan kerosakan',
+    filter_all:'Semua', btn_new_fault:'Laporan kerosakan baharu',
+    fault_device_label:'Mesin: ', fault_by_label:'Dilaporkan oleh: ', fault_resolve_note_label:'Nota penyelesaian: ',
+    field_resolve_note_opt:'Nota penyelesaian (pilihan)', ph_resolve_note:'Bagaimana ia ditangani…', btn_mark_in_progress:'Tanda sedang dibaiki',
+    toast_updated:'Dikemas kini', toast_resolved:'Selesai', sheet_fault_detail:'Butiran kerosakan',
+    btn_new_inspection:'Pemeriksaan baharu', empty_no_inspections:'Belum ada pemeriksaan',
+    btn_switch_identity:'Tukar identiti', my_schedule:'Jadual saya', no_upcoming_shifts:'Tiada syif akan datang',
+    btn_leave_request:'Permohonan cuti / tukar syif', my_requests:'Permohonan saya', empty_no_requests:'Belum ada permohonan',
+    leave_type_leave:'Cuti', leave_type_swap:'Tukar syif', admin_functions:'Fungsi admin',
+    leave_kind_annual:'Cuti tahunan', leave_kind_sick:'Cuti sakit', leave_kind_unpaid:'Cuti tanpa gaji', leave_kind_swap:'Tukar syif', leave_kind_leave:'Cuti',
+    field_leave_kind:'Jenis cuti', balance_annual:'Baki cuti tahunan', balance_sick:'Baki cuti sakit', balance_prefix:'Baki ', leave_this_request_prefix:' (permohonan ini: ', leave_days_suffix:' hari)',
+    field_annual_leave:'Hari cuti tahunan (setahun)', field_sick_leave:'Hari cuti sakit (setahun)',
+    clock_tab_records:'Rekod', clock_tab_report:'Laporan bulanan', report_loading:'Memuatkan bulan itu…', report_empty:'Tiada rekod daftar untuk bulan itu',
+    report_days:'Hari', report_hours:'Jam', report_late:'Lewat', report_early:'Balik awal', report_missing:'Tidak daftar',
+    report_grace_note_prefix:'Lewat/balik awal dinilai berdasarkan syif hari itu dengan tempoh tolak ansur ', report_grace_note_suffix:' minit; ubah dalam Tetapan Perniagaan.',
+    field_late_grace:'Tolak ansur lewat / balik awal (minit)', export_by_month:'Eksport sejarah mengikut bulan', export_by_month_hint:'App hanya memuatkan kira-kira 3 bulan terakhir; data lama masih dalam pangkalan data — pilih bulan untuk eksport.',
+    err_pick_month:'Sila pilih bulan', export_empty:'Tiada data untuk bulan itu',
+    field_start_date:'Tarikh mula', field_end_date:'Tarikh tamat', field_reason:'Sebab', btn_submit_request:'Hantar permohonan',
+    err_pick_date:'Sila pilih tarikh', toast_leave_submitted:'Dihantar, menunggu kelulusan', sheet_leave:'Permohonan cuti / tukar syif',
+    admin_pending_prefix:'Menunggu kelulusan (', admin_pending_suffix:')', empty_no_pending:'Tiada permohonan menunggu',
+    btn_approve:'Lulus', btn_reject:'Tolak',
+    admin_schedule_mgmt:'Pengurusan jadual', admin_staff_mgmt:'Pengurusan staf', admin_device_mgmt:'Pengurusan mesin',
+    admin_product_mgmt:'Pengurusan produk', admin_settings:'Tetapan perniagaan', admin_export:'Eksport data',
+    label_device_id:'ID mesin ', label_has_coords:' · Koordinat ditetapkan', btn_bulk_import:'Import pukal',
+    admin_site_mgmt:'Lokasi tapak', site_no_coords:'Tiada koordinat', site_has_coords:'Koordinat ditetapkan',
+    btn_seed_flex_sites:'Import koordinat 5 tapak Flex', toast_sites_seeded_prefix:'Diimport ', toast_sites_seeded_suffix:' tapak',
+    toast_sites_all_exist:'Semua koordinat tapak sudah wujud', field_zone_code:'Kod zon', field_address:'Alamat penuh',
+    field_postcode:'Poskod', field_city:'Bandar / kawasan', field_region:'Negeri / wilayah', field_maps_link:'Pautan Google Maps (pilihan)',
+    sheet_edit_site:'Edit lokasi tapak', sheet_add_site:'Tambah lokasi tapak', err_fill_zone:'Sila masukkan kod zon',
+    hint_site:'Koordinat tapak digunakan untuk pengesahan daftar masuk bagi semua mesin dalam zon itu. Jika satu mesin berada di tempat lain, tetapkan koordinat pada borang edit mesin itu.',
+    site_zone_prefix:'Zon ', field_site_lat:'Latitud', field_site_lng:'Longitud',
+    label_unit_price:'Harga ', label_threshold:' · Ambang stok rendah ',
+    field_business_name:'Nama perniagaan / kedai', field_low_stock_default:'Ambang stok rendah lalai', field_geofence_radius:'Jejari geofence daftar masuk (m)',
+    btn_save_settings:'Simpan tetapan', toast_saved:'Disimpan',
+    export_attendance:'Rekod daftar', export_restock:'Log isi semula', export_faults:'Log kerosakan',
+    export_inspections:'Log pemeriksaan', export_leave:'Permohonan cuti', btn_export_csv:'Eksport CSV',
+    export_kegs:'Rekod tong', export_keg_logs:'Log aktiviti tong',
+    toast_no_downloads:'Paparan ini tidak menyokong muat turun fail', toast_exported:'Dieksport', toast_export_failed:'Eksport gagal',
+    btn_add:'Tambah', empty_no_data:'Belum ada data', btn_delete:'Padam',
+    confirm_delete_prefix:'Padam "', confirm_delete_suffix:'"? Tindakan ini tidak boleh dibatalkan.',
+    field_name:'Nama', field_phone_opt2:'Telefon (pilihan)', field_role:'Peranan', btn_save:'Simpan',
+    err_fill_name2:'Sila masukkan nama', sheet_edit_employee:'Edit staf', sheet_add_employee:'Tambah staf',
+    emp_bulk_hint:'Seorang staf sebaris. Tampal lajur "Nama, Telefon, Cawangan, Peranan" terus dari hamparan (dipisah Tab) — telefon/cawangan/peranan boleh kosong. Peranan lalai ialah Staf; nilai sah: staff/manager/admin.',
+    field_paste_employees:'Tampal senarai staf', emp_bulk_branch_locked_prefix:'Cawangan asal ditetapkan kepada: ',
+    emp_bulk_will_import:'Akan import ', emp_bulk_people:' orang',
+    err_bulk_min_people:'Sila masukkan sekurang-kurangnya seorang staf', toast_all_exist_people:'Staf ini sudah wujud',
+    sheet_bulk_add_employees:'Tambah staf pukal',
+    field_device_name:'Nama mesin', ph_device_name:'cth. H1 (1)', field_zone:'Zon', ph_zone:'cth. H1 / P3 / P5 / P8A / P8B / P8W / A1',
+    field_machine_id:'ID mesin (pilihan)', ph_machine_id:'cth. 2505001764', field_location_opt:'Nota lokasi (pilihan)',
+    field_lat:'Latitud (pilihan, untuk mesin ini sahaja)', field_lng:'Longitud (pilihan)',
+    hint_geo:'Petua: biasanya tidak perlu — zon mesin ini sudah ada koordinat kongsi di "Lokasi tapak". Tetapkan hanya jika kedudukan sebenar mesin ini jauh berbeza daripada zonnya.',
+    err_fill_device_name:'Sila masukkan nama mesin', sheet_edit_device:'Edit mesin', sheet_add_device:'Tambah mesin',
+    bulk_hint:'Satu mesin sebaris — tampal lajur "ID mesin + Mesin" terus dari hamparan (dipisah Tab), atau taip kod zon sahaja. P8 (1) automatik ke P8W; P8 (n) lain ke P8A.',
+    field_paste_devices:'Tampal senarai mesin', bulk_will_import:'Akan import ', bulk_units_zones:' mesin merentas zon: ',
+    btn_bulk_add:'Tambah pukal', err_bulk_min:'Sila masukkan sekurang-kurangnya satu mesin', toast_all_exist:'Semua mesin ini sudah wujud', toast_adding:'Menambah…',
+    toast_added_prefix:'Ditambah ', toast_added_suffix:' mesin', toast_skipped_prefix:', dilangkau ', toast_skipped_suffix:' pendua',
+    toast_failed_prefix:', ', toast_failed_suffix:' gagal', sheet_bulk_add_devices:'Tambah mesin pukal',
+    field_product_name:'Nama produk', field_spec_opt:'Spesifikasi (pilihan)', ph_spec:'cth. 330ml', field_unit:'Unit', ph_unit:'botol / pek / tin', unit_default:'unit',
+    field_price:'Harga', field_cost_opt:'Kos (pilihan)', field_low_stock_threshold:'Ambang stok rendah',
+    err_fill_product_name:'Sila masukkan nama produk', sheet_edit_product:'Edit produk', sheet_add_product:'Tambah produk',
+    field_employee:'Staf', field_date:'Tarikh', field_shift_start:'Syif mula', field_shift_end:'Syif tamat',
+    field_assigned_device_opt:'Mesin ditugaskan (pilihan)', opt_unspecified:'Tidak dinyatakan', field_note_opt2:'Nota (pilihan)',
+    btn_save_schedule:'Simpan syif', err_need_employee:'Sila tambah staf dahulu', err_fill_all:'Sila isi semua ruangan', toast_added:'Ditambah',
+    sheet_add_schedule:'Tambah syif',
+    photo_pick:'Ambil gambar / pilih imej (pilihan)', photo_compressing:'Memampatkan…', photo_retake:'Ambil semula / pilih lagi',
+    photo_take:'Ambil gambar (pilihan)', photo_retake_cam:'Ambil gambar semula', btn_remove_photo:'Buang',
+    field_product_image:'Gambar produk (pilihan)',
+    toast_photo_too_large:'Imej terlalu besar, dilangkau — cuba yang lain', toast_photo_failed:'Gagal memproses imej',
+    toast_deleted:'Dipadam',
+  },
 };
-function t(key){ return (I18N[S.lang] && I18N[S.lang][key]) || I18N.zh[key] || key; }
+function t(key){ return (I18N[S.lang] && I18N[S.lang][key]) || I18N.en[key] || I18N.zh[key] || key; }
 
 /* ============================ STATE ============================ */
 const S = {
@@ -785,11 +1009,11 @@ const S = {
   employeeId: (function(){ try{ return localStorage.getItem('bgc_employee_id') || null; }catch(e){ return null; } })(),
   employees:[], devices:[], sites:[], products:[], inventory:[],
   restockLogs:[], attendance:[], inspections:[], faults:[], schedules:[], leaveRequests:[],
-  settings:{businessName:'24 Xpress', lowStockDefault:5, geofenceRadius:300, lateGraceMin:10},
+  settings:{businessName:'24 Xpress', lowStockDefault:5, geofenceRadius:300, lateGraceMin:10, nightStart:'23:00', nightEnd:'07:00', safetyIntervalMin:120, emergencyPhone:'', shiftTemplates:'早班 Morning=09:00-18:00\n中班 Afternoon=14:00-23:00\n夜班 Night=23:00-07:00'},
   stockDeviceFilter:'all', equipTab:'devices', faultFilter:'open', historyRange:'today', attnScope:'mine',
   stockSection:'snacks', kegFilter:'tapped', beerZoneFilter:'all', pickerBranch:null, staffBranchFilter:'all', lastGeoMsg:null, clockSub:'records', reportMonth:(function(){const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');})(), reportBranch:'all', reportData:null, reportLoading:false,
   beerProducts:[], taps:[], kegs:[], kegLogs:[], memos:[], memoReads:[],
-  punchRequests:[], swapRequests:[], clockBranch:null, taskTemplates:[], taskRuns:[], handovers:[], taskBranch:null, equipment:[], tempLogs:[],
+  punchRequests:[], swapRequests:[], clockBranch:null, notifSeen:[], token:null, loginList:null, employeesLoaded:false, sb:null, taskTemplates:[], taskRuns:[], handovers:[], taskBranch:null, equipment:[], tempLogs:[], safetyChecks:[], incidents:[], weekStart:null, schedBranch:null,
   notifKnown:null, pageLoadedAt:new Date().toISOString(), notifBrowser:(function(){ try{ return localStorage.getItem('bgc_notif')==='1'; }catch(e){ return false; } })(),
   showReport:false, meAdmin:false,
   geoCache:null,
@@ -813,7 +1037,8 @@ function fmtMoney(n){return '¥'+(Number(n)||0).toFixed(2);}
 function weekdayCN(d){return ['周日','周一','周二','周三','周四','周五','周六'][d.getDay()];}
 function weekdayLabel(d){
   const en=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  return S.lang==='en' ? en[d.getDay()] : weekdayCN(d);
+  const ms=['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
+  return S.lang==='en' ? en[d.getDay()] : (S.lang==='ms' ? ms[d.getDay()] : weekdayCN(d));
 }
 function byId(arr,id){return arr.find(x=>x.id===id);}
 function empName(id){const e=byId(S.employees,id); return e?e.name:t('deleted_placeholder');}
@@ -1095,18 +1320,19 @@ async function boot(){
   setInterval(tickClock, 30000);
   renderApp();
   if(!window.supabase || !window.supabase.createClient){ S.dbState='unavailable'; renderApp(); return; }
-  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-    realtime:{params:{eventsPerSecond:10}},
-    global:{ fetch:(url,opts)=>fetch(url, Object.assign({}, opts, {cache:'no-store'})) },
-  });
-  S.db = makeSupabaseDb(sb);
+  const tok=LS.get('bgc_token');
+  if(tok && tokenValid(tok)){ S.token=tok; } else { LS.remove('bgc_token'); S.token=null; }
+  S.sb = makeClient(S.token);
+  S.db = makeSupabaseDb(S.sb);
   S.downloads = makeBrowserDownloads();
-  // one quick connectivity check so a bad table/policy setup surfaces clearly
-  // instead of silently looking like an empty-but-working database
-  const {error} = await sb.from('store').select('collection').limit(1);
-  if(error){ S.dbState='unavailable'; S.dbErrorDetail=String(error.message||error); renderApp(); return; }
-  S.dbState='ready';
-  subscribeAll();
+  if(S.token){
+    S.dbState='ready';
+    subscribeAll();
+  } else {
+    try{ await loadLoginList(); S.dbState='ready'; }
+    catch(e){ S.dbState='unavailable'; S.dbErrorDetail=String((e&&e.message)||e); }
+  }
+  renderApp();
 }
 function tickClock(){
   const d=new Date();
@@ -1122,6 +1348,7 @@ function sub(colPath, key, opts){
   if(opts.limit) q = q.limit(opts.limit);
   q.onSnapshot(snap=>{
     S[key] = snap.docs.map(d=>Object.assign({id:d.id}, d.data()));
+    if(key==='employees') S.employeesLoaded=true;
     renderApp();
   }, err=>{ console.warn(colPath, err); });
 }
@@ -1148,6 +1375,9 @@ function subscribeAll(){
   sub('handovers','handovers',{order:'createdAt',limit:200,sinceDays:14});
   sub('equipment','equipment',{limit:300});
   sub('tempLogs','tempLogs',{order:'createdAt',limit:800,sinceDays:14});
+  sub('safetyChecks','safetyChecks',{order:'createdAt',limit:400,sinceDays:7});
+  sub('incidents','incidents',{order:'createdAt',limit:300,sinceDays:120});
+  sub('notifSeen','notifSeen',{limit:500});
   sub('beerProducts','beerProducts',{limit:200});
   sub('taps','taps',{limit:100});
   sub('kegs','kegs',{order:'createdAt',dir:'desc',limit:500});
@@ -1172,8 +1402,11 @@ function renderApp(){
     if(S.dbErrorDetail) view.appendChild(el(`<p class="hint" style="text-align:center;">${esc(S.dbErrorDetail)}</p>`));
     return;
   }
-  if(S.employees.length===0){ view.innerHTML=''; view.appendChild(onboardingView()); return; }
-  if(!currentEmployee()){ view.innerHTML=''; view.appendChild(identityPickerView()); return; }
+  if(!S.token){ view.innerHTML=''; view.appendChild(identityPickerView()); return; }
+  if(!currentEmployee()){
+    if(S.employeesLoaded){ logout(); return; }
+    view.innerHTML = screenMsg(ICONS.cloudOff,t('connecting_title'),t('connecting_body')); return;
+  }
   view.innerHTML='';
   const map={home:homeView, clock:clockView, tasks:tasksView, stock:stockView, equip:equipView, me:meView, memos:memosView};
   view.appendChild((map[S.tab]||homeView)());
@@ -1184,11 +1417,11 @@ function screenMsg(icon,title,body){
 function renderTopbar(){
   $('bizName').textContent = S.settings.businessName || '24 Xpress';
   const langBtn=$('langBtn');
-  langBtn.textContent = S.lang==='en' ? '中' : 'EN';
-  langBtn.onclick = ()=>{ S.lang = S.lang==='en' ? 'zh' : 'en'; LS.set('bgc_lang', S.lang); renderApp(); };
+  langBtn.textContent = S.lang==='zh' ? 'EN' : (S.lang==='en' ? 'BM' : '中');
+  langBtn.onclick = ()=>{ S.lang = S.lang==='zh' ? 'en' : (S.lang==='en' ? 'ms' : 'zh'); LS.set('bgc_lang', S.lang); renderApp(); };
   const who=$('whoBtn'), e=currentEmployee(), notifBtn=$('notifBtn');
   $('whoName').textContent = t('who_unselected');
-  if(S.dbState!=='ready' || S.employees.length===0 || !e){ who.style.visibility='hidden'; notifBtn.style.display='none'; return; }
+  if(S.dbState!=='ready' || !S.token || !e){ who.style.visibility='hidden'; notifBtn.style.display='none'; return; }
   who.style.visibility='visible';
   notifBtn.style.display='flex';
   const unread = buildNotifications().filter(n=>n.unread).length;
@@ -1200,11 +1433,11 @@ function renderTopbar(){
   $('whoAvatar').textContent = e.name.slice(0,1);
   $('whoName').textContent = e.name;
   $('whoRole').textContent = e.role==='admin' ? t('role_admin') : e.role==='manager' ? t('role_manager') : t('role_staff');
-  who.onclick = ()=>{ S.employeeId=null; S.pickerBranch=null; LS.remove('bgc_employee_id'); renderApp(); };
+  who.onclick = ()=>{ if(confirm(t('confirm_logout'))) logout(); };
 }
 function renderNav(){
   const nav=$('nav'); nav.innerHTML='';
-  if(S.dbState!=='ready' || S.employees.length===0 || !currentEmployee()){ nav.style.display='none'; return; }
+  if(S.dbState!=='ready' || !S.token || !currentEmployee()){ nav.style.display='none'; return; }
   nav.style.display='flex';
   TABS.forEach(tb=>{
     const b=el(`<button class="${S.tab===tb.id?'on':''}">${tb.icon}<span class="lb">${esc(t(tb.label))}</span></button>`);
@@ -1386,7 +1619,7 @@ function identityRow(e){
   const row=el(`<div class="id-pick-row"><span class="avatar">${esc(e.name.slice(0,1))}</span>
     <div class="lr-main"><div class="lr-title">${esc(e.name)}</div><div class="lr-sub">${esc(roleLabel)}${e.jobTitle?" · "+esc(e.jobTitle):""}${e.phone?' · '+esc(e.phone):''}</div></div>
     ${ICONS.chev}</div>`);
-  row.onclick=()=>{ e.pinHash ? openVerifyPinForm(e) : openSetPinForm(e); };
+  row.onclick=()=>{ e.hasPin ? openVerifyPinForm(e) : openSetPinForm(e); };
   return row;
 }
 function identityPickerView(){
@@ -1434,6 +1667,46 @@ function identityPickerView(){
 function selectIdentity(e){
   S.employeeId=e.id; LS.set('bgc_employee_id', e.id); closeSheet(); renderApp();
 }
+/* ============================ LOGIN / TOKEN ============================ */
+function makeClient(token){
+  const opts={ realtime:{params:{eventsPerSecond:10}},
+    global:{ fetch:(url,o)=>fetch(url, Object.assign({}, o, {cache:'no-store'})).then(r=>{ if(r.status===401 && S.token){ toast(t('session_expired')); logout(); } return r; }) } };
+  if(token) opts.global.headers={Authorization:'Bearer '+token};
+  const sb=window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, opts);
+  if(token && sb.realtime && sb.realtime.setAuth){ try{ sb.realtime.setAuth(token); }catch(e){} }
+  return sb;
+}
+async function rpc(name, args){
+  const {data,error}=await S.sb.rpc(name, args||{});
+  if(error) throw {code:error.code||'rpc', message:error.message||String(error)};
+  return data;
+}
+function tokenPayload(tok){ try{ return JSON.parse(atob(tok.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))); }catch(e){ return null; } }
+function tokenValid(tok){ const p=tokenPayload(tok); return !!(p && p.exp && p.exp*1000 > Date.now()+60000 && p.employee_id); }
+async function loadLoginList(){
+  const rows=await rpc('login_list');
+  S.loginList=rows||[];
+  S.employees=S.loginList.map(r=>({id:r.id, name:r.name, role:r.role, homeBranch:r.home_branch||'', jobTitle:r.job_title||'', hasPin:!!r.has_pin, active:r.active!==false}));
+}
+function finishLogin(token, e){
+  S.token=token; LS.set('bgc_token', token); LS.set('bgc_employee_id', e.id); S.employeeId=e.id; S.employeesLoaded=false;
+  S.sb=makeClient(token); S.db=makeSupabaseDb(S.sb); S.dbState='ready'; closeSheet();
+  subscribeAll(); renderApp();
+}
+function logout(){
+  S.token=null; S.employeeId=null; S.pickerBranch=null;
+  LS.remove('bgc_token'); LS.remove('bgc_employee_id');
+  location.reload();
+}
+function pinErrMsg(err){
+  const m=String((err&&err.message)||'');
+  if(/wrong_pin/.test(m)) return t('err_pin_wrong');
+  if(/locked/.test(m)) return t('err_pin_locked');
+  if(/pin_exists/.test(m)) return t('err_pin_exists');
+  if(/inactive/.test(m)) return t('err_pin_inactive');
+  if(/jwt_secret_not_configured/.test(m)) return 'Server login key not configured (see auth.sql notes)';
+  return dbErrMsg(err);
+}
 function openSetPinForm(e){
   const body=el('<div></div>');
   body.appendChild(el(`<p class="hint" style="margin-top:0;">${esc(t('pin_set_hint'))}</p>`));
@@ -1449,10 +1722,10 @@ function openSetPinForm(e){
     try{
       const salt=randomSalt();
       const hash=await hashPin(v.pin, salt);
-      await S.db.doc('employees/'+e.id).update({pinHash:hash, pinSalt:salt});
+      const token=await rpc('set_pin', {emp_id:e.id, salt, hash});
       toast(t('toast_pin_set'));
-      selectIdentity(e);
-    }catch(err){ toast(dbErrMsg(err)); btn.disabled=false; btn.textContent=t('btn_set_pin'); }
+      finishLogin(token, e);
+    }catch(err){ toast(pinErrMsg(err)); btn.disabled=false; btn.textContent=t('btn_set_pin'); }
   };
   foot.appendChild(btn); body.appendChild(foot);
   openSheet(t('sheet_set_pin_prefix')+e.name, body);
@@ -1467,12 +1740,15 @@ function openVerifyPinForm(e){
   const attempt=async ()=>{
     const v=readFields(formEl,f);
     if(!v.pin){ return; }
-    btn.disabled=true;
+    btn.disabled=true; errMsg.textContent='';
     try{
-      const hash=await hashPin(v.pin, e.pinSalt);
-      if(hash===e.pinHash){ selectIdentity(e); }
-      else { errMsg.textContent=t('err_pin_wrong'); btn.disabled=false; }
-    }catch(err){ errMsg.textContent=dbErrMsg(err); btn.disabled=false; }
+      const salt=await rpc('pin_salt', {emp_id:e.id});
+      if(!salt){ closeSheet(); openSetPinForm(e); return; }
+      const hash=await hashPin(v.pin, salt);
+      const token=await rpc('login', {emp_id:e.id, pin_hash:hash});
+      if(!token) throw {code:'wrong_pin', message:'wrong_pin'};
+      finishLogin(token, e);
+    }catch(err){ errMsg.textContent=pinErrMsg(err); btn.disabled=false; }
   };
   btn.onclick=attempt;
   formEl.querySelector('input').addEventListener('keydown', ev=>{ if(ev.key==='Enter') attempt(); });
@@ -1528,6 +1804,8 @@ function homeView(){
   qr.appendChild(clockQ); qr.appendChild(faultQ);
   c.appendChild(qr);
   { const tb=homeTasksBlock(); if(tb) c.appendChild(tb); }
+  c.appendChild(homeQuickRow2());
+  { const sb=safetyBlock(); if(sb) c.appendChild(sb); }
 
   const myMemos = visibleMemos().slice(0,3);
   if(myMemos.length>0){
@@ -2325,7 +2603,7 @@ function openMemoForm(){
 /* ============================ NOTIFICATIONS ============================ */
 function buildNotifications(){
   const e=currentEmployee(); if(!e) return [];
-  const seen = e.notifSeenAt || '';
+  const seen = (byId(S.notifSeen, e.id)||{}).at || e.notifSeenAt || '';
   const out=[];
   visibleMemos().forEach(m=>{
     out.push({id:'memo:'+m.id, ts:m.createdAt, title:t('notif_new_memo')+'：'+m.title, sub:(m.authorName||'')+' · '+fmtDateTime(m.createdAt),
@@ -2361,6 +2639,12 @@ function buildNotifications(){
     const since24=new Date(Date.now()-24*3600000).toISOString();
     S.tempLogs.filter(l=>l.ok===false && l.createdAt>=since24 && (isAdmin() || l.branch===myBranch())).forEach(l=>{ out.push({id:'temp:'+l.id, ts:l.createdAt, title:t('notif_temp_alert')+'：'+l.equipmentName+' '+l.value+'°C', sub:(l.branch||'')+' · '+(l.employeeName||'')+' · '+fmtDateTime(l.createdAt), unread:l.createdAt>seen, onClick:()=>{ S.taskBranch=l.branch; location.hash='#tasks'; }}); });
   }
+  if(canManageStaff()){
+    const mineB = b => isAdmin() || b===myBranch();
+    S.safetyChecks.filter(s=>s.status==='sos' && mineB(s.branch)).forEach(s=>{ out.push({id:'sos:'+s.id, ts:s.createdAt, title:'🆘 '+t('notif_sos')+'：'+s.employeeName, sub:(s.branch||'')+' · '+fmtDateTime(s.createdAt)+(s.geo?' · '+s.geo.lat.toFixed(5)+','+s.geo.lng.toFixed(5):''), unread:s.createdAt>seen, onClick:()=>{ if(s.geo) window.open('https://maps.google.com/?q='+s.geo.lat+','+s.geo.lng,'_blank'); }}); });
+    S.incidents.filter(i=>i.status==='open' && mineB(i.branch)).forEach(i=>{ out.push({id:'inc:'+i.id, ts:i.createdAt, title:t('notif_incident')+'：'+incidentKindLabel(i.kind)+' · '+(i.branch||''), sub:(i.employeeName||'')+' · '+(i.description||'').slice(0,60), unread:i.createdAt>seen, onClick:()=>openIncidentDetail(i)}); });
+    if(isNightNow()){ S.employees.filter(x=>x.active!==false && mineB(x.homeBranch) && isClockedIn(x.id)).forEach(x=>{ const due=safetyDueMin(x.id); if(due!=null && due<=-15){ const ts=new Date(Date.now()+due*60000).toISOString(); out.push({id:'safety:'+x.id+':'+ts.slice(0,13), ts, title:t('notif_safety_missed')+'：'+x.name, sub:(x.homeBranch||'')+' · '+Math.abs(due)+' min', unread:ts>seen, onClick:()=>{}}); } }); }
+  }
   if(isAdmin()){
     S.faults.filter(f=>f.status==='open').forEach(f=>{
       out.push({id:'fault:'+f.id, ts:f.createdAt, title:t('notif_new_fault')+'：'+devName(f.deviceId), sub:f.description||'', unread:f.createdAt>seen, onClick:()=>{ location.hash='#equip'; }});
@@ -2390,7 +2674,7 @@ function openNotifSheet(){
   });
   openSheet(t('notif_title'), body);
   // Everything currently listed counts as seen from now on (memos stay unread until opened).
-  S.db.doc('employees/'+e.id).update({notifSeenAt:new Date().toISOString()}).catch(()=>{});
+  S.db.doc('notifSeen/'+e.id).set({at:new Date().toISOString()}).catch(()=>{});
 }
 function maybeBrowserNotify(){
   const items=buildNotifications();
@@ -2607,7 +2891,7 @@ function meView(){
   const idCard=el(`<div class="card row"><span class="avatar" style="width:44px;height:44px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;">${esc(e.name.slice(0,1))}</span>
     <div class="lr-main"><div style="font-weight:900; font-size:16px;">${esc(e.name)}</div><div class="lr-sub">${e.role==='admin'?esc(t('role_admin')):e.role==='manager'?esc(t('role_manager')):esc(t('role_staff'))}${e.jobTitle?' · '+esc(e.jobTitle):''}${e.homeBranch?' · '+esc(e.homeBranch):''}${e.phone?' · '+esc(e.phone):''}</div></div></div>`);
   const switchBtn=el(`<button class="btn sm">${esc(t('btn_switch_identity'))}</button>`);
-  switchBtn.onclick=()=>{ S.employeeId=null; S.pickerBranch=null; LS.remove('bgc_employee_id'); renderApp(); };
+  switchBtn.onclick=()=>{ if(confirm(t('confirm_logout'))) logout(); };
   idCard.appendChild(switchBtn);
   const notifToggle=el(`<button class="btn block" style="margin-bottom:12px;">${esc(S.notifBrowser?t('btn_disable_browser_notif'):t('btn_enable_browser_notif'))}</button>`);
   notifToggle.onclick=()=>toggleBrowserNotif();
@@ -2616,6 +2900,7 @@ function meView(){
   notifWrap.appendChild(el(`<p class="hint" style="margin-top:-6px;">${esc(t('notif_browser_hint'))}</p>`));
   c.appendChild(idCard);
   c.appendChild(notifWrap);
+  c.appendChild(el(`<a class="btn block" style="margin:-4px 0 12px; text-decoration:none;" href="${GUIDE_URL}" target="_blank" rel="noopener">📖 ${esc(t('btn_help'))}</a>`));
 
   // my schedule
   c.appendChild(el(`<h2 class="sec">${esc(t('my_schedule'))}</h2>`));
@@ -2682,10 +2967,8 @@ function managerSection(){
   c.appendChild(docExpiryBlock(branchEmpIds));
   c.appendChild(equipmentAdminBlock(branch));
 
-  c.appendChild(adminBlock(t('admin_schedule_mgmt'), ()=>openScheduleAddForm(branch), S.schedules.filter(s=>branchEmpIds.has(s.employeeId)).slice(0,8).map(s=>({
-    title:empName(s.employeeId)+' · '+s.date, sub:(s.shiftStart||'')+' - '+(s.shiftEnd||''),
-    onDelete: async()=>{ try{ await S.db.doc('schedules/'+s.id).delete(); toast(t('toast_deleted')); }catch(e){toast(dbErrMsg(e));} }
-  }))));
+  c.appendChild(weekScheduleView(branch));
+  c.appendChild(incidentsBlock(branch));
 
   c.appendChild(adminBlock(t('admin_staff_mgmt'), ()=>openEmployeeForm(null,branch), S.employees.filter(e=>e.homeBranch===branch).map(emp=>({
     title:emp.name+' · '+(emp.role==='manager'?t('role_manager'):t('role_staff')), sub:[emp.staffCode, emp.jobTitle, emp.phone].filter(Boolean).join(' · '),
@@ -2743,10 +3026,8 @@ function adminSection(){
   c.appendChild(list);
   c.appendChild(pendingRequestsBlock(null));
 
-  c.appendChild(adminBlock(t('admin_schedule_mgmt'), ()=>openScheduleAddForm(), S.schedules.slice(0,8).map(s=>({
-    title:empName(s.employeeId)+' · '+s.date, sub:(s.shiftStart||'')+' - '+(s.shiftEnd||'')+(s.deviceId?' · '+devName(s.deviceId):''),
-    onDelete: async()=>{ try{ await S.db.doc('schedules/'+s.id).delete(); toast(t('toast_deleted')); }catch(e){toast(dbErrMsg(e));} }
-  }))));
+  c.appendChild(weekScheduleView(null));
+  c.appendChild(incidentsBlock(null));
 
   {
     const allBranches = branchList();
@@ -2827,6 +3108,11 @@ function adminSection(){
     {key:'lowStockDefault', label:t('field_low_stock_default'), type:'number', default:S.settings.lowStockDefault},
     {key:'geofenceRadius', label:t('field_geofence_radius'), type:'number', default:S.settings.geofenceRadius},
     {key:'lateGraceMin', label:t('field_late_grace'), type:'number', default:S.settings.lateGraceMin!=null?S.settings.lateGraceMin:10},
+    {key:'nightStart', label:t('field_night_start'), type:'time', default:S.settings.nightStart||'23:00'},
+    {key:'nightEnd', label:t('field_night_end'), type:'time', default:S.settings.nightEnd||'07:00'},
+    {key:'safetyIntervalMin', label:t('field_safety_interval'), type:'number', default:S.settings.safetyIntervalMin||120},
+    {key:'emergencyPhone', label:t('field_emergency_phone'), default:S.settings.emergencyPhone||''},
+    {key:'shiftTemplates', label:t('field_shift_templates'), type:'textarea', default:S.settings.shiftTemplates||''},
   ];
   setCard.innerHTML = fieldsHTML(setFields);
   const saveBtn=el(`<button class="btn primary block">${esc(t('btn_save_settings'))}</button>`);
@@ -2943,11 +3229,11 @@ function openEmployeeForm(emp, lockBranch){
     const branchInput = body.querySelector('[data-k="homeBranch"]');
     if(branchInput){ branchInput.value = lockBranch; branchInput.disabled = true; }
   }
-  if(emp && emp.pinHash){
+  if(emp && emp.hasPin){
     const resetBtn=el(`<button class="btn danger block" style="margin-bottom:12px;">${esc(t('btn_reset_pin'))}</button>`);
     resetBtn.onclick=async ()=>{
       if(!confirm(t('confirm_reset_pin'))) return;
-      try{ await S.db.doc('employees/'+emp.id).update({pinHash:null, pinSalt:null}); toast(t('toast_pin_reset')); }
+      try{ await rpc('reset_pin', {emp_id:emp.id}); toast(t('toast_pin_reset')); }
       catch(e){ toast(dbErrMsg(e)); }
     };
     body.appendChild(resetBtn);
@@ -3676,6 +3962,174 @@ function docExpiryBlock(scopeIds){
   });
   c.appendChild(list);
   return c;
+}
+
+/* ============================ PHASE 1D: WEEKLY SCHEDULE / NIGHT SAFETY / INCIDENTS / HELP ============================ */
+const GUIDE_URL='https://24xpressmart-crypto.github.io/super-garbanzo/guide.html';
+function addDays(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x; }
+function weekMonday(d){ const x=new Date(d); const day=(x.getDay()+6)%7; x.setDate(x.getDate()-day); x.setHours(0,0,0,0); return x; }
+function localDate(ds){ return new Date(ds+'T00:00:00'); }
+function shiftTemplates(){
+  return String(S.settings.shiftTemplates||'').split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{ const m=l.match(/^(.*?)=\s*(\d{1,2}:\d{2})\s*-\s*(\d{1,2}:\d{2})\s*$/); return m?{label:m[1].trim(), start:m[2].padStart(5,'0'), end:m[3].padStart(5,'0')}:null; }).filter(Boolean);
+}
+function schedFor(empId, date){ return S.schedules.filter(s=>s.employeeId===empId && s.date===date); }
+function weekScheduleView(lockBranch){
+  const c=el('<div></div>');
+  const branches=branchList();
+  let branch = lockBranch || S.schedBranch || (branches[0]||null);
+  const ws = S.weekStart ? new Date(S.weekStart) : weekMonday(new Date());
+  const days=[...Array(7)].map((_,i)=>addDays(ws,i));
+  const head=el(`<div class="sec-row"><h2 class="sec" style="margin:0;">${esc(t('admin_schedule_mgmt'))}</h2><div class="row" style="gap:6px;"></div></div>`);
+  const ctl=head.querySelector('.row');
+  const prev=el('<button class="btn sm">‹</button>'), next=el('<button class="btn sm">›</button>'), today=el(`<button class="btn sm">${esc(t('week_this'))}</button>`);
+  prev.onclick=()=>{ S.weekStart=addDays(ws,-7).toISOString(); renderApp(); };
+  next.onclick=()=>{ S.weekStart=addDays(ws,7).toISOString(); renderApp(); };
+  today.onclick=()=>{ S.weekStart=null; renderApp(); };
+  ctl.appendChild(prev); ctl.appendChild(today); ctl.appendChild(next);
+  c.appendChild(head);
+  if(!lockBranch && branches.length){
+    const chipRow=el('<div class="chiprow" style="margin-bottom:8px;"></div>');
+    branches.forEach(b=>{ const ch=el(`<button class="chip ${branch===b?'on':''}">${esc(b)}</button>`); ch.onclick=()=>{ S.schedBranch=b; renderApp(); }; chipRow.appendChild(ch); });
+    c.appendChild(chipRow);
+  }
+  const emps=S.employees.filter(e=>e.active!==false && (!branch || e.homeBranch===branch)).sort((a,b)=>a.name.localeCompare(b.name,'zh'));
+  const sub=el(`<div class="row" style="justify-content:space-between; margin-bottom:6px;"><span class="hint" style="margin:0;">${todayStr(days[0])} ~ ${todayStr(days[6])}${branch?' · '+esc(branch):''}</span></div>`);
+  const copyBtn=el(`<button class="btn sm">${esc(t('btn_copy_last_week'))}</button>`);
+  copyBtn.onclick=()=>copyLastWeek(emps, days);
+  sub.appendChild(copyBtn); c.appendChild(sub);
+  if(emps.length===0){ c.appendChild(el(`<div class="hint">${esc(t('empty_no_data'))}</div>`)); return c; }
+  const wrap=el('<div class="card" style="padding:0; overflow-x:auto; -webkit-overflow-scrolling:touch;"></div>');
+  const tbl=el('<table class="weekgrid"></table>');
+  tbl.appendChild(el('<thead><tr><th></th>'+days.map(d=>`<th class="${todayStr(d)===todayStr()?'today':''}">${esc(weekdayLabel(d))}<br><span class="num">${d.getMonth()+1}/${d.getDate()}</span></th>`).join('')+'</tr></thead>'));
+  const tb=el('<tbody></tbody>');
+  emps.forEach(e=>{
+    const tr=el(`<tr><td class="nm">${esc(e.name)}</td></tr>`);
+    days.forEach(d=>{
+      const ds=todayStr(d); const ss=schedFor(e.id, ds);
+      const td=el(`<td class="${ss.length?'has':''}">${ss.map(s=>`<span class="sh">${esc((s.shiftStart||'').slice(0,5))}–${esc((s.shiftEnd||'').slice(0,5))}</span>`).join('')||'<span class="plus">+</span>'}</td>`);
+      td.onclick=()=>openCellSheet(e, ds, ss);
+      tr.appendChild(td);
+    });
+    tb.appendChild(tr);
+  });
+  tbl.appendChild(tb); wrap.appendChild(tbl); c.appendChild(wrap);
+  c.appendChild(el(`<p class="hint">${esc(t('week_hint'))}</p>`));
+  return c;
+}
+function openCellSheet(emp, date, existing){
+  const body=el('<div></div>');
+  body.appendChild(el(`<div class="hint" style="margin-top:0;">${esc(emp.name)} · ${date} · ${esc(weekdayLabel(localDate(date)))}</div>`));
+  existing.forEach(s=>{
+    const row=el(`<div class="list-row" style="cursor:default;"><div class="lr-main"><div class="lr-title">${esc(s.shiftStart||'')} – ${esc(s.shiftEnd||'')}</div><div class="lr-sub">${esc(s.note||'')}</div></div></div>`);
+    const del=el(`<button class="btn sm danger">${esc(t('btn_delete'))}</button>`);
+    del.onclick=async()=>{ try{ await S.db.doc('schedules/'+s.id).delete(); toast(t('toast_deleted')); closeSheet(); }catch(e){ toast(dbErrMsg(e)); } };
+    row.appendChild(del); body.appendChild(row);
+  });
+  const tps=shiftTemplates();
+  if(tps.length){
+    body.appendChild(el(`<div class="fl" style="margin-top:10px; font-weight:700; font-size:13px;">${esc(t('field_shift_template'))}</div>`));
+    const grid=el('<div class="grid2" style="margin:6px 0 12px;"></div>');
+    tps.forEach(tp=>{ const b=el(`<button class="btn block" style="flex-direction:column; gap:2px;">${esc(tp.label)}<span class="num" style="font-size:12px; color:var(--ink-faint);">${tp.start}–${tp.end}</span></button>`); b.onclick=()=>addShift(emp, date, tp.start, tp.end); grid.appendChild(b); });
+    body.appendChild(grid);
+  }
+  const f=[{key:'shiftStart', label:t('field_shift_start'), type:'time', default:'09:00'},{key:'shiftEnd', label:t('field_shift_end'), type:'time', default:'18:00'}];
+  const formEl=el('<div>'+fieldsHTML(f)+'</div>'); body.appendChild(formEl);
+  const btn=el(`<button class="btn primary block">${esc(t('btn_save_schedule'))}</button>`);
+  btn.onclick=()=>{ const v=readFields(formEl,f); addShift(emp, date, v.shiftStart, v.shiftEnd); };
+  body.appendChild(btn);
+  openSheet(t('sheet_add_schedule'), body);
+}
+async function addShift(emp, date, start, end){
+  if(!start||!end){ toast(t('err_fill_all')); return; }
+  try{ await S.db.collection('schedules').add({employeeId:emp.id, date, shiftStart:start, shiftEnd:end, branch:emp.homeBranch||'', createdAt:new Date().toISOString(), createdBy:currentEmployee().name}); toast(t('toast_added')); closeSheet(); }
+  catch(e){ toast(dbErrMsg(e)); }
+}
+async function copyLastWeek(emps, days){
+  const ids=new Set(emps.map(e=>e.id));
+  const prevDays=days.map(d=>todayStr(addDays(d,-7)));
+  const thisDays=days.map(d=>todayStr(d));
+  const src=S.schedules.filter(s=>ids.has(s.employeeId) && prevDays.includes(s.date));
+  if(src.length===0){ toast(t('toast_no_last_week')); return; }
+  const existing=new Set(S.schedules.filter(s=>ids.has(s.employeeId) && thisDays.includes(s.date)).map(s=>s.employeeId+'|'+s.date+'|'+s.shiftStart));
+  const toAdd=src.map(s=>({employeeId:s.employeeId, date:todayStr(addDays(localDate(s.date),7)), shiftStart:s.shiftStart, shiftEnd:s.shiftEnd, branch:s.branch||'', note:s.note||'', createdAt:new Date().toISOString(), createdBy:currentEmployee().name})).filter(s=>!existing.has(s.employeeId+'|'+s.date+'|'+s.shiftStart));
+  if(toAdd.length===0){ toast(t('toast_week_already')); return; }
+  if(!confirm(t('confirm_copy_week_prefix')+toAdd.length+t('confirm_copy_week_suffix'))) return;
+  try{ for(const s of toAdd){ await S.db.collection('schedules').add(s); } toast(t('toast_added')); }catch(e){ toast(dbErrMsg(e)); }
+}
+/* ---- night safety ---- */
+function minsOf(tm){ const [h,m]=String(tm||'').split(':').map(Number); return isNaN(h)?null:h*60+(m||0); }
+function isNightNow(d){ d=d||new Date(); const now=d.getHours()*60+d.getMinutes(); const a=minsOf(S.settings.nightStart||'23:00'), b=minsOf(S.settings.nightEnd||'07:00'); if(a==null||b==null) return false; return a>b ? (now>=a || now<b) : (now>=a && now<b); }
+function lastClockIn(empId){ return S.attendance.filter(a=>a.employeeId===empId && a.type==='in')[0]; }
+function isClockedIn(empId){ const t0=S.attendance.filter(a=>a.employeeId===empId)[0]; return !!(t0 && t0.type==='in' && (Date.now()-new Date(t0.createdAt).getTime())<16*3600000); }
+function safetyDueMin(empId){
+  const iv=Number(S.settings.safetyIntervalMin)||120;
+  const last=S.safetyChecks.filter(s=>s.employeeId===empId && s.status==='ok')[0];
+  const ci=lastClockIn(empId); if(!ci) return null;
+  const base = last && new Date(last.createdAt) > new Date(ci.createdAt) ? new Date(last.createdAt) : new Date(ci.createdAt);
+  return Math.round((base.getTime()+iv*60000-Date.now())/60000);
+}
+function safetyBlock(){
+  const e=currentEmployee(); if(!e) return null;
+  if(!isClockedIn(e.id) || !isNightNow()) return null;
+  const due=safetyDueMin(e.id); const overdue = due!=null && due<=0;
+  const card=el(`<div class="card card-tight" style="margin-top:12px; ${overdue?'border-color:var(--critical);':''}"><div class="lr-title">${esc(t('safety_title'))}</div><div class="lr-sub" style="white-space:normal;">${due==null?esc(t('safety_first')):(overdue?esc(t('safety_overdue')):esc(t('safety_next_prefix'))+due+esc(t('safety_next_suffix')))}</div></div>`);
+  const b=el(`<button class="btn ${overdue?'primary':'ok'} block" style="margin-top:8px;">${esc(t('btn_safety_ok'))}</button>`);
+  b.onclick=async()=>{ b.disabled=true; try{ await S.db.collection('safetyChecks').add({employeeId:e.id, employeeName:e.name, branch:defaultClockBranch()||e.homeBranch||'', status:'ok', createdAt:new Date().toISOString()}); toast(t('toast_safety_ok')); }catch(err){ toast(dbErrMsg(err)); b.disabled=false; } };
+  card.appendChild(b); return card;
+}
+function homeQuickRow2(){
+  const row=el('<div class="row" style="margin-top:10px;"></div>');
+  const inc=el(`<button class="btn block">${ICONS.alert}<span>${esc(t('btn_incident'))}</span></button>`); inc.onclick=()=>openIncidentForm();
+  const sos=el(`<button class="btn danger block"><span>${esc(t('btn_sos'))}</span></button>`); sos.onclick=()=>openSosSheet();
+  row.appendChild(inc); row.appendChild(sos); return row;
+}
+function managerPhones(branch){ return S.employees.filter(x=>x.active!==false && x.phone && x.role==='manager' && x.homeBranch===branch).map(x=>({name:x.name, phone:x.phone})); }
+function telHref(p){ return 'tel:'+String(p).replace(/[^0-9+]/g,''); }
+function openSosSheet(){
+  const e=currentEmployee(); const branch=defaultClockBranch()||e.homeBranch||'';
+  const body=el('<div></div>');
+  body.appendChild(el(`<p class="hint" style="margin-top:0;">${esc(t('sos_hint'))}</p>`));
+  const send=el(`<button class="btn danger block" style="margin-bottom:12px;">${esc(t('btn_sos_send'))}</button>`);
+  send.onclick=async()=>{ send.disabled=true; send.textContent=t('toast_submitting'); const geo=await getGeo(); const rec={employeeId:e.id, employeeName:e.name, branch, status:'sos', createdAt:new Date().toISOString()}; if(geo&&!geo.error) rec.geo=geo; try{ await S.db.collection('safetyChecks').add(rec); send.textContent=t('sos_sent'); }catch(err){ toast(dbErrMsg(err)); send.disabled=false; send.textContent=t('btn_sos_send'); } };
+  body.appendChild(send);
+  const phones=managerPhones(branch); if(S.settings.emergencyPhone) phones.push({name:t('sos_hq'), phone:S.settings.emergencyPhone});
+  phones.forEach(p=>{ body.appendChild(el(`<a class="btn block" style="margin-bottom:8px; text-decoration:none;" href="${telHref(p.phone)}">☎ ${esc(p.name)} · ${esc(p.phone)}</a>`)); });
+  body.appendChild(el(`<a class="btn block" style="text-decoration:none;" href="tel:999">☎ 999</a>`));
+  openSheet(t('sheet_sos'), body);
+}
+/* ---- incidents ---- */
+const INCIDENT_KINDS=['complaint','accident','theft','power','other'];
+function incidentKindLabel(k){ return t('inc_'+(INCIDENT_KINDS.includes(k)?k:'other')); }
+function openIncidentForm(){
+  const e=currentEmployee(); const branches=allBranchIds();
+  const f=[
+    {key:'kind', label:t('field_incident_kind'), type:'select', options:INCIDENT_KINDS.map(k=>({v:k,l:incidentKindLabel(k)}))},
+    {key:'branch', label:t('field_branch'), type:'select', options:branches.map(b=>({v:b,l:b}))},
+    {key:'severity', label:t('field_severity'), type:'select', options:[{v:'low',l:t('sev_low')},{v:'medium',l:t('sev_medium')},{v:'high',l:t('sev_high')}]},
+    {key:'description', label:t('field_description'), type:'textarea'},
+  ];
+  const body=el('<div>'+fieldsHTML(f,{branch:defaultClockBranch()||e.homeBranch||'', severity:'medium'})+'</div>');
+  const pw=photoPicker(null,false); body.appendChild(pw);
+  const foot=el('<div class="sheet-foot"></div>'); const btn=el(`<button class="btn primary block">${esc(t('btn_submit'))}</button>`);
+  btn.onclick=async()=>{ const v=readFields(body,f); if(!v.description||!v.description.trim()){ toast(t('err_fill_all')); return; } btn.disabled=true; const rec=Object.assign({}, v, {description:v.description.trim(), employeeId:e.id, employeeName:e.name, status:'open', createdAt:new Date().toISOString()}); const photo=pw.getPhoto(); if(photo) rec.photo=photo; try{ await S.db.collection('incidents').add(rec); toast(t('toast_incident_sent')); closeSheet(); }catch(err){ toast(dbErrMsg(err)); btn.disabled=false; } };
+  foot.appendChild(btn); body.appendChild(foot); openSheet(t('sheet_incident'), body);
+}
+function openIncidentDetail(i){
+  const sv=SEVERITY[i.severity]||SEVERITY.medium;
+  const body=el('<div></div>');
+  body.innerHTML=`<div class="row" style="margin-bottom:8px;"><span class="pill ${sv.c}">${esc(t(sv.t))}</span><span class="pill ${i.status==='open'?'critical':'ok'}">${esc(i.status==='open'?t('inc_open'):t('inc_resolved'))}</span></div><div class="hint">${esc(incidentKindLabel(i.kind))} · ${esc(i.branch||'')} · ${esc(i.employeeName||'')} · ${fmtDateTime(i.createdAt)}</div><p style="white-space:pre-wrap;">${esc(i.description||'')}</p>${i.resolvedBy?`<div class="hint">${esc(t('inc_resolved'))} · ${esc(i.resolvedBy)} · ${fmtDateTime(i.resolvedAt)}</div>`:''}`;
+  if(i.photo) body.appendChild(el(`<img class="photow" src="${i.photo}">`));
+  if(canManageStaff() && i.status==='open'){ const b=el(`<button class="btn ok block" style="margin-top:10px;">${esc(t('btn_mark_resolved'))}</button>`); b.onclick=async()=>{ try{ await S.db.doc('incidents/'+i.id).update({status:'resolved', resolvedBy:currentEmployee().name, resolvedAt:new Date().toISOString()}); toast(t('toast_saved')); closeSheet(); }catch(e){ toast(dbErrMsg(e)); } }; body.appendChild(b); }
+  openSheet(t('sheet_incident'), body);
+}
+function incidentsBlock(branch){
+  const c=el('<div></div>');
+  const rows=S.incidents.filter(i=>!branch || i.branch===branch).slice(0,12);
+  c.appendChild(el(`<div class="sec-row"><h2 class="sec" style="margin:0;">${esc(t('admin_incidents'))}</h2></div>`));
+  const list=el('<div class="list"></div>');
+  if(rows.length===0) list.appendChild(el(`<div class="hint">${esc(t('empty_no_data'))}</div>`));
+  rows.forEach(i=>{ const r=el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(incidentKindLabel(i.kind))}${!branch&&i.branch?' · '+esc(i.branch):''}</div><div class="lr-sub">${fmtDateTime(i.createdAt)} · ${esc(i.employeeName||'')} · ${esc((i.description||'').slice(0,40))}</div></div><span class="pill ${i.status==='open'?'critical':'ok'}">${esc(i.status==='open'?t('inc_open'):t('inc_resolved'))}</span></div>`); r.onclick=()=>openIncidentDetail(i); list.appendChild(r); });
+  c.appendChild(list); return c;
 }
 
 /* ============================ START ============================ */
