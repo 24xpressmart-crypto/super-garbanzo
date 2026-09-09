@@ -443,6 +443,10 @@ function leaveBalanceSuffix(l){
 /* ============================ I18N ============================ */
 const I18N = {
   zh: {
+    field_cover_branches:'支援分店（逗号分隔，如 BR07, BR09）', field_runner:'外勤跑店员', opt_yes:'是', opt_no:'否', cover_badge:'支援',
+    runner_title:'外勤路线', tile_runner:'外勤路线', btn_visit:'到店登记', btn_bankin:'银行存款', runner_stops:'到店记录', runner_bankins:'存款记录', runner_collected:'今日收款', runner_banked:'已存入银行', runner_unbanked:'未存入', runner_today:'今天',
+    field_docs:'收集文件', field_supplies:'配送物资', ph_supplies:'例如：饮料 5 箱、收据本', field_cash_collected:'收取现金 (RM)', field_amount:'存款金额 (RM)', field_bank:'银行', field_ref:'存款单号 / 参考号', runner_slip_hint:'必须拍存款单（bank-in slip）照片。', runner_need_slip:'请先拍存款单照片',
+    sheet_visit:'到店登记', sheet_bankin:'银行存款', toast_visit_saved:'已登记到店', toast_bankin_saved:'存款已记录', notif_bankin:'银行存款', notif_unbanked:'现金未存入银行', runner_none:'今天还没有到店记录', runner_no_runner:'尚未设定外勤员工：在员工资料里把「外勤跑店员」设为「是」', export_runner:'外勤到店记录', export_bankins:'银行存款记录',
     btn_push_on:'开启手机推送通知', btn_push_off:'关闭手机推送', btn_push_test:'发送测试通知', push_on_hint:'已开启：App 关闭也会收到新排班、审批结果、公告、温度报警、SOS。', push_off_hint:'开启后，就算 App 关闭，手机也会收到新排班、审批结果、公告和紧急通知。', push_unsupported:'此浏览器不支持手机推送', push_ios_hint:'iPhone 请先在 Safari 按「分享」→「添加到主屏幕」，再从主屏幕打开 App 开启推送。', push_failed:'开启推送失败', toast_push_on:'手机推送已开启', toast_push_off:'手机推送已关闭', push_test_sent:'测试通知已发送',
     audit_title:'巡店评分', btn_start_audit:'开始巡店', audit_history:'巡店记录', audit_none:'暂无巡店记录', audit_ranking:'本月门店排行', audit_times:'次', audit_rectifications:'整改任务', audit_no_rect:'暂无整改任务', audit_due:'期限', audit_score:'得分', audit_failed_count:'不合格项',
     audit_pass:'合格', audit_partial:'部分', audit_fail:'不合格', audit_note_ph:'说明问题（可选）', btn_submit_audit:'提交评分', confirm_submit_audit_prefix:'提交巡店评分：', confirm_submit_audit_suffix:'，不合格项 ', toast_audit_saved:'巡店评分已保存，整改任务已发给门店', sheet_audit:'巡店评分', sheet_audit_result:'巡店结果', audit_failed_items:'不合格 / 待整改项目', audit_all_pass:'全部合格',
@@ -657,6 +661,10 @@ const I18N = {
     toast_deleted:'已删除',
   },
   en: {
+    field_cover_branches:'Cover stores (comma separated, e.g. BR07, BR09)', field_runner:'Runner (store visits)', opt_yes:'Yes', opt_no:'No', cover_badge:'Cover',
+    runner_title:'Runner route', tile_runner:'Runner route', btn_visit:'Log store visit', btn_bankin:'Bank-in', runner_stops:'Store visits', runner_bankins:'Bank-in records', runner_collected:'Cash collected today', runner_banked:'Banked in', runner_unbanked:'Not banked yet', runner_today:'Today',
+    field_docs:'Documents collected', field_supplies:'Supplies delivered', ph_supplies:'e.g. 5 cartons drinks, receipt books', field_cash_collected:'Cash collected (RM)', field_amount:'Amount banked (RM)', field_bank:'Bank', field_ref:'Bank-in slip / reference no.', runner_slip_hint:'A photo of the bank-in slip is required.', runner_need_slip:'Take a photo of the bank-in slip first',
+    sheet_visit:'Store visit', sheet_bankin:'Bank-in', toast_visit_saved:'Visit logged', toast_bankin_saved:'Bank-in recorded', notif_bankin:'Bank-in', notif_unbanked:'Cash not banked in', runner_none:'No store visits today yet', runner_no_runner:'No runner set yet: set "Runner" to Yes in the staff record', export_runner:'Runner store visits', export_bankins:'Bank-in records',
     btn_push_on:'Enable phone push notifications', btn_push_off:'Disable push notifications', btn_push_test:'Send test notification', push_on_hint:'On: you get new shifts, approvals, memos, temperature alerts and SOS even when the app is closed.', push_off_hint:'When on, your phone receives new shifts, approvals, memos and emergencies even with the app closed.', push_unsupported:'This browser does not support push notifications', push_ios_hint:'iPhone: in Safari tap Share → Add to Home Screen, then open the app from the home screen to enable push.', push_failed:'Could not enable push', toast_push_on:'Push notifications on', toast_push_off:'Push notifications off', push_test_sent:'Test notification sent',
     audit_title:'Store audit', btn_start_audit:'Start audit', audit_history:'Audit history', audit_none:'No audits yet', audit_ranking:'Store ranking this month', audit_times:'audits', audit_rectifications:'Rectification tasks', audit_no_rect:'No rectification tasks', audit_due:'Due', audit_score:'Score', audit_failed_count:'Failed items',
     audit_pass:'Pass', audit_partial:'Partial', audit_fail:'Fail', audit_note_ph:'Describe the issue (optional)', btn_submit_audit:'Submit audit', confirm_submit_audit_prefix:'Submit audit: ', confirm_submit_audit_suffix:', failed items ', toast_audit_saved:'Audit saved, rectification tasks sent to the store', sheet_audit:'Store audit', sheet_audit_result:'Audit result', audit_failed_items:'Failed / to rectify', audit_all_pass:'All items passed',
@@ -871,6 +879,10 @@ const I18N = {
     toast_deleted:'Deleted',
   },
   ms: {
+    field_cover_branches:'Kedai sokongan (asingkan dengan koma, cth BR07, BR09)', field_runner:'Runner (lawatan kedai)', opt_yes:'Ya', opt_no:'Tidak', cover_badge:'Sokongan',
+    runner_title:'Laluan runner', tile_runner:'Laluan runner', btn_visit:'Rekod lawatan kedai', btn_bankin:'Bank-in', runner_stops:'Lawatan kedai', runner_bankins:'Rekod bank-in', runner_collected:'Tunai dikutip hari ini', runner_banked:'Sudah bank-in', runner_unbanked:'Belum bank-in', runner_today:'Hari ini',
+    field_docs:'Dokumen dikutip', field_supplies:'Bekalan dihantar', ph_supplies:'cth. 5 kotak minuman, buku resit', field_cash_collected:'Tunai dikutip (RM)', field_amount:'Jumlah bank-in (RM)', field_bank:'Bank', field_ref:'Slip bank-in / no. rujukan', runner_slip_hint:'Gambar slip bank-in wajib.', runner_need_slip:'Ambil gambar slip bank-in dahulu',
+    sheet_visit:'Lawatan kedai', sheet_bankin:'Bank-in', toast_visit_saved:'Lawatan direkod', toast_bankin_saved:'Bank-in direkod', notif_bankin:'Bank-in', notif_unbanked:'Tunai belum bank-in', runner_none:'Belum ada lawatan kedai hari ini', runner_no_runner:'Belum ada runner: tetapkan "Runner" kepada Ya dalam rekod staf', export_runner:'Lawatan kedai runner', export_bankins:'Rekod bank-in',
     btn_push_on:'Hidupkan pemberitahuan tolak telefon', btn_push_off:'Matikan pemberitahuan tolak', btn_push_test:'Hantar pemberitahuan ujian', push_on_hint:'Hidup: anda terima syif baharu, kelulusan, pengumuman, amaran suhu dan SOS walaupun app ditutup.', push_off_hint:'Apabila dihidupkan, telefon menerima syif baharu, kelulusan, pengumuman dan kecemasan walaupun app ditutup.', push_unsupported:'Pelayar ini tidak menyokong pemberitahuan tolak', push_ios_hint:'iPhone: dalam Safari tekan Kongsi → Tambah ke Skrin Utama, kemudian buka app dari skrin utama untuk hidupkan.', push_failed:'Gagal hidupkan pemberitahuan tolak', toast_push_on:'Pemberitahuan tolak dihidupkan', toast_push_off:'Pemberitahuan tolak dimatikan', push_test_sent:'Pemberitahuan ujian dihantar',
     audit_title:'Audit kedai', btn_start_audit:'Mula audit', audit_history:'Sejarah audit', audit_none:'Belum ada audit', audit_ranking:'Kedudukan kedai bulan ini', audit_times:'audit', audit_rectifications:'Tugas pembetulan', audit_no_rect:'Tiada tugas pembetulan', audit_due:'Tempoh', audit_score:'Skor', audit_failed_count:'Item gagal',
     audit_pass:'Lulus', audit_partial:'Separa', audit_fail:'Gagal', audit_note_ph:'Terangkan masalah (pilihan)', btn_submit_audit:'Hantar audit', confirm_submit_audit_prefix:'Hantar audit: ', confirm_submit_audit_suffix:', item gagal ', toast_audit_saved:'Audit disimpan, tugas pembetulan dihantar ke kedai', sheet_audit:'Audit kedai', sheet_audit_result:'Keputusan audit', audit_failed_items:'Gagal / perlu dibetulkan', audit_all_pass:'Semua item lulus',
@@ -1099,7 +1111,7 @@ const S = {
   stockDeviceFilter:'all', equipTab:'devices', faultFilter:'open', historyRange:'today', attnScope:'mine',
   stockSection:'snacks', kegFilter:'tapped', beerZoneFilter:'all', pickerBranch:null, staffBranchFilter:'all', lastGeoMsg:null, clockSub:'records', reportMonth:(function(){const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');})(), reportBranch:'all', reportData:null, reportLoading:false,
   beerProducts:[], taps:[], kegs:[], kegLogs:[], memos:[], memoReads:[],
-  punchRequests:[], swapRequests:[], clockBranch:null, notifSeen:[], token:null, loginList:null, employeesLoaded:false, sb:null, taskTemplates:[], taskRuns:[], handovers:[], taskBranch:null, equipment:[], tempLogs:[], safetyChecks:[], incidents:[], weekStart:null, schedBranch:null, assetBranch:null, equipTabInit:false, auditTemplates:[], audits:[], rectifications:[], auditBranch:null, pushOn:false,
+  punchRequests:[], swapRequests:[], clockBranch:null, notifSeen:[], token:null, loginList:null, employeesLoaded:false, sb:null, taskTemplates:[], taskRuns:[], handovers:[], taskBranch:null, equipment:[], tempLogs:[], safetyChecks:[], incidents:[], weekStart:null, schedBranch:null, assetBranch:null, equipTabInit:false, auditTemplates:[], audits:[], rectifications:[], auditBranch:null, pushOn:false, runnerVisits:[], bankIns:[], runnerDate:null, runnerEmp:null,
   notifKnown:null, pageLoadedAt:new Date().toISOString(), notifBrowser:(function(){ try{ return localStorage.getItem('bgc_notif')==='1'; }catch(e){ return false; } })(),
   showReport:false, meAdmin:false,
   geoCache:null,
@@ -1467,6 +1479,8 @@ function subscribeAll(){
   sub('auditTemplates','auditTemplates',{limit:50});
   sub('audits','audits',{order:'createdAt',limit:300,sinceDays:200});
   sub('rectifications','rectifications',{order:'createdAt',limit:500,sinceDays:200});
+  sub('runnerVisits','runnerVisits',{order:'createdAt',limit:800,sinceDays:92});
+  sub('bankIns','bankIns',{order:'createdAt',limit:400,sinceDays:92});
   sub('notifSeen','notifSeen',{limit:500});
   sub('beerProducts','beerProducts',{limit:200});
   sub('taps','taps',{limit:100});
@@ -1498,7 +1512,7 @@ function renderApp(){
     view.innerHTML = screenMsg(ICONS.cloudOff,t('connecting_title'),t('connecting_body')); return;
   }
   view.innerHTML='';
-  const map={home:homeView, clock:clockView, tasks:tasksView, stock:stockView, equip:equipView, me:meView, memos:memosView, audit:auditView};
+  const map={home:homeView, clock:clockView, tasks:tasksView, stock:stockView, equip:equipView, me:meView, memos:memosView, audit:auditView, runner:runnerView};
   view.appendChild((map[S.tab]||homeView)());
 }
 function screenMsg(icon,title,body){
@@ -1946,7 +1960,7 @@ function clockView(){
   { const branches=allBranchIds();
     if(branches.length>0){
       clockSel=el('<select style="margin:8px auto 2px; display:block; max-width:240px;"></select>');
-      [{v:'',l:t('clock_branch_none')}].concat(branches.map(b=>({v:b, l:b+(b===myBranch()?' · '+t('clock_branch_home'):'')}))).forEach(o=>{ const op=document.createElement('option'); op.value=o.v; op.textContent=o.l; clockSel.appendChild(op); });
+      [{v:'',l:t('clock_branch_none')}].concat(orderedBranches(branches).map(b=>({v:b, l:b+(b===myBranch()?' · '+t('clock_branch_home'):(coversBranch(currentEmployee(),b)?' · '+t('cover_badge'):''))}))).forEach(o=>{ const op=document.createElement('option'); op.value=o.v; op.textContent=o.l; clockSel.appendChild(op); });
       clockSel.value=defaultClockBranch(); if(clockSel.value!==defaultClockBranch()) clockSel.value='';
       clockSel.onchange=()=>{ S.clockBranch=clockSel.value; };
       card.appendChild(el(`<div class="hint" style="margin:6px 0 0;">${esc(t('clock_branch_label'))}</div>`));
@@ -1998,7 +2012,7 @@ function clockView(){
   } else {
     c.appendChild(el(`<div class="sec-row"><h2 class="sec">${esc(t('clock_records'))}</h2></div>`));
   }
-  const branchIds = isManager() ? new Set(S.employees.filter(x=>x.homeBranch===myBranch()).map(x=>x.id)) : null;
+  const branchIds = isManager() ? new Set(S.employees.filter(x=>x.homeBranch===myBranch() || coversBranch(x,myBranch())).map(x=>x.id)) : null;
   const scopeRow=el('<div class="chiprow"></div>');
   const scopes = canManageStaff() ? [['mine',t('scope_mine')],['all',t('scope_all')]] : [['mine',t('scope_mine')]];
   scopes.forEach(([id,l])=>{
@@ -2055,7 +2069,7 @@ async function loadReport(){
 }
 function reportScopeEmployees(){
   let emps = S.employees;
-  if(isManager()) emps = emps.filter(x=>x.homeBranch===myBranch());
+  if(isManager()) emps = emps.filter(x=>x.homeBranch===myBranch() || coversBranch(x,myBranch()));
   else if(S.reportBranch!=='all') emps = emps.filter(x=>x.homeBranch===S.reportBranch);
   return emps;
 }
@@ -2731,6 +2745,8 @@ function buildNotifications(){
     S.faults.filter(f=>faultOverdue(f) && (f.deviceId ? isAdmin() : mineB(f.branch))).forEach(f=>{ out.push({id:'fault:od:'+f.id, ts:f.dueAt, title:t('notif_fault_overdue')+'：'+faultTitle(f), sub:(f.description||'').slice(0,60), unread:f.dueAt>seen, onClick:()=>openFaultDetail(f)}); });
     S.audits.filter(a=>mineB(a.branch)).slice(0,5).forEach(a=>{ out.push({id:'audit:'+a.id, ts:a.createdAt, title:t('notif_audit')+'：'+a.branch+' '+a.pct+'% '+a.grade, sub:(a.auditorName||'')+' · '+t('audit_failed_count')+' '+(a.failed||[]).length, unread:a.createdAt>seen, onClick:()=>openAuditDetail(a)}); });
     S.rectifications.filter(r=>r.status==='open' && r.dueDate && r.dueDate<todayStr() && mineB(r.branch)).forEach(r=>{ out.push({id:'rect:'+r.id, ts:r.dueDate+'T00:00:00.000Z', title:t('notif_rect_overdue')+'：'+String(r.item||'').slice(0,40), sub:r.branch+' · '+r.dueDate, unread:false, onClick:()=>openRectification(r)}); });
+    if(isAdmin()){ const td=todayStr(); S.bankIns.filter(b=>sameDay(b.createdAt, td)).forEach(b=>out.push({id:'bankin:'+b.id, ts:b.createdAt, title:t('notif_bankin')+'：RM '+Number(b.amount).toFixed(2), sub:(b.employeeName||'')+' · '+(b.bank||'')+(b.ref?' · '+b.ref:''), unread:b.createdAt>seen, onClick:()=>openBankInDetail(b)}));
+      if(new Date().getHours()>=18){ runnersList().forEach(r=>{ const d=sum(runnerVisitsFor(r.id,td),'cash')-sum(bankInsFor(r.id,td),'amount'); if(d>0.005) out.push({id:'unbanked:'+r.id+':'+td, ts:td+'T10:00:00.000Z', title:t('notif_unbanked')+'：'+r.name, sub:'RM '+d.toFixed(2), unread:false, onClick:()=>{ S.runnerEmp=r.id; location.hash='#runner'; }}); }); } }
     if(isNightNow()){ S.employees.filter(x=>x.active!==false && mineB(x.homeBranch) && isClockedIn(x.id)).forEach(x=>{ const due=safetyDueMin(x.id); if(due!=null && due<=-15){ const ts=new Date(Date.now()+due*60000).toISOString(); out.push({id:'safety:'+x.id+':'+ts.slice(0,13), ts, title:t('notif_safety_missed')+'：'+x.name, sub:(x.homeBranch||'')+' · '+Math.abs(due)+' min', unread:ts>seen, onClick:()=>{}}); } }); }
   }
   if(isAdmin()){
@@ -3207,6 +3223,8 @@ function adminSection(){
     [t('export_leave'),'leaveRequests', S.leaveRequests, ['employeeName','type','startDate','endDate','reason','status']],
     [t('export_kegs'),'kegs', S.kegs, ['productId','batchNo','status','sizeLiters','remainingLiters','tapId','depositStatus','receivedDate','openedAt','emptiedAt']],
     [t('export_keg_logs'),'kegLogs', S.kegLogs, ['kegId','productId','type','deltaLiters','tapId','employeeName','note','createdAt']],
+    [t('export_runner'),'runnerVisits', S.runnerVisits, ['employeeName','branch','docs','supplies','cash','distanceM','geoFlag','note','createdAt']],
+    [t('export_bankins'),'bankIns', S.bankIns, ['employeeName','amount','bank','ref','note','createdAt']],
   ];
   const monthBlock=el(`<div style="margin-bottom:10px;"><div class="divider" style="margin:6px 0 12px;"></div><div style="font-weight:800; font-size:12.5px; color:var(--ink-soft); margin-bottom:6px;">${esc(t('export_by_month'))}</div><p class="hint" style="margin:0 0 8px;">${esc(t('export_by_month_hint'))}</p></div>`);
   const monthInput=el(`<input type="month" value="${S.reportMonth}" style="margin-bottom:8px;">`);
@@ -3296,7 +3314,7 @@ function openEmployeeForm(emp, lockBranch){
     {key:'homeBranch', label:t('field_home_branch'), ph:t('ph_home_branch')},
     {key:'role', label:t('field_role'), type:'select', options:roleOptions},
   ];
-  if(isAdmin()){ fields.push({key:'annualLeaveDays', label:t('field_annual_leave'), type:'number'}, {key:'sickLeaveDays', label:t('field_sick_leave'), type:'number'}); }
+  if(isAdmin()){ fields.push({key:'coverBranches', label:t('field_cover_branches'), ph:'BR07, BR09'}, {key:'runner', label:t('field_runner'), type:'select', options:[{v:'',l:t('opt_no')},{v:'yes',l:t('opt_yes')}]}, {key:'annualLeaveDays', label:t('field_annual_leave'), type:'number'}, {key:'sickLeaveDays', label:t('field_sick_leave'), type:'number'}); }
   fields.push({key:'passportExpiry', label:t('field_passport_expiry'), type:'date'}, {key:'permitExpiry', label:t('field_permit_expiry'), type:'date'}, {key:'contractExpiry', label:t('field_contract_expiry'), type:'date'});
   const body=el('<div>'+fieldsHTML(fields, emp||{})+'</div>');
   if(lockBranch){
@@ -4068,7 +4086,7 @@ function weekScheduleView(lockBranch){
     branches.forEach(b=>{ const ch=el(`<button class="chip ${branch===b?'on':''}">${esc(b)}</button>`); ch.onclick=()=>{ S.schedBranch=b; renderApp(); }; chipRow.appendChild(ch); });
     c.appendChild(chipRow);
   }
-  const emps=S.employees.filter(e=>e.active!==false && (!branch || e.homeBranch===branch)).sort((a,b)=>a.name.localeCompare(b.name,'zh'));
+  const emps=S.employees.filter(e=>e.active!==false && (!branch || e.homeBranch===branch || coversBranch(e,branch))).sort((a,b)=>a.name.localeCompare(b.name,'zh'));
   const sub=el(`<div class="row" style="justify-content:space-between; margin-bottom:6px;"><span class="hint" style="margin:0;">${todayStr(days[0])} ~ ${todayStr(days[6])}${branch?' · '+esc(branch):''}</span></div>`);
   const copyBtn=el(`<button class="btn sm">${esc(t('btn_copy_last_week'))}</button>`);
   copyBtn.onclick=()=>copyLastWeek(emps, days);
@@ -4079,7 +4097,7 @@ function weekScheduleView(lockBranch){
   tbl.appendChild(el('<thead><tr><th></th>'+days.map(d=>`<th class="${todayStr(d)===todayStr()?'today':''}">${esc(weekdayLabel(d))}<br><span class="num">${d.getMonth()+1}/${d.getDate()}</span></th>`).join('')+'</tr></thead>'));
   const tb=el('<tbody></tbody>');
   emps.forEach(e=>{
-    const tr=el(`<tr><td class="nm">${esc(e.name)}</td></tr>`);
+    const tr=el(`<tr><td class="nm">${esc(e.name)}${branch && e.homeBranch!==branch ? ' <span class="pill n" style="font-size:9px;">'+esc(t('cover_badge'))+'</span>' : ''}</td></tr>`);
     days.forEach(d=>{
       const ds=todayStr(d); const ss=schedFor(e.id, ds);
       const td=el(`<td class="${ss.length?'has':''}">${ss.map(s=>`<span class="sh">${esc((s.shiftStart||'').slice(0,5))}–${esc((s.shiftEnd||'').slice(0,5))}</span>`).join('')||'<span class="plus">+</span>'}</td>`);
@@ -4251,6 +4269,7 @@ function funcGrid(clockedIn){
     tiles.push({k:'settings', icon:'gear', cls:'c-grey', label:t('tile_settings'), go:()=>{ location.hash='#me'; setTimeout(()=>{ const h=[...document.querySelectorAll('#view h2')].find(x=>x.textContent.includes(t('admin_settings'))); if(h) h.scrollIntoView({behavior:'smooth'}); },300); }});
   }
   tiles.push({k:'audit', icon:'chart', cls:'c-purple', label:t('tile_audit'), count:(isAdmin()?0:S.rectifications.filter(r=>r.status==='open' && r.branch===e.homeBranch).length), go:()=>{ location.hash='#audit'; }});
+  if(isRunner() || (isAdmin() && runnersList().length)) tiles.push({k:'runner', icon:'pin', cls:'c-blue', label:t('tile_runner'), go:()=>{ location.hash='#runner'; }});
   tiles.push({k:'help', icon:'book', cls:'c-grey', label:t('tile_help'), go:()=>{ window.open(guideUrl(),'_blank','noopener'); }});
   const wrap=el('<div></div>');
   wrap.appendChild(secH('grid','c-blue',t('func_title')));
@@ -4264,7 +4283,7 @@ function funcGrid(clockedIn){
 }
 function notifIcon(id){
   const p=String(id).split(':')[0];
-  const map={audit:['chart','c-purple'], rect:['alert','c-amber'], equip:['machine','c-grey'], memo:['megaphone','c-orange'], leave:['calendar','c-purple'], pending:['calendar','c-purple'], sched:['calendar','c-blue'], punch:['clock','c-amber'], ppunch:['clock','c-amber'], swap:['swap','c-amber'], pswap:['swap','c-amber'], fault:['wrench','c-orange'], keg:['beer','c-amber'], docexp:['users','c-purple'], temp:['thermo','c-teal'], sos:['siren','c-red'], inc:['alert','c-red'], safety:['siren','c-red']};
+  const map={bankin:['box','c-green'], unbanked:['box','c-red'], audit:['chart','c-purple'], rect:['alert','c-amber'], equip:['machine','c-grey'], memo:['megaphone','c-orange'], leave:['calendar','c-purple'], pending:['calendar','c-purple'], sched:['calendar','c-blue'], punch:['clock','c-amber'], ppunch:['clock','c-amber'], swap:['swap','c-amber'], pswap:['swap','c-amber'], fault:['wrench','c-orange'], keg:['beer','c-amber'], docexp:['users','c-purple'], temp:['thermo','c-teal'], sos:['siren','c-red'], inc:['alert','c-red'], safety:['siren','c-red']};
   const m=map[p]||['bell','c-grey'];
   return ib(m[0], m[1], 'sm');
 }
@@ -4594,6 +4613,109 @@ function pushBlock(){
   wrap.appendChild(row);
   wrap.appendChild(el(`<div class="hint">${esc(S.pushOn?t('push_on_hint'):t('push_off_hint'))}</div>`));
   return wrap;
+}
+
+/* ============================ FLOATING STAFF + RUNNER ROUTE ============================ */
+function coverList(e){ return String((e&&e.coverBranches)||'').split(/[,，;\s]+/).map(s=>s.trim().toUpperCase()).filter(Boolean); }
+function coversBranch(e,b){ return !!b && coverList(e).includes(String(b).toUpperCase()); }
+function orderedBranches(list){ const e=currentEmployee(); const first=[myBranch(), ...coverList(e)].filter(Boolean); const rest=list.filter(b=>!first.includes(b)); return [...first.filter(b=>list.includes(b)), ...rest]; }
+function isRunner(e){ e=e||currentEmployee(); return !!(e && (e.runner===true || e.runner==='yes')); }
+function runnersList(){ return S.employees.filter(e=>e.active!==false && isRunner(e)); }
+function sameDay(iso, date){ return !!iso && todayStr(new Date(iso))===date; }
+function runnerVisitsFor(empId, date){ return S.runnerVisits.filter(v=>(!empId||v.employeeId===empId) && sameDay(v.createdAt, date)); }
+function bankInsFor(empId, date){ return S.bankIns.filter(b=>(!empId||b.employeeId===empId) && sameDay(b.createdAt, date)); }
+function sum(arr, k){ return arr.reduce((n,x)=>n+(Number(x[k])||0),0); }
+function runnerView(){
+  const c=el('<div></div>'); const me=currentEmployee();
+  c.appendChild(secH('pin','c-blue',t('runner_title')));
+  const runners=runnersList();
+  let emp = isAdmin() ? (byId(runners, S.runnerEmp) || runners[0] || null) : me;
+  if(isAdmin()){
+    if(runners.length===0){ c.appendChild(el(`<div class="hint">${esc(t('runner_no_runner'))}</div>`)); return c; }
+    const chips=el('<div class="chiprow" style="margin-bottom:8px;"></div>'); runners.forEach(r=>{ const ch=el(`<button class="chip ${emp&&emp.id===r.id?'on':''}">${esc(r.name)}</button>`); ch.onclick=()=>{ S.runnerEmp=r.id; renderApp(); }; chips.appendChild(ch); }); c.appendChild(chips);
+  }
+  const date=S.runnerDate||todayStr();
+  const dateRow=el(`<div class="row" style="margin-bottom:10px; align-items:center;"><input type="date" value="${date}" style="flex:1;"><button class="btn sm">${esc(t('week_this'))}</button></div>`);
+  dateRow.querySelector('input').onchange=(ev)=>{ S.runnerDate=ev.target.value; renderApp(); }; dateRow.querySelector('button').onclick=()=>{ S.runnerDate=null; renderApp(); };
+  dateRow.querySelector('button').textContent=t('runner_today'); c.appendChild(dateRow);
+  if(!emp){ return c; }
+  const visits=runnerVisitsFor(emp.id, date).slice().sort((a,b)=>a.createdAt<b.createdAt?-1:1);
+  const bins=bankInsFor(emp.id, date).slice().sort((a,b)=>a.createdAt<b.createdAt?-1:1);
+  const collected=sum(visits,'cash'), banked=sum(bins,'amount'), diff=Math.round((collected-banked)*100)/100;
+  const tiles=el(`<div class="grid2" style="margin-bottom:10px;">
+    <div class="tile"><div class="tv">${visits.length}</div><div class="tl">${esc(t('runner_stops'))}</div></div>
+    <div class="tile"><div class="tv">RM ${collected.toFixed(2)}</div><div class="tl">${esc(t('runner_collected'))}</div></div>
+    <div class="tile"><div class="tv">RM ${banked.toFixed(2)}</div><div class="tl">${esc(t('runner_banked'))}</div></div>
+    <div class="tile" style="${diff>0?'border-color:var(--critical);':''}"><div class="tv" style="${diff>0?'color:var(--critical);':''}">RM ${diff.toFixed(2)}</div><div class="tl">${esc(t('runner_unbanked'))}</div></div></div>`);
+  c.appendChild(tiles);
+  if(!isAdmin() || me.id===emp.id){
+    const row=el('<div class="row" style="margin-bottom:12px;"></div>');
+    const bv=el(`<button class="btn primary block">${ICONS.pin}<span>${esc(t('btn_visit'))}</span></button>`); bv.onclick=()=>openVisitForm();
+    const bb=el(`<button class="btn ok block">${ICONS.box}<span>${esc(t('btn_bankin'))}</span></button>`); bb.onclick=()=>openBankInForm();
+    row.appendChild(bv); row.appendChild(bb); c.appendChild(row);
+  }
+  c.appendChild(el(`<h2 class="sec">${esc(t('runner_stops'))} · ${esc(emp.name)}</h2>`));
+  const vl=el('<div class="list"></div>');
+  if(visits.length===0) vl.appendChild(el(`<div class="hint">${esc(t('runner_none'))}</div>`));
+  visits.forEach(v=>{ const far=v.geoFlag==='out_of_range'; const parts=[]; if(v.docs==='yes') parts.push(t('field_docs')); if(v.supplies) parts.push(t('field_supplies')+': '+v.supplies); if(Number(v.cash)>0) parts.push('RM '+Number(v.cash).toFixed(2));
+    const r=el(`<div class="list-row">${ib('pin', far?'c-red':'c-blue')}<div class="lr-main"><div class="lr-title">${esc(v.branch)} <span class="num" style="font-weight:500; font-size:12px; color:var(--ink-faint);">${fmtDateTime(v.createdAt)}</span></div><div class="lr-sub">${esc(parts.join(' · '))||'—'}${v.distanceM!=null?' · '+Math.round(v.distanceM)+'m':''}</div></div>${far?`<span class="pill critical">${esc(t('flag_out_of_range'))}</span>`:(v.geoFlag==='in_range'?`<span class="pill ok">${esc(t('flag_in_range'))}</span>`:'')}</div>`);
+    r.onclick=()=>openVisitDetail(v); vl.appendChild(r); });
+  c.appendChild(vl);
+  c.appendChild(el(`<h2 class="sec">${esc(t('runner_bankins'))}</h2>`));
+  const bl=el('<div class="list"></div>');
+  if(bins.length===0) bl.appendChild(el(`<div class="hint">${esc(t('empty_no_records'))}</div>`));
+  bins.forEach(b=>{ const r=el(`<div class="list-row">${ib('box','c-green')}<div class="lr-main"><div class="lr-title">RM ${Number(b.amount).toFixed(2)} · ${esc(b.bank||'')}</div><div class="lr-sub">${fmtDateTime(b.createdAt)}${b.ref?' · '+esc(b.ref):''}${b.note?' · '+esc(b.note):''}</div></div>${b.slip?ib('camera','c-grey','sm'):''}</div>`); r.onclick=()=>openBankInDetail(b); bl.appendChild(r); });
+  c.appendChild(bl);
+  return c;
+}
+async function visitGeo(branch){ const geo=await getGeo(); const rec={}; if(geo && !geo.error){ rec.geo={lat:geo.lat,lng:geo.lng,accuracy:geo.accuracy}; const sc=siteCoordsFor(branch); if(sc){ rec.distanceM=Math.round(haversine(geo.lat,geo.lng,sc.lat,sc.lng)); rec.geoFlag = rec.distanceM<=(Number(S.settings.geofenceRadius)||300) ? 'in_range' : 'out_of_range'; } else rec.geoFlag='no_coords'; } else rec.geoFlag='none'; return rec; }
+function openVisitForm(){
+  const e=currentEmployee(); const branches=orderedBranches(allBranchIds()).filter(b=>!['HQ','VM','SUPPORT'].includes(b));
+  const f=[
+    {key:'branch', label:t('field_branch'), type:'select', options:branches.map(b=>({v:b,l:b}))},
+    {key:'docs', label:t('field_docs'), type:'select', options:[{v:'yes',l:t('opt_yes')},{v:'no',l:t('opt_no')}]},
+    {key:'supplies', label:t('field_supplies'), ph:t('ph_supplies')},
+    {key:'cash', label:t('field_cash_collected'), type:'number', step:'0.01', ph:'0.00'},
+    {key:'note', label:t('field_note_opt'), type:'textarea'},
+  ];
+  const body=el('<div>'+fieldsHTML(f,{docs:'yes'})+'</div>');
+  const pw=photoPicker(null,false); body.appendChild(pw);
+  const foot=el('<div class="sheet-foot"></div>'); const btn=el(`<button class="btn primary block">${esc(t('btn_visit'))}</button>`);
+  btn.onclick=async()=>{ const v=readFields(body,f); if(!v.branch){ toast(t('err_fill_all')); return; } btn.disabled=true; btn.textContent=t('clock_geo_getting');
+    const rec=Object.assign({employeeId:e.id, employeeName:e.name, branch:v.branch, docs:v.docs, supplies:(v.supplies||'').trim(), cash:v.cash?Number(v.cash):0, note:(v.note||'').trim(), createdAt:new Date().toISOString()}, await visitGeo(v.branch));
+    const p=pw.getPhoto(); if(p) rec.photo=p;
+    try{ await S.db.collection('runnerVisits').add(rec); toast(t('toast_visit_saved')); closeSheet(); }catch(err){ toast(dbErrMsg(err)); btn.disabled=false; btn.textContent=t('btn_visit'); } };
+  foot.appendChild(btn); body.appendChild(foot); openSheet(t('sheet_visit'), body);
+}
+function openVisitDetail(v){
+  const body=el('<div></div>');
+  body.innerHTML=`<div style="font-weight:800;">${esc(v.branch)} · ${fmtDateTime(v.createdAt)}</div><div class="hint" style="margin-top:2px;">${esc(v.employeeName||'')}${v.distanceM!=null?' · '+Math.round(v.distanceM)+'m':''}${v.geo?` · <a href="https://maps.google.com/?q=${v.geo.lat},${v.geo.lng}" target="_blank" rel="noopener">map</a>`:''}</div>
+    <div class="card card-tight" style="font-size:13.5px; margin-top:8px;"><div>${esc(t('field_docs'))}: ${esc(v.docs==='yes'?t('opt_yes'):t('opt_no'))}</div><div>${esc(t('field_supplies'))}: ${esc(v.supplies||'—')}</div><div>${esc(t('field_cash_collected'))}: RM ${Number(v.cash||0).toFixed(2)}</div>${v.note?`<div>${esc(v.note)}</div>`:''}</div>`;
+  if(v.photo) body.appendChild(el(`<img class="photow" src="${v.photo}">`));
+  openSheet(t('sheet_visit'), body);
+}
+function openBankInForm(){
+  const e=currentEmployee(); const last=S.bankIns.find(b=>b.employeeId===e.id);
+  const date=S.runnerDate||todayStr(); const pending=Math.max(0, sum(runnerVisitsFor(e.id,date),'cash')-sum(bankInsFor(e.id,date),'amount'));
+  const f=[
+    {key:'amount', label:t('field_amount'), type:'number', step:'0.01', default: pending>0 ? pending.toFixed(2) : ''},
+    {key:'bank', label:t('field_bank'), default: last?last.bank:''},
+    {key:'ref', label:t('field_ref')},
+    {key:'note', label:t('field_note_opt'), type:'textarea'},
+  ];
+  const body=el('<div>'+fieldsHTML(f)+'</div>');
+  body.appendChild(el(`<div class="hint">${esc(t('runner_slip_hint'))}</div>`));
+  const pw=photoPicker(null,false); body.appendChild(pw);
+  const foot=el('<div class="sheet-foot"></div>'); const btn=el(`<button class="btn ok block">${esc(t('btn_bankin'))}</button>`);
+  btn.onclick=async()=>{ const v=readFields(body,f); const p=pw.getPhoto(); if(!v.amount||Number(v.amount)<=0){ toast(t('err_valid_qty')); return; } if(!p){ toast(t('runner_need_slip')); return; } btn.disabled=true;
+    try{ await S.db.collection('bankIns').add({employeeId:e.id, employeeName:e.name, amount:Number(v.amount), bank:(v.bank||'').trim(), ref:(v.ref||'').trim(), note:(v.note||'').trim(), slip:p, createdAt:new Date().toISOString()}); toast(t('toast_bankin_saved')); closeSheet(); }catch(err){ toast(dbErrMsg(err)); btn.disabled=false; } };
+  foot.appendChild(btn); body.appendChild(foot); openSheet(t('sheet_bankin'), body);
+}
+function openBankInDetail(b){
+  const body=el('<div></div>');
+  body.innerHTML=`<div style="font-weight:900; font-size:18px;">RM ${Number(b.amount).toFixed(2)}</div><div class="hint" style="margin-top:2px;">${esc(b.bank||'')}${b.ref?' · '+esc(b.ref):''} · ${fmtDateTime(b.createdAt)} · ${esc(b.employeeName||'')}</div>${b.note?`<p>${esc(b.note)}</p>`:''}`;
+  if(b.slip) body.appendChild(el(`<img class="photow" src="${b.slip}">`));
+  openSheet(t('sheet_bankin'), body);
 }
 
 /* ============================ START ============================ */
