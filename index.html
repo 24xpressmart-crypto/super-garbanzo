@@ -4568,19 +4568,19 @@ async function enablePush(){
   try{
     const perm=await Notification.requestPermission(); if(perm!=='granted'){ toast(t('toast_notif_denied')); return; }
     const reg=await swReg(); if(!reg) throw new Error('no service worker');
-    const r=await fetch(PUSH_FN, {method:'GET'}); const {publicKey}=await r.json(); if(!publicKey) throw new Error('no key');
+    const r=await fetch(PUSH_FN, {method:'GET', headers:{apikey:SUPABASE_KEY}}); const {publicKey}=await r.json(); if(!publicKey) throw new Error('no key');
     let sub=await reg.pushManager.getSubscription();
     if(!sub) sub=await reg.pushManager.subscribe({userVisibleOnly:true, applicationServerKey:b64ToU8(publicKey)});
     const j=sub.toJSON(); const id=e.id+'__'+(await subIdFor(j.endpoint));
     await S.db.doc('pushSubs/'+id).set({employeeId:e.id, employeeName:e.name, branch:e.homeBranch||'', role:e.role||'staff', endpoint:j.endpoint, keys:j.keys, ua:navigator.userAgent.slice(0,120), createdAt:new Date().toISOString()});
     S.pushOn=true; toast(t('toast_push_on')); renderApp();
-    try{ await fetch(PUSH_FN, {method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+S.token}, body:JSON.stringify({test:true})}); }catch(err){}
+    try{ await fetch(PUSH_FN, {method:'POST', headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+S.token}, body:JSON.stringify({test:true})}); }catch(err){}
   }catch(err){ console.warn(err); toast(t('push_failed')+' '+(err&&err.message?err.message:'')); }
 }
 async function disablePush(){
   try{ const reg=await swReg(); const sub=reg && await reg.pushManager.getSubscription(); if(sub){ const e=currentEmployee(); const id=e.id+'__'+(await subIdFor(sub.endpoint)); await sub.unsubscribe(); try{ await S.db.doc('pushSubs/'+id).delete(); }catch(err){} } S.pushOn=false; toast(t('toast_push_off')); renderApp(); }catch(err){ toast(dbErrMsg(err)); }
 }
-async function testPush(){ try{ const r=await fetch(PUSH_FN, {method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+S.token}, body:JSON.stringify({test:true})}); const j=await r.json(); toast(t('push_test_sent')+' ('+(j.sent||0)+')'); }catch(err){ toast(t('push_failed')); } }
+async function testPush(){ try{ const r=await fetch(PUSH_FN, {method:'POST', headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+S.token}, body:JSON.stringify({test:true})}); const j=await r.json(); toast(t('push_test_sent')+' ('+(j.sent||0)+')'); }catch(err){ toast(t('push_failed')); } }
 function pushBlock(){
   const wrap=el('<div style="margin-bottom:12px;"></div>');
   if(!pushSupported()){ wrap.appendChild(el(`<div class="hint">${esc(t('push_unsupported'))}</div>`)); return wrap; }
