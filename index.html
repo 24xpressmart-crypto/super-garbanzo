@@ -2,6 +2,13 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2E6F91">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="24 Xpress">
+<link rel="apple-touch-icon" href="icon-192.png">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>24 Xpress</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -436,6 +443,7 @@ function leaveBalanceSuffix(l){
 /* ============================ I18N ============================ */
 const I18N = {
   zh: {
+    btn_push_on:'开启手机推送通知', btn_push_off:'关闭手机推送', btn_push_test:'发送测试通知', push_on_hint:'已开启：App 关闭也会收到新排班、审批结果、公告、温度报警、SOS。', push_off_hint:'开启后，就算 App 关闭，手机也会收到新排班、审批结果、公告和紧急通知。', push_unsupported:'此浏览器不支持手机推送', push_ios_hint:'iPhone 请先在 Safari 按「分享」→「添加到主屏幕」，再从主屏幕打开 App 开启推送。', push_failed:'开启推送失败', toast_push_on:'手机推送已开启', toast_push_off:'手机推送已关闭', push_test_sent:'测试通知已发送',
     audit_title:'巡店评分', btn_start_audit:'开始巡店', audit_history:'巡店记录', audit_none:'暂无巡店记录', audit_ranking:'本月门店排行', audit_times:'次', audit_rectifications:'整改任务', audit_no_rect:'暂无整改任务', audit_due:'期限', audit_score:'得分', audit_failed_count:'不合格项',
     audit_pass:'合格', audit_partial:'部分', audit_fail:'不合格', audit_note_ph:'说明问题（可选）', btn_submit_audit:'提交评分', confirm_submit_audit_prefix:'提交巡店评分：', confirm_submit_audit_suffix:'，不合格项 ', toast_audit_saved:'巡店评分已保存，整改任务已发给门店', sheet_audit:'巡店评分', sheet_audit_result:'巡店结果', audit_failed_items:'不合格 / 待整改项目', audit_all_pass:'全部合格',
     audit_no_template:'请先在「我的」→ 巡店评分表 载入标准评分表', btn_seed_audit_template:'载入标准评分表', audit_template_exists:'已有评分表', admin_audit_templates:'巡店评分表', audit_sections:'个章节', field_audit_items:'章节与项目（## 章节名 (权重) 一行，下面每行一个项目）', sheet_audit_template:'巡店评分表',
@@ -649,6 +657,7 @@ const I18N = {
     toast_deleted:'已删除',
   },
   en: {
+    btn_push_on:'Enable phone push notifications', btn_push_off:'Disable push notifications', btn_push_test:'Send test notification', push_on_hint:'On: you get new shifts, approvals, memos, temperature alerts and SOS even when the app is closed.', push_off_hint:'When on, your phone receives new shifts, approvals, memos and emergencies even with the app closed.', push_unsupported:'This browser does not support push notifications', push_ios_hint:'iPhone: in Safari tap Share → Add to Home Screen, then open the app from the home screen to enable push.', push_failed:'Could not enable push', toast_push_on:'Push notifications on', toast_push_off:'Push notifications off', push_test_sent:'Test notification sent',
     audit_title:'Store audit', btn_start_audit:'Start audit', audit_history:'Audit history', audit_none:'No audits yet', audit_ranking:'Store ranking this month', audit_times:'audits', audit_rectifications:'Rectification tasks', audit_no_rect:'No rectification tasks', audit_due:'Due', audit_score:'Score', audit_failed_count:'Failed items',
     audit_pass:'Pass', audit_partial:'Partial', audit_fail:'Fail', audit_note_ph:'Describe the issue (optional)', btn_submit_audit:'Submit audit', confirm_submit_audit_prefix:'Submit audit: ', confirm_submit_audit_suffix:', failed items ', toast_audit_saved:'Audit saved, rectification tasks sent to the store', sheet_audit:'Store audit', sheet_audit_result:'Audit result', audit_failed_items:'Failed / to rectify', audit_all_pass:'All items passed',
     audit_no_template:'Load the standard scoring sheet first under Me → Audit templates', btn_seed_audit_template:'Load standard sheet', audit_template_exists:'A sheet already exists', admin_audit_templates:'Audit scoring sheets', audit_sections:'sections', field_audit_items:'Sections and items (one line "## Section (weight)", then one item per line)', sheet_audit_template:'Audit scoring sheet',
@@ -862,6 +871,7 @@ const I18N = {
     toast_deleted:'Deleted',
   },
   ms: {
+    btn_push_on:'Hidupkan pemberitahuan tolak telefon', btn_push_off:'Matikan pemberitahuan tolak', btn_push_test:'Hantar pemberitahuan ujian', push_on_hint:'Hidup: anda terima syif baharu, kelulusan, pengumuman, amaran suhu dan SOS walaupun app ditutup.', push_off_hint:'Apabila dihidupkan, telefon menerima syif baharu, kelulusan, pengumuman dan kecemasan walaupun app ditutup.', push_unsupported:'Pelayar ini tidak menyokong pemberitahuan tolak', push_ios_hint:'iPhone: dalam Safari tekan Kongsi → Tambah ke Skrin Utama, kemudian buka app dari skrin utama untuk hidupkan.', push_failed:'Gagal hidupkan pemberitahuan tolak', toast_push_on:'Pemberitahuan tolak dihidupkan', toast_push_off:'Pemberitahuan tolak dimatikan', push_test_sent:'Pemberitahuan ujian dihantar',
     audit_title:'Audit kedai', btn_start_audit:'Mula audit', audit_history:'Sejarah audit', audit_none:'Belum ada audit', audit_ranking:'Kedudukan kedai bulan ini', audit_times:'audit', audit_rectifications:'Tugas pembetulan', audit_no_rect:'Tiada tugas pembetulan', audit_due:'Tempoh', audit_score:'Skor', audit_failed_count:'Item gagal',
     audit_pass:'Lulus', audit_partial:'Separa', audit_fail:'Gagal', audit_note_ph:'Terangkan masalah (pilihan)', btn_submit_audit:'Hantar audit', confirm_submit_audit_prefix:'Hantar audit: ', confirm_submit_audit_suffix:', item gagal ', toast_audit_saved:'Audit disimpan, tugas pembetulan dihantar ke kedai', sheet_audit:'Audit kedai', sheet_audit_result:'Keputusan audit', audit_failed_items:'Gagal / perlu dibetulkan', audit_all_pass:'Semua item lulus',
     audit_no_template:'Muatkan borang skor standard dahulu di Saya → Borang audit', btn_seed_audit_template:'Muat borang standard', audit_template_exists:'Borang sudah wujud', admin_audit_templates:'Borang skor audit', audit_sections:'bahagian', field_audit_items:'Bahagian dan item (satu baris "## Bahagian (pemberat)", kemudian satu item sebaris)', sheet_audit_template:'Borang skor audit',
@@ -1089,7 +1099,7 @@ const S = {
   stockDeviceFilter:'all', equipTab:'devices', faultFilter:'open', historyRange:'today', attnScope:'mine',
   stockSection:'snacks', kegFilter:'tapped', beerZoneFilter:'all', pickerBranch:null, staffBranchFilter:'all', lastGeoMsg:null, clockSub:'records', reportMonth:(function(){const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');})(), reportBranch:'all', reportData:null, reportLoading:false,
   beerProducts:[], taps:[], kegs:[], kegLogs:[], memos:[], memoReads:[],
-  punchRequests:[], swapRequests:[], clockBranch:null, notifSeen:[], token:null, loginList:null, employeesLoaded:false, sb:null, taskTemplates:[], taskRuns:[], handovers:[], taskBranch:null, equipment:[], tempLogs:[], safetyChecks:[], incidents:[], weekStart:null, schedBranch:null, assetBranch:null, equipTabInit:false, auditTemplates:[], audits:[], rectifications:[], auditBranch:null,
+  punchRequests:[], swapRequests:[], clockBranch:null, notifSeen:[], token:null, loginList:null, employeesLoaded:false, sb:null, taskTemplates:[], taskRuns:[], handovers:[], taskBranch:null, equipment:[], tempLogs:[], safetyChecks:[], incidents:[], weekStart:null, schedBranch:null, assetBranch:null, equipTabInit:false, auditTemplates:[], audits:[], rectifications:[], auditBranch:null, pushOn:false,
   notifKnown:null, pageLoadedAt:new Date().toISOString(), notifBrowser:(function(){ try{ return localStorage.getItem('bgc_notif')==='1'; }catch(e){ return false; } })(),
   showReport:false, meAdmin:false,
   geoCache:null,
@@ -1404,6 +1414,7 @@ async function boot(){
   if(S.token){
     S.dbState='ready';
     subscribeAll();
+    refreshPushState().then(()=>renderApp());
   } else {
     try{ await loadLoginList(); S.dbState='ready'; }
     catch(e){ S.dbState='unavailable'; S.dbErrorDetail=String((e&&e.message)||e); }
@@ -2952,6 +2963,7 @@ function meView(){
   const notifToggle=el(`<button class="btn block" style="margin-bottom:12px;">${esc(S.notifBrowser?t('btn_disable_browser_notif'):t('btn_enable_browser_notif'))}</button>`);
   notifToggle.onclick=()=>toggleBrowserNotif();
   const notifWrap=el('<div style="margin-top:-4px;"></div>');
+  notifWrap.appendChild(pushBlock());
   notifWrap.appendChild(notifToggle);
   notifWrap.appendChild(el(`<p class="hint" style="margin-top:-6px;">${esc(t('notif_browser_hint'))}</p>`));
   c.appendChild(idCard);
@@ -4538,6 +4550,49 @@ function openAuditTemplateForm(tp){
   const foot=el('<div class="sheet-foot"></div>'); const btn=el(`<button class="btn primary block">${esc(t('btn_save'))}</button>`);
   btn.onclick=async()=>{ const v=readFields(body,f); const sections=textToSections(v.text); if(!v.name||!sections.length){ toast(t('err_fill_all')); return; } try{ if(tp) await S.db.doc('auditTemplates/'+tp.id).update({name:v.name, sections}); else await S.db.collection('auditTemplates').add({name:v.name, sections, active:true, createdAt:new Date().toISOString()}); toast(t('toast_saved')); closeSheet(); }catch(e){ toast(dbErrMsg(e)); } };
   foot.appendChild(btn); body.appendChild(foot); openSheet(t('sheet_audit_template'), body);
+}
+
+/* ============================ PUSH NOTIFICATIONS (PWA) ============================ */
+const PUSH_FN='https://smpazgmbmmeqighyhbon.supabase.co/functions/v1/push';
+function pushSupported(){ return location.protocol==='https:' && 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window; }
+function isStandalone(){ return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone===true; }
+function isIOS(){ return /iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1); }
+async function swReg(){ if(!('serviceWorker' in navigator) || location.protocol!=='https:') return null; try{ return await navigator.serviceWorker.register('./sw.js', {scope:'./'}); }catch(e){ console.warn('sw', e); return null; } }
+async function refreshPushState(){ try{ const reg=await swReg(); if(!reg){ S.pushOn=false; return; } const sub=await reg.pushManager.getSubscription(); S.pushOn=!!sub; }catch(e){ S.pushOn=false; } }
+function b64ToU8(b64){ const pad='='.repeat((4-b64.length%4)%4); const raw=atob((b64+pad).replace(/-/g,'+').replace(/_/g,'/')); return Uint8Array.from([...raw].map(c=>c.charCodeAt(0))); }
+async function subIdFor(endpoint){ const buf=await crypto.subtle.digest('SHA-256', new TextEncoder().encode(endpoint)); return Array.from(new Uint8Array(buf)).slice(0,8).map(b=>b.toString(16).padStart(2,'0')).join(''); }
+async function enablePush(){
+  const e=currentEmployee(); if(!e) return;
+  if(!pushSupported()){ toast(t('push_unsupported')); return; }
+  if(isIOS() && !isStandalone()){ toast(t('push_ios_hint')); return; }
+  try{
+    const perm=await Notification.requestPermission(); if(perm!=='granted'){ toast(t('toast_notif_denied')); return; }
+    const reg=await swReg(); if(!reg) throw new Error('no service worker');
+    const r=await fetch(PUSH_FN, {method:'GET'}); const {publicKey}=await r.json(); if(!publicKey) throw new Error('no key');
+    let sub=await reg.pushManager.getSubscription();
+    if(!sub) sub=await reg.pushManager.subscribe({userVisibleOnly:true, applicationServerKey:b64ToU8(publicKey)});
+    const j=sub.toJSON(); const id=e.id+'__'+(await subIdFor(j.endpoint));
+    await S.db.doc('pushSubs/'+id).set({employeeId:e.id, employeeName:e.name, branch:e.homeBranch||'', role:e.role||'staff', endpoint:j.endpoint, keys:j.keys, ua:navigator.userAgent.slice(0,120), createdAt:new Date().toISOString()});
+    S.pushOn=true; toast(t('toast_push_on')); renderApp();
+    try{ await fetch(PUSH_FN, {method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+S.token}, body:JSON.stringify({test:true})}); }catch(err){}
+  }catch(err){ console.warn(err); toast(t('push_failed')+' '+(err&&err.message?err.message:'')); }
+}
+async function disablePush(){
+  try{ const reg=await swReg(); const sub=reg && await reg.pushManager.getSubscription(); if(sub){ const e=currentEmployee(); const id=e.id+'__'+(await subIdFor(sub.endpoint)); await sub.unsubscribe(); try{ await S.db.doc('pushSubs/'+id).delete(); }catch(err){} } S.pushOn=false; toast(t('toast_push_off')); renderApp(); }catch(err){ toast(dbErrMsg(err)); }
+}
+async function testPush(){ try{ const r=await fetch(PUSH_FN, {method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+S.token}, body:JSON.stringify({test:true})}); const j=await r.json(); toast(t('push_test_sent')+' ('+(j.sent||0)+')'); }catch(err){ toast(t('push_failed')); } }
+function pushBlock(){
+  const wrap=el('<div style="margin-bottom:12px;"></div>');
+  if(!pushSupported()){ wrap.appendChild(el(`<div class="hint">${esc(t('push_unsupported'))}</div>`)); return wrap; }
+  if(isIOS() && !isStandalone()){ wrap.appendChild(el(`<div class="card card-tight" style="font-size:13px;">${esc(t('push_ios_hint'))}</div>`)); return wrap; }
+  const row=el('<div class="row"></div>');
+  const b=el(`<button class="btn ${S.pushOn?'':'primary'} block">${ICONS.bell}<span>${esc(S.pushOn?t('btn_push_off'):t('btn_push_on'))}</span></button>`);
+  b.onclick=()=>{ S.pushOn ? disablePush() : enablePush(); };
+  row.appendChild(b);
+  if(S.pushOn){ const tb=el(`<button class="btn block">${esc(t('btn_push_test'))}</button>`); tb.onclick=testPush; row.appendChild(tb); }
+  wrap.appendChild(row);
+  wrap.appendChild(el(`<div class="hint">${esc(S.pushOn?t('push_on_hint'):t('push_off_hint'))}</div>`));
+  return wrap;
 }
 
 /* ============================ START ============================ */
