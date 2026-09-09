@@ -2968,7 +2968,7 @@ function meView(){
   notifWrap.appendChild(el(`<p class="hint" style="margin-top:-6px;">${esc(t('notif_browser_hint'))}</p>`));
   c.appendChild(idCard);
   c.appendChild(notifWrap);
-  c.appendChild(el(`<a class="btn block" style="margin:-4px 0 12px; text-decoration:none;" href="${GUIDE_URL}" target="_blank" rel="noopener">📖 ${esc(t('btn_help'))}</a>`));
+  c.appendChild(el(`<a class="btn block" style="margin:-4px 0 12px; text-decoration:none;" href="${guideUrl()}" target="_blank" rel="noopener">📖 ${esc(t('btn_help'))}</a>`));
 
   // my schedule
   c.appendChild(secH('calendar','c-blue',t('my_schedule')));
@@ -4041,6 +4041,7 @@ function docExpiryBlock(scopeIds){
 
 /* ============================ PHASE 1D: WEEKLY SCHEDULE / NIGHT SAFETY / INCIDENTS / HELP ============================ */
 const GUIDE_URL='https://24xpressmart-crypto.github.io/super-garbanzo/guide.html';
+function guideUrl(){ return S.lang==='ms' ? GUIDE_URL.replace('guide.html','guide-ms.html') : GUIDE_URL; }
 function addDays(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x; }
 function weekMonday(d){ const x=new Date(d); const day=(x.getDay()+6)%7; x.setDate(x.getDate()-day); x.setHours(0,0,0,0); return x; }
 function localDate(ds){ return new Date(ds+'T00:00:00'); }
@@ -4250,7 +4251,7 @@ function funcGrid(clockedIn){
     tiles.push({k:'settings', icon:'gear', cls:'c-grey', label:t('tile_settings'), go:()=>{ location.hash='#me'; setTimeout(()=>{ const h=[...document.querySelectorAll('#view h2')].find(x=>x.textContent.includes(t('admin_settings'))); if(h) h.scrollIntoView({behavior:'smooth'}); },300); }});
   }
   tiles.push({k:'audit', icon:'chart', cls:'c-purple', label:t('tile_audit'), count:(isAdmin()?0:S.rectifications.filter(r=>r.status==='open' && r.branch===e.homeBranch).length), go:()=>{ location.hash='#audit'; }});
-  tiles.push({k:'help', icon:'book', cls:'c-grey', label:t('tile_help'), go:()=>{ window.open(GUIDE_URL,'_blank','noopener'); }});
+  tiles.push({k:'help', icon:'book', cls:'c-grey', label:t('tile_help'), go:()=>{ window.open(guideUrl(),'_blank','noopener'); }});
   const wrap=el('<div></div>');
   wrap.appendChild(secH('grid','c-blue',t('func_title')));
   const grid=el('<div class="fgrid"></div>');
