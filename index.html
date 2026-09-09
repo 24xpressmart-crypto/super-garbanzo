@@ -245,6 +245,7 @@
   #nav button svg{width:21px; height:21px;}
   #nav button .lb{font-size:10.5px; font-weight:700;}
   #nav button.on{color:var(--accent);}
+  .avimg{width:100%; height:100%; object-fit:cover; border-radius:50%; display:block;} .avatar{overflow:hidden;} .hello .av{overflow:hidden;}
   .ib{display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:12px; flex-shrink:0;}
   .ib svg{width:20px; height:20px;}
   .ib.lg{width:50px; height:50px; border-radius:15px;} .ib.lg svg{width:25px; height:25px;}
@@ -435,6 +436,17 @@ function leaveBalanceSuffix(l){
 /* ============================ I18N ============================ */
 const I18N = {
   zh: {
+    audit_title:'巡店评分', btn_start_audit:'开始巡店', audit_history:'巡店记录', audit_none:'暂无巡店记录', audit_ranking:'本月门店排行', audit_times:'次', audit_rectifications:'整改任务', audit_no_rect:'暂无整改任务', audit_due:'期限', audit_score:'得分', audit_failed_count:'不合格项',
+    audit_pass:'合格', audit_partial:'部分', audit_fail:'不合格', audit_note_ph:'说明问题（可选）', btn_submit_audit:'提交评分', confirm_submit_audit_prefix:'提交巡店评分：', confirm_submit_audit_suffix:'，不合格项 ', toast_audit_saved:'巡店评分已保存，整改任务已发给门店', sheet_audit:'巡店评分', sheet_audit_result:'巡店结果', audit_failed_items:'不合格 / 待整改项目', audit_all_pass:'全部合格',
+    audit_no_template:'请先在「我的」→ 巡店评分表 载入标准评分表', btn_seed_audit_template:'载入标准评分表', audit_template_exists:'已有评分表', admin_audit_templates:'巡店评分表', audit_sections:'个章节', field_audit_items:'章节与项目（## 章节名 (权重) 一行，下面每行一个项目）', sheet_audit_template:'巡店评分表',
+    sheet_rectification:'整改任务', audit_done_note_ph:'整改说明（可选）', btn_mark_rectified:'拍照并标记已整改', audit_need_photo:'请先拍整改后的照片', notif_audit:'巡店结果', notif_rect_overdue:'整改任务逾期', tile_audit:'巡店评分',
+    kind_pos:'POS 收银机', kind_aircon:'冷气', kind_cctv:'CCTV 监控', kind_lighting:'灯光 / 招牌灯', kind_signage:'招牌', kind_shutter:'卷闸 / 门', kind_icemaker:'制冰机', kind_microwave:'微波炉', kind_oven:'烤箱 / 蒸柜', kind_waterheater:'热水器', kind_generator:'电箱 / 发电机', kind_fireext:'灭火器',
+    fcat_electrical:'电力 / 灯光', fcat_refrigeration:'冷柜 / 冰柜', fcat_aircon:'冷气', fcat_plumbing:'水管 / 厕所', fcat_pos_it:'POS / 网络', fcat_building:'建筑 / 门窗 / 漏水', fcat_furniture:'货架 / 家具', fcat_other:'其他',
+    fault_loc_store:'门店设备', fault_loc_device:'自动售货机', field_asset:'设备', asset_unlisted:'其他 / 未登记设备', field_fault_cat:'故障类别', fault_sla_hint_prefix:'处理时限：', fault_sla_hint_suffix:' 小时内', fault_overdue:'超时', fault_due_label:'时限 ',
+    tab_store_assets:'门店设备', asset_no_branch:'请先设定你的所属分店', btn_add_asset:'添加设备', asset_none:'本店尚未登记设备', equip_warranty:'保修', equip_service:'保养', equip_overdue:'已逾期',
+    field_brand:'品牌 / 型号', field_serial:'序列号', field_vendor:'供应商 / 维修商', field_vendor_phone:'维修商电话', field_warranty:'保修到期日', field_service_interval:'保养周期（天）', field_last_service:'上次保养日期', btn_log_service:'记录保养', toast_service_logged:'已记录保养', btn_edit_asset:'编辑设备资料',
+    field_sla_high:'高严重度处理时限（小时）', field_sla_medium:'中等严重度处理时限（小时）', field_sla_low:'低严重度处理时限（小时）', notif_warranty:'保修即将到期', notif_service_due:'保养到期', notif_fault_overdue:'报修超时未处理', field_cost:'维修费用 (RM，可选)',
+    btn_avatar:'头像', sheet_avatar:'设置头像', avatar_hint:'拍一张正面照片，会显示在登录列表和首页。', avatar_need_photo:'请先拍照或选择图片',
     hello_morning:'早上好', hello_afternoon:'下午好', hello_evening:'晚上好', func_title:'功能',
     tile_clock_in:'上班打卡', tile_clock_out:'下班打卡', tile_tasks:'任务清单', tile_handover:'交接班', tile_temp:'温度记录', tile_leave:'请假', tile_punch:'补卡', tile_swap:'换班', tile_memos:'公告', tile_fault:'报修', tile_incident:'客诉 / 事故', tile_sos:'SOS 求助', tile_stock:'库存', tile_beer:'鲜啤', tile_equip:'设备', tile_help:'使用手册', tile_approvals:'审批', tile_schedule:'排班', tile_report:'考勤月报', tile_staff:'人员', tile_overview:'各店任务', tile_settings:'设置',
     week_this:'本周', btn_copy_last_week:'复制上周', week_hint:'点格子添加或删除班次；用班次模板一键排班。', field_shift_template:'班次模板', toast_no_last_week:'上周没有排班可复制', toast_week_already:'本周已有相同的排班', confirm_copy_week_prefix:'将复制 ', confirm_copy_week_suffix:' 个班次到本周？',
@@ -444,7 +456,7 @@ const I18N = {
     field_incident_kind:'类型', inc_complaint:'顾客投诉', inc_accident:'事故 / 受伤', inc_theft:'盗窃 / 治安', inc_power:'停电 / 设备故障', inc_other:'其他', field_description:'描述', toast_incident_sent:'已提交，店经理与 HQ 已收到通知', sheet_incident:'客诉 / 事故记录', inc_open:'待处理', inc_resolved:'已处理', btn_mark_resolved:'标记已处理', admin_incidents:'客诉与事故',
     notif_sos:'紧急求助', notif_incident:'新客诉 / 事故', notif_safety_missed:'夜班未确认安全', btn_help:'使用手册 / User Guide',
     session_expired:'登录已过期，请重新登录', err_pin_locked:'尝试次数过多，请 15 分钟后再试', err_pin_exists:'PIN 已设置，请直接登录', err_pin_inactive:'此账号已停用，请联系管理员', confirm_logout:'确定退出登录？',
-    temp_title:'温度记录', admin_equipment:'温控设备', sheet_equipment:'温控设备', field_equipment_name:'设备名称', field_kind:'类型',
+    temp_title:'温度记录', admin_equipment:'门店设备', sheet_equipment:'温控设备', field_equipment_name:'设备名称', field_kind:'类型',
     kind_chiller:'冷柜', kind_freezer:'冰柜', kind_hot:'热柜', kind_beer:'鲜啤', kind_coffee:'咖啡机', kind_other:'其他', field_min:'最低 (°C)', field_max:'最高 (°C)', field_branch:'门店',
     btn_log_temp:'记录', temp_none:'尚无记录', temp_out_of_range:'超出范围', temp_ok:'正常', toast_temp_saved:'已记录', toast_temp_alert:'温度超出范围，请检查设备并通知店经理', notif_temp_alert:'温度超标',
     temp_no_equipment:'该门店尚未设定温控设备（店经理或管理员可在「我的」→ 温控设备 添加）',
@@ -637,6 +649,17 @@ const I18N = {
     toast_deleted:'已删除',
   },
   en: {
+    audit_title:'Store audit', btn_start_audit:'Start audit', audit_history:'Audit history', audit_none:'No audits yet', audit_ranking:'Store ranking this month', audit_times:'audits', audit_rectifications:'Rectification tasks', audit_no_rect:'No rectification tasks', audit_due:'Due', audit_score:'Score', audit_failed_count:'Failed items',
+    audit_pass:'Pass', audit_partial:'Partial', audit_fail:'Fail', audit_note_ph:'Describe the issue (optional)', btn_submit_audit:'Submit audit', confirm_submit_audit_prefix:'Submit audit: ', confirm_submit_audit_suffix:', failed items ', toast_audit_saved:'Audit saved, rectification tasks sent to the store', sheet_audit:'Store audit', sheet_audit_result:'Audit result', audit_failed_items:'Failed / to rectify', audit_all_pass:'All items passed',
+    audit_no_template:'Load the standard scoring sheet first under Me → Audit templates', btn_seed_audit_template:'Load standard sheet', audit_template_exists:'A sheet already exists', admin_audit_templates:'Audit scoring sheets', audit_sections:'sections', field_audit_items:'Sections and items (one line "## Section (weight)", then one item per line)', sheet_audit_template:'Audit scoring sheet',
+    sheet_rectification:'Rectification task', audit_done_note_ph:'What was fixed (optional)', btn_mark_rectified:'Take photo and mark rectified', audit_need_photo:'Take a photo of the fix first', notif_audit:'Audit result', notif_rect_overdue:'Rectification overdue', tile_audit:'Store audit',
+    kind_pos:'POS terminal', kind_aircon:'Air-conditioner', kind_cctv:'CCTV', kind_lighting:'Lighting / signboard lights', kind_signage:'Signboard', kind_shutter:'Shutter / door', kind_icemaker:'Ice maker', kind_microwave:'Microwave', kind_oven:'Oven / steamer', kind_waterheater:'Water heater', kind_generator:'DB box / generator', kind_fireext:'Fire extinguisher',
+    fcat_electrical:'Electrical / lighting', fcat_refrigeration:'Chiller / freezer', fcat_aircon:'Air-conditioning', fcat_plumbing:'Plumbing / toilet', fcat_pos_it:'POS / network', fcat_building:'Building / doors / leaks', fcat_furniture:'Shelving / furniture', fcat_other:'Other',
+    fault_loc_store:'Store equipment', fault_loc_device:'Vending machine', field_asset:'Equipment', asset_unlisted:'Other / not registered', field_fault_cat:'Fault category', fault_sla_hint_prefix:'To be handled within ', fault_sla_hint_suffix:' hours', fault_overdue:'Overdue', fault_due_label:'Due ',
+    tab_store_assets:'Store equipment', asset_no_branch:'Set your home store first', btn_add_asset:'Add equipment', asset_none:'No equipment registered for this store yet', equip_warranty:'Warranty', equip_service:'Service', equip_overdue:'overdue',
+    field_brand:'Brand / model', field_serial:'Serial no.', field_vendor:'Supplier / repair vendor', field_vendor_phone:'Vendor phone', field_warranty:'Warranty expiry', field_service_interval:'Service interval (days)', field_last_service:'Last service date', btn_log_service:'Log service', toast_service_logged:'Service logged', btn_edit_asset:'Edit equipment details',
+    field_sla_high:'High severity response time (hours)', field_sla_medium:'Medium severity response time (hours)', field_sla_low:'Low severity response time (hours)', notif_warranty:'Warranty expiring', notif_service_due:'Service due', notif_fault_overdue:'Fault overdue', field_cost:'Repair cost (RM, optional)',
+    btn_avatar:'Photo', sheet_avatar:'Set profile photo', avatar_hint:'Take a front-facing photo. It shows on the login list and the home page.', avatar_need_photo:'Take or choose a photo first',
     hello_morning:'Good morning', hello_afternoon:'Good afternoon', hello_evening:'Good evening', func_title:'Functions',
     tile_clock_in:'Clock in', tile_clock_out:'Clock out', tile_tasks:'Checklists', tile_handover:'Handover', tile_temp:'Temperature', tile_leave:'Leave', tile_punch:'Missed punch', tile_swap:'Shift swap', tile_memos:'Memos', tile_fault:'Report fault', tile_incident:'Incident', tile_sos:'SOS', tile_stock:'Stock', tile_beer:'Draft beer', tile_equip:'Equipment', tile_help:'User guide', tile_approvals:'Approvals', tile_schedule:'Schedule', tile_report:'Attendance report', tile_staff:'Staff', tile_overview:'All stores', tile_settings:'Settings',
     week_this:'This week', btn_copy_last_week:'Copy last week', week_hint:'Tap a cell to add or remove a shift; use templates for one-tap scheduling.', field_shift_template:'Shift template', toast_no_last_week:'No shifts last week to copy', toast_week_already:'This week already has those shifts', confirm_copy_week_prefix:'Copy ', confirm_copy_week_suffix:' shifts into this week?',
@@ -646,7 +669,7 @@ const I18N = {
     field_incident_kind:'Type', inc_complaint:'Customer complaint', inc_accident:'Accident / injury', inc_theft:'Theft / security', inc_power:'Power / equipment failure', inc_other:'Other', field_description:'Description', toast_incident_sent:'Submitted, manager and HQ notified', sheet_incident:'Complaint / incident', inc_open:'Open', inc_resolved:'Resolved', btn_mark_resolved:'Mark resolved', admin_incidents:'Complaints & incidents',
     notif_sos:'Emergency SOS', notif_incident:'New complaint / incident', notif_safety_missed:'Night safety check missed', btn_help:'User guide / 使用手册',
     session_expired:'Session expired, please log in again', err_pin_locked:'Too many attempts, try again in 15 minutes', err_pin_exists:'PIN already set, please log in', err_pin_inactive:'This account is inactive, contact an admin', confirm_logout:'Log out?',
-    temp_title:'Temperature log', admin_equipment:'Temperature equipment', sheet_equipment:'Equipment', field_equipment_name:'Equipment name', field_kind:'Type',
+    temp_title:'Temperature log', admin_equipment:'Store equipment', sheet_equipment:'Equipment', field_equipment_name:'Equipment name', field_kind:'Type',
     kind_chiller:'Chiller', kind_freezer:'Freezer', kind_hot:'Hot cabinet', kind_beer:'Draft beer', kind_coffee:'Coffee machine', kind_other:'Other', field_min:'Min (°C)', field_max:'Max (°C)', field_branch:'Store',
     btn_log_temp:'Log', temp_none:'No reading yet', temp_out_of_range:'Out of range', temp_ok:'OK', toast_temp_saved:'Logged', toast_temp_alert:'Out of range: check the unit and tell the store manager', notif_temp_alert:'Temperature alert',
     temp_no_equipment:'No equipment set for this store yet (manager or admin adds it under Me → Temperature equipment)',
@@ -839,6 +862,17 @@ const I18N = {
     toast_deleted:'Deleted',
   },
   ms: {
+    audit_title:'Audit kedai', btn_start_audit:'Mula audit', audit_history:'Sejarah audit', audit_none:'Belum ada audit', audit_ranking:'Kedudukan kedai bulan ini', audit_times:'audit', audit_rectifications:'Tugas pembetulan', audit_no_rect:'Tiada tugas pembetulan', audit_due:'Tempoh', audit_score:'Skor', audit_failed_count:'Item gagal',
+    audit_pass:'Lulus', audit_partial:'Separa', audit_fail:'Gagal', audit_note_ph:'Terangkan masalah (pilihan)', btn_submit_audit:'Hantar audit', confirm_submit_audit_prefix:'Hantar audit: ', confirm_submit_audit_suffix:', item gagal ', toast_audit_saved:'Audit disimpan, tugas pembetulan dihantar ke kedai', sheet_audit:'Audit kedai', sheet_audit_result:'Keputusan audit', audit_failed_items:'Gagal / perlu dibetulkan', audit_all_pass:'Semua item lulus',
+    audit_no_template:'Muatkan borang skor standard dahulu di Saya → Borang audit', btn_seed_audit_template:'Muat borang standard', audit_template_exists:'Borang sudah wujud', admin_audit_templates:'Borang skor audit', audit_sections:'bahagian', field_audit_items:'Bahagian dan item (satu baris "## Bahagian (pemberat)", kemudian satu item sebaris)', sheet_audit_template:'Borang skor audit',
+    sheet_rectification:'Tugas pembetulan', audit_done_note_ph:'Apa yang dibetulkan (pilihan)', btn_mark_rectified:'Ambil gambar dan tanda dibetulkan', audit_need_photo:'Ambil gambar pembetulan dahulu', notif_audit:'Keputusan audit', notif_rect_overdue:'Pembetulan lewat', tile_audit:'Audit kedai',
+    kind_pos:'Terminal POS', kind_aircon:'Penghawa dingin', kind_cctv:'CCTV', kind_lighting:'Lampu / lampu papan tanda', kind_signage:'Papan tanda', kind_shutter:'Pintu bidai / pintu', kind_icemaker:'Mesin ais', kind_microwave:'Ketuhar gelombang mikro', kind_oven:'Ketuhar / pengukus', kind_waterheater:'Pemanas air', kind_generator:'Kotak DB / penjana', kind_fireext:'Pemadam api',
+    fcat_electrical:'Elektrik / lampu', fcat_refrigeration:'Peti sejuk / peti beku', fcat_aircon:'Penghawa dingin', fcat_plumbing:'Paip / tandas', fcat_pos_it:'POS / rangkaian', fcat_building:'Bangunan / pintu / kebocoran', fcat_furniture:'Rak / perabot', fcat_other:'Lain-lain',
+    fault_loc_store:'Peralatan kedai', fault_loc_device:'Mesin layan diri', field_asset:'Peralatan', asset_unlisted:'Lain-lain / belum didaftar', field_fault_cat:'Kategori kerosakan', fault_sla_hint_prefix:'Perlu ditangani dalam ', fault_sla_hint_suffix:' jam', fault_overdue:'Lewat', fault_due_label:'Tempoh ',
+    tab_store_assets:'Peralatan kedai', asset_no_branch:'Tetapkan kedai asal anda dahulu', btn_add_asset:'Tambah peralatan', asset_none:'Belum ada peralatan didaftar untuk kedai ini', equip_warranty:'Waranti', equip_service:'Servis', equip_overdue:'lewat',
+    field_brand:'Jenama / model', field_serial:'No. siri', field_vendor:'Pembekal / vendor baiki', field_vendor_phone:'Telefon vendor', field_warranty:'Tarikh luput waranti', field_service_interval:'Selang servis (hari)', field_last_service:'Tarikh servis terakhir', btn_log_service:'Rekod servis', toast_service_logged:'Servis direkod', btn_edit_asset:'Edit butiran peralatan',
+    field_sla_high:'Masa tindakan tahap tinggi (jam)', field_sla_medium:'Masa tindakan tahap sederhana (jam)', field_sla_low:'Masa tindakan tahap rendah (jam)', notif_warranty:'Waranti hampir luput', notif_service_due:'Servis perlu dibuat', notif_fault_overdue:'Kerosakan lewat ditangani', field_cost:'Kos baik pulih (RM, pilihan)',
+    btn_avatar:'Gambar', sheet_avatar:'Tetapkan gambar profil', avatar_hint:'Ambil gambar muka anda. Ia dipaparkan di senarai log masuk dan halaman utama.', avatar_need_photo:'Ambil atau pilih gambar dahulu',
     hello_morning:'Selamat pagi', hello_afternoon:'Selamat petang', hello_evening:'Selamat malam', func_title:'Fungsi',
     tile_clock_in:'Daftar masuk', tile_clock_out:'Daftar keluar', tile_tasks:'Senarai semak', tile_handover:'Serah tugas', tile_temp:'Suhu', tile_leave:'Cuti', tile_punch:'Terlupa daftar', tile_swap:'Tukar syif', tile_memos:'Pengumuman', tile_fault:'Lapor rosak', tile_incident:'Insiden', tile_sos:'SOS', tile_stock:'Stok', tile_beer:'Bir draf', tile_equip:'Peralatan', tile_help:'Panduan', tile_approvals:'Kelulusan', tile_schedule:'Jadual', tile_report:'Laporan kehadiran', tile_staff:'Staf', tile_overview:'Semua kedai', tile_settings:'Tetapan',
     week_this:'Minggu ini', btn_copy_last_week:'Salin minggu lepas', week_hint:'Ketik petak untuk tambah atau padam syif; guna templat untuk jadual satu ketikan.', field_shift_template:'Templat syif', toast_no_last_week:'Tiada syif minggu lepas untuk disalin', toast_week_already:'Minggu ini sudah ada syif yang sama', confirm_copy_week_prefix:'Salin ', confirm_copy_week_suffix:' syif ke minggu ini?',
@@ -848,7 +882,7 @@ const I18N = {
     field_incident_kind:'Jenis', inc_complaint:'Aduan pelanggan', inc_accident:'Kemalangan / kecederaan', inc_theft:'Kecurian / keselamatan', inc_power:'Bekalan elektrik / kerosakan peralatan', inc_other:'Lain-lain', field_description:'Keterangan', toast_incident_sent:'Dihantar, pengurus dan HQ dimaklumkan', sheet_incident:'Aduan / insiden', inc_open:'Belum selesai', inc_resolved:'Selesai', btn_mark_resolved:'Tanda selesai', admin_incidents:'Aduan & insiden',
     notif_sos:'Kecemasan SOS', notif_incident:'Aduan / insiden baharu', notif_safety_missed:'Semakan keselamatan malam terlepas', btn_help:'Panduan pengguna / User guide',
     session_expired:'Sesi tamat, sila log masuk semula', err_pin_locked:'Terlalu banyak percubaan, cuba lagi dalam 15 minit', err_pin_exists:'PIN sudah ditetapkan, sila log masuk', err_pin_inactive:'Akaun ini tidak aktif, hubungi admin', confirm_logout:'Log keluar?',
-    temp_title:'Rekod suhu', admin_equipment:'Peralatan suhu', sheet_equipment:'Peralatan', field_equipment_name:'Nama peralatan', field_kind:'Jenis',
+    temp_title:'Rekod suhu', admin_equipment:'Peralatan kedai', sheet_equipment:'Peralatan', field_equipment_name:'Nama peralatan', field_kind:'Jenis',
     kind_chiller:'Peti sejuk (chiller)', kind_freezer:'Peti beku', kind_hot:'Kabinet panas', kind_beer:'Bir draf', kind_coffee:'Mesin kopi', kind_other:'Lain-lain', field_min:'Min (°C)', field_max:'Maks (°C)', field_branch:'Kedai',
     btn_log_temp:'Rekod', temp_none:'Belum ada bacaan', temp_out_of_range:'Luar julat', temp_ok:'OK', toast_temp_saved:'Direkod', toast_temp_alert:'Luar julat: periksa unit dan maklumkan pengurus kedai', notif_temp_alert:'Amaran suhu',
     temp_no_equipment:'Belum ada peralatan ditetapkan untuk kedai ini (pengurus atau admin tambah di Saya → Peralatan suhu)',
@@ -1051,11 +1085,11 @@ const S = {
   employeeId: (function(){ try{ return localStorage.getItem('bgc_employee_id') || null; }catch(e){ return null; } })(),
   employees:[], devices:[], sites:[], products:[], inventory:[],
   restockLogs:[], attendance:[], inspections:[], faults:[], schedules:[], leaveRequests:[],
-  settings:{businessName:'24 Xpress', lowStockDefault:5, geofenceRadius:300, lateGraceMin:10, nightStart:'23:00', nightEnd:'07:00', safetyIntervalMin:120, emergencyPhone:'', shiftTemplates:'早班 Morning=09:00-18:00\n中班 Afternoon=14:00-23:00\n夜班 Night=23:00-07:00'},
+  settings:{businessName:'24 Xpress', lowStockDefault:5, geofenceRadius:300, lateGraceMin:10, nightStart:'23:00', nightEnd:'07:00', safetyIntervalMin:120, emergencyPhone:'', slaHighHours:4, slaMediumHours:24, slaLowHours:72, shiftTemplates:'早班 Morning=09:00-18:00\n中班 Afternoon=14:00-23:00\n夜班 Night=23:00-07:00'},
   stockDeviceFilter:'all', equipTab:'devices', faultFilter:'open', historyRange:'today', attnScope:'mine',
   stockSection:'snacks', kegFilter:'tapped', beerZoneFilter:'all', pickerBranch:null, staffBranchFilter:'all', lastGeoMsg:null, clockSub:'records', reportMonth:(function(){const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');})(), reportBranch:'all', reportData:null, reportLoading:false,
   beerProducts:[], taps:[], kegs:[], kegLogs:[], memos:[], memoReads:[],
-  punchRequests:[], swapRequests:[], clockBranch:null, notifSeen:[], token:null, loginList:null, employeesLoaded:false, sb:null, taskTemplates:[], taskRuns:[], handovers:[], taskBranch:null, equipment:[], tempLogs:[], safetyChecks:[], incidents:[], weekStart:null, schedBranch:null,
+  punchRequests:[], swapRequests:[], clockBranch:null, notifSeen:[], token:null, loginList:null, employeesLoaded:false, sb:null, taskTemplates:[], taskRuns:[], handovers:[], taskBranch:null, equipment:[], tempLogs:[], safetyChecks:[], incidents:[], weekStart:null, schedBranch:null, assetBranch:null, equipTabInit:false, auditTemplates:[], audits:[], rectifications:[], auditBranch:null,
   notifKnown:null, pageLoadedAt:new Date().toISOString(), notifBrowser:(function(){ try{ return localStorage.getItem('bgc_notif')==='1'; }catch(e){ return false; } })(),
   showReport:false, meAdmin:false,
   geoCache:null,
@@ -1419,6 +1453,9 @@ function subscribeAll(){
   sub('tempLogs','tempLogs',{order:'createdAt',limit:800,sinceDays:14});
   sub('safetyChecks','safetyChecks',{order:'createdAt',limit:400,sinceDays:7});
   sub('incidents','incidents',{order:'createdAt',limit:300,sinceDays:120});
+  sub('auditTemplates','auditTemplates',{limit:50});
+  sub('audits','audits',{order:'createdAt',limit:300,sinceDays:200});
+  sub('rectifications','rectifications',{order:'createdAt',limit:500,sinceDays:200});
   sub('notifSeen','notifSeen',{limit:500});
   sub('beerProducts','beerProducts',{limit:200});
   sub('taps','taps',{limit:100});
@@ -1450,7 +1487,7 @@ function renderApp(){
     view.innerHTML = screenMsg(ICONS.cloudOff,t('connecting_title'),t('connecting_body')); return;
   }
   view.innerHTML='';
-  const map={home:homeView, clock:clockView, tasks:tasksView, stock:stockView, equip:equipView, me:meView, memos:memosView};
+  const map={home:homeView, clock:clockView, tasks:tasksView, stock:stockView, equip:equipView, me:meView, memos:memosView, audit:auditView};
   view.appendChild((map[S.tab]||homeView)());
 }
 function screenMsg(icon,title,body){
@@ -1472,7 +1509,7 @@ function renderTopbar(){
   badge.textContent = unread>99 ? '99+' : String(unread);
   notifBtn.onclick = ()=>openNotifSheet();
   maybeBrowserNotify();
-  $('whoAvatar').textContent = e.name.slice(0,1);
+  $('whoAvatar').innerHTML = avatarHTML(e);
   $('whoName').textContent = e.name;
   $('whoRole').textContent = e.role==='admin' ? t('role_admin') : e.role==='manager' ? t('role_manager') : t('role_staff');
   who.onclick = ()=>{ if(confirm(t('confirm_logout'))) logout(); };
@@ -1658,7 +1695,7 @@ function onboardingView(){
 }
 function identityRow(e){
   const roleLabel = e.role==='admin'?t('role_admin'):e.role==='manager'?t('role_manager'):t('role_staff');
-  const row=el(`<div class="id-pick-row"><span class="avatar">${esc(e.name.slice(0,1))}</span>
+  const row=el(`<div class="id-pick-row"><span class="avatar">${avatarHTML(e)}</span>
     <div class="lr-main"><div class="lr-title">${esc(e.name)}</div><div class="lr-sub">${esc(roleLabel)}${e.jobTitle?" · "+esc(e.jobTitle):""}${e.phone?' · '+esc(e.phone):''}</div></div>
     ${ICONS.chev}</div>`);
   row.onclick=()=>{ e.hasPin ? openVerifyPinForm(e) : openSetPinForm(e); };
@@ -1728,7 +1765,7 @@ function tokenValid(tok){ const p=tokenPayload(tok); return !!(p && p.exp && p.e
 async function loadLoginList(){
   const rows=await rpc('login_list');
   S.loginList=rows||[];
-  S.employees=S.loginList.map(r=>({id:r.id, name:r.name, role:r.role, homeBranch:r.home_branch||'', jobTitle:r.job_title||'', hasPin:!!r.has_pin, active:r.active!==false}));
+  S.employees=S.loginList.map(r=>({id:r.id, name:r.name, role:r.role, homeBranch:r.home_branch||'', jobTitle:r.job_title||'', hasPin:!!r.has_pin, active:r.active!==false, photo:r.photo||''}));
 }
 function finishLogin(token, e){
   S.token=token; LS.set('bgc_token', token); LS.set('bgc_employee_id', e.id); S.employeeId=e.id; S.employeesLoaded=false;
@@ -1873,7 +1910,7 @@ function homeView(){
     c.appendChild(el(`<h2 class="sec">${esc(t('home_open_faults_h'))}</h2>`));
     const list=el('<div class="list"></div>');
     S.faults.filter(f=>f.status==='open').slice(0,4).forEach(f=>{
-      const row=el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(devName(f.deviceId))}</div><div class="lr-sub">${esc(f.description||'')}</div></div>
+      const row=el(`<div class="list-row">${ib(f.deviceId?'machine':'wrench', faultOverdue(f)?'c-red':'c-orange')}<div class="lr-main"><div class="lr-title">${esc(faultTitle(f))}${faultOverdue(f)?' <span class="pill critical" style="font-size:10px;">'+esc(t('fault_overdue'))+'</span>':''}</div><div class="lr-sub">${esc(f.description||'')}</div></div>
         <span class="pill ${SEVERITY[f.severity].c}">${esc(t(SEVERITY[f.severity].t))}</span></div>`);
       row.onclick=()=>location.hash='#equip';
       list.appendChild(row);
@@ -2679,6 +2716,10 @@ function buildNotifications(){
     const mineB = b => isAdmin() || b===myBranch();
     S.safetyChecks.filter(s=>s.status==='sos' && mineB(s.branch)).forEach(s=>{ out.push({id:'sos:'+s.id, ts:s.createdAt, title:'🆘 '+t('notif_sos')+'：'+s.employeeName, sub:(s.branch||'')+' · '+fmtDateTime(s.createdAt)+(s.geo?' · '+s.geo.lat.toFixed(5)+','+s.geo.lng.toFixed(5):''), unread:s.createdAt>seen, onClick:()=>{ if(s.geo) window.open('https://maps.google.com/?q='+s.geo.lat+','+s.geo.lng,'_blank'); }}); });
     S.incidents.filter(i=>i.status==='open' && mineB(i.branch)).forEach(i=>{ out.push({id:'inc:'+i.id, ts:i.createdAt, title:t('notif_incident')+'：'+incidentKindLabel(i.kind)+' · '+(i.branch||''), sub:(i.employeeName||'')+' · '+(i.description||'').slice(0,60), unread:i.createdAt>seen, onClick:()=>openIncidentDetail(i)}); });
+    S.equipment.filter(q=>q.active!==false && mineB(q.branch)).forEach(q=>{ const w=daysUntil(q.warrantyExpiry); const s=serviceDueDays(q); const ts=todayStr()+'T00:00:00.000Z'; if(w!=null && w<=30) out.push({id:'equip:w:'+q.id+':'+q.warrantyExpiry, ts, title:t('notif_warranty')+'：'+q.name, sub:(q.branch||'')+' · '+q.warrantyExpiry+' · '+docDaysLabel(w), unread:false, onClick:()=>openAssetActions(q)}); if(s!=null && s<=7) out.push({id:'equip:s:'+q.id+':'+(q.lastServiceAt||''), ts, title:t('notif_service_due')+'：'+q.name, sub:(q.branch||'')+' · '+(s<0?t('equip_overdue'):docDaysLabel(s)), unread:false, onClick:()=>openAssetActions(q)}); });
+    S.faults.filter(f=>faultOverdue(f) && (f.deviceId ? isAdmin() : mineB(f.branch))).forEach(f=>{ out.push({id:'fault:od:'+f.id, ts:f.dueAt, title:t('notif_fault_overdue')+'：'+faultTitle(f), sub:(f.description||'').slice(0,60), unread:f.dueAt>seen, onClick:()=>openFaultDetail(f)}); });
+    S.audits.filter(a=>mineB(a.branch)).slice(0,5).forEach(a=>{ out.push({id:'audit:'+a.id, ts:a.createdAt, title:t('notif_audit')+'：'+a.branch+' '+a.pct+'% '+a.grade, sub:(a.auditorName||'')+' · '+t('audit_failed_count')+' '+(a.failed||[]).length, unread:a.createdAt>seen, onClick:()=>openAuditDetail(a)}); });
+    S.rectifications.filter(r=>r.status==='open' && r.dueDate && r.dueDate<todayStr() && mineB(r.branch)).forEach(r=>{ out.push({id:'rect:'+r.id, ts:r.dueDate+'T00:00:00.000Z', title:t('notif_rect_overdue')+'：'+String(r.item||'').slice(0,40), sub:r.branch+' · '+r.dueDate, unread:false, onClick:()=>openRectification(r)}); });
     if(isNightNow()){ S.employees.filter(x=>x.active!==false && mineB(x.homeBranch) && isClockedIn(x.id)).forEach(x=>{ const due=safetyDueMin(x.id); if(due!=null && due<=-15){ const ts=new Date(Date.now()+due*60000).toISOString(); out.push({id:'safety:'+x.id+':'+ts.slice(0,13), ts, title:t('notif_safety_missed')+'：'+x.name, sub:(x.homeBranch||'')+' · '+Math.abs(due)+' min', unread:ts>seen, onClick:()=>{}}); } }); }
   }
   if(isAdmin()){
@@ -2733,15 +2774,18 @@ async function toggleBrowserNotif(){
 /* ============================ EQUIP ============================ */
 function equipView(){
   const c=el('<div></div>');
+  if(!S.equipTabInit){ S.equipTabInit=true; const me=currentEmployee(); if(me && !isAdmin() && me.homeBranch && !['VM','HQ'].includes(me.homeBranch)) S.equipTab='store'; }
   c.appendChild(el(`<h2 class="sec">${esc(t('equip_title'))}</h2>`));
   const seg=el(`<div class="seg" style="margin-bottom:14px;">
+    <button data-v="store" class="${S.equipTab==='store'?'on':''}">${esc(t('tab_store_assets'))}</button>
     <button data-v="devices" class="${S.equipTab==='devices'?'on':''}">${esc(t('tab_devices'))}</button>
     <button data-v="faults" class="${S.equipTab==='faults'?'on':''}">${esc(t('tab_faults'))}</button>
     <button data-v="inspections" class="${S.equipTab==='inspections'?'on':''}">${esc(t('tab_inspections'))}</button></div>`);
   seg.querySelectorAll('button').forEach(b=>b.onclick=()=>{ S.equipTab=b.dataset.v; renderApp(); });
   c.appendChild(seg);
 
-  if(S.equipTab==='devices') c.appendChild(equipDevices());
+  if(S.equipTab==='store') c.appendChild(equipStoreAssets());
+  else if(S.equipTab==='devices') c.appendChild(equipDevices());
   else if(S.equipTab==='faults') c.appendChild(equipFaults());
   else c.appendChild(equipInspections());
   return c;
@@ -2830,34 +2874,6 @@ function openInspectionForm(device){
   foot.appendChild(submitBtn); body.appendChild(foot);
   openSheet(t('sheet_inspect'), body);
 }
-function openFaultForm(device){
-  const body=el('<div></div>');
-  const devSelWrap=el(`<label class="field"><span class="fl">${esc(t('field_device'))}</span></label>`);
-  const devSel=el('<select></select>');
-  S.devices.forEach(d=>devSel.appendChild(el(`<option value="${d.id}" ${device&&device.id===d.id?'selected':''}>${esc(d.name)}</option>`)));
-  devSelWrap.appendChild(devSel); body.appendChild(devSelWrap);
-  const sevWrap=el(`<label class="field"><span class="fl">${esc(t('field_severity'))}</span></label>`);
-  const sevSel=el(`<select><option value="low">${esc(t('sev_low'))}</option><option value="medium" selected>${esc(t('sev_medium'))}</option><option value="high">${esc(t('sev_high'))}</option></select>`);
-  sevWrap.appendChild(sevSel); body.appendChild(sevWrap);
-  const descWrap=el(`<label class="field"><span class="fl">${esc(t('field_fault_desc'))}</span></label>`);
-  const descInput=el(`<textarea placeholder="${esc(t('ph_fault_desc'))}"></textarea>`);
-  descWrap.appendChild(descInput); body.appendChild(descWrap);
-  const photo=photoPicker(); body.appendChild(photo);
-  const foot=el('<div class="sheet-foot"></div>');
-  const submitBtn=el(`<button class="btn danger block">${esc(t('btn_submit_fault'))}</button>`);
-  submitBtn.onclick=async ()=>{
-    if(!devSel.value){ toast(t('err_pick_device')); return; }
-    if(!descInput.value.trim()){ toast(t('err_fault_desc')); return; }
-    submitBtn.disabled=true; submitBtn.textContent=t('toast_submitting');
-    const e=currentEmployee();
-    const rec={deviceId:devSel.value, employeeId:e.id, employeeName:e.name, createdAt:new Date().toISOString(), severity:sevSel.value, description:descInput.value.trim(), status:'open'};
-    const p=photo.getPhoto(); if(p) rec.photo=p;
-    try{ await S.db.collection('faults').add(rec); toast(t('toast_fault_submitted')); closeSheet(); }
-    catch(err){ toast(dbErrMsg(err)); submitBtn.disabled=false; submitBtn.textContent=t('btn_submit_fault'); }
-  };
-  foot.appendChild(submitBtn); body.appendChild(foot);
-  openSheet(t('sheet_fault'), body);
-}
 function equipFaults(){
   const c=el('<div></div>');
   const chipRow=el('<div class="chiprow"></div>');
@@ -2870,11 +2886,12 @@ function equipFaults(){
   const addBtn=el(`<button class="btn block" style="margin:10px 0;">${ICONS.plus}<span>${esc(t('btn_new_fault'))}</span></button>`);
   addBtn.onclick=()=>openFaultForm();
   c.appendChild(addBtn);
-  const rows = S.faultFilter==='all' ? S.faults : S.faults.filter(f=>f.status===S.faultFilter);
+  let rows = S.faultFilter==='all' ? S.faults : S.faults.filter(f=>f.status===S.faultFilter);
+  if(!isAdmin()){ const hb=currentEmployee().homeBranch; rows=rows.filter(f=>f.deviceId || !f.branch || f.branch===hb); }
   const list=el('<div class="list"></div>');
   if(rows.length===0) list.appendChild(el(`<div class="empty">${ICONS.inbox}<div>${esc(t('empty_no_records'))}</div></div>`));
   rows.forEach(f=>{
-    const row=el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(devName(f.deviceId))}</div><div class="lr-sub">${esc(f.description||'')}</div></div>
+    const row=el(`<div class="list-row">${ib(f.deviceId?'machine':'wrench', faultOverdue(f)?'c-red':'c-orange')}<div class="lr-main"><div class="lr-title">${esc(faultTitle(f))}${faultOverdue(f)?' <span class="pill critical" style="font-size:10px;">'+esc(t('fault_overdue'))+'</span>':''}</div><div class="lr-sub">${esc(f.description||'')}</div></div>
       <div class="lr-end"><span class="pill ${FAULT_STATUS[f.status].c}">${esc(t(FAULT_STATUS[f.status].t))}</span></div></div>`);
     row.onclick=()=>openFaultDetail(f);
     list.appendChild(row);
@@ -2886,21 +2903,23 @@ function openFaultDetail(f){
   const body=el('<div></div>');
   body.innerHTML=`<div class="row" style="margin-bottom:10px;"><span class="pill ${SEVERITY[f.severity].c}">${esc(t(SEVERITY[f.severity].t))}</span><span class="pill ${FAULT_STATUS[f.status].c}">${esc(t(FAULT_STATUS[f.status].t))}</span></div>
     <div style="font-size:14px; margin-bottom:6px;">${esc(f.description||'')}</div>
-    <div class="hint">${esc(t('fault_device_label'))}${esc(devName(f.deviceId))} · ${esc(t('fault_by_label'))}${esc(f.employeeName)} · ${fmtDateTime(f.createdAt)}</div>`;
+    <div class="hint">${esc(t('fault_device_label'))}${esc(faultTitle(f))} · ${esc(t('fault_by_label'))}${esc(f.employeeName)} · ${fmtDateTime(f.createdAt)}${f.dueAt?' · '+esc(t('fault_due_label'))+fmtDateTime(f.dueAt):''}${f.vendor?' · '+esc(f.vendor):''}${f.cost?' · RM '+esc(String(f.cost)):''}</div>`;
   if(f.photo) body.appendChild(el(`<img class="photow" src="${f.photo}">`));
   if(f.resolvedNote){ body.appendChild(el(`<div class="divider"></div>`)); body.appendChild(el(`<div class="hint"><b style="color:var(--ink);">${esc(t('fault_resolve_note_label'))}</b>${esc(f.resolvedNote)}</div>`)); }
-  if(isAdmin() && f.status!=='resolved'){
-    const noteWrap=el(`<label class="field" style="margin-top:14px;"><span class="fl">${esc(t('field_resolve_note_opt'))}</span></label>`);
+  if(canManageStaff() && f.status!=='resolved'){
+    const vendorWrap=el(`<label class="field" style="margin-top:14px;"><span class="fl">${esc(t('field_vendor'))}</span><input type="text" value="${esc(f.vendor||'')}"></label>`); const vendorInput=vendorWrap.querySelector('input'); body.appendChild(vendorWrap);
+    const costWrap=el(`<label class="field"><span class="fl">${esc(t('field_cost'))}</span><input type="number" step="0.01" value="${esc(String(f.cost||''))}"></label>`); const costInput=costWrap.querySelector('input'); body.appendChild(costWrap);
+    const noteWrap=el(`<label class="field"><span class="fl">${esc(t('field_resolve_note_opt'))}</span></label>`);
     const noteInput=el(`<textarea placeholder="${esc(t('ph_resolve_note'))}"></textarea>`);
     noteWrap.appendChild(noteInput); body.appendChild(noteWrap);
     const foot=el('<div class="sheet-foot"></div>');
     if(f.status==='open'){
       const b=el(`<button class="btn block">${esc(t('btn_mark_in_progress'))}</button>`);
-      b.onclick=async ()=>{ try{ await S.db.doc('faults/'+f.id).update({status:'in_progress'}); toast(t('toast_updated')); closeSheet(); }catch(e){toast(dbErrMsg(e));} };
+      b.onclick=async ()=>{ try{ await S.db.doc('faults/'+f.id).update({status:'in_progress', vendor:vendorInput.value||'', cost:costInput.value||''}); toast(t('toast_updated')); closeSheet(); }catch(e){toast(dbErrMsg(e));} };
       foot.appendChild(b);
     }
     const b2=el(`<button class="btn ok block">${esc(t('btn_mark_resolved'))}</button>`);
-    b2.onclick=async ()=>{ try{ await S.db.doc('faults/'+f.id).update({status:'resolved', resolvedAt:new Date().toISOString(), resolvedBy:currentEmployee().name, resolvedNote:noteInput.value||''}); toast(t('toast_resolved')); closeSheet(); }catch(e){toast(dbErrMsg(e));} };
+    b2.onclick=async ()=>{ try{ await S.db.doc('faults/'+f.id).update({status:'resolved', resolvedAt:new Date().toISOString(), resolvedBy:currentEmployee().name, resolvedNote:noteInput.value||'', vendor:vendorInput.value||'', cost:costInput.value||''}); toast(t('toast_resolved')); closeSheet(); }catch(e){toast(dbErrMsg(e));} };
     foot.appendChild(b2);
     body.appendChild(foot);
   }
@@ -2924,10 +2943,11 @@ function equipInspections(){
 function meView(){
   const e=currentEmployee();
   const c=el('<div></div>');
-  const idCard=el(`<div class="card row"><span class="avatar" style="width:44px;height:44px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;">${esc(e.name.slice(0,1))}</span>
+  const idCard=el(`<div class="card row"><span class="avatar" style="width:44px;height:44px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;overflow:hidden;">${avatarHTML(e)}</span>
     <div class="lr-main"><div style="font-weight:900; font-size:16px;">${esc(e.name)}</div><div class="lr-sub">${e.role==='admin'?esc(t('role_admin')):e.role==='manager'?esc(t('role_manager')):esc(t('role_staff'))}${e.jobTitle?' · '+esc(e.jobTitle):''}${e.homeBranch?' · '+esc(e.homeBranch):''}${e.phone?' · '+esc(e.phone):''}</div></div></div>`);
   const switchBtn=el(`<button class="btn sm">${esc(t('btn_switch_identity'))}</button>`);
   switchBtn.onclick=()=>{ if(confirm(t('confirm_logout'))) logout(); };
+  const avBtn=el(`<button class="btn sm" style="margin-right:6px;">${esc(t('btn_avatar'))}</button>`); avBtn.onclick=()=>openAvatarSheet(); idCard.appendChild(avBtn);
   idCard.appendChild(switchBtn);
   const notifToggle=el(`<button class="btn block" style="margin-bottom:12px;">${esc(S.notifBrowser?t('btn_disable_browser_notif'):t('btn_enable_browser_notif'))}</button>`);
   notifToggle.onclick=()=>toggleBrowserNotif();
@@ -3002,6 +3022,7 @@ function managerSection(){
   c.appendChild(branchLocationCard(branch));
   c.appendChild(docExpiryBlock(branchEmpIds));
   c.appendChild(equipmentAdminBlock(branch));
+  c.appendChild(rectificationsBlock(branch));
 
   c.appendChild(weekScheduleView(branch));
   c.appendChild(incidentsBlock(branch));
@@ -3082,6 +3103,7 @@ function adminSection(){
     const filteredEmployees = S.staffBranchFilter==='all' ? S.employees : S.employees.filter(e=>e.homeBranch===S.staffBranchFilter);
     c.appendChild(adminBlock(t('admin_staff_mgmt'), ()=>openEmployeeForm(), filteredEmployees.map(emp=>({
       title:emp.name+' · '+(emp.role==='admin'?t('role_admin'):emp.role==='manager'?t('role_manager'):t('role_staff'))+(emp.homeBranch?' · '+emp.homeBranch:''),
+      thumb:emp.photo||'',
       sub:[emp.staffCode, emp.jobTitle, emp.phone].filter(Boolean).join(' · '),
       right: toggleSwitch(emp.active!==false, async(v)=>{ try{ await S.db.doc('employees/'+emp.id).update({active:v}); }catch(e){toast(dbErrMsg(e));} }),
       onClick: ()=>openEmployeeForm(emp)
@@ -3090,6 +3112,7 @@ function adminSection(){
 
   c.appendChild(docExpiryBlock(null));
   c.appendChild(equipmentAdminBlock(null));
+  c.appendChild(auditTemplateAdminBlock());
   c.appendChild(adminBlock(t('admin_task_templates'), ()=>openTaskTemplateForm(), S.taskTemplates.map(tp=>({
     title:tp.name+' · '+shiftKindLabel(tp.shift), sub:(tp.items||[]).length+' '+t('label_items')+' · '+(tp.branches||'all'),
     right: toggleSwitch(tp.active!==false, async(v)=>{ try{ await S.db.doc('taskTemplates/'+tp.id).update({active:v}); }catch(e){toast(dbErrMsg(e));} }),
@@ -3149,6 +3172,9 @@ function adminSection(){
     {key:'safetyIntervalMin', label:t('field_safety_interval'), type:'number', default:S.settings.safetyIntervalMin||120},
     {key:'emergencyPhone', label:t('field_emergency_phone'), default:S.settings.emergencyPhone||''},
     {key:'shiftTemplates', label:t('field_shift_templates'), type:'textarea', default:S.settings.shiftTemplates||''},
+    {key:'slaHighHours', label:t('field_sla_high'), type:'number', default:S.settings.slaHighHours||4},
+    {key:'slaMediumHours', label:t('field_sla_medium'), type:'number', default:S.settings.slaMediumHours||24},
+    {key:'slaLowHours', label:t('field_sla_low'), type:'number', default:S.settings.slaLowHours||72},
   ];
   setCard.innerHTML = fieldsHTML(setFields);
   const saveBtn=el(`<button class="btn primary block">${esc(t('btn_save_settings'))}</button>`);
@@ -3898,8 +3924,8 @@ function homeTasksBlock(){
 }
 
 /* ============================ PHASE 1C: TEMPERATURE LOG / DOCUMENT EXPIRY ============================ */
-const EQUIP_KINDS=['chiller','freezer','hot','beer','coffee','other'];
-const EQUIP_DEFAULTS={chiller:{min:0,max:5}, freezer:{min:-25,max:-15}, hot:{min:60,max:80}, beer:{min:0,max:4}, coffee:{min:null,max:null}, other:{min:null,max:null}};
+const EQUIP_KINDS=['chiller','freezer','hot','beer','coffee','pos','aircon','cctv','lighting','signage','shutter','icemaker','microwave','oven','waterheater','generator','fireext','other'];
+const EQUIP_DEFAULTS={chiller:{min:0,max:5}, freezer:{min:-25,max:-15}, hot:{min:60,max:80}, beer:{min:0,max:4}};
 function equipKindLabel(k){ return t('kind_'+(EQUIP_KINDS.includes(k)?k:'other')); }
 function equipmentFor(branch){ return S.equipment.filter(e=>e.active!==false && e.branch===branch).sort((a,b)=>(a.name||'').localeCompare(b.name||'','zh')); }
 function lastTempFor(eqId){ return S.tempLogs.find(l=>l.equipmentId===eqId); }
@@ -3909,7 +3935,7 @@ function rangeLabel(eq){ return (hasNum(eq.min)?eq.min:'')+' ~ '+(hasNum(eq.max)
 function temperatureBlock(branch){
   const c=el('<div></div>');
   c.appendChild(secH('thermo','c-teal',t('temp_title')));
-  const eqs=equipmentFor(branch);
+  const eqs=equipmentFor(branch).filter(q=>TEMP_KINDS.includes(q.kind));
   if(eqs.length===0){ c.appendChild(el(`<div class="hint">${esc(t('temp_no_equipment'))}</div>`)); return c; }
   const list=el('<div class="list"></div>');
   eqs.forEach(eq=>{
@@ -3943,10 +3969,11 @@ function openEquipmentForm(eq, lockBranch){
     {key:'max', label:t('field_max'), type:'number', step:'0.1'},
   ];
   const vals = eq ? eq : {branch:lockBranch||branches[0]||'', kind:'chiller', min:0, max:5};
+  f.push({key:'brand', label:t('field_brand')}, {key:'serial', label:t('field_serial')}, {key:'vendor', label:t('field_vendor')}, {key:'vendorPhone', label:t('field_vendor_phone')}, {key:'warrantyExpiry', label:t('field_warranty'), type:'date'}, {key:'serviceIntervalDays', label:t('field_service_interval'), type:'number'}, {key:'lastServiceAt', label:t('field_last_service'), type:'date'});
   const body=el('<div>'+fieldsHTML(f, vals)+'</div>');
   if(lockBranch){ const b=body.querySelector('[data-k="branch"]'); if(b){ b.value=lockBranch; b.disabled=true; } }
   const kindSel=body.querySelector('[data-k="kind"]');
-  kindSel.onchange=()=>{ const d=EQUIP_DEFAULTS[kindSel.value]; if(d){ body.querySelector('[data-k="min"]').value=d.min==null?'':d.min; body.querySelector('[data-k="max"]').value=d.max==null?'':d.max; } };
+  kindSel.onchange=()=>{ const d=EQUIP_DEFAULTS[kindSel.value]||{min:null,max:null}; body.querySelector('[data-k="min"]').value=d.min==null?'':d.min; body.querySelector('[data-k="max"]').value=d.max==null?'':d.max; };
   const foot=el('<div class="sheet-foot"></div>');
   const btn=el(`<button class="btn primary block">${esc(t('btn_save'))}</button>`);
   btn.onclick=async ()=>{
@@ -3966,7 +3993,7 @@ function equipmentAdminBlock(lockBranch){
   const items = lockBranch ? S.equipment.filter(e=>e.branch===lockBranch) : S.equipment.slice();
   items.sort((a,b)=>(a.branch||'').localeCompare(b.branch||'')||(a.name||'').localeCompare(b.name||'','zh'));
   return adminBlock(t('admin_equipment'), ()=>openEquipmentForm(null, lockBranch), items.map(eq=>({
-    title:eq.name+' · '+equipKindLabel(eq.kind)+(lockBranch?'':' · '+(eq.branch||'')), sub:rangeLabel(eq),
+    title:eq.name+' · '+equipKindLabel(eq.kind)+(lockBranch?'':' · '+(eq.branch||'')), sub:equipSub(eq),
     right: toggleSwitch(eq.active!==false, async(v)=>{ try{ await S.db.doc('equipment/'+eq.id).update({active:v}); }catch(e){toast(dbErrMsg(e));} }),
     onClick: ()=>openEquipmentForm(eq, lockBranch),
     onDelete: async()=>{ try{ await S.db.doc('equipment/'+eq.id).delete(); toast(t('toast_deleted')); }catch(e){toast(dbErrMsg(e));} }
@@ -4175,7 +4202,7 @@ function helloCard(e, clockedIn, last){
   const hr=new Date().getHours();
   const greet = t(hr<11?'hello_morning':(hr<17?'hello_afternoon':'hello_evening'));
   const status = clockedIn ? t('home_status_working') : (last ? t('home_status_off') : t('home_status_none'));
-  const card=el(`<div class="hello"><span class="av">${esc(e.name.slice(0,1))}</span><div class="lr-main"><div class="g">${esc(greet)}，${esc(e.name)}</div><div class="s">${esc(e.homeBranch||'')}${e.homeBranch?' · ':''}${esc(e.jobTitle||(e.role==='admin'?t('role_admin'):e.role==='manager'?t('role_manager'):t('role_staff')))}</div></div><span class="pill ${clockedIn?'ok':'n'}" style="background:rgba(255,255,255,.18); color:#fff; border-color:transparent;">${esc(status)}</span></div>`);
+  const card=el(`<div class="hello"><span class="av">${avatarHTML(e)}</span><div class="lr-main"><div class="g">${esc(greet)}，${esc(e.name)}</div><div class="s">${esc(e.homeBranch||'')}${e.homeBranch?' · ':''}${esc(e.jobTitle||(e.role==='admin'?t('role_admin'):e.role==='manager'?t('role_manager'):t('role_staff')))}</div></div><span class="pill ${clockedIn?'ok':'n'}" style="background:rgba(255,255,255,.18); color:#fff; border-color:transparent;">${esc(status)}</span></div>`);
   return card;
 }
 function funcGrid(clockedIn){
@@ -4210,6 +4237,7 @@ function funcGrid(clockedIn){
     tiles.push({k:'overview', icon:'check', cls:'c-green', label:t('tile_overview'), go:()=>{ S.taskBranch='__all__'; location.hash='#tasks'; }});
     tiles.push({k:'settings', icon:'gear', cls:'c-grey', label:t('tile_settings'), go:()=>{ location.hash='#me'; setTimeout(()=>{ const h=[...document.querySelectorAll('#view h2')].find(x=>x.textContent.includes(t('admin_settings'))); if(h) h.scrollIntoView({behavior:'smooth'}); },300); }});
   }
+  tiles.push({k:'audit', icon:'chart', cls:'c-purple', label:t('tile_audit'), count:(isAdmin()?0:S.rectifications.filter(r=>r.status==='open' && r.branch===e.homeBranch).length), go:()=>{ location.hash='#audit'; }});
   tiles.push({k:'help', icon:'book', cls:'c-grey', label:t('tile_help'), go:()=>{ window.open(GUIDE_URL,'_blank','noopener'); }});
   const wrap=el('<div></div>');
   wrap.appendChild(secH('grid','c-blue',t('func_title')));
@@ -4223,9 +4251,293 @@ function funcGrid(clockedIn){
 }
 function notifIcon(id){
   const p=String(id).split(':')[0];
-  const map={memo:['megaphone','c-orange'], leave:['calendar','c-purple'], pending:['calendar','c-purple'], sched:['calendar','c-blue'], punch:['clock','c-amber'], ppunch:['clock','c-amber'], swap:['swap','c-amber'], pswap:['swap','c-amber'], fault:['wrench','c-orange'], keg:['beer','c-amber'], docexp:['users','c-purple'], temp:['thermo','c-teal'], sos:['siren','c-red'], inc:['alert','c-red'], safety:['siren','c-red']};
+  const map={audit:['chart','c-purple'], rect:['alert','c-amber'], equip:['machine','c-grey'], memo:['megaphone','c-orange'], leave:['calendar','c-purple'], pending:['calendar','c-purple'], sched:['calendar','c-blue'], punch:['clock','c-amber'], ppunch:['clock','c-amber'], swap:['swap','c-amber'], pswap:['swap','c-amber'], fault:['wrench','c-orange'], keg:['beer','c-amber'], docexp:['users','c-purple'], temp:['thermo','c-teal'], sos:['siren','c-red'], inc:['alert','c-red'], safety:['siren','c-red']};
   const m=map[p]||['bell','c-grey'];
   return ib(m[0], m[1], 'sm');
+}
+
+/* ============================ STORE ASSETS / FAULT SLA / AVATARS ============================ */
+const TEMP_KINDS=['chiller','freezer','hot','beer'];
+const FAULT_CATS=['electrical','refrigeration','aircon','plumbing','pos_it','building','furniture','other'];
+function faultCatLabel(k){ return t('fcat_'+(FAULT_CATS.includes(k)?k:'other')); }
+function equipIconFor(kind){ const m={chiller:'thermo',freezer:'thermo',hot:'thermo',beer:'beer',coffee:'thermo',pos:'machine',aircon:'gear',cctv:'pin',lighting:'gear',signage:'megaphone',shutter:'box',icemaker:'thermo',microwave:'gear',oven:'gear',waterheater:'thermo',generator:'gear',fireext:'alert',other:'wrench'}; return m[kind]||'wrench'; }
+function daysUntil(d){ if(!d) return null; const n=Math.round((new Date(String(d).slice(0,10)+'T00:00:00')-new Date(todayStr()+'T00:00:00'))/86400000); return isNaN(n)?null:n; }
+function serviceDueDays(eq){ if(!eq.serviceIntervalDays) return null; const base=eq.lastServiceAt||(eq.createdAt?eq.createdAt.slice(0,10):null); if(!base) return null; const due=addDays(new Date(String(base).slice(0,10)+'T00:00:00'), Number(eq.serviceIntervalDays)); return Math.round((due-new Date(todayStr()+'T00:00:00'))/86400000); }
+function equipStatusPills(eq){
+  const out=[]; const w=daysUntil(eq.warrantyExpiry); const s=serviceDueDays(eq);
+  if(w!=null && w<=30) out.push(`<span class="pill ${w<0?'critical':'warn'}">${esc(t('equip_warranty'))} ${docDaysLabel(w)}</span>`);
+  if(s!=null && s<=7) out.push(`<span class="pill ${s<0?'critical':'warn'}">${esc(t('equip_service'))} ${s<0?esc(t('equip_overdue')):docDaysLabel(s)}</span>`);
+  return out.join('');
+}
+function equipSub(eq){ const parts=[]; if(TEMP_KINDS.includes(eq.kind)) parts.push(rangeLabel(eq)); if(eq.brand) parts.push(eq.brand); if(eq.vendor) parts.push(eq.vendor); if(eq.warrantyExpiry) parts.push(t('equip_warranty')+' '+eq.warrantyExpiry); return parts.join(' · '); }
+function faultTitle(f){ if(f.deviceId) return devName(f.deviceId); return (f.branch||'')+' · '+(f.equipmentName||faultCatLabel(f.category)); }
+function slaHours(sev){ const s=S.settings; return Number(sev==='high'?(s.slaHighHours||4):sev==='low'?(s.slaLowHours||72):(s.slaMediumHours||24)); }
+function faultOverdue(f){ return f.status!=='resolved' && !!f.dueAt && new Date(f.dueAt)<new Date(); }
+function openFaultForm(device, opts){
+  opts=opts||{}; const e=currentEmployee(); const branches=allBranchIds();
+  let mode = device ? 'device' : (opts.equipment ? 'store' : (e.homeBranch && branches.includes(e.homeBranch) && !['VM','HQ'].includes(e.homeBranch) ? 'store' : 'device'));
+  if(S.devices.length===0) mode='store';
+  const body=el('<div></div>');
+  const seg=el(`<div class="seg" style="margin-bottom:12px;"><button data-v="store" class="${mode==='store'?'on':''}">${esc(t('fault_loc_store'))}</button><button data-v="device" class="${mode==='device'?'on':''}">${esc(t('fault_loc_device'))}</button></div>`);
+  body.appendChild(seg);
+  const storeSec=el('<div></div>');
+  const brWrap=el(`<label class="field"><span class="fl">${esc(t('field_branch'))}</span></label>`); const brSel=el('<select></select>');
+  branches.forEach(b=>brSel.appendChild(el(`<option value="${esc(b)}">${esc(b)}</option>`)));
+  brSel.value = (opts.equipment&&opts.equipment.branch) || defaultClockBranch() || e.homeBranch || branches[0] || '';
+  brWrap.appendChild(brSel); storeSec.appendChild(brWrap);
+  const eqWrap=el(`<label class="field"><span class="fl">${esc(t('field_asset'))}</span></label>`); const eqSel=el('<select></select>');
+  const fillEq=()=>{ eqSel.innerHTML=''; eqSel.appendChild(el(`<option value="">${esc(t('asset_unlisted'))}</option>`)); equipmentFor(brSel.value).forEach(q=>eqSel.appendChild(el(`<option value="${q.id}">${esc(q.name)} · ${esc(equipKindLabel(q.kind))}</option>`))); if(opts.equipment) eqSel.value=opts.equipment.id; };
+  fillEq(); brSel.onchange=fillEq; eqWrap.appendChild(eqSel); storeSec.appendChild(eqWrap);
+  const catWrap=el(`<label class="field"><span class="fl">${esc(t('field_fault_cat'))}</span></label>`);
+  const catSel=el('<select>'+FAULT_CATS.map(k=>`<option value="${k}">${esc(faultCatLabel(k))}</option>`).join('')+'</select>');
+  catWrap.appendChild(catSel); storeSec.appendChild(catWrap);
+  body.appendChild(storeSec);
+  const devSec=el('<div></div>');
+  const devSelWrap=el(`<label class="field"><span class="fl">${esc(t('field_device'))}</span></label>`); const devSel=el('<select></select>');
+  S.devices.forEach(d=>devSel.appendChild(el(`<option value="${d.id}" ${device&&device.id===d.id?'selected':''}>${esc(d.name)}</option>`)));
+  devSelWrap.appendChild(devSel); devSec.appendChild(devSelWrap); body.appendChild(devSec);
+  const apply=()=>{ storeSec.style.display = mode==='store'?'':'none'; devSec.style.display = mode==='device'?'':'none'; };
+  seg.querySelectorAll('button').forEach(b=>b.onclick=()=>{ mode=b.dataset.v; seg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b)); apply(); }); apply();
+  const sevWrap=el(`<label class="field"><span class="fl">${esc(t('field_severity'))}</span></label>`);
+  const sevSel=el(`<select><option value="low">${esc(t('sev_low'))}</option><option value="medium" selected>${esc(t('sev_medium'))}</option><option value="high">${esc(t('sev_high'))}</option></select>`);
+  sevWrap.appendChild(sevSel); body.appendChild(sevWrap);
+  const slaHint=el('<div class="hint" style="margin:-6px 0 8px;"></div>'); const updSla=()=>{ slaHint.textContent=t('fault_sla_hint_prefix')+slaHours(sevSel.value)+t('fault_sla_hint_suffix'); }; sevSel.onchange=updSla; updSla(); body.appendChild(slaHint);
+  const descWrap=el(`<label class="field"><span class="fl">${esc(t('field_fault_desc'))}</span></label>`);
+  const descInput=el(`<textarea placeholder="${esc(t('ph_fault_desc'))}"></textarea>`);
+  descWrap.appendChild(descInput); body.appendChild(descWrap);
+  const photo=photoPicker(); body.appendChild(photo);
+  const foot=el('<div class="sheet-foot"></div>');
+  const submitBtn=el(`<button class="btn danger block">${esc(t('btn_submit_fault'))}</button>`);
+  submitBtn.onclick=async ()=>{
+    if(mode==='device' && !devSel.value){ toast(t('err_pick_device')); return; }
+    if(mode==='store' && !brSel.value){ toast(t('err_fill_all')); return; }
+    if(!descInput.value.trim()){ toast(t('err_fault_desc')); return; }
+    submitBtn.disabled=true; submitBtn.textContent=t('toast_submitting');
+    const sev=sevSel.value; const dueAt=new Date(Date.now()+slaHours(sev)*3600000).toISOString();
+    const rec={employeeId:e.id, employeeName:e.name, createdAt:new Date().toISOString(), severity:sev, description:descInput.value.trim(), status:'open', dueAt};
+    if(mode==='device'){ rec.deviceId=devSel.value; const d=byId(S.devices, devSel.value); rec.branch=d?(d.zone||''):''; }
+    else { rec.branch=brSel.value; rec.category=catSel.value; if(eqSel.value){ const q=byId(S.equipment, eqSel.value); if(q){ rec.equipmentId=q.id; rec.equipmentName=q.name; } } }
+    const p=photo.getPhoto(); if(p) rec.photo=p;
+    try{ await S.db.collection('faults').add(rec); toast(t('toast_fault_submitted')); closeSheet(); }
+    catch(err){ toast(dbErrMsg(err)); submitBtn.disabled=false; submitBtn.textContent=t('btn_submit_fault'); }
+  };
+  foot.appendChild(submitBtn); body.appendChild(foot);
+  openSheet(t('sheet_fault'), body);
+}
+function equipStoreAssets(){
+  const c=el('<div></div>'); const e=currentEmployee();
+  const branches = isAdmin() ? allBranchIds() : [e.homeBranch].filter(Boolean);
+  const branch = isAdmin() ? (S.assetBranch || branches[0] || '') : (e.homeBranch||'');
+  if(isAdmin() && branches.length){ const chips=el('<div class="chiprow" style="margin-bottom:10px;"></div>'); branches.forEach(b=>{ const ch=el(`<button class="chip ${branch===b?'on':''}">${esc(b)}</button>`); ch.onclick=()=>{ S.assetBranch=b; renderApp(); }; chips.appendChild(ch); }); c.appendChild(chips); }
+  if(!branch){ c.appendChild(el(`<div class="hint">${esc(t('asset_no_branch'))}</div>`)); return c; }
+  if(canManageStaff()){ const add=el(`<button class="btn block" style="margin-bottom:10px;">${ICONS.plus}<span>${esc(t('btn_add_asset'))}</span></button>`); add.onclick=()=>openEquipmentForm(null, isAdmin()?null:branch); c.appendChild(add); }
+  const eqs=equipmentFor(branch);
+  const list=el('<div class="list"></div>');
+  if(eqs.length===0) list.appendChild(el(`<div class="empty">${ICONS.wrench}<div>${esc(t('asset_none'))}</div></div>`));
+  eqs.forEach(q=>{
+    const openF=S.faults.filter(f=>f.equipmentId===q.id && f.status!=='resolved').length;
+    const pills=equipStatusPills(q);
+    const row=el(`<div class="list-row">${ib(equipIconFor(q.kind), TEMP_KINDS.includes(q.kind)?'c-teal':'c-grey')}<div class="lr-main"><div class="lr-title">${esc(q.name)} <span class="pill n" style="font-size:10px;">${esc(equipKindLabel(q.kind))}</span></div><div class="lr-sub">${esc(equipSub(q))||'—'}</div>${pills?`<div class="row" style="gap:4px; flex-wrap:wrap; margin-top:3px;">${pills}</div>`:''}</div>${openF?`<span class="pill critical">${openF}${esc(t('device_fault_count'))}</span>`:`<span class="pill ok">${esc(t('device_ok'))}</span>`}</div>`);
+    row.onclick=()=>openAssetActions(q); list.appendChild(row);
+  });
+  c.appendChild(list); return c;
+}
+function openAssetActions(q){
+  const body=el('<div></div>');
+  body.appendChild(el(`<div class="hint" style="margin-top:0;">${esc(equipKindLabel(q.kind))} · ${esc(q.branch||'')}${q.brand?' · '+esc(q.brand):''}${q.serial?' · S/N '+esc(q.serial):''}</div>`));
+  const info=[];
+  if(q.vendor) info.push(`<div>${esc(t('field_vendor'))}: ${esc(q.vendor)}${q.vendorPhone?` · <a href="${telHref(q.vendorPhone)}">${esc(q.vendorPhone)}</a>`:''}</div>`);
+  if(q.warrantyExpiry) info.push(`<div>${esc(t('field_warranty'))}: ${esc(q.warrantyExpiry)}</div>`);
+  if(q.serviceIntervalDays) info.push(`<div>${esc(t('field_service_interval'))}: ${esc(String(q.serviceIntervalDays))} · ${esc(t('field_last_service'))}: ${esc(q.lastServiceAt||'—')}</div>`);
+  if(info.length) body.appendChild(el(`<div class="card card-tight" style="font-size:13px; margin-bottom:10px;">${info.join('')}</div>`));
+  const pills=equipStatusPills(q); if(pills) body.appendChild(el(`<div class="row" style="gap:6px; flex-wrap:wrap; margin-bottom:10px;">${pills}</div>`));
+  const row=el('<div class="row"></div>');
+  const bFault=el(`<button class="btn danger block">${ICONS.wrench}<span>${esc(t('btn_report_fault2'))}</span></button>`);
+  bFault.onclick=()=>{ closeSheet(); setTimeout(()=>openFaultForm(null,{equipment:q}),150); };
+  row.appendChild(bFault);
+  if(canManageStaff()){ const bSvc=el(`<button class="btn ok block">${ICONS.check}<span>${esc(t('btn_log_service'))}</span></button>`); bSvc.onclick=async()=>{ try{ await S.db.doc('equipment/'+q.id).update({lastServiceAt:todayStr(), lastServiceBy:currentEmployee().name}); toast(t('toast_service_logged')); closeSheet(); }catch(e){ toast(dbErrMsg(e)); } }; row.appendChild(bSvc); }
+  body.appendChild(row);
+  if(canManageStaff()){ const edit=el(`<button class="btn block" style="margin-top:8px;">${esc(t('btn_edit_asset'))}</button>`); edit.onclick=()=>{ closeSheet(); setTimeout(()=>openEquipmentForm(q, isAdmin()?null:q.branch),150); }; body.appendChild(edit); }
+  const recent=S.faults.filter(f=>f.equipmentId===q.id).slice(0,6);
+  body.appendChild(el('<div class="divider"></div>'));
+  body.appendChild(el(`<div style="font-weight:800; font-size:12.5px; color:var(--ink-soft); margin-bottom:8px;">${esc(t('recent_activity'))}</div>`));
+  const list=el('<div class="list"></div>');
+  recent.forEach(f=>{ const r=el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(f.description||'')}</div><div class="lr-sub">${fmtDateTime(f.createdAt)} · ${esc(f.employeeName||'')}</div></div><span class="pill ${FAULT_STATUS[f.status].c}">${esc(t(FAULT_STATUS[f.status].t))}</span></div>`); r.onclick=()=>{ closeSheet(); setTimeout(()=>openFaultDetail(f),150); }; list.appendChild(r); });
+  if(recent.length===0) list.appendChild(el(`<div class="hint">${esc(t('empty_no_records'))}</div>`));
+  body.appendChild(list);
+  openSheet(q.name, body);
+}
+/* ---- avatars ---- */
+function avatarHTML(e){ return (e && e.photo) ? `<img class="avimg" src="${e.photo}" alt="">` : esc(((e&&e.name)||'?').slice(0,1)); }
+function shrinkDataUrl(dataUrl, max){ return new Promise((res,rej)=>{ const img=new Image(); img.onload=()=>{ const s=Math.min(1, max/Math.max(img.width,img.height)); const w=Math.round(img.width*s), h=Math.round(img.height*s); const cv=document.createElement('canvas'); cv.width=w; cv.height=h; cv.getContext('2d').drawImage(img,0,0,w,h); res(cv.toDataURL('image/jpeg',0.82)); }; img.onerror=rej; img.src=dataUrl; }); }
+function openAvatarSheet(){
+  const e=currentEmployee(); const body=el('<div></div>');
+  body.appendChild(el(`<p class="hint" style="margin-top:0;">${esc(t('avatar_hint'))}</p>`));
+  const pw=photoPicker(null,false,e.photo||null); body.appendChild(pw);
+  const btn=el(`<button class="btn primary block" style="margin-top:10px;">${esc(t('btn_save'))}</button>`);
+  btn.onclick=async()=>{ const p=pw.getPhoto(); if(!p){ toast(t('avatar_need_photo')); return; } btn.disabled=true; try{ const small=await shrinkDataUrl(p, 200); await rpc('set_my_photo',{p:small}); toast(t('toast_saved')); closeSheet(); }catch(err){ toast(dbErrMsg(err)); btn.disabled=false; } };
+  body.appendChild(btn);
+  if(e.photo){ const rm=el(`<button class="btn block" style="margin-top:8px;">${esc(t('btn_remove_photo'))}</button>`); rm.onclick=async()=>{ try{ await rpc('set_my_photo',{p:''}); toast(t('toast_saved')); closeSheet(); }catch(err){ toast(dbErrMsg(err)); } }; body.appendChild(rm); }
+  openSheet(t('sheet_avatar'), body);
+}
+
+/* ============================ STORE AUDIT (巡店评分 · QSC) ============================ */
+const AUDIT_DEFAULT_SECTIONS = [
+  {name:'门店外观 / Exterior', weight:2, items:['招牌灯、外观完好且清洁 / Signboard lights and facade intact and clean','玻璃门窗无污渍、无过期海报 / Glass doors and windows clean, no outdated posters','入口与走道畅通无杂物 / Entrance and walkway clear','营业时间与执照张贴可见 / Opening hours and licences displayed']},
+  {name:'店内清洁 / Cleanliness', weight:2, items:['地面干净、无水渍无垃圾 / Floor clean, dry, no litter','货架与商品无灰尘 / Shelves and products dust-free','冷柜冰柜玻璃与内部清洁、无结霜 / Chiller and freezer glass and interior clean, no frost','收银台与柜台整洁 / Counter tidy','垃圾桶未满且加盖 / Bins not overflowing, lids on','厕所清洁、有纸有皂 / Toilet clean with paper and soap']},
+  {name:'商品陈列 / Merchandising', weight:3, items:['按陈列图陈列 / Planogram followed','商品补满且正面朝外 / Shelves full, products faced','价签齐全且价格正确 / Price tags complete and correct','当期促销物料到位 / Current promo materials in place','缺货货位不超过 3 个 / No more than 3 empty facings','无过期或临期未下架商品 / No expired items on shelf','先进先出执行 / FIFO followed']},
+  {name:'鲜食与食品安全 / Food safety', weight:3, items:['当班温度记录已完成 / Temperature log done this shift','冷柜冰柜温度在范围内 / Chiller and freezer within range','热食有保温时间标签 / Hot food time-labelled','员工洗手、戴手套处理食品 / Hand washing and gloves for food handling','无虫鼠迹象 / No pest signs','食品与清洁剂分开存放 / Food stored away from chemicals']},
+  {name:'服务与收银 / Service', weight:2, items:['员工制服整洁并佩戴名牌 / Uniform clean, name tag worn','顾客进店有招呼 / Customers greeted','排队等候不超过 3 分钟 / Queue under 3 minutes','主动提供收据 / Receipt offered','收银抽屉现金管理规范 / Cash drawer discipline','烟酒销售核查年龄 / Age check for tobacco and alcohol']},
+  {name:'设备 / Equipment', weight:2, items:['冷柜冰柜运作正常 / Chillers and freezers working','灯光全亮、无坏灯 / All lights working','冷气正常 / Air-conditioning working','POS 与扫码支付正常 / POS and QR payment working','CCTV 运作并有录像 / CCTV recording','灭火器在有效期且可取用 / Fire extinguisher valid and accessible']},
+  {name:'安全与合规 / Safety', weight:3, items:['紧急出口畅通无阻 / Emergency exit clear','急救箱齐全 / First-aid kit complete','无外露电线或过载插座 / No exposed wiring or overloaded sockets','卷闸门与门锁正常 / Shutter and locks working','夜班安全确认有执行 / Night safety checks done']},
+  {name:'后台管理 / Back office', weight:1, items:['仓库整齐、分类存放 / Store room tidy and sorted','收货单据齐全 / Delivery documents complete','存款单据齐全 / Bank-in slips complete','本周任务清单完成率 90% 以上 / Checklist completion above 90% this week','交接班记录完整 / Handover notes complete','下周排班已发布 / Next week schedule published']},
+];
+function auditTemplates(){ return S.auditTemplates.filter(x=>x.active!==false); }
+async function seedDefaultAuditTemplate(){
+  if(auditTemplates().length) return;
+  try{ await S.db.collection('auditTemplates').add({name:'门店巡店评分表 / Store Audit (QSC)', sections:AUDIT_DEFAULT_SECTIONS, active:true, createdAt:new Date().toISOString(), createdBy:currentEmployee().name}); toast(t('toast_saved')); }catch(e){ toast(dbErrMsg(e)); }
+}
+function auditGrade(pct){ return pct>=90?'A':pct>=80?'B':pct>=70?'C':'D'; }
+function gradeCls(g){ return g==='A'?'ok':g==='B'?'accent':g==='C'?'warn':'critical'; }
+function computeAudit(tpl, scores){
+  let total=0, max=0; const sections=[]; const failed=[];
+  (tpl.sections||[]).forEach((sec,si)=>{ const w=Number(sec.weight)||1; let got=0, mx=0;
+    (sec.items||[]).forEach((item,ii)=>{ const k='s'+si+'i'+ii; const v=scores[k]; if(v==null||v==='na') return; mx+=2*w; got+=Number(v)*w; if(Number(v)<2) failed.push({key:k, text:item, section:sec.name, score:Number(v)}); });
+    sections.push({name:sec.name, got, max:mx, pct: mx? Math.round(got/mx*100):null}); total+=got; max+=mx; });
+  const pct = max ? Math.round(total/max*100) : 0;
+  return {sections, total, max, pct, grade:auditGrade(pct), failed};
+}
+function openAuditForm(branch){
+  const tpl=auditTemplates()[0]; if(!tpl){ toast(t('audit_no_template')); return; }
+  const e=currentEmployee(); const scores={}; const notes={}; const rows=[];
+  const body=el('<div></div>');
+  body.appendChild(el(`<div class="hint" style="margin-top:0;">${esc(branch)} · ${esc(tpl.name)} · ${todayStr()} · ${esc(e.name)}</div>`));
+  const summary=el(`<div class="card card-tight" style="margin:8px 0 12px; font-weight:800;"></div>`); body.appendChild(summary);
+  const refresh=()=>{ const r=computeAudit(tpl, scores); summary.innerHTML=`${esc(t('audit_score'))}: ${r.total}/${r.max} · ${r.pct}% <span class="pill ${gradeCls(r.grade)}">${r.grade}</span> · ${esc(t('audit_failed_count'))} ${r.failed.length}`; };
+  (tpl.sections||[]).forEach((sec,si)=>{
+    body.appendChild(el(`<h2 class="sec" style="margin-top:14px;">${esc(sec.name)} <span class="pill n" style="font-size:10px;">×${esc(String(sec.weight||1))}</span></h2>`));
+    (sec.items||[]).forEach((item,ii)=>{
+      const k='s'+si+'i'+ii; scores[k]=2;
+      const row=el(`<div class="card card-tight" style="margin-bottom:8px;"><div style="font-size:13.5px; margin-bottom:6px;">${esc(item)}</div></div>`);
+      const seg=el(`<div class="seg"><button data-v="2" class="on">${esc(t('audit_pass'))}</button><button data-v="1">${esc(t('audit_partial'))}</button><button data-v="0">${esc(t('audit_fail'))}</button><button data-v="na">N.A.</button></div>`);
+      const extra=el('<div style="display:none; margin-top:8px;"></div>');
+      const note=el(`<textarea placeholder="${esc(t('audit_note_ph'))}" style="min-height:52px;"></textarea>`); note.oninput=()=>{ notes[k]=note.value; };
+      const pw=photoPicker(null,false); extra.appendChild(note); extra.appendChild(pw);
+      seg.querySelectorAll('button').forEach(b=>b.onclick=()=>{ const v=b.dataset.v; scores[k]= v==='na'?'na':Number(v); seg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b)); extra.style.display = (v==='0'||v==='1') ? '' : 'none'; refresh(); });
+      row.appendChild(seg); row.appendChild(extra); rows.push({k, pw}); body.appendChild(row);
+    });
+  });
+  refresh();
+  const foot=el('<div class="sheet-foot"></div>');
+  const btn=el(`<button class="btn primary block">${esc(t('btn_submit_audit'))}</button>`);
+  btn.onclick=async()=>{
+    const photos={}; rows.forEach(r=>{ const p=r.pw.getPhoto(); if(p) photos[r.k]=p; });
+    const r=computeAudit(tpl, scores);
+    if(!confirm(t('confirm_submit_audit_prefix')+r.pct+'% ('+r.grade+')'+t('confirm_submit_audit_suffix')+r.failed.length)) return;
+    btn.disabled=true; btn.textContent=t('toast_submitting');
+    const now=new Date().toISOString();
+    const rec={branch, templateId:tpl.id, templateName:tpl.name, auditorId:e.id, auditorName:e.name, date:todayStr(), scores, notes, photos, sections:r.sections, total:r.total, max:r.max, pct:r.pct, grade:r.grade, failed:r.failed, status:'done', createdAt:now};
+    try{
+      const ref=await S.db.collection('audits').add(rec);
+      const auditId = ref && ref.id ? ref.id : '';
+      for(const f of r.failed){ await S.db.collection('rectifications').add({auditId, branch, item:f.text, section:f.section, score:f.score, note:notes[f.key]||'', photo:photos[f.key]||'', dueDate:todayStr(addDays(new Date(), f.score===0?7:14)), status:'open', createdAt:now, createdBy:e.name}); }
+      toast(t('toast_audit_saved')); closeSheet();
+      setTimeout(()=>openAuditDetail(Object.assign({id:auditId}, rec)), 250);
+    }catch(err){ toast(dbErrMsg(err)); btn.disabled=false; btn.textContent=t('btn_submit_audit'); }
+  };
+  foot.appendChild(btn); body.appendChild(foot);
+  openSheet(t('sheet_audit')+' · '+branch, body);
+}
+function openAuditDetail(a){
+  const body=el('<div></div>');
+  body.appendChild(el(`<div class="row" style="align-items:center; gap:10px; margin-bottom:8px;"><span class="pill ${gradeCls(a.grade)}" style="font-size:20px; padding:6px 14px;">${esc(a.grade)}</span><div><div style="font-weight:900; font-size:18px;">${a.pct}%</div><div class="hint" style="margin:0;">${a.total}/${a.max} · ${esc(a.branch)} · ${esc(a.date||'')} · ${esc(a.auditorName||'')}</div></div></div>`));
+  const list=el('<div class="list" style="margin-bottom:12px;"></div>');
+  (a.sections||[]).forEach(s=>{ list.appendChild(el(`<div class="list-row" style="cursor:default;"><div class="lr-main"><div class="lr-title">${esc(s.name)}</div><div class="lr-sub">${s.got}/${s.max}</div></div><span class="pill ${s.pct==null?'n':gradeCls(auditGrade(s.pct))}">${s.pct==null?'N.A.':s.pct+'%'}</span></div>`)); });
+  body.appendChild(list);
+  body.appendChild(el(`<h2 class="sec" style="margin-top:6px;">${esc(t('audit_failed_items'))} (${(a.failed||[]).length})</h2>`));
+  const fl=el('<div class="list"></div>');
+  if(!(a.failed||[]).length) fl.appendChild(el(`<div class="hint">${esc(t('audit_all_pass'))}</div>`));
+  (a.failed||[]).forEach(f=>{ const n=(a.notes||{})[f.key]; const p=(a.photos||{})[f.key]; fl.appendChild(el(`<div class="list-row" style="cursor:default; flex-wrap:wrap;">${ib('alert', f.score===0?'c-red':'c-amber')}<div class="lr-main"><div class="lr-title">${esc(f.text)}</div><div class="lr-sub">${esc(f.section)}${n?' · '+esc(n):''}</div></div><span class="pill ${f.score===0?'critical':'warn'}">${esc(f.score===0?t('audit_fail'):t('audit_partial'))}</span>${p?`<img class="photow" src="${p}" style="flex-basis:100%; margin-top:6px;">`:''}</div>`)); });
+  body.appendChild(fl);
+  openSheet(t('sheet_audit_result'), body);
+}
+function auditsFor(branch){ return S.audits.filter(a=>!branch || a.branch===branch); }
+function auditView(){
+  const c=el('<div></div>'); const e=currentEmployee();
+  c.appendChild(secH('chart','c-purple',t('audit_title')));
+  if(isAdmin()){
+    if(auditTemplates().length===0){ const b=el(`<button class="btn block" style="margin-bottom:10px;">${esc(t('btn_seed_audit_template'))}</button>`); b.onclick=seedDefaultAuditTemplate; c.appendChild(b); }
+    const branches=allBranchIds().filter(b=>!['VM','HQ'].includes(b)); const branch=S.auditBranch||branches[0]||'';
+    const chips=el('<div class="chiprow" style="margin-bottom:10px;"></div>'); branches.forEach(b=>{ const ch=el(`<button class="chip ${branch===b?'on':''}">${esc(b)}</button>`); ch.onclick=()=>{ S.auditBranch=b; renderApp(); }; chips.appendChild(ch); }); c.appendChild(chips);
+    const start=el(`<button class="btn primary block" style="margin-bottom:12px;">${ICONS.check}<span>${esc(t('btn_start_audit'))} · ${esc(branch)}</span></button>`); start.onclick=()=>{ if(!branch){ toast(t('asset_no_branch')); return; } openAuditForm(branch); }; c.appendChild(start);
+    c.appendChild(auditHistoryList(branch));
+    c.appendChild(auditRanking());
+    c.appendChild(rectificationsBlock(branch));
+  } else {
+    const branch=e.homeBranch||'';
+    c.appendChild(auditHistoryList(branch));
+    c.appendChild(rectificationsBlock(branch));
+  }
+  return c;
+}
+function auditHistoryList(branch){
+  const wrap=el('<div></div>'); wrap.appendChild(el(`<h2 class="sec">${esc(t('audit_history'))}${branch?' · '+esc(branch):''}</h2>`));
+  const rows=auditsFor(branch).slice(0,12); const list=el('<div class="list"></div>');
+  if(rows.length===0) list.appendChild(el(`<div class="hint">${esc(t('audit_none'))}</div>`));
+  rows.forEach(a=>{ const gc=gradeCls(a.grade); const r=el(`<div class="list-row">${ib('chart', gc==='ok'?'c-green':gc==='critical'?'c-red':'c-amber')}<div class="lr-main"><div class="lr-title">${esc(a.date||'')} · ${a.pct}% <span class="pill ${gc}" style="font-size:10px;">${esc(a.grade)}</span></div><div class="lr-sub">${esc(a.auditorName||'')} · ${esc(t('audit_failed_count'))} ${(a.failed||[]).length}</div></div><span class="icon-sm" style="color:var(--ink-faint);">${ICONS.chev}</span></div>`); r.onclick=()=>openAuditDetail(a); list.appendChild(r); });
+  wrap.appendChild(list); return wrap;
+}
+function auditRanking(){
+  const wrap=el('<div></div>'); const ym=todayStr().slice(0,7);
+  const byB={}; S.audits.filter(a=>(a.date||'').startsWith(ym)).forEach(a=>{ (byB[a.branch]=byB[a.branch]||[]).push(a.pct); });
+  const rows=Object.entries(byB).map(([b,arr])=>({b, avg:Math.round(arr.reduce((x,y)=>x+y,0)/arr.length), n:arr.length})).sort((x,y)=>y.avg-x.avg);
+  wrap.appendChild(el(`<h2 class="sec">${esc(t('audit_ranking'))} · ${ym}</h2>`));
+  if(rows.length===0){ wrap.appendChild(el(`<div class="hint">${esc(t('audit_none'))}</div>`)); return wrap; }
+  const list=el('<div class="list"></div>');
+  rows.forEach((r,i)=>list.appendChild(el(`<div class="list-row" style="cursor:default;"><span class="ib sm ${i===0?'c-amber':'c-grey'}" style="font-weight:900;">${i+1}</span><div class="lr-main"><div class="lr-title">${esc(r.b)}</div><div class="lr-sub">${r.n} ${esc(t('audit_times'))}</div></div><span class="pill ${gradeCls(auditGrade(r.avg))}">${r.avg}% ${auditGrade(r.avg)}</span></div>`)));
+  wrap.appendChild(list); return wrap;
+}
+function rectificationsBlock(branch){
+  const wrap=el('<div></div>');
+  const rows=S.rectifications.filter(r=>(!branch || r.branch===branch)).sort((a,b)=>((a.status==='open'?0:1)-(b.status==='open'?0:1)) || (a.dueDate||'').localeCompare(b.dueDate||'')).slice(0,30);
+  const open=rows.filter(r=>r.status==='open').length;
+  wrap.appendChild(el(`<h2 class="sec">${esc(t('audit_rectifications'))}${branch?' · '+esc(branch):''} <span class="pill ${open?'critical':'ok'}" style="font-size:11px;">${open}</span></h2>`));
+  const list=el('<div class="list"></div>');
+  if(rows.length===0) list.appendChild(el(`<div class="hint">${esc(t('audit_no_rect'))}</div>`));
+  rows.forEach(r=>{ const overdue=r.status==='open' && r.dueDate && r.dueDate<todayStr(); const row=el(`<div class="list-row">${ib('alert', r.status==='done'?'c-green':(overdue?'c-red':'c-amber'))}<div class="lr-main"><div class="lr-title">${esc(r.item)}</div><div class="lr-sub">${branch?'':esc(r.branch)+' · '}${esc(r.section||'')} · ${esc(t('audit_due'))} ${esc(r.dueDate||'')}${r.doneBy?' · '+esc(r.doneBy):''}</div></div><span class="pill ${r.status==='done'?'ok':(overdue?'critical':'warn')}">${esc(r.status==='done'?t('inc_resolved'):(overdue?t('fault_overdue'):t('inc_open')))}</span></div>`); row.onclick=()=>openRectification(r); list.appendChild(row); });
+  wrap.appendChild(list); return wrap;
+}
+function openRectification(r){
+  const body=el('<div></div>');
+  body.appendChild(el(`<div style="font-weight:800; margin-bottom:4px;">${esc(r.item)}</div><div class="hint" style="margin-top:0;">${esc(r.branch)} · ${esc(r.section||'')} · ${esc(t('audit_due'))} ${esc(r.dueDate||'')}${r.note?' · '+esc(r.note):''}</div>`));
+  if(r.photo) body.appendChild(el(`<img class="photow" src="${r.photo}">`));
+  if(r.status==='done'){ body.appendChild(el(`<div class="hint">${esc(t('inc_resolved'))} · ${esc(r.doneBy||'')} · ${r.doneAt?fmtDateTime(r.doneAt):''}${r.doneNote?' · '+esc(r.doneNote):''}</div>`)); if(r.donePhoto) body.appendChild(el(`<img class="photow" src="${r.donePhoto}">`)); }
+  else {
+    const note=el(`<textarea placeholder="${esc(t('audit_done_note_ph'))}" style="margin-top:10px;"></textarea>`); body.appendChild(note);
+    const pw=photoPicker(null,false); body.appendChild(pw);
+    const b=el(`<button class="btn ok block" style="margin-top:10px;">${esc(t('btn_mark_rectified'))}</button>`);
+    b.onclick=async()=>{ const p=pw.getPhoto(); if(!p){ toast(t('audit_need_photo')); return; } b.disabled=true; try{ await S.db.doc('rectifications/'+r.id).update({status:'done', doneBy:currentEmployee().name, doneAt:new Date().toISOString(), doneNote:note.value||'', donePhoto:p}); toast(t('toast_saved')); closeSheet(); }catch(err){ toast(dbErrMsg(err)); b.disabled=false; } };
+    body.appendChild(b);
+  }
+  openSheet(t('sheet_rectification'), body);
+}
+function auditTemplateAdminBlock(){
+  return adminBlock(t('admin_audit_templates'), ()=>openAuditTemplateForm(null), S.auditTemplates.map(tp=>({
+    title: tp.name, sub: (tp.sections||[]).length+' '+t('audit_sections')+' · '+(tp.sections||[]).reduce((n,s)=>n+(s.items||[]).length,0)+' '+t('label_items'),
+    right: toggleSwitch(tp.active!==false, async(v)=>{ try{ await S.db.doc('auditTemplates/'+tp.id).update({active:v}); }catch(e){ toast(dbErrMsg(e)); } }),
+    onClick: ()=>openAuditTemplateForm(tp),
+    onDelete: async()=>{ try{ await S.db.doc('auditTemplates/'+tp.id).delete(); toast(t('toast_deleted')); }catch(e){ toast(dbErrMsg(e)); } }
+  })), {label:t('btn_seed_audit_template'), onClick:()=>{ if(auditTemplates().length){ toast(t('audit_template_exists')); return; } seedDefaultAuditTemplate(); }});
+}
+function sectionsToText(secs){ return (secs||[]).map(s=>'## '+s.name+' ('+(s.weight||1)+')\n'+(s.items||[]).join('\n')).join('\n\n'); }
+function textToSections(txt){ const out=[]; let cur=null; String(txt||'').split('\n').forEach(l=>{ l=l.trim(); if(!l) return; const m=l.match(/^##\s*(.+?)\s*(?:\((\d+)\))?$/); if(m){ cur={name:m[1], weight:Number(m[2])||1, items:[]}; out.push(cur); } else if(cur){ cur.items.push(l.replace(/^[-*•]\s*/,'')); } }); return out; }
+function openAuditTemplateForm(tp){
+  const f=[{key:'name', label:t('field_template_name')},{key:'text', label:t('field_audit_items'), type:'textarea'}];
+  const body=el('<div>'+fieldsHTML(f, tp?{name:tp.name, text:sectionsToText(tp.sections)}:{name:'', text:sectionsToText(AUDIT_DEFAULT_SECTIONS)})+'</div>');
+  const ta=body.querySelector('textarea'); if(ta) ta.style.minHeight='260px';
+  const foot=el('<div class="sheet-foot"></div>'); const btn=el(`<button class="btn primary block">${esc(t('btn_save'))}</button>`);
+  btn.onclick=async()=>{ const v=readFields(body,f); const sections=textToSections(v.text); if(!v.name||!sections.length){ toast(t('err_fill_all')); return; } try{ if(tp) await S.db.doc('auditTemplates/'+tp.id).update({name:v.name, sections}); else await S.db.collection('auditTemplates').add({name:v.name, sections, active:true, createdAt:new Date().toISOString()}); toast(t('toast_saved')); closeSheet(); }catch(e){ toast(dbErrMsg(e)); } };
+  foot.appendChild(btn); body.appendChild(foot); openSheet(t('sheet_audit_template'), body);
 }
 
 /* ============================ START ============================ */
