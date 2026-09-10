@@ -14,7 +14,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://smpazgmbmmeqighyhbon.supabase.co wss://smpazgmbmmeqighyhbon.supabase.co https://cdn.jsdelivr.net; manifest-src 'self'; worker-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <style>
   :root{
     --paper:#F1F1EC; --surface:#FFFFFF; --surface-2:#E9E9E3; --border:#DAD9D2;
@@ -443,6 +444,7 @@ function leaveBalanceSuffix(l){
 /* ============================ I18N ============================ */
 const I18N = {
   zh: {
+    field_pin_verify:'邀请码（向店经理或 HQ 索取）', ph_pin_verify:'例如 AB3K7Q2M', err_pin_verify:'请输入邀请码', err_pin_verify_failed:'邀请码不正确或已过期，请向店经理 / HQ 重新索取', btn_invite_make:'生成邀请码（首次登录用，只显示一次）', btn_invite_show:'重新生成邀请码', invite_msg_prefix:'员工：', invite_code_label:'邀请码', invite_msg_suffix:'7 天内有效，只显示这一次，请立即发给员工本人。员工首次登录时在「邀请码」栏输入。',
     field_cover_branches:'支援分店（逗号分隔，如 BR07, BR09）', field_runner:'外勤跑店员', opt_yes:'是', opt_no:'否', cover_badge:'支援',
     runner_title:'外勤路线', tile_runner:'外勤路线', btn_visit:'到店登记', btn_bankin:'银行存款', runner_stops:'到店记录', runner_bankins:'存款记录', runner_collected:'今日收款', runner_banked:'已存入银行', runner_unbanked:'未存入', runner_today:'今天',
     field_docs:'收集文件', field_supplies:'配送物资', ph_supplies:'例如：饮料 5 箱、收据本', field_cash_collected:'收取现金 (RM)', field_amount:'存款金额 (RM)', field_bank:'银行', field_ref:'存款单号 / 参考号', runner_slip_hint:'必须拍存款单（bank-in slip）照片。', runner_need_slip:'请先拍存款单照片',
@@ -661,6 +663,7 @@ const I18N = {
     toast_deleted:'已删除',
   },
   en: {
+    field_pin_verify:'Invite code (ask your manager or HQ)', ph_pin_verify:'e.g. AB3K7Q2M', err_pin_verify:'Enter the invite code', err_pin_verify_failed:'Invite code wrong or expired, ask your manager / HQ for a new one', btn_invite_make:'Generate invite code (first login, shown once)', btn_invite_show:'Regenerate invite code', invite_msg_prefix:'Staff: ', invite_code_label:'Invite code', invite_msg_suffix:'Valid 7 days and shown only once; send it to the staff member now. They enter it in the Invite code field on first login.',
     field_cover_branches:'Cover stores (comma separated, e.g. BR07, BR09)', field_runner:'Runner (store visits)', opt_yes:'Yes', opt_no:'No', cover_badge:'Cover',
     runner_title:'Runner route', tile_runner:'Runner route', btn_visit:'Log store visit', btn_bankin:'Bank-in', runner_stops:'Store visits', runner_bankins:'Bank-in records', runner_collected:'Cash collected today', runner_banked:'Banked in', runner_unbanked:'Not banked yet', runner_today:'Today',
     field_docs:'Documents collected', field_supplies:'Supplies delivered', ph_supplies:'e.g. 5 cartons drinks, receipt books', field_cash_collected:'Cash collected (RM)', field_amount:'Amount banked (RM)', field_bank:'Bank', field_ref:'Bank-in slip / reference no.', runner_slip_hint:'A photo of the bank-in slip is required.', runner_need_slip:'Take a photo of the bank-in slip first',
@@ -879,6 +882,7 @@ const I18N = {
     toast_deleted:'Deleted',
   },
   ms: {
+    field_pin_verify:'Kod jemputan (minta daripada pengurus atau HQ)', ph_pin_verify:'cth. AB3K7Q2M', err_pin_verify:'Masukkan kod jemputan', err_pin_verify_failed:'Kod jemputan salah atau tamat tempoh, minta yang baharu daripada pengurus / HQ', btn_invite_make:'Jana kod jemputan (log masuk pertama, dipapar sekali)', btn_invite_show:'Jana semula kod jemputan', invite_msg_prefix:'Staf: ', invite_code_label:'Kod jemputan', invite_msg_suffix:'Sah 7 hari dan dipapar sekali sahaja; hantar kepada staf sekarang. Mereka masukkan dalam ruangan Kod jemputan semasa log masuk pertama.',
     field_cover_branches:'Kedai sokongan (asingkan dengan koma, cth BR07, BR09)', field_runner:'Runner (lawatan kedai)', opt_yes:'Ya', opt_no:'Tidak', cover_badge:'Sokongan',
     runner_title:'Laluan runner', tile_runner:'Laluan runner', btn_visit:'Rekod lawatan kedai', btn_bankin:'Bank-in', runner_stops:'Lawatan kedai', runner_bankins:'Rekod bank-in', runner_collected:'Tunai dikutip hari ini', runner_banked:'Sudah bank-in', runner_unbanked:'Belum bank-in', runner_today:'Hari ini',
     field_docs:'Dokumen dikutip', field_supplies:'Bekalan dihantar', ph_supplies:'cth. 5 kotak minuman, buku resit', field_cash_collected:'Tunai dikutip (RM)', field_amount:'Jumlah bank-in (RM)', field_bank:'Bank', field_ref:'Slip bank-in / no. rujukan', runner_slip_hint:'Gambar slip bank-in wajib.', runner_need_slip:'Ambil gambar slip bank-in dahulu',
@@ -1493,6 +1497,7 @@ function subscribeAll(){
 }
 
 /* ============================ ROUTER / SHELL RENDER ============================ */
+document.addEventListener('keydown', ev=>{ if((ev.key==='Enter'||ev.key===' ') && ev.target && ev.target.matches && ev.target.matches('.list-row, .id-pick-row, .ftile')){ ev.preventDefault(); ev.target.click(); } });
 window.addEventListener('hashchange', ()=>{ S.tab=(location.hash||'#home').slice(1); S.showReport=false; renderApp(); });
 
 function renderApp(){
@@ -1514,6 +1519,7 @@ function renderApp(){
   view.innerHTML='';
   const map={home:homeView, clock:clockView, tasks:tasksView, stock:stockView, equip:equipView, me:meView, memos:memosView, audit:auditView, runner:runnerView};
   view.appendChild((map[S.tab]||homeView)());
+  view.querySelectorAll('.list-row, .id-pick-row').forEach(r=>{ if(r.onclick && !r.hasAttribute('tabindex')){ r.setAttribute('tabindex','0'); r.setAttribute('role','button'); } });
 }
 function screenMsg(icon,title,body){
   return `<div class="center-screen">${icon}<h2>${esc(title)}</h2><p>${esc(body)}</p></div>`;
@@ -1721,8 +1727,8 @@ function onboardingView(){
 function identityRow(e){
   const roleLabel = e.role==='admin'?t('role_admin'):e.role==='manager'?t('role_manager'):t('role_staff');
   const row=el(`<div class="id-pick-row"><span class="avatar">${avatarHTML(e)}</span>
-    <div class="lr-main"><div class="lr-title">${esc(e.name)}</div><div class="lr-sub">${esc(roleLabel)}${e.jobTitle?" · "+esc(e.jobTitle):""}${e.phone?' · '+esc(e.phone):''}</div></div>
-    ${ICONS.chev}</div>`);
+    <div class="lr-main"><div class="lr-title">${esc(e.name)}</div><div class="lr-sub">${e.role?esc(roleLabel):''}${e.jobTitle?" · "+esc(e.jobTitle):""}</div></div>
+    <span class="icon-sm" style="color:var(--ink-faint);">${ICONS.chev}</span></div>`);
   row.onclick=()=>{ e.hasPin ? openVerifyPinForm(e) : openSetPinForm(e); };
   return row;
 }
@@ -1745,13 +1751,13 @@ function identityPickerView(){
     container.appendChild(el(`<h2 class="sec" style="margin-top:14px;">${esc(t('who_am_i_pick_branch'))}</h2>`));
     branches.forEach(z=>{
       const count = active.filter(e=>e.homeBranch===z).length;
-      const row=el(`<div class="id-pick-row"><span class="avatar">${esc(z.slice(0,2))}</span><div class="lr-main"><div class="lr-title">${esc(z)}</div><div class="lr-sub">${count}</div></div>${ICONS.chev}</div>`);
+      const row=el(`<div class="id-pick-row"><span class="avatar">${esc(z.slice(0,2))}</span><div class="lr-main"><div class="lr-title">${esc(z)}</div><div class="lr-sub">${count}</div></div><span class="icon-sm" style="color:var(--ink-faint);">${ICONS.chev}</span></div>`);
       row.onclick=()=>{ S.pickerBranch=z; renderApp(); };
       container.appendChild(row);
     });
     const unassigned = active.filter(e=>!e.homeBranch);
     if(unassigned.length>0){
-      const row=el(`<div class="id-pick-row"><span class="avatar">?</span><div class="lr-main"><div class="lr-title">${esc(t('branch_unassigned'))}</div><div class="lr-sub">${unassigned.length}</div></div>${ICONS.chev}</div>`);
+      const row=el(`<div class="id-pick-row"><span class="avatar">?</span><div class="lr-main"><div class="lr-title">${esc(t('branch_unassigned'))}</div><div class="lr-sub">${unassigned.length}</div></div><span class="icon-sm" style="color:var(--ink-faint);">${ICONS.chev}</span></div>`);
       row.onclick=()=>{ S.pickerBranch='__unassigned__'; renderApp(); };
       container.appendChild(row);
     }
@@ -1790,7 +1796,7 @@ function tokenValid(tok){ const p=tokenPayload(tok); return !!(p && p.exp && p.e
 async function loadLoginList(){
   const rows=await rpc('login_list');
   S.loginList=rows||[];
-  S.employees=S.loginList.map(r=>({id:r.id, name:r.name, role:r.role, homeBranch:r.home_branch||'', jobTitle:r.job_title||'', hasPin:!!r.has_pin, active:r.active!==false, photo:r.photo||''}));
+  S.employees=S.loginList.map(r=>({id:r.id, name:r.name, role:'', homeBranch:r.home_branch||'', jobTitle:'', hasPin:!!r.has_pin, active:r.active!==false, photo:''}));
 }
 function finishLogin(token, e){
   S.token=token; LS.set('bgc_token', token); LS.set('bgc_employee_id', e.id); S.employeeId=e.id; S.employeesLoaded=false;
@@ -1807,6 +1813,7 @@ function pinErrMsg(err){
   if(/wrong_pin/.test(m)) return t('err_pin_wrong');
   if(/locked/.test(m)) return t('err_pin_locked');
   if(/pin_exists/.test(m)) return t('err_pin_exists');
+  if(/verify_failed/.test(m)) return t('err_pin_verify_failed');
   if(/inactive/.test(m)) return t('err_pin_inactive');
   if(/jwt_secret_not_configured/.test(m)) return 'Server login key not configured (see auth.sql notes)';
   return dbErrMsg(err);
@@ -1814,7 +1821,7 @@ function pinErrMsg(err){
 function openSetPinForm(e){
   const body=el('<div></div>');
   body.appendChild(el(`<p class="hint" style="margin-top:0;">${esc(t('pin_set_hint'))}</p>`));
-  const f=[{key:'pin', label:t('field_new_pin'), type:'password'},{key:'pin2', label:t('field_confirm_pin'), type:'password'}];
+  const f=[{key:'verify', label:t('field_pin_verify'), ph:t('ph_pin_verify')},{key:'pin', label:t('field_new_pin'), type:'password'},{key:'pin2', label:t('field_confirm_pin'), type:'password'}];
   const formEl=el('<div>'+fieldsHTML(f)+'</div>'); body.appendChild(formEl);
   const foot=el('<div class="sheet-foot"></div>');
   const btn=el(`<button class="btn primary block">${esc(t('btn_set_pin'))}</button>`);
@@ -1826,7 +1833,9 @@ function openSetPinForm(e){
     try{
       const salt=randomSalt();
       const hash=await hashPin(v.pin, salt);
-      const token=await rpc('set_pin', {emp_id:e.id, salt, hash});
+      if(!v.verify || !v.verify.trim()){ toast(t('err_pin_verify')); btn.disabled=false; btn.textContent=t('btn_set_pin'); return; }
+      const token=await rpc('set_pin', {emp_id:e.id, salt, hash, verify:v.verify.trim()});
+      if(!token) throw {code:'verify_failed', message:'verify_failed'};
       toast(t('toast_pin_set'));
       finishLogin(token, e);
     }catch(err){ toast(pinErrMsg(err)); btn.disabled=false; btn.textContent=t('btn_set_pin'); }
@@ -3321,6 +3330,13 @@ function openEmployeeForm(emp, lockBranch){
     const branchInput = body.querySelector('[data-k="homeBranch"]');
     if(branchInput){ branchInput.value = lockBranch; branchInput.disabled = true; }
   }
+  if(emp && !emp.hasPin){
+    const invBtn=el(`<button class="btn block" style="margin-bottom:12px;">${esc(t('btn_invite_make'))}</button>`);
+    invBtn.onclick=async ()=>{
+      try{ const code=await rpc('make_invite', {emp_id:emp.id}); alert(t('invite_msg_prefix')+emp.name+'\n'+t('invite_code_label')+' '+code+'\n'+t('invite_msg_suffix')); }catch(e){ toast(pinErrMsg(e)); }
+    };
+    body.appendChild(invBtn);
+  }
   if(emp && emp.hasPin){
     const resetBtn=el(`<button class="btn danger block" style="margin-bottom:12px;">${esc(t('btn_reset_pin'))}</button>`);
     resetBtn.onclick=async ()=>{
@@ -4086,6 +4102,7 @@ function weekScheduleView(lockBranch){
     branches.forEach(b=>{ const ch=el(`<button class="chip ${branch===b?'on':''}">${esc(b)}</button>`); ch.onclick=()=>{ S.schedBranch=b; renderApp(); }; chipRow.appendChild(ch); });
     c.appendChild(chipRow);
   }
+  S.schedBranchCtx=branch||'';
   const emps=S.employees.filter(e=>e.active!==false && (!branch || e.homeBranch===branch || coversBranch(e,branch))).sort((a,b)=>a.name.localeCompare(b.name,'zh'));
   const sub=el(`<div class="row" style="justify-content:space-between; margin-bottom:6px;"><span class="hint" style="margin:0;">${todayStr(days[0])} ~ ${todayStr(days[6])}${branch?' · '+esc(branch):''}</span></div>`);
   const copyBtn=el(`<button class="btn sm">${esc(t('btn_copy_last_week'))}</button>`);
@@ -4135,7 +4152,7 @@ function openCellSheet(emp, date, existing){
 }
 async function addShift(emp, date, start, end){
   if(!start||!end){ toast(t('err_fill_all')); return; }
-  try{ await S.db.collection('schedules').add({employeeId:emp.id, date, shiftStart:start, shiftEnd:end, branch:emp.homeBranch||'', createdAt:new Date().toISOString(), createdBy:currentEmployee().name}); toast(t('toast_added')); closeSheet(); }
+  try{ await S.db.collection('schedules').add({employeeId:emp.id, date, shiftStart:start, shiftEnd:end, branch:(isAdmin()?(S.schedBranchCtx||emp.homeBranch||''):(myBranch()||emp.homeBranch||'')), createdAt:new Date().toISOString(), createdBy:currentEmployee().name}); toast(t('toast_added')); closeSheet(); }
   catch(e){ toast(dbErrMsg(e)); }
 }
 async function copyLastWeek(emps, days){
