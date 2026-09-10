@@ -3704,14 +3704,9 @@ function openSwapRequestForm(){
 function punchSummary(r){ return (r.type==='in'?t('clock_in_short'):t('clock_out_short'))+' · '+r.date+' '+r.time+(r.branch?' · '+r.branch:''); }
 function swapSummary(r){ return t('swap_gives')+' '+r.date+' '+r.shift+' → '+r.withName+(r.takeDate?' · '+t('swap_takes')+' '+r.takeDate+' '+r.takeShift:''); }
 async function reviewPunch(r, approve){
-  const me=currentEmployee(); const now=new Date().toISOString();
+  // The back-dated punch is written by a database transaction, never by the phone.
   try{
-    if(approve){
-      const rec={employeeId:r.employeeId, employeeName:r.employeeName, type:r.type, createdAt:r.at, note:r.reason||'', manual:true, geoFlag:'manual', approvedBy:me.name, requestId:r.id};
-      if(r.branch){ rec.branch=r.branch; if(r.homeBranch && r.branch!==r.homeBranch) rec.cover=true; }
-      await S.db.collection('attendance').add(rec);
-    }
-    await S.db.doc('punchRequests/'+r.id).update({status:approve?'approved':'rejected', reviewedAt:now, reviewedBy:me.name});
+    await rpc('approve_punch_request', {req_id:r.id, approve:!!approve, note:null});
     toast(approve?t('leave_approved'):t('leave_rejected'));
   }catch(e){ toast(dbErrMsg(e)); }
 }
