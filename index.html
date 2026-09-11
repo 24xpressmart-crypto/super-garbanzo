@@ -253,6 +253,14 @@
   #nav button svg{width:21px; height:21px;}
   #nav button .lb{font-size:10.5px; font-weight:700;}
   #nav button.on{color:var(--accent);}
+  .gcard{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:14px; margin-bottom:12px;}
+  .gh{display:flex; align-items:center; gap:11px; margin-bottom:9px;}
+  .gt{font-weight:900; font-size:15.5px; line-height:1.3;}
+  .gr{margin-top:3px; display:flex; gap:4px; flex-wrap:wrap;}
+  .gw{font-size:13.5px; color:var(--ink-soft); line-height:1.65;}
+  .gs{margin:10px 0 0; padding-left:0; list-style:none; counter-reset:gs;}
+  .gs li{counter-increment:gs; position:relative; padding:4px 0 4px 26px; font-size:13.5px; line-height:1.55;}
+  .gs li::before{content:counter(gs); position:absolute; left:0; top:5px; width:18px; height:18px; border-radius:50%; background:var(--accent-soft); color:var(--accent-soft-ink); font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center;}
   .avimg{width:100%; height:100%; object-fit:cover; border-radius:50%; display:block;} .avatar{overflow:hidden;} .hello .av{overflow:hidden;}
   .ib{display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:12px; flex-shrink:0;}
   .ib svg{width:20px; height:20px;}
@@ -444,6 +452,7 @@ function leaveBalanceSuffix(l){
 /* ============================ I18N ============================ */
 const I18N = {
   zh: {
+    guide_title:'功能图解', guide_intro:'每项功能一张卡：谁用、做什么、几步完成。选下面的角色只看自己要用的。', guide_count:'项功能', guide_open:'打开这个功能', guide_web:'📄 打开网页版图文手册（含真实截图）',
     field_pin_verify:'邀请码（向店经理或 HQ 索取）', ph_pin_verify:'例如 AB3K7Q2M', err_pin_verify:'请输入邀请码', err_pin_verify_failed:'邀请码不正确或已过期，请向店经理 / HQ 重新索取', btn_invite_make:'生成邀请码（首次登录用，只显示一次）', btn_invite_show:'重新生成邀请码', invite_msg_prefix:'员工：', invite_code_label:'邀请码', invite_msg_suffix:'7 天内有效，只显示这一次，请立即发给员工本人。员工首次登录时在「邀请码」栏输入。',
     field_cover_branches:'支援分店（逗号分隔，如 BR07, BR09）', field_runner:'外勤跑店员', opt_yes:'是', opt_no:'否', cover_badge:'支援',
     runner_title:'外勤路线', tile_runner:'外勤路线', btn_visit:'到店登记', btn_bankin:'银行存款', runner_stops:'到店记录', runner_bankins:'存款记录', runner_collected:'今日收款', runner_banked:'已存入银行', runner_unbanked:'未存入', runner_today:'今天',
@@ -663,6 +672,7 @@ const I18N = {
     toast_deleted:'已删除',
   },
   en: {
+    guide_title:'Function guide', guide_intro:'One card per function: who uses it, what it is for, and the steps. Pick a role below to see only what you need.', guide_count:'functions', guide_open:'Open this function', guide_web:'📄 Open the illustrated web guide (with real screenshots)',
     field_pin_verify:'Invite code (ask your manager or HQ)', ph_pin_verify:'e.g. AB3K7Q2M', err_pin_verify:'Enter the invite code', err_pin_verify_failed:'Invite code wrong or expired, ask your manager / HQ for a new one', btn_invite_make:'Generate invite code (first login, shown once)', btn_invite_show:'Regenerate invite code', invite_msg_prefix:'Staff: ', invite_code_label:'Invite code', invite_msg_suffix:'Valid 7 days and shown only once; send it to the staff member now. They enter it in the Invite code field on first login.',
     field_cover_branches:'Cover stores (comma separated, e.g. BR07, BR09)', field_runner:'Runner (store visits)', opt_yes:'Yes', opt_no:'No', cover_badge:'Cover',
     runner_title:'Runner route', tile_runner:'Runner route', btn_visit:'Log store visit', btn_bankin:'Bank-in', runner_stops:'Store visits', runner_bankins:'Bank-in records', runner_collected:'Cash collected today', runner_banked:'Banked in', runner_unbanked:'Not banked yet', runner_today:'Today',
@@ -882,6 +892,7 @@ const I18N = {
     toast_deleted:'Deleted',
   },
   ms: {
+    guide_title:'Panduan fungsi', guide_intro:'Satu kad setiap fungsi: siapa guna, untuk apa, dan langkahnya. Pilih peranan di bawah untuk lihat yang anda perlukan sahaja.', guide_count:'fungsi', guide_open:'Buka fungsi ini', guide_web:'📄 Buka panduan web bergambar (dengan tangkapan skrin sebenar)',
     field_pin_verify:'Kod jemputan (minta daripada pengurus atau HQ)', ph_pin_verify:'cth. AB3K7Q2M', err_pin_verify:'Masukkan kod jemputan', err_pin_verify_failed:'Kod jemputan salah atau tamat tempoh, minta yang baharu daripada pengurus / HQ', btn_invite_make:'Jana kod jemputan (log masuk pertama, dipapar sekali)', btn_invite_show:'Jana semula kod jemputan', invite_msg_prefix:'Staf: ', invite_code_label:'Kod jemputan', invite_msg_suffix:'Sah 7 hari dan dipapar sekali sahaja; hantar kepada staf sekarang. Mereka masukkan dalam ruangan Kod jemputan semasa log masuk pertama.',
     field_cover_branches:'Kedai sokongan (asingkan dengan koma, cth BR07, BR09)', field_runner:'Runner (lawatan kedai)', opt_yes:'Ya', opt_no:'Tidak', cover_badge:'Sokongan',
     runner_title:'Laluan runner', tile_runner:'Laluan runner', btn_visit:'Rekod lawatan kedai', btn_bankin:'Bank-in', runner_stops:'Lawatan kedai', runner_bankins:'Rekod bank-in', runner_collected:'Tunai dikutip hari ini', runner_banked:'Sudah bank-in', runner_unbanked:'Belum bank-in', runner_today:'Hari ini',
@@ -1115,7 +1126,7 @@ const S = {
   stockDeviceFilter:'all', equipTab:'devices', faultFilter:'open', historyRange:'today', attnScope:'mine',
   stockSection:'snacks', kegFilter:'tapped', beerZoneFilter:'all', pickerBranch:null, staffBranchFilter:'all', lastGeoMsg:null, clockSub:'records', reportMonth:(function(){const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');})(), reportBranch:'all', reportData:null, reportLoading:false,
   beerProducts:[], taps:[], kegs:[], kegLogs:[], memos:[], memoReads:[],
-  punchRequests:[], swapRequests:[], clockBranch:null, notifSeen:[], token:null, loginList:null, employeesLoaded:false, sb:null, taskTemplates:[], taskRuns:[], handovers:[], taskBranch:null, equipment:[], tempLogs:[], safetyChecks:[], incidents:[], weekStart:null, schedBranch:null, assetBranch:null, equipTabInit:false, auditTemplates:[], audits:[], rectifications:[], auditBranch:null, pushOn:false, runnerVisits:[], bankIns:[], runnerDate:null, runnerEmp:null,
+  punchRequests:[], swapRequests:[], clockBranch:null, notifSeen:[], token:null, loginList:null, employeesLoaded:false, sb:null, taskTemplates:[], taskRuns:[], handovers:[], taskBranch:null, equipment:[], tempLogs:[], safetyChecks:[], incidents:[], weekStart:null, schedBranch:null, assetBranch:null, equipTabInit:false, auditTemplates:[], audits:[], rectifications:[], auditBranch:null, pushOn:false, runnerVisits:[], bankIns:[], runnerDate:null, runnerEmp:null, guideRole:null,
   notifKnown:null, pageLoadedAt:new Date().toISOString(), notifBrowser:(function(){ try{ return localStorage.getItem('bgc_notif')==='1'; }catch(e){ return false; } })(),
   showReport:false, meAdmin:false,
   geoCache:null,
@@ -1517,7 +1528,7 @@ function renderApp(){
     view.innerHTML = screenMsg(ICONS.cloudOff,t('connecting_title'),t('connecting_body')); return;
   }
   view.innerHTML='';
-  const map={home:homeView, clock:clockView, tasks:tasksView, stock:stockView, equip:equipView, me:meView, memos:memosView, audit:auditView, runner:runnerView};
+  const map={home:homeView, clock:clockView, tasks:tasksView, stock:stockView, equip:equipView, me:meView, memos:memosView, audit:auditView, runner:runnerView, guide:guideView};
   view.appendChild((map[S.tab]||homeView)());
   view.querySelectorAll('.list-row, .id-pick-row').forEach(r=>{ if(r.onclick && !r.hasAttribute('tabindex')){ r.setAttribute('tabindex','0'); r.setAttribute('role','button'); } });
 }
@@ -2993,7 +3004,7 @@ function meView(){
   notifWrap.appendChild(el(`<p class="hint" style="margin-top:-6px;">${esc(t('notif_browser_hint'))}</p>`));
   c.appendChild(idCard);
   c.appendChild(notifWrap);
-  c.appendChild(el(`<a class="btn block" style="margin:-4px 0 12px; text-decoration:none;" href="${guideUrl()}" target="_blank" rel="noopener">📖 ${esc(t('btn_help'))}</a>`));
+  { const gb=el(`<button class="btn block" style="margin:-4px 0 12px;">📖 ${esc(t('btn_help'))}</button>`); gb.onclick=()=>{ location.hash='#guide'; }; c.appendChild(gb); }
 
   // my schedule
   c.appendChild(secH('calendar','c-blue',t('my_schedule')));
@@ -4282,7 +4293,7 @@ function funcGrid(clockedIn){
   }
   tiles.push({k:'audit', icon:'chart', cls:'c-purple', label:t('tile_audit'), count:(isAdmin()?0:S.rectifications.filter(r=>r.status==='open' && r.branch===e.homeBranch).length), go:()=>{ location.hash='#audit'; }});
   if(isRunner() || (isAdmin() && runnersList().length)) tiles.push({k:'runner', icon:'pin', cls:'c-blue', label:t('tile_runner'), go:()=>{ location.hash='#runner'; }});
-  tiles.push({k:'help', icon:'book', cls:'c-grey', label:t('tile_help'), go:()=>{ window.open(guideUrl(),'_blank','noopener'); }});
+  tiles.push({k:'help', icon:'book', cls:'c-grey', label:t('tile_help'), go:()=>{ location.hash='#guide'; }});
   const wrap=el('<div></div>');
   wrap.appendChild(secH('grid','c-blue',t('func_title')));
   const grid=el('<div class="fgrid"></div>');
@@ -4729,6 +4740,184 @@ function openBankInDetail(b){
   if(b.slip) body.appendChild(el(`<img class="photow" src="${b.slip}">`));
   openSheet(t('sheet_bankin'), body);
 }
+
+/* ============================ IN-APP ILLUSTRATED GUIDE (功能图解) ============================ */
+/* One card per function: icon, who uses it, what it is for, the steps. Always current, 3 languages. */
+const GUIDE_ITEMS = [
+  {k:'login', icon:'users', cls:'c-blue', roles:['staff','manager','admin'],
+   zh:{t:'首次登录与邀请码', w:'每人用自己的名字加 PIN 登录。第一次要输入店经理或 HQ 给的 8 位邀请码，防止别人冒用你的账号。', s:['选分店 → 选自己的名字','输入邀请码（只用一次，7 天有效）','设一个 4 位以上 PIN，之后只输 PIN','忘记 PIN：请店经理重置，再用新邀请码']},
+   en:{t:'First login & invite code', w:'Everyone logs in with their own name and PIN. The first time you need the 8-character invite code from your manager or HQ, so nobody else can claim your account.', s:['Pick your store, then your name','Enter the invite code (single use, valid 7 days)','Set a PIN of 4+ digits; after this only the PIN is needed','Forgot it? Ask your manager to reset, then use a new invite code']},
+   ms:{t:'Log masuk pertama & kod jemputan', w:'Setiap orang log masuk dengan nama sendiri dan PIN. Kali pertama perlu kod jemputan 8 aksara daripada pengurus atau HQ, supaya orang lain tidak boleh guna akaun anda.', s:['Pilih kedai, kemudian nama anda','Masukkan kod jemputan (sekali guna, sah 7 hari)','Tetapkan PIN 4 digit ke atas; selepas ini PIN sahaja','Terlupa? Minta pengurus set semula, kemudian kod jemputan baharu']}},
+  {k:'clock', icon:'login', cls:'c-blue', roles:['staff','manager'], go:'#clock',
+   zh:{t:'上班 / 下班打卡', w:'记录上下班时间、位置和照片。时间由服务器决定，改手机时间没有用。到别的店支援就选那家店。', s:['选打卡门店（本店排最前，支援店次之）','按大圆按钮，允许定位','可拍一张照片（只能现场拍）','忘记打卡：到「我的」→ 补卡申请']}},
+  {k:'tasks', icon:'check', cls:'c-green', roles:['staff','manager'], go:'#tasks',
+   zh:{t:'任务清单：开店 / 交班 / 闭店', w:'每个班次一张清单，做一项勾一项。标「需拍照」的必须先拍照。完成率会进门店考核。', s:['底部「任务」，看今天三张清单','点开清单，逐项打勾','需拍照的项目按「拍照」，拍完自动勾','全部做完按「完成清单」']}},
+  {k:'handover', icon:'handover', cls:'c-teal', roles:['staff','manager'], go:'#tasks',
+   zh:{t:'交接班记录', w:'下班前写三样：交接现金、没做完的事、异常情况。下一班打开任务页就看到，取代纸本交班本。', s:['「任务」页按「写交接班记录」','填现金、待办、异常，可拍照','保存；上一班记录会显示 24 小时']}},
+  {k:'temp', icon:'thermo', cls:'c-teal', roles:['staff','manager'], go:'#tasks',
+   zh:{t:'温度记录', w:'冷柜、冰柜、热柜每班记一次。超出范围自动变红并通知店经理和 HQ，记录可导出应付卫生检查。', s:['「任务」页往下滑到「温度记录」','输入温度，按「记录」','显示「超出范围」就检查设备并报修']}},
+  {k:'leave', icon:'calendar', cls:'c-purple', roles:['staff'], go:'#me',
+   zh:{t:'请假申请', w:'年假、病假、无薪、调休都在这里申请，页面上方显示你还剩几天。', s:['「我的」→「请假申请」','选类型、日期、事由','提交后等审批，结果会有通知']}},
+  {k:'punch', icon:'clock', cls:'c-amber', roles:['staff'], go:'#me',
+   zh:{t:'补卡申请', w:'忘记打卡时用。店经理批准后，系统在数据库里补一条记录并标明是谁批的，手机不能自己改打卡。', s:['「我的」→「补卡申请」','选上班或下班、日期、时间、门店','写原因并提交']}},
+  {k:'swap', icon:'swap', cls:'c-amber', roles:['staff'], go:'#me',
+   zh:{t:'换班申请', w:'和同事对调班次。批准后排班表自动对调，双方都会收到通知。', s:['「我的」→「换班申请」','选自己要换出的班和对方','可选是否接手对方的班，提交']}},
+  {k:'memos', icon:'megaphone', cls:'c-orange', roles:['staff','manager','admin'], go:'#memos',
+   zh:{t:'公告', w:'HQ 发的通知，可以只发给某家店，可附图片。打开就算已读，HQ 看得到谁还没读。', s:['首页「公告」区或底部「公告」页','点开看完即算已读','重要公告有红色标记']}},
+  {k:'push', icon:'bell', cls:'c-orange', roles:['staff','manager','admin'], go:'#me',
+   zh:{t:'手机推送通知', w:'开启后就算关掉 App，手机也会收到新排班、审批结果、公告、温度报警和 SOS。', s:['「我的」→「开启手机推送通知」','允许浏览器的通知权限','iPhone 要先「加到主画面」，再从主画面打开 App','可按「发送测试通知」确认']}},
+  {k:'fault', icon:'wrench', cls:'c-orange', roles:['staff','manager'], go:'#equip',
+   zh:{t:'报修', w:'门店设备或售货机坏了立刻报。按严重程度定处理时限：高 4 小时、中 24 小时、低 72 小时，超时会标红提醒。', s:['首页「报修」图标','选「门店设备」或「自动售货机」','选设备与故障类别，写描述、拍照','提交后可在「设备」→「故障」看进度']}},
+  {k:'incident', icon:'alert', cls:'c-red', roles:['staff','manager'], go:'#home',
+   zh:{t:'客诉 / 事故记录', w:'顾客投诉、员工受伤、盗窃、停电都记在这里，店经理和 HQ 立刻收到通知。', s:['首页「客诉 / 事故」图标','选类型和严重程度','写经过、拍照，提交']}},
+  {k:'sos', icon:'siren', cls:'c-red', roles:['staff','manager'], go:'#home',
+   zh:{t:'紧急求助 SOS', w:'夜班或遇到危险时用。按下后店经理和 HQ 立刻收到你的位置，页面也列出可直接拨打的电话。', s:['首页红色「SOS 求助」','按「发送求助」，位置会一起送出','危险时先拨 999，页面上有按钮']}},
+  {k:'safety', icon:'siren', cls:'c-red', roles:['staff'], go:'#home',
+   zh:{t:'夜班安全确认', w:'夜班时段（默认 23:00–07:00）已打卡的同事，首页会出现确认按钮，每 2 小时按一次报平安。超时未按，店经理和 HQ 会收到提醒。', s:['首页「我在店里，一切正常」','每 2 小时按一次','超时会变红并通知上级']}},
+  {k:'stock', icon:'box', cls:'c-blue', roles:['staff'], go:'#stock',
+   zh:{t:'库存与补货（售货机组）', w:'每台机器每个商品的数量，缺货会变红。补货时输入数量，系统自动更新库存。', s:['底部「库存」→ 选机器','点商品，输入补货数量','缺货的商品显示红色标签']}},
+  {k:'beer', icon:'beer', cls:'c-amber', roles:['staff'], go:'#stock',
+   zh:{t:'鲜啤酒桶（BR19 / BR20）', w:'登记到货、开桶上线、记录余量、标空桶和押金，酒桶新鲜度到期会提醒。', s:['「库存」→ 切到「鲜啤酒」','「登记到货」记新桶；「开桶上线」选龙头','点使用中的桶记录余量或标空桶']}},
+  {k:'equip', icon:'machine', cls:'c-grey', roles:['staff','manager'], go:'#equip',
+   zh:{t:'门店设备与售货机巡检', w:'冷柜、POS、冷气、CCTV、灭火器等建档，记品牌、维修商电话、保修到期和保养周期，到期自动提醒。售货机可逐项巡检。', s:['底部「设备」→「门店设备」看本店清单','点设备可报修、记录保养、看维修历史','「点位」标签是售货机，可做六项巡检']}},
+  {k:'avatar', icon:'users', cls:'c-purple', roles:['staff','manager','admin'], go:'#me',
+   zh:{t:'设置头像', w:'拍一张正面照片，显示在登录列表和首页，同事和店经理更容易认人。', s:['「我的」→「头像」','拍照或选图片，保存']}},
+  {k:'approvals', icon:'users', cls:'c-purple', roles:['manager','admin'], go:'#me',
+   zh:{t:'审批：请假 / 补卡 / 换班', w:'本店员工的申请都在「我的」页上方，看得到假期余额和本次天数，一键批准或驳回，员工立刻收到通知。', s:['铃铛有「待审批」提醒，或到「我的」','每张卡片按「批准」或「驳回」','补卡批准后由数据库补写记录，注明批准人']}},
+  {k:'schedule', icon:'calendar', cls:'c-blue', roles:['manager','admin'], go:'#me',
+   zh:{t:'排班（周视图）', w:'一周一张表，点格子排班。用班次模板一键套用，「复制上周」两分钟排完一周。支援其他店的同事也会显示在表里，标「支援」。', s:['「我的」→「排班管理」','点格子选班次模板或自订时间','按「复制上周」整周套用','员工会收到新排班通知']}},
+  {k:'staffmgmt', icon:'users', cls:'c-blue', roles:['manager','admin'], go:'#me',
+   zh:{t:'人员管理与邀请码', w:'加人、改资料、填证件到期日、生成首次登录邀请码、重置 PIN、停用离职员工。改角色或分店会让对方手机自动重新登录。', s:['「我的」→「人员管理」','点员工可编辑；新员工按「生成邀请码」','邀请码只显示一次，请立刻发给本人','离职用开关停用，不要删除']}},
+  {k:'location', icon:'pin', cls:'c-teal', roles:['manager'], go:'#me',
+   zh:{t:'设定本店位置', w:'站在店里按一次，之后员工打卡才能核对距离。每家店只需做一次。', s:['人在店里，「我的」→「本店位置」','按「用当前位置设为本店坐标」']}},
+  {k:'report', icon:'chart', cls:'c-green', roles:['manager','admin'], go:'#clock',
+   zh:{t:'考勤月报与工时导出', w:'按月看每人出勤、工时、迟到、早退、缺卡、支援天数。导出 CSV 给工资计算用。', s:['「打卡」→「考勤月报」，选月份','「导出 CSV」是汇总','「导出每日明细」是每天上下班时间']}},
+  {k:'docexp', icon:'users', cls:'c-purple', roles:['manager','admin'], go:'#me',
+   zh:{t:'证件到期提醒', w:'护照、工作准证、合同 60 天内到期会自动列出并通知，外籍同事特别重要。', s:['「我的」→「证件到期提醒」','点员工可更新日期']}},
+  {k:'audit', icon:'chart', cls:'c-purple', roles:['admin','manager'], go:'#audit',
+   zh:{t:'巡店评分（QSC）', w:'8 章节 47 项标准评分表：外观、清洁、陈列、食品安全、服务、设备、安全、后台。A≥90、B≥80、C≥70。不合格项自动变成门店整改任务。', s:['首页「巡店评分」→ 选门店 →「开始巡店」','逐项评合格 / 部分 / 不合格 / N.A.','不合格项写说明并拍照','提交后自动生成整改任务并通知门店']}},
+  {k:'rect', icon:'alert', cls:'c-amber', roles:['manager','staff'], go:'#audit',
+   zh:{t:'整改任务', w:'巡店不合格的项目会变成任务：不合格 7 天内、部分 14 天内完成，逾期通知 HQ。', s:['「巡店评分」页看整改任务','改好后拍照，按「标记已整改」']}},
+  {k:'runner', icon:'pin', cls:'c-blue', roles:['staff','admin'], go:'#runner',
+   zh:{t:'外勤路线（跑店员）', w:'每到一家店登记：收文件、送物资、收现金，系统记时间和距离。存款必须拍存款单。页面对账今日收款与已存银行。', s:['首页「外勤路线」','每到一店按「到店登记」','存款按「银行存款」，必须拍存款单','未存入的现金晚上会提醒 HQ']}},
+  {k:'overview', icon:'grid', cls:'c-green', roles:['admin'], go:'#tasks',
+   zh:{t:'各店任务完成情况', w:'HQ 一页看全部门店今天开店、交班、闭店做到哪里。', s:['「任务」页顶部切换门店','看每家店的完成进度']}},
+  {k:'templates', icon:'check', cls:'c-green', roles:['admin'], go:'#me',
+   zh:{t:'清单模板与评分表', w:'HQ 统一设定每家店的任务清单内容和巡店评分表，门店不用自己写。', s:['「我的」→「任务清单模板」','每行一项，行首加 * 表示必须拍照','可指定适用门店']}},
+  {k:'settings', icon:'gear', cls:'c-grey', roles:['admin'], go:'#me',
+   zh:{t:'业务设置', w:'打卡距离范围、迟到宽限、低库存阈值、夜班时段、安全确认间隔、紧急电话、班次模板、报修时限都在这里。', s:['「我的」→「业务设置」','改完按保存，全公司即时生效']}},
+  {k:'export', icon:'box', cls:'c-grey', roles:['admin'], go:'#me',
+   zh:{t:'数据导出', w:'打卡、补货、故障、巡检、请假、酒桶、外勤、存款记录都能按月导出 CSV。App 只显示最近 3 个月，更早的选月份导出。', s:['「我的」→「数据导出」','选月份，点对应的「导出 CSV」']}},
+];
+function guideLang(){ return S.lang==='en' ? 'en' : (S.lang==='ms' ? 'ms' : 'zh'); }
+function guideText(it){
+  const L=guideLang();
+  if(it[L]) return it[L];
+  const zh=it.zh;
+  if(L==='zh') return zh;
+  // fall back to Chinese text but keep the card usable
+  return zh;
+}
+function guideRoleLabel(r){ return r==='admin'?t('role_admin'):r==='manager'?t('role_manager'):t('role_staff'); }
+function myGuideRole(){ const e=currentEmployee(); return e && e.role==='admin' ? 'admin' : (e && e.role==='manager' ? 'manager' : 'staff'); }
+function guideView(){
+  const c=el('<div></div>');
+  c.appendChild(secH('book','c-blue',t('guide_title')));
+  c.appendChild(el(`<p class="hint" style="margin-top:0;">${esc(t('guide_intro'))}</p>`));
+  const mine=myGuideRole();
+  if(S.guideRole===null || S.guideRole===undefined) S.guideRole=mine;
+  const chips=el('<div class="chiprow" style="margin-bottom:10px;"></div>');
+  [['staff',t('role_staff')],['manager',t('role_manager')],['admin',t('role_admin')],['all',t('filter_all')]].forEach(([id,l])=>{
+    const ch=el(`<button class="chip ${S.guideRole===id?'on':''}">${esc(l)}</button>`);
+    ch.onclick=()=>{ S.guideRole=id; renderApp(); };
+    chips.appendChild(ch);
+  });
+  c.appendChild(chips);
+  const items=GUIDE_ITEMS.filter(it=>S.guideRole==='all' || it.roles.includes(S.guideRole));
+  c.appendChild(el(`<div class="hint" style="margin:-4px 0 8px;">${items.length} ${esc(t('guide_count'))}</div>`));
+  items.forEach(it=>{
+    const g=guideText(it);
+    const card=el(`<div class="gcard">
+      <div class="gh">${ib(it.icon, it.cls)}<div class="lr-main"><div class="gt">${esc(g.t)}</div><div class="gr">${it.roles.map(r=>`<span class="pill n" style="font-size:10px;">${esc(guideRoleLabel(r))}</span>`).join(' ')}</div></div></div>
+      <div class="gw">${esc(g.w)}</div>
+      <ol class="gs">${g.s.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>
+    </div>`);
+    if(it.go){
+      const b=el(`<button class="btn sm block" style="margin-top:8px;">${esc(t('guide_open'))}</button>`);
+      b.onclick=()=>{ location.hash=it.go; };
+      card.appendChild(b);
+    }
+    c.appendChild(card);
+  });
+  const web=el(`<a class="btn block" style="margin-top:16px; text-decoration:none;" href="${guideUrl()}" target="_blank" rel="noopener">${esc(t('guide_web'))}</a>`);
+  c.appendChild(web);
+  return c;
+}
+
+/* English + Malay text for the illustrated guide, merged by key */
+const GUIDE_TR = {
+  clock:{en:{t:'Clock in / out',w:'Records your time, location and photo. The time comes from the server, so changing your phone clock does nothing. Covering another store? Pick that store.',s:['Pick the store (yours first, cover stores next)','Tap the big round button and allow location','Optional photo (camera only)','Forgot? Me → Missed punch request']},
+        ms:{t:'Daftar masuk / keluar',w:'Merekod masa, lokasi dan gambar. Masa diambil dari pelayan, jadi menukar jam telefon tidak berkesan. Membantu kedai lain? Pilih kedai itu.',s:['Pilih kedai (kedai sendiri dahulu, kemudian kedai sokongan)','Tekan butang bulat besar dan benarkan lokasi','Gambar pilihan (kamera sahaja)','Terlupa? Saya → Permohonan terlupa daftar']}},
+  tasks:{en:{t:'Checklists: opening / mid-shift / closing',w:'One checklist per shift; tick each item as you do it. Items marked "photo required" need a photo first. Completion rate feeds the store score.',s:['Tap Tasks at the bottom to see today’s three lists','Open a list and tick each item','Photo items: tap the camera, it ticks itself','Tap Complete checklist when all done']},
+         ms:{t:'Senarai semak: buka / pertukaran / tutup',w:'Satu senarai setiap syif; tanda setiap item. Item bertanda "perlu gambar" mesti ada gambar dahulu. Kadar siap dikira dalam skor kedai.',s:['Tekan Tugas di bawah untuk tiga senarai hari ini','Buka senarai dan tanda setiap item','Item gambar: tekan kamera, ia ditanda sendiri','Tekan Selesaikan senarai semak bila siap']}},
+  handover:{en:{t:'Shift handover note',w:'Before you leave, write three things: cash handed over, what is unfinished, anything abnormal. The next shift sees it on the Tasks page. Replaces the paper handover book.',s:['Tasks page → Write handover note','Fill cash, pending items, issues; photo optional','Save. The last note shows for 24 hours']},
+            ms:{t:'Nota serah tugas',w:'Sebelum balik, tulis tiga perkara: tunai diserah, kerja belum siap, perkara luar biasa. Syif seterusnya nampak di halaman Tugas. Menggantikan buku serah tugas.',s:['Halaman Tugas → Tulis nota serah tugas','Isi tunai, kerja tertunggak, masalah; gambar pilihan','Simpan. Nota terakhir dipapar 24 jam']}},
+  temp:{en:{t:'Temperature log',w:'Log chillers, freezers and hot cabinets once per shift. Out of range turns red and alerts the manager and HQ. Records export for health inspections.',s:['Tasks page, scroll to Temperature log','Type the reading and tap Log','If it says Out of range, check the unit and report a fault']},
+        ms:{t:'Rekod suhu',w:'Rekod peti sejuk, peti beku dan kabinet panas sekali setiap syif. Luar julat bertukar merah dan memberitahu pengurus dan HQ. Boleh dieksport untuk pemeriksaan kesihatan.',s:['Halaman Tugas, tatal ke Rekod suhu','Taip bacaan dan tekan Rekod','Jika Luar julat, periksa unit dan lapor kerosakan']}},
+  leave:{en:{t:'Leave request',w:'Annual, sick, unpaid and replacement leave all start here. Your remaining balance is shown at the top.',s:['Me → Leave request','Pick type, dates and reason','Submit and wait; you get a notification with the result']},
+         ms:{t:'Permohonan cuti',w:'Cuti tahunan, sakit, tanpa gaji dan ganti bermula di sini. Baki anda dipapar di atas.',s:['Saya → Permohonan cuti','Pilih jenis, tarikh dan sebab','Hantar dan tunggu; keputusan dihantar sebagai pemberitahuan']}},
+  punch:{en:{t:'Missed punch request',w:'Use it when you forgot to clock. After the manager approves, the database writes the record and stamps who approved it. Phones can never edit attendance.',s:['Me → Missed punch','Pick in or out, date, time, store','Write the reason and submit']},
+         ms:{t:'Permohonan terlupa daftar',w:'Guna bila terlupa daftar. Selepas pengurus lulus, pangkalan data menulis rekod dan mencatat siapa yang lulus. Telefon tidak boleh ubah kehadiran.',s:['Saya → Terlupa daftar','Pilih masuk atau keluar, tarikh, masa, kedai','Tulis sebab dan hantar']}},
+  swap:{en:{t:'Shift swap',w:'Swap a shift with a colleague. Once approved the roster swaps automatically and both of you are notified.',s:['Me → Shift swap','Pick your shift and the colleague','Optionally take their shift, then submit']},
+        ms:{t:'Tukar syif',w:'Tukar syif dengan rakan sekerja. Selepas diluluskan jadual bertukar sendiri dan kedua-dua pihak dimaklumkan.',s:['Saya → Tukar syif','Pilih syif anda dan rakan sekerja','Pilihan: ambil syif mereka, kemudian hantar']}},
+  memos:{en:{t:'Memos',w:'Notices from HQ, can target one store, can carry a photo. Opening it marks it read and HQ can see who has not read it.',s:['Home page Memos area, or the Memos tab','Open it; that counts as read','Important memos carry a red tag']},
+         ms:{t:'Pengumuman',w:'Notis dari HQ, boleh untuk satu kedai sahaja, boleh ada gambar. Membukanya dikira sudah baca dan HQ nampak siapa belum baca.',s:['Bahagian Pengumuman di Utama, atau tab Pengumuman','Buka; itu dikira sudah baca','Pengumuman penting ada tanda merah']}},
+  push:{en:{t:'Phone push notifications',w:'Once on, your phone receives new shifts, approvals, memos, temperature alerts and SOS even when the app is closed.',s:['Me → Enable phone push notifications','Allow the browser notification permission','iPhone: Add to Home Screen first, then open from there','Tap Send test notification to confirm']},
+        ms:{t:'Pemberitahuan tolak telefon',w:'Setelah dihidupkan, telefon menerima syif baharu, kelulusan, pengumuman, amaran suhu dan SOS walaupun app ditutup.',s:['Saya → Hidupkan pemberitahuan tolak','Benarkan kebenaran pemberitahuan pelayar','iPhone: Tambah ke Skrin Utama dahulu, buka dari situ','Tekan Hantar pemberitahuan ujian untuk sahkan']}},
+  fault:{en:{t:'Report a fault',w:'Report broken store equipment or a vending machine at once. Severity sets the deadline: high 4 hours, medium 24, low 72. Overdue faults are flagged red.',s:['Home page Report fault icon','Choose Store equipment or Vending machine','Pick the asset and category, describe it, photograph it','Track progress under Equipment → Faults']},
+         ms:{t:'Lapor kerosakan',w:'Lapor peralatan kedai atau mesin layan diri yang rosak dengan segera. Tahap menetapkan tempoh: tinggi 4 jam, sederhana 24, rendah 72. Yang lewat ditanda merah.',s:['Ikon Lapor rosak di Utama','Pilih Peralatan kedai atau Mesin layan diri','Pilih peralatan dan kategori, terangkan, ambil gambar','Jejak kemajuan di Peralatan → Kerosakan']}},
+  incident:{en:{t:'Complaint / incident log',w:'Customer complaints, injuries, theft and power cuts are logged here. The manager and HQ are notified immediately.',s:['Home page Complaint / incident icon','Pick the type and severity','Describe what happened, photograph, submit']},
+            ms:{t:'Log aduan / insiden',w:'Aduan pelanggan, kecederaan, kecurian dan gangguan elektrik direkod di sini. Pengurus dan HQ dimaklumkan serta-merta.',s:['Ikon Aduan / insiden di Utama','Pilih jenis dan tahap','Terangkan kejadian, ambil gambar, hantar']}},
+  sos:{en:{t:'Emergency SOS',w:'For night shift or danger. One tap sends your location to the manager and HQ, and the page lists numbers you can dial directly.',s:['Red SOS button on the Home page','Tap Send SOS; your location goes with it','In danger call 999 first, the button is on the page']},
+       ms:{t:'Kecemasan SOS',w:'Untuk syif malam atau bahaya. Satu ketikan menghantar lokasi anda kepada pengurus dan HQ, dan halaman menyenaraikan nombor untuk dihubungi terus.',s:['Butang SOS merah di Utama','Tekan Hantar SOS; lokasi dihantar sekali','Jika bahaya telefon 999 dahulu, butangnya ada di halaman']}},
+  safety:{en:{t:'Night safety check',w:'During night hours (23:00–07:00 by default) anyone clocked in sees a confirm button on the Home page, to be tapped every 2 hours. Missing it alerts the manager and HQ.',s:['Home page: I am in the store and OK','Tap it every 2 hours','Overdue turns red and notifies your manager']},
+          ms:{t:'Semakan keselamatan malam',w:'Pada waktu malam (lalai 23:00–07:00) sesiapa yang sudah daftar masuk nampak butang pengesahan di Utama, ditekan setiap 2 jam. Jika terlepas, pengurus dan HQ dimaklumkan.',s:['Utama: Saya di kedai dan OK','Tekan setiap 2 jam','Jika lewat ia bertukar merah dan memberitahu pengurus']}},
+  stock:{en:{t:'Stock and restocking (vending team)',w:'Quantity of every product in every machine; out of stock turns red. Enter what you added and the stock updates itself.',s:['Stock tab → pick the machine','Tap the product and enter the restock quantity','Out-of-stock items carry a red tag']},
+         ms:{t:'Stok dan isi semula (pasukan mesin)',w:'Kuantiti setiap produk dalam setiap mesin; kehabisan stok bertukar merah. Masukkan jumlah yang ditambah dan stok dikemas kini sendiri.',s:['Tab Stok → pilih mesin','Tekan produk dan masukkan kuantiti isi semula','Item kehabisan stok ada tanda merah']}},
+  beer:{en:{t:'Draft beer kegs (BR19 / BR20)',w:'Receive kegs, tap them, log the level, mark empties and track deposits. Freshness expiry is flagged for you.',s:['Stock → switch to Draft beer','Receive kegs for new stock; Tap a keg to put it on line','Tap a keg in use to log the level or mark it empty']},
+        ms:{t:'Tong bir draf (BR19 / BR20)',w:'Terima tong, pasang, rekod baki, tanda kosong dan jejak deposit. Tamat tempoh kesegaran ditandakan untuk anda.',s:['Stok → tukar ke Bir draf','Terima tong untuk stok baharu; Pasang tong untuk guna','Tekan tong yang digunakan untuk rekod baki atau tanda kosong']}},
+  equip:{en:{t:'Store equipment & machine inspections',w:'Chillers, POS, air-con, CCTV and extinguishers get a record with brand, vendor phone, warranty and service interval, and remind you when due. Vending machines get a six-point inspection.',s:['Equipment → Store equipment for your store list','Tap an asset to report a fault, log a service or see history','The Machines tab is vending, with the six-point check']},
+         ms:{t:'Peralatan kedai & pemeriksaan mesin',w:'Peti sejuk, POS, penghawa dingin, CCTV dan pemadam api ada rekod dengan jenama, telefon vendor, waranti dan selang servis, dan mengingatkan bila tiba masa. Mesin layan diri ada pemeriksaan enam item.',s:['Peralatan → Peralatan kedai untuk senarai kedai anda','Tekan peralatan untuk lapor rosak, rekod servis atau lihat sejarah','Tab Mesin ialah mesin layan diri, dengan enam pemeriksaan']}},
+  avatar:{en:{t:'Set your photo',w:'Take a front-facing photo. It shows on the login list and the home page so colleagues and managers recognise you faster.',s:['Me → Photo','Take or choose a picture, then save']},
+          ms:{t:'Tetapkan gambar anda',w:'Ambil gambar muka. Ia dipapar di senarai log masuk dan halaman utama supaya rakan dan pengurus lebih cepat kenal anda.',s:['Saya → Gambar','Ambil atau pilih gambar, kemudian simpan']}},
+  approvals:{en:{t:'Approvals: leave / punch / swap',w:'Requests from your store sit at the top of the Me page with the leave balance and days requested. One tap approves or rejects and the staff member is notified.',s:['The bell shows pending items, or go to Me','Tap Approve or Reject on each card','Approved punches are written by the database, stamped with your name']},
+             ms:{t:'Kelulusan: cuti / daftar / tukar syif',w:'Permohonan kedai anda berada di atas halaman Saya dengan baki cuti dan bilangan hari. Satu ketikan untuk lulus atau tolak dan staf dimaklumkan.',s:['Loceng menunjukkan yang menunggu, atau pergi ke Saya','Tekan Lulus atau Tolak pada setiap kad','Daftar yang diluluskan ditulis oleh pangkalan data, dengan nama anda']}},
+  schedule:{en:{t:'Weekly schedule',w:'One table per week; tap a cell to schedule. Shift templates apply in one tap and Copy last week fills a whole week in two minutes. Staff covering from other stores appear with a Cover tag.',s:['Me → Schedule management','Tap a cell, pick a shift template or set your own times','Tap Copy last week to fill the week','Staff receive a notification for each new shift']},
+            ms:{t:'Jadual mingguan',w:'Satu jadual setiap minggu; tekan petak untuk menjadualkan. Templat syif digunakan dengan satu ketikan dan Salin minggu lepas mengisi seminggu dalam dua minit. Staf sokongan dari kedai lain dipapar dengan tanda Sokongan.',s:['Saya → Pengurusan jadual','Tekan petak, pilih templat syif atau tetapkan masa sendiri','Tekan Salin minggu lepas untuk isi seminggu','Staf menerima pemberitahuan untuk setiap syif baharu']}},
+  staffmgmt:{en:{t:'Staff management & invite codes',w:'Add people, edit details, record document expiry, generate a first-login invite code, reset a PIN, deactivate leavers. Changing role or store forces that phone to log in again.',s:['Me → Staff management','Tap a person to edit; for a new hire tap Generate invite code','The code shows once only, send it to them immediately','For leavers use the toggle to deactivate, do not delete']},
+             ms:{t:'Pengurusan staf & kod jemputan',w:'Tambah orang, edit butiran, rekod tarikh luput dokumen, jana kod jemputan log masuk pertama, set semula PIN, nyahaktifkan yang berhenti. Menukar peranan atau kedai memaksa telefon itu log masuk semula.',s:['Saya → Pengurusan staf','Tekan seseorang untuk edit; untuk staf baharu tekan Jana kod jemputan','Kod dipapar sekali sahaja, hantar kepada mereka segera','Untuk yang berhenti guna suis nyahaktif, jangan padam']}},
+  location:{en:{t:'Set the store position',w:'Stand inside the store and tap once. After that staff clock-ins can be distance-checked. Only needs doing once per store.',s:['While inside the store, Me → Store location','Tap Use my location as store position']},
+            ms:{t:'Tetapkan kedudukan kedai',w:'Berdiri di dalam kedai dan tekan sekali. Selepas itu daftar masuk staf boleh disemak jarak. Perlu dibuat sekali sahaja setiap kedai.',s:['Semasa di dalam kedai, Saya → Lokasi kedai','Tekan Guna lokasi saya sebagai kedudukan kedai']}},
+  report:{en:{t:'Monthly attendance & hours export',w:'Per person per month: days worked, hours, late, left early, missing punches, cover days. Export CSV for payroll.',s:['Clock → Monthly report, choose the month','Export CSV is the per-person summary','Export daily detail is every day’s in and out times']},
+          ms:{t:'Kehadiran bulanan & eksport jam',w:'Setiap orang setiap bulan: hari bekerja, jam, lewat, balik awal, tidak daftar, hari sokongan. Eksport CSV untuk gaji.',s:['Daftar → Laporan bulanan, pilih bulan','Eksport CSV ialah ringkasan setiap orang','Eksport butiran harian ialah masa masuk dan keluar setiap hari']}},
+  docexp:{en:{t:'Document expiry reminders',w:'Passports, work permits and contracts expiring within 60 days are listed and notified. Especially important for foreign colleagues.',s:['Me → Document expiry','Tap a person to update the date']},
+          ms:{t:'Peringatan dokumen luput',w:'Pasport, permit kerja dan kontrak yang luput dalam 60 hari disenaraikan dan dimaklumkan. Penting terutama untuk rakan warga asing.',s:['Saya → Dokumen luput','Tekan seseorang untuk kemas kini tarikh']}},
+  audit:{en:{t:'Store audit (QSC)',w:'A standard sheet of 8 sections and 47 items: exterior, cleanliness, merchandising, food safety, service, equipment, safety, back office. A≥90, B≥80, C≥70. Failed items become rectification tasks automatically.',s:['Home → Store audit → pick the store → Start audit','Score each item Pass / Partial / Fail / N.A.','Failed items need a note and a photo','Submitting creates the rectification tasks and notifies the store']},
+         ms:{t:'Audit kedai (QSC)',w:'Borang standard 8 bahagian 47 item: luaran, kebersihan, susun atur, keselamatan makanan, perkhidmatan, peralatan, keselamatan, pejabat belakang. A≥90, B≥80, C≥70. Item gagal jadi tugas pembetulan secara automatik.',s:['Utama → Audit kedai → pilih kedai → Mula audit','Beri skor Lulus / Separa / Gagal / N.A.','Item gagal perlu nota dan gambar','Menghantar mencipta tugas pembetulan dan memaklumkan kedai']}},
+  rect:{en:{t:'Rectification tasks',w:'Items that failed the audit become tasks: fails within 7 days, partials within 14. Overdue ones notify HQ.',s:['Open the Store audit page to see the tasks','After fixing it, photograph it and tap Mark rectified']},
+        ms:{t:'Tugas pembetulan',w:'Item yang gagal audit menjadi tugas: gagal dalam 7 hari, separa dalam 14. Yang lewat memberitahu HQ.',s:['Buka halaman Audit kedai untuk lihat tugas','Selepas dibetulkan, ambil gambar dan tekan Tanda dibetulkan']}},
+  runner:{en:{t:'Runner route',w:'Log every stop: documents collected, supplies delivered, cash taken. The system records time and distance. Bank-ins need a photo of the slip. The page reconciles today’s cash against what is banked.',s:['Home → Runner route','At each store tap Log store visit','For banking tap Bank-in; the slip photo is required','Cash not banked by evening alerts HQ']},
+          ms:{t:'Laluan runner',w:'Rekod setiap perhentian: dokumen dikutip, bekalan dihantar, tunai diambil. Sistem merekod masa dan jarak. Bank-in perlu gambar slip. Halaman ini menyemak tunai hari ini dengan yang sudah bank-in.',s:['Utama → Laluan runner','Di setiap kedai tekan Rekod lawatan kedai','Untuk bank-in tekan Bank-in; gambar slip wajib','Tunai yang belum bank-in pada waktu petang memberitahu HQ']}},
+  overview:{en:{t:'Completion by store',w:'One page for HQ showing how far every store has got with opening, mid-shift and closing today.',s:['Switch store at the top of the Tasks page','Read each store’s progress']},
+            ms:{t:'Penyiapan mengikut kedai',w:'Satu halaman untuk HQ menunjukkan sejauh mana setiap kedai dengan buka, pertukaran dan tutup hari ini.',s:['Tukar kedai di atas halaman Tugas','Baca kemajuan setiap kedai']}},
+  templates:{en:{t:'Checklist templates & audit sheet',w:'HQ sets the checklist contents and the audit sheet centrally, so stores never have to write their own.',s:['Me → Checklist templates','One item per line; start with * when a photo is required','You can limit a template to certain stores']},
+             ms:{t:'Templat senarai semak & borang audit',w:'HQ menetapkan kandungan senarai semak dan borang audit secara berpusat, jadi kedai tidak perlu menulis sendiri.',s:['Saya → Templat senarai semak','Satu item sebaris; mula dengan * jika perlu gambar','Anda boleh hadkan templat kepada kedai tertentu']}},
+  settings:{en:{t:'Business settings',w:'Clock-in radius, late grace, low-stock threshold, night hours, safety check interval, emergency number, shift templates and fault deadlines all live here.',s:['Me → Business settings','Save; it applies company-wide immediately']},
+            ms:{t:'Tetapan perniagaan',w:'Jejari daftar masuk, tolak ansur lewat, ambang stok rendah, waktu malam, selang semakan keselamatan, nombor kecemasan, templat syif dan tempoh kerosakan semuanya di sini.',s:['Saya → Tetapan perniagaan','Simpan; ia berkuat kuasa seluruh syarikat serta-merta']}},
+  export:{en:{t:'Data export',w:'Attendance, restocking, faults, inspections, leave, kegs, runner visits and bank-ins all export to CSV by month. The app shows about 3 months; older data exports by picking the month.',s:['Me → Data export','Choose the month and tap the matching Export CSV']},
+          ms:{t:'Eksport data',w:'Kehadiran, isi semula, kerosakan, pemeriksaan, cuti, tong, lawatan runner dan bank-in semuanya dieksport ke CSV mengikut bulan. App memapar kira-kira 3 bulan; data lama dieksport dengan memilih bulan.',s:['Saya → Eksport data','Pilih bulan dan tekan Eksport CSV yang berkenaan']}},
+};
+GUIDE_ITEMS.forEach(it=>{ const tr=GUIDE_TR[it.k]; if(tr){ if(tr.en) it.en=tr.en; if(tr.ms) it.ms=tr.ms; } });
 
 /* ============================ START ============================ */
 document.addEventListener('DOMContentLoaded', ()=>{
