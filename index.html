@@ -4809,6 +4809,9 @@ const GUIDE_ITEMS = [
   {k:'export', icon:'box', cls:'c-grey', roles:['admin'], go:'#me',
    zh:{t:'数据导出', w:'打卡、补货、故障、巡检、请假、酒桶、外勤、存款记录都能按月导出 CSV。App 只显示最近 3 个月，更早的选月份导出。', s:['「我的」→「数据导出」','选月份，点对应的「导出 CSV」']}},
 ];
+// staff pain points first: clocking, missed punch, checklists, temperature, faults, then leave/swap
+const GUIDE_ORDER = ['login','clock','punch','tasks','temp','fault','leave','swap','handover','memos','push','incident','sos','safety','avatar','equip','stock','beer','approvals','schedule','staffmgmt','rect','location','report','docexp','audit','runner','overview','templates','settings','export'];
+GUIDE_ITEMS.sort((a,b)=>{ const x=GUIDE_ORDER.indexOf(a.k), y=GUIDE_ORDER.indexOf(b.k); return (x<0?999:x)-(y<0?999:y); });
 function guideLang(){ return S.lang==='en' ? 'en' : (S.lang==='ms' ? 'ms' : 'zh'); }
 function guideText(it){
   const L=guideLang();
