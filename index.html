@@ -452,6 +452,7 @@ function leaveBalanceSuffix(l){
 /* ============================ I18N ============================ */
 const I18N = {
   zh: {
+    login_by_code:'输入工号登录', field_staff_code:'工号', ph_staff_code:'例如 M00003', btn_continue:'下一步', login_code_hint:'第一次在这部手机登录，请输入邀请纸条上的工号。之后这部手机会记住你，只需输入 PIN。', err_code_short:'工号至少 4 位', err_code_unknown:'查不到这个工号，请向店经理或 HQ 确认', welcome_back:'欢迎回来', tap_to_sign_in:'点这里输入 PIN 登录', btn_not_me:'不是我 / 换人', err_pin_weak:'PIN 太简单：请用 6 至 12 位数字，不要用 123456、111111 这类', my_devices:'已登录的手机', devices_hint:'不认得的手机请立刻登出，并换一个新的 PIN。', devices_none:'暂时没有其他手机', device_unknown:'未知设备', device_this_one:'本机', device_last_seen:'最后使用', btn_sign_out_device:'登出', confirm_sign_out_device:'确定让这部手机登出？', toast_device_signed_out:'已登出该手机', err_punch_branch:'这家店不在你的分店范围内，请选回自己的店', err_punch_already_in:'你已经打过上班卡了', err_punch_not_in:'还没有上班记录，不能打下班卡',
     guide_title:'功能图解', guide_intro:'每项功能一张卡：谁用、做什么、几步完成。选下面的角色只看自己要用的。', guide_count:'项功能', guide_open:'打开这个功能', guide_web:'📄 打开网页版图文手册（含真实截图）',
     field_pin_verify:'邀请码（向店经理或 HQ 索取）', ph_pin_verify:'例如 AB3K7Q2M', err_pin_verify:'请输入邀请码', err_pin_verify_failed:'邀请码不正确或已过期，请向店经理 / HQ 重新索取', btn_invite_make:'生成邀请码（首次登录用，只显示一次）', btn_invite_show:'重新生成邀请码', invite_msg_prefix:'员工：', invite_code_label:'邀请码', invite_msg_suffix:'7 天内有效，只显示这一次，请立即发给员工本人。员工首次登录时在「邀请码」栏输入。',
     field_cover_branches:'支援分店（逗号分隔，如 BR07, BR09）', field_runner:'外勤跑店员', opt_yes:'是', opt_no:'否', cover_badge:'支援',
@@ -537,7 +538,7 @@ const I18N = {
     notif_browser_hint:'浏览器通知只在本 App 打开着的时候弹出；App 关闭后收不到。',
     toast_notif_enabled:'浏览器通知已开启', toast_notif_denied:'浏览器拒绝了通知权限，请在浏览器设置中允许后重试', notif_unsupported:'此浏览器不支持通知',
     field_new_pin:'设置密码（至少4位）', field_confirm_pin:'确认密码', btn_set_pin:'设置密码并继续',
-    err_pin_len:'密码至少需要4位', err_pin_mismatch:'两次输入的密码不一致', toast_pin_set:'密码已设置',
+    err_pin_len:'PIN 需要 6 至 12 位数字', err_pin_mismatch:'两次输入的密码不一致', toast_pin_set:'密码已设置',
     sheet_set_pin_prefix:'首次登录 · ', pin_set_hint:'这是你第一次使用这个账号，请设置一个密码，之后每次选择自己的名字都需要输入。',
     field_pin:'密码', btn_login:'登录', err_pin_wrong:'密码不正确，请重试',
     btn_reset_pin:'重置该员工密码', confirm_reset_pin:'确定要重置该员工的密码吗？重置后对方下次登录需要重新设置密码。',
@@ -672,6 +673,7 @@ const I18N = {
     toast_deleted:'已删除',
   },
   en: {
+    login_by_code:'Sign in with your staff code', field_staff_code:'Staff code', ph_staff_code:'e.g. M00003', btn_continue:'Continue', login_code_hint:'The first time you sign in on this phone, type the staff code from your invite slip. After that the phone remembers you and only asks for your PIN.', err_code_short:'A staff code is at least 4 characters', err_code_unknown:'No such staff code — check with your manager or HQ', welcome_back:'Welcome back', tap_to_sign_in:'Tap to enter your PIN', btn_not_me:'Not me / switch person', err_pin_weak:'That PIN is too easy to guess: use 6 to 12 digits, and avoid 123456 or 111111', my_devices:'Phones signed in', devices_hint:'If you do not recognise a phone, sign it out now and change your PIN.', devices_none:'No other phones', device_unknown:'Unknown device', device_this_one:'this phone', device_last_seen:'Last used', btn_sign_out_device:'Sign out', confirm_sign_out_device:'Sign this phone out?', toast_device_signed_out:'That phone has been signed out', err_punch_branch:'That store is not one of yours — pick your own store', err_punch_already_in:'You are already clocked in', err_punch_not_in:'No open clock-in to clock out from',
     guide_title:'Function guide', guide_intro:'One card per function: who uses it, what it is for, and the steps. Pick a role below to see only what you need.', guide_count:'functions', guide_open:'Open this function', guide_web:'📄 Open the illustrated web guide (with real screenshots)',
     field_pin_verify:'Invite code (ask your manager or HQ)', ph_pin_verify:'e.g. AB3K7Q2M', err_pin_verify:'Enter the invite code', err_pin_verify_failed:'Invite code wrong or expired, ask your manager / HQ for a new one', btn_invite_make:'Generate invite code (first login, shown once)', btn_invite_show:'Regenerate invite code', invite_msg_prefix:'Staff: ', invite_code_label:'Invite code', invite_msg_suffix:'Valid 7 days and shown only once; send it to the staff member now. They enter it in the Invite code field on first login.',
     field_cover_branches:'Cover stores (comma separated, e.g. BR07, BR09)', field_runner:'Runner (store visits)', opt_yes:'Yes', opt_no:'No', cover_badge:'Cover',
@@ -757,7 +759,7 @@ const I18N = {
     notif_browser_hint:'Browser notifications only pop up while this app is open; nothing arrives once it\'s closed.',
     toast_notif_enabled:'Browser notifications enabled', toast_notif_denied:'The browser blocked notification permission — allow it in browser settings and try again', notif_unsupported:'This browser doesn\'t support notifications',
     field_new_pin:'Set a password (min. 4 characters)', field_confirm_pin:'Confirm password', btn_set_pin:'Set password & continue',
-    err_pin_len:'Password must be at least 4 characters', err_pin_mismatch:'Passwords don\'t match', toast_pin_set:'Password set',
+    err_pin_len:'Your PIN must be 6 to 12 digits', err_pin_mismatch:'Passwords don\'t match', toast_pin_set:'Password set',
     sheet_set_pin_prefix:'First login · ', pin_set_hint:'This is your first time using this account — set a password. You\'ll need it every time you select your name.',
     field_pin:'Password', btn_login:'Log in', err_pin_wrong:'Incorrect password, try again',
     btn_reset_pin:'Reset this staff member\'s password', confirm_reset_pin:'Reset this staff member\'s password? They\'ll need to set a new one next time they log in.',
@@ -892,6 +894,7 @@ const I18N = {
     toast_deleted:'Deleted',
   },
   ms: {
+    login_by_code:'Log masuk dengan kod staf', field_staff_code:'Kod staf', ph_staff_code:'cth. M00003', btn_continue:'Teruskan', login_code_hint:'Kali pertama log masuk di telefon ini, taip kod staf pada slip jemputan anda. Selepas itu telefon akan ingat anda dan hanya minta PIN.', err_code_short:'Kod staf sekurang-kurangnya 4 aksara', err_code_unknown:'Kod staf tidak dijumpai — semak dengan pengurus atau HQ', welcome_back:'Selamat kembali', tap_to_sign_in:'Ketik untuk masukkan PIN', btn_not_me:'Bukan saya / tukar orang', err_pin_weak:'PIN terlalu mudah diteka: guna 6 hingga 12 digit, elakkan 123456 atau 111111', my_devices:'Telefon yang log masuk', devices_hint:'Jika ada telefon yang anda tidak kenal, log keluar sekarang dan tukar PIN.', devices_none:'Tiada telefon lain', device_unknown:'Peranti tidak dikenali', device_this_one:'telefon ini', device_last_seen:'Guna terakhir', btn_sign_out_device:'Log keluar', confirm_sign_out_device:'Log keluar telefon ini?', toast_device_signed_out:'Telefon itu telah dilog keluar', err_punch_branch:'Kedai itu bukan kedai anda — pilih kedai sendiri', err_punch_already_in:'Anda sudah daftar masuk', err_punch_not_in:'Tiada daftar masuk terbuka untuk didaftar keluar',
     guide_title:'Panduan fungsi', guide_intro:'Satu kad setiap fungsi: siapa guna, untuk apa, dan langkahnya. Pilih peranan di bawah untuk lihat yang anda perlukan sahaja.', guide_count:'fungsi', guide_open:'Buka fungsi ini', guide_web:'📄 Buka panduan web bergambar (dengan tangkapan skrin sebenar)',
     field_pin_verify:'Kod jemputan (minta daripada pengurus atau HQ)', ph_pin_verify:'cth. AB3K7Q2M', err_pin_verify:'Masukkan kod jemputan', err_pin_verify_failed:'Kod jemputan salah atau tamat tempoh, minta yang baharu daripada pengurus / HQ', btn_invite_make:'Jana kod jemputan (log masuk pertama, dipapar sekali)', btn_invite_show:'Jana semula kod jemputan', invite_msg_prefix:'Staf: ', invite_code_label:'Kod jemputan', invite_msg_suffix:'Sah 7 hari dan dipapar sekali sahaja; hantar kepada staf sekarang. Mereka masukkan dalam ruangan Kod jemputan semasa log masuk pertama.',
     field_cover_branches:'Kedai sokongan (asingkan dengan koma, cth BR07, BR09)', field_runner:'Runner (lawatan kedai)', opt_yes:'Ya', opt_no:'Tidak', cover_badge:'Sokongan',
@@ -977,7 +980,7 @@ const I18N = {
     notif_browser_hint:'Pemberitahuan pelayar hanya muncul semasa app ini dibuka; tiada apa-apa diterima selepas ditutup.',
     toast_notif_enabled:'Pemberitahuan pelayar dihidupkan', toast_notif_denied:'Pelayar menyekat kebenaran pemberitahuan — benarkan dalam tetapan pelayar dan cuba lagi', notif_unsupported:'Pelayar ini tidak menyokong pemberitahuan',
     field_new_pin:'Tetapkan kata laluan (min. 4 aksara)', field_confirm_pin:'Sahkan kata laluan', btn_set_pin:'Tetapkan kata laluan & teruskan',
-    err_pin_len:'Kata laluan mesti sekurang-kurangnya 4 aksara', err_pin_mismatch:'Kata laluan tidak sepadan', toast_pin_set:'Kata laluan ditetapkan',
+    err_pin_len:'PIN mesti 6 hingga 12 digit', err_pin_mismatch:'Kata laluan tidak sepadan', toast_pin_set:'Kata laluan ditetapkan',
     sheet_set_pin_prefix:'Log masuk pertama · ', pin_set_hint:'Ini kali pertama akaun ini digunakan — tetapkan kata laluan. Anda perlukannya setiap kali memilih nama anda.',
     field_pin:'Kata laluan', btn_login:'Log masuk', err_pin_wrong:'Kata laluan salah, cuba lagi',
     btn_reset_pin:'Set semula kata laluan staf ini', confirm_reset_pin:'Set semula kata laluan staf ini? Mereka perlu tetapkan yang baharu semasa log masuk seterusnya.',
@@ -1442,9 +1445,18 @@ async function boot(){
     S.dbState='ready';
     subscribeAll();
     refreshPushState().then(()=>renderApp());
+    refreshToken();
+    setInterval(refreshToken, 30*60*1000);   // 12-hour tokens, topped up while in use
   } else {
-    try{ await loadLoginList(); S.dbState='ready'; }
-    catch(e){ S.dbState='unavailable'; S.dbErrorDetail=String((e&&e.message)||e); }
+    // A deliberately too-short code: the new function answers "not_found" without
+    // touching anything, an old database answers "no such function".
+    try{ await rpc('login_start', {code:'?'}); FEAT.loginStart=true; }
+    catch(err){ FEAT.loginStart = !missingFn(err); }
+    if(!FEAT.loginStart){
+      try{ await loadLoginList(); }
+      catch(e){ S.dbState='unavailable'; S.dbErrorDetail=String((e&&e.message)||e); renderApp(); return; }
+    }
+    S.dbState='ready';
   }
   renderApp();
 }
@@ -1743,7 +1755,51 @@ function identityRow(e){
   row.onclick=()=>{ e.hasPin ? openVerifyPinForm(e) : openSetPinForm(e); };
   return row;
 }
+/* The staff list used to be readable by anyone who opened the page. It is not any
+   more: the first login on a phone needs the staff code from the printed invite
+   slip, and after that the phone remembers who it belongs to. */
+function codeLoginView(){
+  const container=el('<div></div>');
+  const known=knownUser();
+  if(known && known.id){
+    container.appendChild(el(`<h2 class="sec" style="margin-top:14px;">${esc(t('welcome_back'))}</h2>`));
+    const row=el(`<div class="id-pick-row" tabindex="0" role="button"><span class="avatar">${esc((known.name||'?').slice(0,1))}</span>
+      <div class="lr-main"><div class="lr-title">${esc(known.name||known.id)}</div><div class="lr-sub">${esc(t('tap_to_sign_in'))}</div></div>
+      <span class="icon-sm" style="color:var(--ink-faint);">${ICONS.chev}</span></div>`);
+    row.onclick=()=>openVerifyPinForm({id:known.id, name:known.name||known.id, hasPin:true});
+    container.appendChild(row);
+    const other=el(`<button class="btn block" style="margin-top:12px;">${esc(t('btn_not_me'))}</button>`);
+    other.onclick=()=>{ LS.remove('bgc_known'); renderApp(); };
+    container.appendChild(other);
+    return container;
+  }
+  container.appendChild(el(`<h2 class="sec" style="margin-top:14px;">${esc(t('login_by_code'))}</h2>`));
+  const f=[{key:'code', label:t('field_staff_code'), ph:t('ph_staff_code')}];
+  const formEl=el('<div>'+fieldsHTML(f)+'</div>'); container.appendChild(formEl);
+  const errMsg=el('<div class="hint" style="color:var(--critical);"></div>'); container.appendChild(errMsg);
+  const btn=el(`<button class="btn primary block" style="margin-top:10px;">${esc(t('btn_continue'))}</button>`);
+  const go=async ()=>{
+    const v=readFields(formEl,f);
+    const code=(v.code||'').trim();
+    if(code.length<4){ errMsg.textContent=t('err_code_short'); return; }
+    btn.disabled=true; errMsg.textContent='';
+    try{
+      const rows=await rpc('login_start', {code});
+      const r=Array.isArray(rows)?rows[0]:rows;
+      if(!r||!r.id) throw {code:'not_found', message:'not_found'};
+      const e={id:r.id, name:r.name||r.id, hasPin:!!r.has_pin};
+      if(e.hasPin) openVerifyPinForm(e); else openSetPinForm(e);
+    }catch(err){ errMsg.textContent = /locked/.test(String(err&&err.message)) ? t('err_pin_locked') : t('err_code_unknown'); }
+    btn.disabled=false;
+  };
+  btn.onclick=go;
+  formEl.querySelector('input').addEventListener('keydown', ev=>{ if(ev.key==='Enter') go(); });
+  container.appendChild(btn);
+  container.appendChild(el(`<p class="hint">${esc(t('login_code_hint'))}</p>`));
+  return container;
+}
 function identityPickerView(){
+  if(FEAT.loginStart) return codeLoginView();
   const container=el('<div></div>');
   const active = S.employees.filter(e=>e.active!==false);
   if(active.length===0){ container.appendChild(el(`<h2 class="sec" style="margin-top:14px;">${esc(t('who_am_i'))}</h2>`)); container.appendChild(el(`<div class="empty">${ICONS.inbox}<div>${esc(t('no_active_employees'))}</div></div>`)); return container; }
@@ -1802,6 +1858,35 @@ async function rpc(name, args){
   if(error) throw {code:error.code||'rpc', message:error.message||String(error)};
   return data;
 }
+/* Patch 4 added a second generation of login and clock-in functions. The phone
+   works against either generation, so the database patch and this build can be
+   rolled out in whichever order suits the day. FEAT is filled in on first use. */
+const FEAT = {loginStart:null, punch:null, sessions:null};
+function missingFn(err){
+  const m=String((err&&(err.message||err.code))||'');
+  return /does not exist|PGRST202|schema cache|Could not find the function/i.test(m);
+}
+function deviceLabel(){
+  const ua=navigator.userAgent||'';
+  const os = /Android/i.test(ua) ? 'Android' : /iPhone|iPad|iPod/i.test(ua) ? 'iPhone' :
+             /Windows/i.test(ua) ? 'Windows' : /Mac OS/i.test(ua) ? 'Mac' : 'Phone';
+  const br = /EdgA?\//i.test(ua) ? 'Edge' : /SamsungBrowser/i.test(ua) ? 'Samsung' :
+             /Firefox/i.test(ua) ? 'Firefox' : /Chrome/i.test(ua) ? 'Chrome' :
+             /Safari/i.test(ua) ? 'Safari' : 'Browser';
+  return (os+' · '+br).slice(0,80);
+}
+/* Tokens now last 12 hours instead of 30 days, so the phone quietly asks for a new
+   one while it is being used. A revoked device gets nothing back and is logged out. */
+async function refreshToken(){
+  if(!S.token) return;
+  try{
+    const tok = await rpc('refresh_token');
+    if(tok){ S.token=tok; LS.set('bgc_token', tok); S.sb=makeClient(tok); S.db=makeSupabaseDb(S.sb); }
+  }catch(err){
+    if(missingFn(err)) return;                 // database patch 4 not applied yet
+    if(!tokenValid(S.token)){ toast(t('session_expired')); logout(); }
+  }
+}
 function tokenPayload(tok){ try{ return JSON.parse(atob(tok.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))); }catch(e){ return null; } }
 function tokenValid(tok){ const p=tokenPayload(tok); return !!(p && p.exp && p.exp*1000 > Date.now()+60000 && p.employee_id); }
 async function loadLoginList(){
@@ -1811,13 +1896,24 @@ async function loadLoginList(){
 }
 function finishLogin(token, e){
   S.token=token; LS.set('bgc_token', token); LS.set('bgc_employee_id', e.id); S.employeeId=e.id; S.employeesLoaded=false;
+  // this phone now belongs to one person: the staff code is only needed the first time
+  try{ LS.set('bgc_known', JSON.stringify({id:e.id, name:e.name||''})); }catch(err){}
   S.sb=makeClient(token); S.db=makeSupabaseDb(S.sb); S.dbState='ready'; closeSheet();
   subscribeAll(); renderApp();
 }
-function logout(){
+function logout(forget){
   S.token=null; S.employeeId=null; S.pickerBranch=null;
   LS.remove('bgc_token'); LS.remove('bgc_employee_id');
+  if(forget) LS.remove('bgc_known');
   location.reload();
+}
+function knownUser(){ try{ const v=LS.get('bgc_known'); return v?JSON.parse(v):null; }catch(e){ return null; } }
+function punchErrMsg(err){
+  const m=String((err&&err.message)||'');
+  if(/wrong_branch/.test(m)) return t('err_punch_branch');
+  if(/already_in/.test(m))   return t('err_punch_already_in');
+  if(/not_in/.test(m))       return t('err_punch_not_in');
+  return dbErrMsg(err);
 }
 function pinErrMsg(err){
   const m=String((err&&err.message)||'');
@@ -1825,6 +1921,7 @@ function pinErrMsg(err){
   if(/locked/.test(m)) return t('err_pin_locked');
   if(/pin_exists/.test(m)) return t('err_pin_exists');
   if(/verify_failed/.test(m)) return t('err_pin_verify_failed');
+  if(/weak_pin/.test(m)) return t('err_pin_weak');
   if(/inactive/.test(m)) return t('err_pin_inactive');
   if(/jwt_secret_not_configured/.test(m)) return 'Server login key not configured (see auth.sql notes)';
   return dbErrMsg(err);
@@ -1838,14 +1935,19 @@ function openSetPinForm(e){
   const btn=el(`<button class="btn primary block">${esc(t('btn_set_pin'))}</button>`);
   btn.onclick=async ()=>{
     const v=readFields(formEl,f);
-    if(!v.pin || v.pin.length<4){ toast(t('err_pin_len')); return; }
+    if(!/^[0-9]{6,12}$/.test(v.pin||'')){ toast(t('err_pin_len')); return; }
     if(v.pin!==v.pin2){ toast(t('err_pin_mismatch')); return; }
+    if(!v.verify || !v.verify.trim()){ toast(t('err_pin_verify')); return; }
     btn.disabled=true; btn.textContent=t('toast_submitting');
     try{
-      const salt=randomSalt();
-      const hash=await hashPin(v.pin, salt);
-      if(!v.verify || !v.verify.trim()){ toast(t('err_pin_verify')); btn.disabled=false; btn.textContent=t('btn_set_pin'); return; }
-      const token=await rpc('set_pin', {emp_id:e.id, salt, hash, verify:v.verify.trim()});
+      let token=null;
+      try{
+        token = await rpc('set_pin_v2', {emp_id:e.id, pin:v.pin, verify:v.verify.trim(), device:deviceLabel()});
+      }catch(err){
+        if(!missingFn(err)) throw err;
+        const salt=randomSalt();
+        token = await rpc('set_pin', {emp_id:e.id, salt, hash:await hashPin(v.pin, salt), verify:v.verify.trim()});
+      }
       if(!token) throw {code:'verify_failed', message:'verify_failed'};
       toast(t('toast_pin_set'));
       finishLogin(token, e);
@@ -1866,10 +1968,16 @@ function openVerifyPinForm(e){
     if(!v.pin){ return; }
     btn.disabled=true; errMsg.textContent='';
     try{
-      const salt=await rpc('pin_salt', {emp_id:e.id});
-      if(!salt){ closeSheet(); openSetPinForm(e); return; }
-      const hash=await hashPin(v.pin, salt);
-      const token=await rpc('login', {emp_id:e.id, pin_hash:hash});
+      let token=null;
+      try{
+        // the database checks the PIN itself and stores bcrypt
+        token = await rpc('login_v2', {emp_id:e.id, pin:v.pin, device:deviceLabel()});
+      }catch(err){
+        if(!missingFn(err)) throw err;
+        const salt=await rpc('pin_salt', {emp_id:e.id});
+        if(!salt){ closeSheet(); openSetPinForm(e); return; }
+        token = await rpc('login', {emp_id:e.id, pin_hash:await hashPin(v.pin, salt)});
+      }
       if(!token) throw {code:'wrong_pin', message:'wrong_pin'};
       finishLogin(token, e);
     }catch(err){ errMsg.textContent=pinErrMsg(err); btn.disabled=false; }
@@ -2014,10 +2122,22 @@ function clockView(){
     else { rec.geoFlag='no_location'; if(geo && geo.error) rec.geoErrorReason=geo.error; }
     if(photo) rec.photo=photo;
     try{
-      await S.db.collection('attendance').add(rec);
+      // The database decides: it takes the employee from the token, checks the branch,
+      // measures the distance to the store and stamps its own clock.
+      if(FEAT.punch !== false){
+        try{
+          await rpc('punch', {kind:nextType, branch:branch||'', lat:geoOk?geo.lat:null, lng:geoOk?geo.lng:null,
+                              accuracy:geoOk?geo.accuracy:null, photo:photo||'', note:''});
+          FEAT.punch = true;
+        }catch(err){
+          if(!missingFn(err)) throw err;
+          FEAT.punch = false;
+        }
+      }
+      if(FEAT.punch === false) await S.db.collection('attendance').add(rec);
       toast(nextType==='in'?t('toast_clock_in_ok'):t('toast_clock_out_ok'));
       photoWrap.remove();
-    }catch(err){ toast(dbErrMsg(err)); }
+    }catch(err){ toast(punchErrMsg(err)); }
     bigBtn.disabled=false;
     const gi = bInfo || (near&&near.configured ? near : null);
     S.lastGeoMsg = geoStatus.textContent = geoOk ? (gi ? (gi.inRange?t('geo_in_range'):t('geo_out_of_range')+gi.distance+t('geo_out_of_range_suffix')) : (branch ? t('geo_branch_no_coords') : t('geo_no_coords'))) : geoErrorMessage(geo&&geo.error);
@@ -2987,6 +3107,41 @@ function equipInspections(){
 }
 
 /* ============================ ME ============================ */
+/* Which phones are signed in as this person, and a way to throw one off. Managers
+   and HQ get the same block on a staff member's record. Silently absent until the
+   database patch that creates my_sessions() has been applied. */
+function sessionsBlock(empId){
+  const wrap=el('<div style="display:none;"></div>');
+  wrap.appendChild(secH('login','c-purple',t('my_devices')));
+  const list=el('<div class="list"></div>');
+  wrap.appendChild(list);
+  wrap.appendChild(el(`<p class="hint">${esc(t('devices_hint'))}</p>`));
+  const load=async ()=>{
+    let rows;
+    try{ rows = await rpc('my_sessions', empId?{emp_id:empId}:{}); }
+    catch(err){ if(missingFn(err)) return; rows=[]; }
+    wrap.style.display='';
+    list.innerHTML='';
+    if(!rows || rows.length===0){ list.appendChild(el(`<div class="hint">${esc(t('devices_none'))}</div>`)); return; }
+    rows.forEach(r=>{
+      const seen = r.last_seen ? String(r.last_seen).slice(0,16).replace('T',' ') : '';
+      const row=el(`<div class="list-row" style="cursor:default;"><div class="lr-main">
+        <div class="lr-title">${esc(r.device||t('device_unknown'))}${r.is_current?' · '+esc(t('device_this_one')):''}</div>
+        <div class="lr-sub">${esc(t('device_last_seen'))} ${esc(seen)}</div></div></div>`);
+      const btn=el(`<button class="btn sm">${esc(t('btn_sign_out_device'))}</button>`);
+      btn.onclick=async ()=>{
+        if(!confirm(t('confirm_sign_out_device'))) return;
+        btn.disabled=true;
+        try{ await rpc('revoke_session', {target_sid:r.sid}); if(r.is_current){ logout(); return; } toast(t('toast_device_signed_out')); load(); }
+        catch(err){ toast(dbErrMsg(err)); btn.disabled=false; }
+      };
+      row.appendChild(btn);
+      list.appendChild(row);
+    });
+  };
+  load();
+  return wrap;
+}
 function meView(){
   const e=currentEmployee();
   const c=el('<div></div>');
@@ -3005,6 +3160,7 @@ function meView(){
   c.appendChild(idCard);
   c.appendChild(notifWrap);
   { const gb=el(`<button class="btn block" style="margin:-4px 0 12px;">📖 ${esc(t('btn_help'))}</button>`); gb.onclick=()=>{ location.hash='#guide'; }; c.appendChild(gb); }
+  c.appendChild(sessionsBlock(null));
 
   // my schedule
   c.appendChild(secH('calendar','c-blue',t('my_schedule')));
@@ -3178,7 +3334,7 @@ function adminSection(){
         onClick: ()=>openSiteForm(site, z),
         onDelete: site ? async()=>{ try{ await S.db.doc('sites/'+site.id).delete(); toast(t('toast_deleted')); }catch(e){toast(dbErrMsg(e));} } : null,
       };
-    }), {label:t('btn_seed_flex_sites'), onClick:()=>seedFlexSites()}));
+    })));
     c.appendChild(el(`<p class="hint" style="margin-top:-6px;">${esc(t('hint_site'))}</p>`));
   }
 
@@ -3449,15 +3605,8 @@ function openDeviceForm(d){
 }
 
 /* ---------- sites (zone-level location coordinates) ---------- */
-const FLEX_SITES = [
-  {id:'A1', address:'1088 Mk 6, Tingkat Perusahaan 6, Kawasan Perusahaan Prai IV, 13600 Prai, Penang, Malaysia', postcode:'13600', city:'Prai', region:'Penang', lat:5.3509874, lng:100.4156677, mapsLink:'https://www.google.com/maps/search/?api=1&query=Flex+A1+1088+Mk+6+Tingkat+Perusahaan+6+Prai+Penang'},
-  {id:'H1', address:'Plot 131A, Jalan Perindustrian Bukit Minyak, 14100 Bukit Minyak, Seberang Perai Tengah, Penang, Malaysia', postcode:'14100', city:'Bukit Minyak', region:'Penang', lat:5.3070307, lng:100.453221, mapsLink:'https://www.google.com/maps/search/?api=1&query=Flex+H1+Plot+131A+Jalan+Perindustrian+Bukit+Minyak+Penang'},
-  {id:'P3', address:'Plot 56, Taman Perindustrian Bukit Minyak, 14100 Bukit Minyak, Seberang Perai Tengah, Penang, Malaysia', postcode:'14100', city:'Bukit Minyak', region:'Penang', lat:5.3064371, lng:100.451434, mapsLink:'https://www.google.com/maps/search/?api=1&query=Flex+P3+Plot+56+Taman+Perindustrian+Bukit+Minyak+Penang'},
-  {id:'P5', address:'No. 2736, Mk 1, Lorong Perusahaan Baru 2, Kawasan Perusahaan Perai, SPT, 13600 Prai, Penang, Malaysia', postcode:'13600', city:'Prai', region:'Penang', lat:5.3659024, lng:100.4018154, mapsLink:'https://www.google.com/maps/search/?api=1&query=Flex+P5+2736+Lorong+Perusahaan+Baru+2+Prai+Penang'},
-  {id:'P8A', address:'Block A1, No. 2466, Tingkat Perusahaan Maju 4A, Kawasan Perusahaan Perai, 13600 Perai, Penang, Malaysia', postcode:'13600', city:'Perai', region:'Penang', lat:5.3561832, lng:100.3965978, mapsLink:'https://www.google.com/maps/search/?api=1&query=Flex+P8+Block+A1+2466+Tingkat+Perusahaan+Maju+4A+Perai+Penang'},
-  {id:'P8B', address:'Block A1, No. 2466, Tingkat Perusahaan Maju 4A, Kawasan Perusahaan Perai, 13600 Perai, Penang, Malaysia', postcode:'13600', city:'Perai', region:'Penang', lat:5.3561832, lng:100.3965978, mapsLink:'https://www.google.com/maps/search/?api=1&query=Flex+P8+Block+A1+2466+Tingkat+Perusahaan+Maju+4A+Perai+Penang'},
-  {id:'P8W', address:'Block A1, No. 2466, Tingkat Perusahaan Maju 4A, Kawasan Perusahaan Perai, 13600 Perai, Penang, Malaysia', postcode:'13600', city:'Perai', region:'Penang', lat:5.3561832, lng:100.3965978, mapsLink:'https://www.google.com/maps/search/?api=1&query=Flex+P8+Block+A1+2466+Tingkat+Perusahaan+Maju+4A+Perai+Penang'},
-];
+/* Street addresses and GPS points are NOT kept in this file: anyone can read the page
+   source. They live in the database only (see site_seed.sql, run once by an admin). */
 function openSiteForm(existing, zoneHint){
   const fields=[
     {key:'id', label:t('field_zone_code'), ph:'H1', default: existing ? existing.id : (zoneHint||'')},
@@ -3488,17 +3637,6 @@ function openSiteForm(existing, zoneHint){
   };
   foot.appendChild(btn); body.appendChild(foot);
   openSheet(existing?t('sheet_edit_site'):t('sheet_add_site'), body);
-}
-async function seedFlexSites(){
-  const existingIds = new Set(S.sites.map(s=>s.id));
-  const toAdd = FLEX_SITES.filter(s=>!existingIds.has(s.id));
-  if(toAdd.length===0){ toast(t('toast_sites_all_exist')); return; }
-  const results = await Promise.allSettled(toAdd.map(s=>{
-    const {id, ...data} = s;
-    return S.db.doc('sites/'+id).set(data);
-  }));
-  const ok = results.filter(r=>r.status==='fulfilled').length;
-  toast(t('toast_sites_seeded_prefix')+ok+t('toast_sites_seeded_suffix'));
 }
 function resolveZone(zone, rest){
   // Bare "P8" isn't a real zone by itself: P8 (1) is actually in P8W,
