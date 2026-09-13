@@ -3124,7 +3124,7 @@ function sessionsBlock(empId){
     list.innerHTML='';
     if(!rows || rows.length===0){ list.appendChild(el(`<div class="hint">${esc(t('devices_none'))}</div>`)); return; }
     rows.forEach(r=>{
-      const seen = r.last_seen ? String(r.last_seen).slice(0,16).replace('T',' ') : '';
+      const seen = r.last_seen ? (d=>isNaN(d)?'':todayStr(d)+' '+pad2(d.getHours())+':'+pad2(d.getMinutes()))(new Date(r.last_seen)) : '';
       const row=el(`<div class="list-row" style="cursor:default;"><div class="lr-main">
         <div class="lr-title">${esc(r.device||t('device_unknown'))}${r.is_current?' · '+esc(t('device_this_one')):''}</div>
         <div class="lr-sub">${esc(t('device_last_seen'))} ${esc(seen)}</div></div></div>`);
