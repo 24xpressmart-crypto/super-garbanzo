@@ -335,6 +335,21 @@
     background:var(--surface); border:1px solid var(--border); margin-bottom:9px; cursor:pointer;
   }
   .id-pick-row .avatar{width:38px; height:38px; border-radius:50%; background:var(--accent); color:var(--accent-ink); display:flex; align-items:center; justify-content:center; font-weight:700;}
+  /* invite slips: on screen this stays hidden, on paper it is the only thing left */
+  #printArea{display:none;}
+  @media print{
+    body > *{display:none !important;}
+    body > #printArea{display:block !important;}
+    .slip{page-break-inside:avoid; break-inside:avoid; border:1px dashed #888; border-radius:6px;
+          padding:14px 16px; margin:0 0 10px; font-family:system-ui,sans-serif;}
+    .slip h3{margin:0 0 2px; font-size:15px;}
+    .slip .who{font-size:12px; color:#444; margin-bottom:8px;}
+    .slip .codes{display:flex; gap:22px; margin-bottom:8px;}
+    .slip .cell .lbl{font-size:10px; letter-spacing:.4px; text-transform:uppercase; color:#666;}
+    .slip .cell .val{font-size:19px; font-weight:800; letter-spacing:2px; font-family:ui-monospace,monospace;}
+    .slip .steps{font-size:11px; line-height:1.5; color:#222;}
+    .slip .warn{font-size:10px; color:#900; margin-top:5px;}
+  }
   .switch{position:relative; width:38px; height:22px; flex-shrink:0;}
   .switch input{opacity:0; width:100%; height:100%; position:absolute; margin:0; cursor:pointer;}
   .switch .track{position:absolute; inset:0; background:var(--surface-2); border:1px solid var(--border); border-radius:999px; transition:.15s;}
@@ -452,6 +467,7 @@ function leaveBalanceSuffix(l){
 /* ============================ I18N ============================ */
 const I18N = {
   zh: {
+    btn_invite_bulk:'生成本店邀请码并打印', invite_bulk_hint:'为还没设 PIN 的员工各生成一张邀请纸条。邀请码只显示这一次，打印后请当面交给本人。', invite_bulk_none:'这家店的员工都已经设好 PIN 了', invite_bulk_confirm_prefix:'将为 ', invite_bulk_confirm_suffix:' 位员工生成邀请码并打开打印页面。继续？', invite_bulk_working:'生成中，请稍候…', invite_bulk_failed:'一个都没生成成功，请检查权限', invite_bulk_partial_prefix:'有 ', invite_bulk_partial_suffix:' 位生成失败，其余已打印', invite_slip_title:'首次登录邀请纸条', invite_slip_expiry:'此邀请码有效期至', invite_slip_steps:'1. 打开 App  2. 输入上面的「工号」，按下一步  3. 输入上面的「邀请码」  4. 自己设一个 6 位数字 PIN  5. 以后这部手机只问 PIN。纸条请自己收好，不要给别人。',
     login_by_code:'输入工号登录', field_staff_code:'工号', ph_staff_code:'例如 M00003', btn_continue:'下一步', login_code_hint:'第一次在这部手机登录，请输入邀请纸条上的工号。之后这部手机会记住你，只需输入 PIN。', err_code_short:'工号至少 4 位', err_code_unknown:'查不到这个工号，请向店经理或 HQ 确认', welcome_back:'欢迎回来', tap_to_sign_in:'点这里输入 PIN 登录', btn_not_me:'不是我 / 换人', err_pin_weak:'PIN 太简单：请用 6 至 12 位数字，不要用 123456、111111 这类', my_devices:'已登录的手机', devices_hint:'不认得的手机请立刻登出，并换一个新的 PIN。', devices_none:'暂时没有其他手机', device_unknown:'未知设备', device_this_one:'本机', device_last_seen:'最后使用', btn_sign_out_device:'登出', confirm_sign_out_device:'确定让这部手机登出？', toast_device_signed_out:'已登出该手机', err_punch_branch:'这家店不在你的分店范围内，请选回自己的店', err_punch_already_in:'你已经打过上班卡了', err_punch_not_in:'还没有上班记录，不能打下班卡',
     guide_title:'功能图解', guide_intro:'每项功能一张卡：谁用、做什么、几步完成。选下面的角色只看自己要用的。', guide_count:'项功能', guide_open:'打开这个功能', guide_web:'📄 打开网页版图文手册（含真实截图）',
     field_pin_verify:'邀请码（向店经理或 HQ 索取）', ph_pin_verify:'例如 AB3K7Q2M', err_pin_verify:'请输入邀请码', err_pin_verify_failed:'邀请码不正确或已过期，请向店经理 / HQ 重新索取', btn_invite_make:'生成邀请码（首次登录用，只显示一次）', btn_invite_show:'重新生成邀请码', invite_msg_prefix:'员工：', invite_code_label:'邀请码', invite_msg_suffix:'7 天内有效，只显示这一次，请立即发给员工本人。员工首次登录时在「邀请码」栏输入。',
@@ -537,9 +553,9 @@ const I18N = {
     btn_enable_browser_notif:'开启浏览器通知', btn_disable_browser_notif:'关闭浏览器通知',
     notif_browser_hint:'浏览器通知只在本 App 打开着的时候弹出；App 关闭后收不到。',
     toast_notif_enabled:'浏览器通知已开启', toast_notif_denied:'浏览器拒绝了通知权限，请在浏览器设置中允许后重试', notif_unsupported:'此浏览器不支持通知',
-    field_new_pin:'设置密码（至少4位）', field_confirm_pin:'确认密码', btn_set_pin:'设置密码并继续',
+    field_new_pin:'设置 PIN（6 至 12 位数字）', field_confirm_pin:'确认密码', btn_set_pin:'设置密码并继续',
     err_pin_len:'PIN 需要 6 至 12 位数字', err_pin_mismatch:'两次输入的密码不一致', toast_pin_set:'密码已设置',
-    sheet_set_pin_prefix:'首次登录 · ', pin_set_hint:'这是你第一次使用这个账号，请设置一个密码，之后每次选择自己的名字都需要输入。',
+    sheet_set_pin_prefix:'首次登录 · ', pin_set_hint:'这是你第一次在这部手机登录。向店经理或 HQ 要一个邀请码，然后自己设一个 6 位数字 PIN。以后这部手机会记住你，只需输入 PIN。',
     field_pin:'密码', btn_login:'登录', err_pin_wrong:'密码不正确，请重试',
     btn_reset_pin:'重置该员工密码', confirm_reset_pin:'确定要重置该员工的密码吗？重置后对方下次登录需要重新设置密码。',
     toast_pin_reset:'密码已重置',
@@ -673,6 +689,7 @@ const I18N = {
     toast_deleted:'已删除',
   },
   en: {
+    btn_invite_bulk:'Generate and print invite codes for this store', invite_bulk_hint:'Makes one slip per person who has not set a PIN yet. Each code is shown this once only — print them and hand them over in person.', invite_bulk_none:'Everyone at this store already has a PIN', invite_bulk_confirm_prefix:'Generate invite codes for ', invite_bulk_confirm_suffix:' staff and open the print page. Continue?', invite_bulk_working:'Generating, one moment...', invite_bulk_failed:'None could be generated — check your permissions', invite_bulk_partial_prefix:'', invite_bulk_partial_suffix:' could not be generated; the rest are on the printout', invite_slip_title:'First-login invite slips', invite_slip_expiry:'This invite code expires on', invite_slip_steps:'1. Open the app  2. Type the Staff code above, tap Continue  3. Type the Invite code above  4. Choose your own 6-digit PIN  5. From then on this phone only asks for the PIN. Keep this slip to yourself.',
     login_by_code:'Sign in with your staff code', field_staff_code:'Staff code', ph_staff_code:'e.g. M00003', btn_continue:'Continue', login_code_hint:'The first time you sign in on this phone, type the staff code from your invite slip. After that the phone remembers you and only asks for your PIN.', err_code_short:'A staff code is at least 4 characters', err_code_unknown:'No such staff code — check with your manager or HQ', welcome_back:'Welcome back', tap_to_sign_in:'Tap to enter your PIN', btn_not_me:'Not me / switch person', err_pin_weak:'That PIN is too easy to guess: use 6 to 12 digits, and avoid 123456 or 111111', my_devices:'Phones signed in', devices_hint:'If you do not recognise a phone, sign it out now and change your PIN.', devices_none:'No other phones', device_unknown:'Unknown device', device_this_one:'this phone', device_last_seen:'Last used', btn_sign_out_device:'Sign out', confirm_sign_out_device:'Sign this phone out?', toast_device_signed_out:'That phone has been signed out', err_punch_branch:'That store is not one of yours — pick your own store', err_punch_already_in:'You are already clocked in', err_punch_not_in:'No open clock-in to clock out from',
     guide_title:'Function guide', guide_intro:'One card per function: who uses it, what it is for, and the steps. Pick a role below to see only what you need.', guide_count:'functions', guide_open:'Open this function', guide_web:'📄 Open the illustrated web guide (with real screenshots)',
     field_pin_verify:'Invite code (ask your manager or HQ)', ph_pin_verify:'e.g. AB3K7Q2M', err_pin_verify:'Enter the invite code', err_pin_verify_failed:'Invite code wrong or expired, ask your manager / HQ for a new one', btn_invite_make:'Generate invite code (first login, shown once)', btn_invite_show:'Regenerate invite code', invite_msg_prefix:'Staff: ', invite_code_label:'Invite code', invite_msg_suffix:'Valid 7 days and shown only once; send it to the staff member now. They enter it in the Invite code field on first login.',
@@ -758,9 +775,9 @@ const I18N = {
     btn_enable_browser_notif:'Enable Browser Notifications', btn_disable_browser_notif:'Disable Browser Notifications',
     notif_browser_hint:'Browser notifications only pop up while this app is open; nothing arrives once it\'s closed.',
     toast_notif_enabled:'Browser notifications enabled', toast_notif_denied:'The browser blocked notification permission — allow it in browser settings and try again', notif_unsupported:'This browser doesn\'t support notifications',
-    field_new_pin:'Set a password (min. 4 characters)', field_confirm_pin:'Confirm password', btn_set_pin:'Set password & continue',
+    field_new_pin:'Set your PIN (6 to 12 digits)', field_confirm_pin:'Confirm password', btn_set_pin:'Set password & continue',
     err_pin_len:'Your PIN must be 6 to 12 digits', err_pin_mismatch:'Passwords don\'t match', toast_pin_set:'Password set',
-    sheet_set_pin_prefix:'First login · ', pin_set_hint:'This is your first time using this account — set a password. You\'ll need it every time you select your name.',
+    sheet_set_pin_prefix:'First login · ', pin_set_hint:'This is your first login on this phone. Ask your manager or HQ for an invite code, then choose a 6-digit PIN. After this the phone remembers you and only asks for the PIN.',
     field_pin:'Password', btn_login:'Log in', err_pin_wrong:'Incorrect password, try again',
     btn_reset_pin:'Reset this staff member\'s password', confirm_reset_pin:'Reset this staff member\'s password? They\'ll need to set a new one next time they log in.',
     toast_pin_reset:'Password reset',
@@ -894,6 +911,7 @@ const I18N = {
     toast_deleted:'Deleted',
   },
   ms: {
+    btn_invite_bulk:'Jana dan cetak kod jemputan kedai ini', invite_bulk_hint:'Satu slip untuk setiap staf yang belum tetapkan PIN. Setiap kod dipapar sekali sahaja — cetak dan serahkan sendiri kepada mereka.', invite_bulk_none:'Semua staf kedai ini sudah ada PIN', invite_bulk_confirm_prefix:'Jana kod jemputan untuk ', invite_bulk_confirm_suffix:' staf dan buka halaman cetak. Teruskan?', invite_bulk_working:'Sedang menjana, tunggu sebentar...', invite_bulk_failed:'Tiada yang berjaya dijana — semak kebenaran anda', invite_bulk_partial_prefix:'', invite_bulk_partial_suffix:' gagal dijana; selebihnya ada pada cetakan', invite_slip_title:'Slip jemputan log masuk pertama', invite_slip_expiry:'Kod jemputan ini sah sehingga', invite_slip_steps:'1. Buka app  2. Taip Kod staf di atas, tekan Teruskan  3. Taip Kod jemputan di atas  4. Pilih PIN 6 digit anda sendiri  5. Selepas itu telefon ini hanya minta PIN. Simpan slip ini untuk diri sendiri.',
     login_by_code:'Log masuk dengan kod staf', field_staff_code:'Kod staf', ph_staff_code:'cth. M00003', btn_continue:'Teruskan', login_code_hint:'Kali pertama log masuk di telefon ini, taip kod staf pada slip jemputan anda. Selepas itu telefon akan ingat anda dan hanya minta PIN.', err_code_short:'Kod staf sekurang-kurangnya 4 aksara', err_code_unknown:'Kod staf tidak dijumpai — semak dengan pengurus atau HQ', welcome_back:'Selamat kembali', tap_to_sign_in:'Ketik untuk masukkan PIN', btn_not_me:'Bukan saya / tukar orang', err_pin_weak:'PIN terlalu mudah diteka: guna 6 hingga 12 digit, elakkan 123456 atau 111111', my_devices:'Telefon yang log masuk', devices_hint:'Jika ada telefon yang anda tidak kenal, log keluar sekarang dan tukar PIN.', devices_none:'Tiada telefon lain', device_unknown:'Peranti tidak dikenali', device_this_one:'telefon ini', device_last_seen:'Guna terakhir', btn_sign_out_device:'Log keluar', confirm_sign_out_device:'Log keluar telefon ini?', toast_device_signed_out:'Telefon itu telah dilog keluar', err_punch_branch:'Kedai itu bukan kedai anda — pilih kedai sendiri', err_punch_already_in:'Anda sudah daftar masuk', err_punch_not_in:'Tiada daftar masuk terbuka untuk didaftar keluar',
     guide_title:'Panduan fungsi', guide_intro:'Satu kad setiap fungsi: siapa guna, untuk apa, dan langkahnya. Pilih peranan di bawah untuk lihat yang anda perlukan sahaja.', guide_count:'fungsi', guide_open:'Buka fungsi ini', guide_web:'📄 Buka panduan web bergambar (dengan tangkapan skrin sebenar)',
     field_pin_verify:'Kod jemputan (minta daripada pengurus atau HQ)', ph_pin_verify:'cth. AB3K7Q2M', err_pin_verify:'Masukkan kod jemputan', err_pin_verify_failed:'Kod jemputan salah atau tamat tempoh, minta yang baharu daripada pengurus / HQ', btn_invite_make:'Jana kod jemputan (log masuk pertama, dipapar sekali)', btn_invite_show:'Jana semula kod jemputan', invite_msg_prefix:'Staf: ', invite_code_label:'Kod jemputan', invite_msg_suffix:'Sah 7 hari dan dipapar sekali sahaja; hantar kepada staf sekarang. Mereka masukkan dalam ruangan Kod jemputan semasa log masuk pertama.',
@@ -979,9 +997,9 @@ const I18N = {
     btn_enable_browser_notif:'Hidupkan pemberitahuan pelayar', btn_disable_browser_notif:'Matikan pemberitahuan pelayar',
     notif_browser_hint:'Pemberitahuan pelayar hanya muncul semasa app ini dibuka; tiada apa-apa diterima selepas ditutup.',
     toast_notif_enabled:'Pemberitahuan pelayar dihidupkan', toast_notif_denied:'Pelayar menyekat kebenaran pemberitahuan — benarkan dalam tetapan pelayar dan cuba lagi', notif_unsupported:'Pelayar ini tidak menyokong pemberitahuan',
-    field_new_pin:'Tetapkan kata laluan (min. 4 aksara)', field_confirm_pin:'Sahkan kata laluan', btn_set_pin:'Tetapkan kata laluan & teruskan',
+    field_new_pin:'Tetapkan PIN anda (6 hingga 12 digit)', field_confirm_pin:'Sahkan kata laluan', btn_set_pin:'Tetapkan kata laluan & teruskan',
     err_pin_len:'PIN mesti 6 hingga 12 digit', err_pin_mismatch:'Kata laluan tidak sepadan', toast_pin_set:'Kata laluan ditetapkan',
-    sheet_set_pin_prefix:'Log masuk pertama · ', pin_set_hint:'Ini kali pertama akaun ini digunakan — tetapkan kata laluan. Anda perlukannya setiap kali memilih nama anda.',
+    sheet_set_pin_prefix:'Log masuk pertama · ', pin_set_hint:'Ini log masuk pertama anda di telefon ini. Minta kod jemputan daripada pengurus atau HQ, kemudian pilih PIN 6 digit. Selepas ini telefon akan ingat anda dan hanya minta PIN.',
     field_pin:'Kata laluan', btn_login:'Log masuk', err_pin_wrong:'Kata laluan salah, cuba lagi',
     btn_reset_pin:'Set semula kata laluan staf ini', confirm_reset_pin:'Set semula kata laluan staf ini? Mereka perlu tetapkan yang baharu semasa log masuk seterusnya.',
     toast_pin_reset:'Kata laluan diset semula',
@@ -3236,6 +3254,12 @@ function managerSection(){
     right: toggleSwitch(emp.active!==false, async(v)=>{ try{ await S.db.doc('employees/'+emp.id).update({active:v}); }catch(e){toast(dbErrMsg(e));} }),
     onClick: ()=>openEmployeeForm(emp,branch)
   })), {label:t('btn_bulk_import'), onClick:()=>openEmployeeBulkForm(branch)}));
+  { const pending = S.employees.filter(e=>e.homeBranch===branch && e.active!==false && !e.hasPin).length;
+    const b=el(`<button class="btn block" style="margin:-4px 0 12px;">🎟️ ${esc(t('btn_invite_bulk'))} (${pending})</button>`);
+    b.disabled = pending===0;
+    b.onclick=()=>bulkInvites(branch);
+    c.appendChild(b);
+    c.appendChild(el(`<p class="hint" style="margin-top:-6px;">${esc(t('invite_bulk_hint'))}</p>`)); }
 
   return c;
 }
@@ -3312,6 +3336,13 @@ function adminSection(){
       right: toggleSwitch(emp.active!==false, async(v)=>{ try{ await S.db.doc('employees/'+emp.id).update({active:v}); }catch(e){toast(dbErrMsg(e));} }),
       onClick: ()=>openEmployeeForm(emp)
     })), {label:t('btn_bulk_import'), onClick:()=>openEmployeeBulkForm()}));
+    { const pending = (S.staffBranchFilter==='all' ? S.employees : S.employees.filter(e=>e.homeBranch===S.staffBranchFilter))
+                        .filter(e=>e.active!==false && !e.hasPin).length;
+      const b=el(`<button class="btn block" style="margin:-4px 0 12px;">🎟️ ${esc(t('btn_invite_bulk'))} (${pending})</button>`);
+      b.disabled = pending===0;
+      b.onclick=()=>bulkInvites();
+      c.appendChild(b);
+      c.appendChild(el(`<p class="hint" style="margin-top:-6px;">${esc(t('invite_bulk_hint'))}</p>`)); }
   }
 
   c.appendChild(docExpiryBlock(null));
@@ -3449,6 +3480,42 @@ function toggleSwitch(checked, onChange){
   const wrap=el(`<label class="switch"><input type="checkbox" ${checked?'checked':''}><span class="track"></span><span class="knob"></span></label>`);
   wrap.querySelector('input').onclick=(ev)=>{ ev.stopPropagation(); onChange(ev.target.checked); };
   return wrap;
+}
+/* One slip per person, printed once, handed over in person. The code itself is
+   never stored in the clear: make_invite() returns it once and keeps only a hash,
+   so this page is the only chance to read it. */
+async function bulkInvites(forBranch){
+  const branch = forBranch !== undefined ? forBranch
+                 : (S.staffBranchFilter==='all' ? null : S.staffBranchFilter);
+  const list = S.employees.filter(e=>e.active!==false && !e.hasPin && (!branch || e.homeBranch===branch));
+  if(list.length===0){ toast(t('invite_bulk_none')); return; }
+  if(!confirm(t('invite_bulk_confirm_prefix')+list.length+t('invite_bulk_confirm_suffix'))) return;
+  toast(t('invite_bulk_working'));
+  const made=[], failed=[];
+  for(const e of list){
+    try{ made.push({e, code: await rpc('make_invite', {emp_id:e.id})}); }
+    catch(err){ failed.push(e.name); }
+  }
+  if(made.length===0){ toast(t('invite_bulk_failed')); return; }
+  const expires = todayStr(addDays(new Date(), 7));
+  const old = document.getElementById('printArea'); if(old) old.remove();
+  const area = el('<div id="printArea"></div>');
+  area.appendChild(el(`<h2 style="font:700 16px system-ui; margin:0 0 10px;">${esc((branch||t('branch_all'))+' · '+t('invite_slip_title'))}</h2>`));
+  made.forEach(({e, code})=>{
+    area.appendChild(el(`<div class="slip">
+      <h3>${esc(e.name)}</h3>
+      <div class="who">${esc([e.homeBranch, e.jobTitle].filter(Boolean).join(' · '))}</div>
+      <div class="codes">
+        <div class="cell"><div class="lbl">${esc(t('field_staff_code'))}</div><div class="val">${esc(e.staffCode||e.id)}</div></div>
+        <div class="cell"><div class="lbl">${esc(t('invite_code_label'))}</div><div class="val">${esc(code)}</div></div>
+      </div>
+      <div class="steps">${t('invite_slip_steps').split(/(?=\d\.\s)/).map(s=>esc(s.trim())).filter(Boolean).join('<br>')}</div>
+      <div class="warn">${esc(t('invite_slip_expiry'))} ${esc(expires)}</div>
+    </div>`));
+  });
+  document.body.appendChild(area);
+  if(failed.length) toast(t('invite_bulk_partial_prefix')+failed.length+t('invite_bulk_partial_suffix'));
+  setTimeout(()=>window.print(), 300);
 }
 function adminBlock(title, onAdd, items, extraBtn){
   const c=el('<div></div>');
