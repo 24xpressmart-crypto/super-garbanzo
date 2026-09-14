@@ -3488,7 +3488,9 @@ function toggleSwitch(checked, onChange){
 async function bulkInvites(forBranch){
   const branch = forBranch !== undefined ? forBranch
                  : (S.staffBranchFilter==='all' ? null : S.staffBranchFilter);
-  const list = S.employees.filter(e=>e.active!==false && !e.hasPin && (!branch || e.homeBranch===branch));
+  // grouped by store, because a company-wide run gets cut up and sent out per store
+  const list = S.employees.filter(e=>e.active!==false && !e.hasPin && (!branch || e.homeBranch===branch))
+    .sort((a,b)=>(a.homeBranch||'~').localeCompare(b.homeBranch||'~') || (a.name||'').localeCompare(b.name||''));
   if(list.length===0){ toast(t('invite_bulk_none')); return; }
   if(!confirm(t('invite_bulk_confirm_prefix')+list.length+t('invite_bulk_confirm_suffix'))) return;
   toast(t('invite_bulk_working'));
@@ -3502,7 +3504,14 @@ async function bulkInvites(forBranch){
   const old = document.getElementById('printArea'); if(old) old.remove();
   const area = el('<div id="printArea"></div>');
   area.appendChild(el(`<h2 style="font:700 16px system-ui; margin:0 0 10px;">${esc((branch||t('branch_all'))+' · '+t('invite_slip_title'))}</h2>`));
+  let lastBranch = null;
   made.forEach(({e, code})=>{
+    // a company-wide run starts each store on its own sheet, ready to send out
+    const b = e.homeBranch || t('branch_unassigned');
+    if(!branch && b !== lastBranch){
+      area.appendChild(el(`<div style="font:800 20px system-ui; letter-spacing:1px; margin:14px 0 10px; padding-bottom:5px; border-bottom:2px solid #333; ${lastBranch?'page-break-before:always;':''}">${esc(b)}</div>`));
+      lastBranch = b;
+    }
     area.appendChild(el(`<div class="slip">
       <h3>${esc(e.name)}</h3>
       <div class="who">${esc([e.homeBranch, e.jobTitle].filter(Boolean).join(' · '))}</div>
