@@ -467,6 +467,7 @@ function leaveBalanceSuffix(l){
 /* ============================ I18N ============================ */
 const I18N = {
   zh: {
+    tile_order:'要货申请', order_tab_inbox:'待处理', order_tab_summary:'合并汇总', order_tab_catalog:'货品管理', order_no_branch:'请先设定你的所属门店', order_cutoff_prefix:'本轮截单：', order_cutoff_left_prefix:'还有 ', order_cutoff_left_suffix:' 小时', order_current:'本次要货单', order_empty:'还没有加任何货品。按下面的按钮开始。', order_btn_add_item:'加货品', order_btn_send:'送出要货', order_confirm_send:'送出后就不能再改了，确定送出？', order_toast_sent:'已送出，HQ 会收到', order_urgent:'紧急单（断货，等不到下一轮）', order_history:'以往的要货单', order_no_history:'还没有送过要货单', order_items_suffix:' 项', order_status_draft:'草稿', order_status_submitted:'已送出', order_status_approved:'已批准', order_status_rejected:'已退回', order_catalog_empty:'货品清单还是空的，请 HQ 先导入货品', order_search:'找货品', order_search_ph:'打品名或货号', order_search_none:'找不到这个货品', order_last_time:'上次要了 ', order_qty:'要多少？', order_btn_update:'更新数量', order_btn_add:'加入要货单', order_toast_added:'已加入', order_inbox_title:'待处理要货', order_inbox_empty:'目前没有待处理的要货单', order_done_title:'已处理', order_hq_note:'HQ 备注', order_btn_approve:'批准', order_btn_reject:'退回', order_confirm_reject:'确定退回这张单？门店会看到你的备注。', order_sheet_title:'要货单', order_summary_title:'全部门店合计', order_summary_hint:'把所有已送出和已批准的单加起来，照这个数字去下采购单。', order_btn_export:'导出 CSV（Excel 可开）', order_catalog_hint:'货品主档从 AutoCount 导出后贴进来。这里不会写回 AutoCount。', order_sku_off:'已停用', order_sku_limited:'限：', order_btn_paste:'批量贴上货品', order_field_code:'货号（AutoCount item code）', order_field_name:'品名', order_field_unit:'单位', order_field_unit_ph:'箱 / 包 / 支', order_field_category:'分类', order_field_supplier:'供应商', order_field_branches:'适用门店（留空 = 全部）', order_field_active:'启用', order_err_name:'请填品名', order_sheet_edit_sku:'编辑货品', order_sheet_add_sku:'新增货品', order_paste_hint:'从 AutoCount 货品表复制后贴上，一行一样货。用 Tab 或逗号分隔，顺序：货号、品名、单位、分类、供应商。只有品名是必填的。', order_paste_label:'贴上货品（一行一样）', field_order_cutoff_day:'要货截单日（留空 = 不设截单）', field_order_cutoff_time:'截单时间', order_cutoff_off:'不设截单',
     err_server_problem:'服务器出错，请截图给 HQ，不是你输错', invite_bulk_warn_replace:'注意：之前印过的纸条会全部作废。请印好后当天就发给员工，中途不要再按这个按钮。',
     btn_invite_bulk:'生成本店邀请码并打印', invite_bulk_hint:'为还没设 PIN 的员工各生成一张邀请纸条。邀请码只显示这一次，打印后请当面交给本人。', invite_bulk_none:'这家店的员工都已经设好 PIN 了', invite_bulk_confirm_prefix:'将为 ', invite_bulk_confirm_suffix:' 位员工生成邀请码并打开打印页面。继续？', invite_bulk_working:'生成中，请稍候…', invite_bulk_failed:'一个都没生成成功，请检查权限', invite_bulk_partial_prefix:'有 ', invite_bulk_partial_suffix:' 位生成失败，其余已打印', invite_slip_title:'首次登录邀请纸条', invite_slip_expiry:'此邀请码有效期至', invite_slip_steps:'1. 打开 App  2. 输入上面任何一个码（工号或邀请码都行），按下一步  3. 如果还没填，输入上面的「邀请码」  4. 自己设一个 6 位数字 PIN  5. 以后这部手机只问 PIN。纸条请自己收好，不要给别人。',
     login_by_code:'输入工号或邀请码登录', field_staff_code:'工号或邀请码', ph_staff_code:'例如 C00205 或 AB3K7Q2M', btn_continue:'下一步', login_code_hint:'第一次在这部手机登录，请输入邀请纸条上的「工号」或「邀请码」，两个都可以。之后这部手机会记住你，只需输入 PIN。', err_code_short:'请输入完整的工号或邀请码', err_code_unknown:'查不到这个工号或邀请码。请核对纸条，或向店经理 / HQ 索取新的邀请码（邀请码 7 天后失效）', welcome_back:'欢迎回来', tap_to_sign_in:'点这里输入 PIN 登录', btn_not_me:'不是我 / 换人', err_pin_weak:'PIN 太简单：请用 6 至 12 位数字，不要用 123456、111111 这类', my_devices:'已登录的手机', devices_hint:'不认得的手机请立刻登出，并换一个新的 PIN。', devices_none:'暂时没有其他手机', device_unknown:'未知设备', device_this_one:'本机', device_last_seen:'最后使用', btn_sign_out_device:'登出', confirm_sign_out_device:'确定让这部手机登出？', toast_device_signed_out:'已登出该手机', err_punch_branch:'这家店不在你的分店范围内，请选回自己的店', err_punch_already_in:'你已经打过上班卡了', err_punch_not_in:'还没有上班记录，不能打下班卡',
@@ -690,6 +691,7 @@ const I18N = {
     toast_deleted:'已删除',
   },
   en: {
+    tile_order:'Stock request', order_tab_inbox:'To handle', order_tab_summary:'Combined total', order_tab_catalog:'Goods list', order_no_branch:'Set your home store first', order_cutoff_prefix:'Cut-off for this round:', order_cutoff_left_prefix:'', order_cutoff_left_suffix:' hours left', order_current:'This order', order_empty:'Nothing added yet. Use the button below to start.', order_btn_add_item:'Add goods', order_btn_send:'Send order', order_confirm_send:'You cannot change it after sending. Send it?', order_toast_sent:'Sent — HQ will see it', order_urgent:'Urgent (out of stock, cannot wait for the next round)', order_history:'Past orders', order_no_history:'No orders sent yet', order_items_suffix:' items', order_status_draft:'Draft', order_status_submitted:'Sent', order_status_approved:'Approved', order_status_rejected:'Sent back', order_catalog_empty:'The goods list is still empty — HQ needs to import it first', order_search:'Find goods', order_search_ph:'Type a name or code', order_search_none:'Nothing matches that', order_last_time:'last time ', order_qty:'How many?', order_btn_update:'Update quantity', order_btn_add:'Add to order', order_toast_added:'Added', order_inbox_title:'Orders to handle', order_inbox_empty:'Nothing waiting right now', order_done_title:'Handled', order_hq_note:'HQ note', order_btn_approve:'Approve', order_btn_reject:'Send back', order_confirm_reject:'Send this order back? The store will see your note.', order_sheet_title:'Order', order_summary_title:'All stores combined', order_summary_hint:'Everything sent and approved, added up. Buy against these figures.', order_btn_export:'Export CSV (opens in Excel)', order_catalog_hint:'Export the item master from AutoCount and paste it in here. Nothing is ever written back to AutoCount.', order_sku_off:'disabled', order_sku_limited:'only: ', order_btn_paste:'Paste goods in bulk', order_field_code:'Code (AutoCount item code)', order_field_name:'Name', order_field_unit:'Unit', order_field_unit_ph:'ctn / pkt / btl', order_field_category:'Category', order_field_supplier:'Supplier', order_field_branches:'Stores (blank = all)', order_field_active:'Enabled', order_err_name:'Enter a name', order_sheet_edit_sku:'Edit item', order_sheet_add_sku:'Add item', order_paste_hint:'Copy from the AutoCount item list and paste, one item per line. Separate with a tab or comma, in this order: code, name, unit, category, supplier. Only the name is required.', order_paste_label:'Paste goods (one per line)', field_order_cutoff_day:'Order cut-off day (blank = no cut-off)', field_order_cutoff_time:'Cut-off time', order_cutoff_off:'No cut-off',
     err_server_problem:'Server error — screenshot this for HQ; it is not your mistake', invite_bulk_warn_replace:'Note: every slip printed earlier stops working. Print these and hand them out the same day, and do not press this button again in between.',
     btn_invite_bulk:'Generate and print invite codes for this store', invite_bulk_hint:'Makes one slip per person who has not set a PIN yet. Each code is shown this once only — print them and hand them over in person.', invite_bulk_none:'Everyone at this store already has a PIN', invite_bulk_confirm_prefix:'Generate invite codes for ', invite_bulk_confirm_suffix:' staff and open the print page. Continue?', invite_bulk_working:'Generating, one moment...', invite_bulk_failed:'None could be generated — check your permissions', invite_bulk_partial_prefix:'', invite_bulk_partial_suffix:' could not be generated; the rest are on the printout', invite_slip_title:'First-login invite slips', invite_slip_expiry:'This invite code expires on', invite_slip_steps:'1. Open the app  2. Type either code above — staff code or invite code — and tap Continue  3. Fill in the Invite code if it is not already there  4. Choose your own 6-digit PIN  5. From then on this phone only asks for the PIN. Keep this slip to yourself.',
     login_by_code:'Sign in with your staff code or invite code', field_staff_code:'Staff code or invite code', ph_staff_code:'e.g. C00205 or AB3K7Q2M', btn_continue:'Continue', login_code_hint:'The first time you sign in on this phone, type either code from your invite slip — the staff code or the invite code, whichever you read first. After that the phone remembers you and only asks for your PIN.', err_code_short:'Type the full staff code or invite code', err_code_unknown:'No such staff code or invite code. Check the slip, or ask your manager / HQ for a new invite code (they expire after 7 days)', welcome_back:'Welcome back', tap_to_sign_in:'Tap to enter your PIN', btn_not_me:'Not me / switch person', err_pin_weak:'That PIN is too easy to guess: use 6 to 12 digits, and avoid 123456 or 111111', my_devices:'Phones signed in', devices_hint:'If you do not recognise a phone, sign it out now and change your PIN.', devices_none:'No other phones', device_unknown:'Unknown device', device_this_one:'this phone', device_last_seen:'Last used', btn_sign_out_device:'Sign out', confirm_sign_out_device:'Sign this phone out?', toast_device_signed_out:'That phone has been signed out', err_punch_branch:'That store is not one of yours — pick your own store', err_punch_already_in:'You are already clocked in', err_punch_not_in:'No open clock-in to clock out from',
@@ -913,6 +915,7 @@ const I18N = {
     toast_deleted:'Deleted',
   },
   ms: {
+    tile_order:'Pesanan stok', order_tab_inbox:'Perlu diuruskan', order_tab_summary:'Jumlah gabungan', order_tab_catalog:'Senarai barang', order_no_branch:'Tetapkan kedai asal anda dahulu', order_cutoff_prefix:'Tutup pesanan pusingan ini:', order_cutoff_left_prefix:'tinggal ', order_cutoff_left_suffix:' jam', order_current:'Pesanan kali ini', order_empty:'Belum ada barang. Tekan butang di bawah untuk mula.', order_btn_add_item:'Tambah barang', order_btn_send:'Hantar pesanan', order_confirm_send:'Tidak boleh diubah selepas dihantar. Hantar sekarang?', order_toast_sent:'Dihantar — HQ akan lihat', order_urgent:'Segera (kehabisan stok, tidak boleh tunggu pusingan berikutnya)', order_history:'Pesanan lepas', order_no_history:'Belum ada pesanan dihantar', order_items_suffix:' barang', order_status_draft:'Draf', order_status_submitted:'Dihantar', order_status_approved:'Diluluskan', order_status_rejected:'Dikembalikan', order_catalog_empty:'Senarai barang masih kosong — HQ perlu import dahulu', order_search:'Cari barang', order_search_ph:'Taip nama atau kod', order_search_none:'Tiada padanan', order_last_time:'kali lepas ', order_qty:'Berapa banyak?', order_btn_update:'Kemas kini kuantiti', order_btn_add:'Masukkan ke pesanan', order_toast_added:'Ditambah', order_inbox_title:'Pesanan perlu diuruskan', order_inbox_empty:'Tiada pesanan menunggu', order_done_title:'Selesai diuruskan', order_hq_note:'Nota HQ', order_btn_approve:'Luluskan', order_btn_reject:'Kembalikan', order_confirm_reject:'Kembalikan pesanan ini? Kedai akan lihat nota anda.', order_sheet_title:'Pesanan', order_summary_title:'Semua kedai digabungkan', order_summary_hint:'Semua yang dihantar dan diluluskan, dicampur. Beli ikut angka ini.', order_btn_export:'Eksport CSV (buka dalam Excel)', order_catalog_hint:'Eksport fail induk barang dari AutoCount dan tampal di sini. Tiada apa-apa ditulis semula ke AutoCount.', order_sku_off:'dimatikan', order_sku_limited:'hanya: ', order_btn_paste:'Tampal barang secara pukal', order_field_code:'Kod (kod item AutoCount)', order_field_name:'Nama', order_field_unit:'Unit', order_field_unit_ph:'ktn / pkt / btl', order_field_category:'Kategori', order_field_supplier:'Pembekal', order_field_branches:'Kedai (kosong = semua)', order_field_active:'Aktif', order_err_name:'Masukkan nama', order_sheet_edit_sku:'Edit barang', order_sheet_add_sku:'Tambah barang', order_paste_hint:'Salin dari senarai item AutoCount dan tampal, satu barang sebaris. Asingkan dengan tab atau koma, ikut susunan: kod, nama, unit, kategori, pembekal. Hanya nama diperlukan.', order_paste_label:'Tampal barang (satu sebaris)', field_order_cutoff_day:'Hari tutup pesanan (kosong = tiada)', field_order_cutoff_time:'Masa tutup', order_cutoff_off:'Tiada tutup pesanan',
     err_server_problem:'Ralat pelayan — hantar tangkap layar kepada HQ; bukan salah anda', invite_bulk_warn_replace:'Perhatian: semua slip yang dicetak sebelum ini akan terbatal. Cetak dan serahkan pada hari yang sama, dan jangan tekan butang ini lagi di antaranya.',
     btn_invite_bulk:'Jana dan cetak kod jemputan kedai ini', invite_bulk_hint:'Satu slip untuk setiap staf yang belum tetapkan PIN. Setiap kod dipapar sekali sahaja — cetak dan serahkan sendiri kepada mereka.', invite_bulk_none:'Semua staf kedai ini sudah ada PIN', invite_bulk_confirm_prefix:'Jana kod jemputan untuk ', invite_bulk_confirm_suffix:' staf dan buka halaman cetak. Teruskan?', invite_bulk_working:'Sedang menjana, tunggu sebentar...', invite_bulk_failed:'Tiada yang berjaya dijana — semak kebenaran anda', invite_bulk_partial_prefix:'', invite_bulk_partial_suffix:' gagal dijana; selebihnya ada pada cetakan', invite_slip_title:'Slip jemputan log masuk pertama', invite_slip_expiry:'Kod jemputan ini sah sehingga', invite_slip_steps:'1. Buka app  2. Taip mana-mana kod di atas — kod staf atau kod jemputan — dan tekan Teruskan  3. Isi Kod jemputan jika belum ada  4. Pilih PIN 6 digit anda sendiri  5. Selepas itu telefon ini hanya minta PIN. Simpan slip ini untuk diri sendiri.',
     login_by_code:'Log masuk dengan kod staf atau kod jemputan', field_staff_code:'Kod staf atau kod jemputan', ph_staff_code:'cth. C00205 atau AB3K7Q2M', btn_continue:'Teruskan', login_code_hint:'Kali pertama log masuk di telefon ini, taip mana-mana kod pada slip jemputan anda — kod staf atau kod jemputan. Selepas itu telefon akan ingat anda dan hanya minta PIN.', err_code_short:'Taip kod staf atau kod jemputan yang penuh', err_code_unknown:'Kod staf atau kod jemputan tidak dijumpai. Semak slip anda, atau minta kod jemputan baharu daripada pengurus / HQ (tamat tempoh selepas 7 hari)', welcome_back:'Selamat kembali', tap_to_sign_in:'Ketik untuk masukkan PIN', btn_not_me:'Bukan saya / tukar orang', err_pin_weak:'PIN terlalu mudah diteka: guna 6 hingga 12 digit, elakkan 123456 atau 111111', my_devices:'Telefon yang log masuk', devices_hint:'Jika ada telefon yang anda tidak kenal, log keluar sekarang dan tukar PIN.', devices_none:'Tiada telefon lain', device_unknown:'Peranti tidak dikenali', device_this_one:'telefon ini', device_last_seen:'Guna terakhir', btn_sign_out_device:'Log keluar', confirm_sign_out_device:'Log keluar telefon ini?', toast_device_signed_out:'Telefon itu telah dilog keluar', err_punch_branch:'Kedai itu bukan kedai anda — pilih kedai sendiri', err_punch_already_in:'Anda sudah daftar masuk', err_punch_not_in:'Tiada daftar masuk terbuka untuk didaftar keluar',
@@ -1150,6 +1153,7 @@ const S = {
   stockDeviceFilter:'all', equipTab:'devices', faultFilter:'open', historyRange:'today', attnScope:'mine',
   stockSection:'snacks', kegFilter:'tapped', beerZoneFilter:'all', pickerBranch:null, staffBranchFilter:'all', lastGeoMsg:null, clockSub:'records', reportMonth:(function(){const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');})(), reportBranch:'all', reportData:null, reportLoading:false,
   beerProducts:[], taps:[], kegs:[], kegLogs:[], memos:[], memoReads:[],
+  skus:[], stockRequests:[], orderBranch:null, orderTab:'inbox',
   punchRequests:[], swapRequests:[], clockBranch:null, notifSeen:[], token:null, loginList:null, employeesLoaded:false, sb:null, taskTemplates:[], taskRuns:[], handovers:[], taskBranch:null, equipment:[], tempLogs:[], safetyChecks:[], incidents:[], weekStart:null, schedBranch:null, assetBranch:null, equipTabInit:false, auditTemplates:[], audits:[], rectifications:[], auditBranch:null, pushOn:false, runnerVisits:[], bankIns:[], runnerDate:null, runnerEmp:null, guideRole:null,
   notifKnown:null, pageLoadedAt:new Date().toISOString(), notifBrowser:(function(){ try{ return localStorage.getItem('bgc_notif')==='1'; }catch(e){ return false; } })(),
   showReport:false, meAdmin:false,
@@ -1530,6 +1534,8 @@ function subscribeAll(){
   sub('runnerVisits','runnerVisits',{order:'createdAt',limit:800,sinceDays:92});
   sub('bankIns','bankIns',{order:'createdAt',limit:400,sinceDays:92});
   sub('notifSeen','notifSeen',{limit:500});
+  sub('skus','skus',{limit:2000});
+  sub('stockRequests','stockRequests',{order:'createdAt',limit:400,sinceDays:120});
   sub('beerProducts','beerProducts',{limit:200});
   sub('taps','taps',{limit:100});
   sub('kegs','kegs',{order:'createdAt',dir:'desc',limit:500});
@@ -1561,7 +1567,7 @@ function renderApp(){
     view.innerHTML = screenMsg(ICONS.cloudOff,t('connecting_title'),t('connecting_body')); return;
   }
   view.innerHTML='';
-  const map={home:homeView, clock:clockView, tasks:tasksView, stock:stockView, equip:equipView, me:meView, memos:memosView, audit:auditView, runner:runnerView, guide:guideView};
+  const map={home:homeView, clock:clockView, tasks:tasksView, stock:stockView, order:orderView, equip:equipView, me:meView, memos:memosView, audit:auditView, runner:runnerView, guide:guideView};
   view.appendChild((map[S.tab]||homeView)());
   view.querySelectorAll('.list-row, .id-pick-row').forEach(r=>{ if(r.onclick && !r.hasAttribute('tabindex')){ r.setAttribute('tabindex','0'); r.setAttribute('role','button'); } });
 }
@@ -3151,7 +3157,7 @@ function sessionsBlock(empId){
     list.innerHTML='';
     if(!rows || rows.length===0){ list.appendChild(el(`<div class="hint">${esc(t('devices_none'))}</div>`)); return; }
     rows.forEach(r=>{
-      const seen = r.last_seen ? (d=>isNaN(d)?'':todayStr(d)+' '+pad2(d.getHours())+':'+pad2(d.getMinutes()))(new Date(r.last_seen)) : '';
+      const seen = localStamp(r.last_seen);
       const row=el(`<div class="list-row" style="cursor:default;"><div class="lr-main">
         <div class="lr-title">${esc(r.device||t('device_unknown'))}${r.is_current?' · '+esc(t('device_this_one')):''}</div>
         <div class="lr-sub">${esc(t('device_last_seen'))} ${esc(seen)}</div></div></div>`);
@@ -3416,6 +3422,10 @@ function adminSection(){
     {key:'safetyIntervalMin', label:t('field_safety_interval'), type:'number', default:S.settings.safetyIntervalMin||120},
     {key:'emergencyPhone', label:t('field_emergency_phone'), default:S.settings.emergencyPhone||''},
     {key:'shiftTemplates', label:t('field_shift_templates'), type:'textarea', default:S.settings.shiftTemplates||''},
+    {key:'orderCutoffDay', label:t('field_order_cutoff_day'), type:'select',
+     options:[{v:'',l:t('order_cutoff_off')}].concat([0,1,2,3,4,5,6].map(i=>({v:String(i), l:weekdayLabel(new Date(2026,0,4+i))}))),
+     default: S.settings.orderCutoffDay==null ? '' : String(S.settings.orderCutoffDay)},
+    {key:'orderCutoffTime', label:t('field_order_cutoff_time'), type:'time', default:S.settings.orderCutoffTime||'12:00'},
     {key:'slaHighHours', label:t('field_sla_high'), type:'number', default:S.settings.slaHighHours||4},
     {key:'slaMediumHours', label:t('field_sla_medium'), type:'number', default:S.settings.slaMediumHours||24},
     {key:'slaLowHours', label:t('field_sla_low'), type:'number', default:S.settings.slaLowHours||72},
@@ -4473,6 +4483,467 @@ function incidentsBlock(branch){
 }
 
 /* ============================ VISUAL REFRESH: ICON BADGES, HELLO CARD, FUNCTION GRID ============================ */
+/* ============================ STOCK REQUESTS ============================
+   Stores ask HQ for goods. The catalogue is exported out of AutoCount and pasted in
+   here; nothing in this file ever writes back to AutoCount. One request is one
+   document with its lines inside it, so a store's whole order reaches HQ as a single
+   row and HQ can add up thirteen stores without stitching anything together. */
+
+function localStamp(iso, dateOnly){
+  const d = new Date(iso);
+  if(!iso || isNaN(d)) return '';
+  return todayStr(d) + (dateOnly ? '' : ' ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes()));
+}
+function orderBranchFor(){
+  return S.orderBranch || myBranch() || (allBranchIds()[0] || '');
+}
+function skuSoldAt(sku, branch){
+  const only = (sku.branches || '').trim();
+  if(!only) return true;                       // blank means every store
+  return only.toUpperCase().split(/\s*[,;]\s*/).filter(Boolean).includes((branch||'').toUpperCase());
+}
+function activeSkus(branch){
+  return S.skus.filter(s => s.active !== false && skuSoldAt(s, branch))
+               .sort((a,b)=>(a.category||'~').localeCompare(b.category||'~') || (a.name||'').localeCompare(b.name||''));
+}
+function draftRequestFor(branch){
+  return S.stockRequests.find(r => r.branch === branch && r.status === 'draft') || null;
+}
+function requestLines(r){ return Array.isArray(r && r.lines) ? r.lines : []; }
+function requestQty(r){ return requestLines(r).reduce((n,l)=>n + (Number(l.qty)||0), 0); }
+function lastOrderedQty(branch, skuId){
+  const past = S.stockRequests
+    .filter(r => r.branch === branch && r.status !== 'draft')
+    .sort((a,b)=>String(b.submittedAt||b.createdAt||'').localeCompare(String(a.submittedAt||a.createdAt||'')));
+  for(const r of past){
+    const line = requestLines(r).find(l => l.skuId === skuId);
+    if(line) return Number(line.qty)||0;
+  }
+  return null;
+}
+/* The cut-off is a deadline staff can see, not a lock. A store that misses it can still
+   send the order; it just arrives after HQ has placed that round. */
+function orderCutoff(){
+  const day = S.settings.orderCutoffDay;
+  if(day === '' || day == null) return null;
+  const [hh, mm] = String(S.settings.orderCutoffTime || '12:00').split(':').map(Number);
+  const now = new Date(), target = new Date(now);
+  target.setDate(now.getDate() + ((Number(day) - now.getDay() + 7) % 7));
+  target.setHours(hh || 0, mm || 0, 0, 0);
+  if(target <= now) target.setDate(target.getDate() + 7);
+  return {at: target, hoursLeft: Math.round((target - now) / 3600000),
+          label: todayStr(target) + ' ' + pad2(target.getHours()) + ':' + pad2(target.getMinutes())};
+}
+function orderStatusPill(status){
+  const map = {draft:['n','order_status_draft'], submitted:['ok','order_status_submitted'],
+               approved:['ok','order_status_approved'], rejected:['critical','order_status_rejected']};
+  const [cls, key] = map[status] || ['n','order_status_draft'];
+  return `<span class="pill ${cls}">${esc(t(key))}</span>`;
+}
+
+/* ---------- the store's screen ---------- */
+function orderView(){
+  const c = el('<div></div>');
+  const e = currentEmployee();
+
+  if(isAdmin()){
+    c.appendChild(el(`<div class="seg" style="margin:2px 0 14px;">
+      <button data-v="inbox" class="${S.orderTab!=='summary'&&S.orderTab!=='catalog'?'on':''}">${esc(t('order_tab_inbox'))}</button>
+      <button data-v="summary" class="${S.orderTab==='summary'?'on':''}">${esc(t('order_tab_summary'))}</button>
+      <button data-v="catalog" class="${S.orderTab==='catalog'?'on':''}">${esc(t('order_tab_catalog'))}</button></div>`));
+    [...c.lastChild.querySelectorAll('button')].forEach(b=>{ b.onclick=()=>{ S.orderTab=b.dataset.v; renderApp(); }; });
+    if(S.orderTab === 'summary') return c.appendChild(orderSummaryView()), c;
+    if(S.orderTab === 'catalog') return c.appendChild(orderCatalogView()), c;
+    return c.appendChild(orderInboxView()), c;
+  }
+
+  const branches = allBranchIds().filter(b => b === myBranch() || coversBranch(e, b));
+  const branch = branches.includes(orderBranchFor()) ? orderBranchFor() : (branches[0] || myBranch() || '');
+  if(branches.length > 1){
+    const chipRow = el('<div class="chiprow"></div>');
+    branches.forEach(b=>{
+      const chip = el(`<button class="chip ${branch===b?'on':''}">${esc(b)}</button>`);
+      chip.onclick = ()=>{ S.orderBranch = b; renderApp(); };
+      chipRow.appendChild(chip);
+    });
+    c.appendChild(chipRow);
+  }
+  if(!branch){ c.appendChild(el(`<div class="empty">${ICONS.box}<div>${esc(t('order_no_branch'))}</div></div>`)); return c; }
+
+  const cut = orderCutoff();
+  if(cut){
+    const soon = cut.hoursLeft <= 24;
+    c.appendChild(el(`<div class="card" style="padding:10px 12px; ${soon?'border-color:var(--warn,#c80);':''}">
+      <div class="lr-sub">${esc(t('order_cutoff_prefix'))} <b>${esc(cut.label)}</b> · ${esc(t('order_cutoff_left_prefix'))}${cut.hoursLeft}${esc(t('order_cutoff_left_suffix'))}</div></div>`));
+  }
+
+  c.appendChild(secH('box','c-blue', t('order_current') + ' · ' + branch));
+  const draft = draftRequestFor(branch);
+  const card = el('<div class="card"></div>');
+
+  if(!draft || requestLines(draft).length === 0){
+    card.appendChild(el(`<div class="hint" style="margin:0 0 10px;">${esc(t('order_empty'))}</div>`));
+  } else {
+    const list = el('<div class="list"></div>');
+    requestLines(draft).forEach(line=>{
+      const row = el(`<div class="list-row" style="cursor:default;">
+        <div class="lr-main"><div class="lr-title">${esc(line.name)}</div>
+        <div class="lr-sub">${esc(line.code||'')}${line.code?' · ':''}${esc(line.unit||'')}</div></div>
+        <span class="num" style="font-weight:900; font-size:16px; margin-right:10px;">${Number(line.qty)||0}</span></div>`);
+      const del = el(`<button class="btn sm">${ICONS.x}</button>`);
+      del.onclick = async ()=>{
+        const lines = requestLines(draft).filter(l => l.lineId !== line.lineId);
+        try{ await S.db.doc('stockRequests/'+draft.id).update({lines}); }catch(err){ toast(dbErrMsg(err)); }
+      };
+      row.appendChild(del);
+      list.appendChild(row);
+    });
+    card.appendChild(list);
+  }
+
+  const addBtn = el(`<button class="btn block" style="margin-top:10px;">${ICONS.plus}<span>${esc(t('order_btn_add_item'))}</span></button>`);
+  addBtn.onclick = ()=>openSkuPicker(branch);
+  card.appendChild(addBtn);
+
+  if(draft && requestLines(draft).length > 0){
+    const sendBtn = el(`<button class="btn primary block" style="margin-top:8px;">${esc(t('order_btn_send'))} (${requestLines(draft).length})</button>`);
+    sendBtn.onclick = async ()=>{
+      if(!confirm(t('order_confirm_send'))) return;
+      sendBtn.disabled = true;
+      try{
+        // the database stamps the time and the sender, and locks the store out of it
+        await rpc('submit_stock_request', {req_id: draft.id});
+        toast(t('order_toast_sent'));
+      }catch(err){ toast(dbErrMsg(err)); sendBtn.disabled = false; }
+    };
+    card.appendChild(sendBtn);
+    const urgent = el(`<label class="row" style="margin-top:8px; gap:8px; align-items:center; cursor:pointer;">
+      <input type="checkbox" ${draft.urgent?'checked':''}> <span class="lr-sub">${esc(t('order_urgent'))}</span></label>`);
+    urgent.querySelector('input').onchange = async (ev)=>{
+      try{ await S.db.doc('stockRequests/'+draft.id).update({urgent: ev.target.checked}); }catch(err){ toast(dbErrMsg(err)); }
+    };
+    card.appendChild(urgent);
+  }
+  c.appendChild(card);
+
+  const past = S.stockRequests.filter(r => r.branch === branch && r.status !== 'draft')
+    .sort((a,b)=>String(b.submittedAt||b.createdAt||'').localeCompare(String(a.submittedAt||a.createdAt||'')));
+  c.appendChild(el(`<div class="sec-row"><h2 class="sec">${esc(t('order_history'))}</h2></div>`));
+  if(past.length === 0) c.appendChild(el(`<div class="hint">${esc(t('order_no_history'))}</div>`));
+  const hist = el('<div class="list"></div>');
+  past.slice(0, 20).forEach(r=>{
+    const row = el(`<div class="list-row"><div class="lr-main">
+      <div class="lr-title">${esc(localStamp(r.submittedAt||r.createdAt, true))} ${orderStatusPill(r.status)}</div>
+      <div class="lr-sub">${requestLines(r).length}${esc(t('order_items_suffix'))}${r.hqNote?' · '+esc(r.hqNote):''}</div></div></div>`);
+    row.onclick = ()=>openRequestSheet(r, false);
+    hist.appendChild(row);
+  });
+  c.appendChild(hist);
+  return c;
+}
+
+/* ---------- picking goods off the catalogue ---------- */
+function openSkuPicker(branch){
+  const body = el('<div></div>');
+  const all = activeSkus(branch);
+  if(all.length === 0){
+    body.appendChild(el(`<div class="empty">${ICONS.box}<div>${esc(t('order_catalog_empty'))}</div></div>`));
+    openSheet(t('order_btn_add_item'), body);
+    return;
+  }
+  const search = el(`<label class="field"><span class="fl">${esc(t('order_search'))}</span><input type="search" placeholder="${esc(t('order_search_ph'))}"></label>`);
+  body.appendChild(search);
+  const listWrap = el('<div class="list" style="max-height:52vh; overflow:auto;"></div>');
+  body.appendChild(listWrap);
+
+  const draft = draftRequestFor(branch);
+  const already = new Set(requestLines(draft).map(l=>l.skuId));
+
+  const render = ()=>{
+    const q = (search.querySelector('input').value || '').trim().toLowerCase();
+    const shown = all.filter(s => !q || (s.name||'').toLowerCase().includes(q) || (s.code||'').toLowerCase().includes(q)).slice(0, 120);
+    listWrap.innerHTML = '';
+    if(shown.length === 0){ listWrap.appendChild(el(`<div class="hint">${esc(t('order_search_none'))}</div>`)); return; }
+    let lastCat = null;
+    shown.forEach(s=>{
+      if((s.category||'') !== lastCat){ lastCat = s.category||'';
+        if(lastCat) listWrap.appendChild(el(`<div class="hint" style="margin:8px 0 2px; font-weight:800;">${esc(lastCat)}</div>`)); }
+      const last = lastOrderedQty(branch, s.id);
+      const row = el(`<div class="list-row" tabindex="0" role="button"><div class="lr-main">
+        <div class="lr-title">${esc(s.name)}${already.has(s.id)?' ✓':''}</div>
+        <div class="lr-sub">${esc(s.unit||'')}${s.code?' · '+esc(s.code):''}${last!=null?' · '+esc(t('order_last_time'))+last:''}</div></div>
+        ${ICONS.plus}</div>`);
+      row.onclick = ()=>openQtySheet(branch, s);
+      listWrap.appendChild(row);
+    });
+  };
+  search.querySelector('input').oninput = render;
+  render();
+  openSheet(t('order_btn_add_item') + ' · ' + branch, body);
+  setTimeout(()=>{ const i = search.querySelector('input'); if(i) i.focus(); }, 60);
+}
+
+function openQtySheet(branch, sku){
+  const body = el('<div></div>');
+  const last = lastOrderedQty(branch, sku.id);
+  body.appendChild(el(`<div class="card" style="text-align:center;">
+    <div style="font-weight:900; font-size:16px;">${esc(sku.name)}</div>
+    <div class="lr-sub">${esc(sku.unit||'')}${sku.code?' · '+esc(sku.code):''}</div>
+    ${last!=null?`<div class="hint" style="margin-top:6px;">${esc(t('order_last_time'))}${last}</div>`:''}</div>`));
+  const draft = draftRequestFor(branch);
+  const existing = requestLines(draft).find(l => l.skuId === sku.id);
+  let qty = existing ? (Number(existing.qty)||1) : 1;
+
+  const row = el('<div class="row" style="justify-content:center; gap:14px; margin:14px 0;"></div>');
+  const minus = el('<button class="btn" style="font-size:22px; width:56px;">−</button>');
+  const num = el(`<input class="num" type="number" inputmode="numeric" min="1" value="${qty}" style="width:90px; text-align:center; font-size:22px; font-weight:900;">`);
+  const plus = el('<button class="btn" style="font-size:22px; width:56px;">+</button>');
+  minus.onclick = ()=>{ qty = Math.max(1, (Number(num.value)||1) - 1); num.value = qty; };
+  plus.onclick  = ()=>{ qty = Math.max(1, (Number(num.value)||1) + 1); num.value = qty; };
+  row.appendChild(minus); row.appendChild(num); row.appendChild(plus);
+  body.appendChild(row);
+
+  const foot = el('<div class="sheet-foot"></div>');
+  const btn = el(`<button class="btn primary block">${esc(existing ? t('order_btn_update') : t('order_btn_add'))}</button>`);
+  btn.onclick = async ()=>{
+    const n = Math.max(1, Number(num.value)||1);
+    btn.disabled = true;
+    const line = {lineId: existing ? existing.lineId : ('l'+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),
+                  skuId: sku.id, code: sku.code||'', name: sku.name, unit: sku.unit||'', qty: n};
+    try{
+      if(draft){
+        const lines = existing
+          ? requestLines(draft).map(l => l.lineId === existing.lineId ? line : l)
+          : requestLines(draft).concat([line]);
+        await S.db.doc('stockRequests/'+draft.id).update({lines});
+      } else {
+        const me = currentEmployee();
+        await S.db.collection('stockRequests').add({
+          branch, status:'draft', urgent:false, lines:[line],
+          createdBy: me.id, createdByName: me.name, createdAt: new Date().toISOString()});
+      }
+      toast(t('order_toast_added'));
+      closeSheet();
+    }catch(err){ toast(dbErrMsg(err)); btn.disabled = false; }
+  };
+  foot.appendChild(btn); body.appendChild(foot);
+  openSheet(t('order_qty'), body);
+}
+
+/* ---------- HQ: what has come in ---------- */
+function orderInboxView(){
+  const c = el('<div></div>');
+  const open = S.stockRequests.filter(r => r.status === 'submitted')
+    .sort((a,b)=> (b.urgent?1:0)-(a.urgent?1:0) || String(a.submittedAt||'').localeCompare(String(b.submittedAt||'')));
+  c.appendChild(el(`<div class="sec-row"><h2 class="sec">${esc(t('order_inbox_title'))} (${open.length})</h2></div>`));
+  if(open.length === 0) c.appendChild(el(`<div class="hint">${esc(t('order_inbox_empty'))}</div>`));
+  const list = el('<div class="list"></div>');
+  open.forEach(r=>{
+    const row = el(`<div class="list-row"><div class="lr-main">
+      <div class="lr-title">${r.urgent?'🔴 ':''}${esc(r.branch)} · ${requestLines(r).length}${esc(t('order_items_suffix'))}</div>
+      <div class="lr-sub">${esc(localStamp(r.submittedAt))} · ${esc(r.submittedByName||r.createdByName||'')}</div></div>
+      ${ICONS.chev}</div>`);
+    row.onclick = ()=>openRequestSheet(r, true);
+    list.appendChild(row);
+  });
+  c.appendChild(list);
+
+  const done = S.stockRequests.filter(r => r.status === 'approved' || r.status === 'rejected')
+    .sort((a,b)=>String(b.reviewedAt||'').localeCompare(String(a.reviewedAt||''))).slice(0,15);
+  if(done.length){
+    c.appendChild(el(`<div class="sec-row"><h2 class="sec">${esc(t('order_done_title'))}</h2></div>`));
+    const l2 = el('<div class="list"></div>');
+    done.forEach(r=>{
+      const row = el(`<div class="list-row"><div class="lr-main">
+        <div class="lr-title">${esc(r.branch)} ${orderStatusPill(r.status)}</div>
+        <div class="lr-sub">${esc(localStamp(r.reviewedAt, true))} · ${requestLines(r).length}${esc(t('order_items_suffix'))}</div></div></div>`);
+      row.onclick = ()=>openRequestSheet(r, false);
+      l2.appendChild(row);
+    });
+    c.appendChild(l2);
+  }
+  return c;
+}
+
+function openRequestSheet(r, editable){
+  const body = el('<div></div>');
+  body.appendChild(el(`<div class="lr-sub" style="margin-bottom:8px;">${esc(r.branch)} · ${esc(localStamp(r.submittedAt||r.createdAt))} ${orderStatusPill(r.status)}${r.urgent?' 🔴':''}</div>`));
+  const lines = requestLines(r).map(l=>Object.assign({}, l));
+  const list = el('<div class="list"></div>');
+  lines.forEach(line=>{
+    const row = el(`<div class="list-row" style="cursor:default;"><div class="lr-main">
+      <div class="lr-title">${esc(line.name)}</div>
+      <div class="lr-sub">${esc(line.code||'')}${line.code?' · ':''}${esc(line.unit||'')}</div></div></div>`);
+    if(editable){
+      const inp = el(`<input class="num" type="number" min="0" value="${Number(line.qty)||0}" style="width:70px; text-align:center; font-weight:800;">`);
+      inp.oninput = ()=>{ line.qty = Math.max(0, Number(inp.value)||0); };
+      row.appendChild(inp);
+    } else {
+      row.appendChild(el(`<span class="num" style="font-weight:900;">${Number(line.qty)||0}</span>`));
+    }
+    list.appendChild(row);
+  });
+  body.appendChild(list);
+
+  if(editable){
+    const f = [{key:'hqNote', label:t('order_hq_note'), type:'textarea', default:r.hqNote||''}];
+    const formEl = el('<div>'+fieldsHTML(f, r)+'</div>');
+    body.appendChild(formEl);
+    const foot = el('<div class="sheet-foot row" style="gap:8px;"></div>');
+    const ok = el(`<button class="btn primary block">${esc(t('order_btn_approve'))}</button>`);
+    const no = el(`<button class="btn danger block">${esc(t('order_btn_reject'))}</button>`);
+    const review = async (status)=>{
+      ok.disabled = no.disabled = true;
+      const me = currentEmployee();
+      try{
+        await S.db.doc('stockRequests/'+r.id).update({
+          status, lines: lines.filter(l=>(Number(l.qty)||0) > 0),
+          hqNote: readFields(formEl, f).hqNote || '',
+          reviewedBy: me.id, reviewedByName: me.name, reviewedAt: new Date().toISOString()});
+        toast(t('toast_saved')); closeSheet();
+      }catch(err){ toast(dbErrMsg(err)); ok.disabled = no.disabled = false; }
+    };
+    ok.onclick = ()=>review('approved');
+    no.onclick = ()=>{ if(confirm(t('order_confirm_reject'))) review('rejected'); };
+    foot.appendChild(ok); foot.appendChild(no); body.appendChild(foot);
+  } else if(r.hqNote){
+    body.appendChild(el(`<p class="hint">${esc(t('order_hq_note'))}: ${esc(r.hqNote)}</p>`));
+  }
+  openSheet(t('order_sheet_title') + ' · ' + r.branch, body);
+}
+
+/* ---------- HQ: thirteen stores added up ---------- */
+function orderSummaryView(){
+  const c = el('<div></div>');
+  const src = S.stockRequests.filter(r => r.status === 'submitted' || r.status === 'approved');
+  const agg = new Map();
+  src.forEach(r=>requestLines(r).forEach(l=>{
+    const k = l.skuId || l.code || l.name;
+    const row = agg.get(k) || {code:l.code||'', name:l.name, unit:l.unit||'', total:0, stores:{}};
+    row.total += Number(l.qty)||0;
+    row.stores[r.branch] = (row.stores[r.branch]||0) + (Number(l.qty)||0);
+    agg.set(k, row);
+  }));
+  const rows = [...agg.values()].sort((a,b)=>b.total - a.total);
+  c.appendChild(el(`<div class="sec-row"><h2 class="sec">${esc(t('order_summary_title'))} (${rows.length})</h2></div>`));
+  c.appendChild(el(`<p class="hint" style="margin-top:-4px;">${esc(t('order_summary_hint'))}</p>`));
+  if(rows.length === 0){ c.appendChild(el(`<div class="hint">${esc(t('order_inbox_empty'))}</div>`)); return c; }
+
+  const list = el('<div class="list"></div>');
+  rows.forEach(r=>{
+    const per = Object.entries(r.stores).sort().map(([b,q])=>b+' '+q).join(' · ');
+    list.appendChild(el(`<div class="list-row" style="cursor:default;"><div class="lr-main">
+      <div class="lr-title">${esc(r.name)}</div>
+      <div class="lr-sub">${esc(per)}</div></div>
+      <span class="num" style="font-weight:900; font-size:16px;">${r.total}</span>
+      <span class="lr-sub" style="margin-left:6px;">${esc(r.unit)}</span></div>`));
+  });
+  c.appendChild(list);
+
+  const exp = el(`<button class="btn block" style="margin-top:12px;">${ICONS.download}<span>${esc(t('order_btn_export'))}</span></button>`);
+  exp.onclick = async ()=>{
+    const branches = [...new Set(src.map(r=>r.branch))].sort();
+    const out = rows.map(r=>{
+      const o = {code:r.code, name:r.name, unit:r.unit, total:r.total};
+      branches.forEach(b=>{ o[b] = r.stores[b] || ''; });
+      return o;
+    });
+    try{
+      await S.downloads.save({filename:'stock_requests_'+todayStr()+'.csv',
+                              data: toCSV(out, ['code','name','unit','total'].concat(branches))});
+      toast(t('toast_exported'));
+    }catch(err){ if(!(err && err.code === 'declined')) toast(t('toast_export_failed')); }
+  };
+  c.appendChild(exp);
+  return c;
+}
+
+/* ---------- HQ: the catalogue ---------- */
+function orderCatalogView(){
+  const c = el('<div></div>');
+  c.appendChild(el(`<p class="hint">${esc(t('order_catalog_hint'))}</p>`));
+  c.appendChild(adminBlock(t('order_tab_catalog'), ()=>openSkuForm(), S.skus.slice(0,300).map(s=>({
+    title: s.name + (s.active === false ? ' · ' + t('order_sku_off') : ''),
+    sub: [s.code, s.unit, s.category, s.supplier, (s.branches||'').trim() ? t('order_sku_limited')+(s.branches||'') : ''].filter(Boolean).join(' · '),
+    onClick: ()=>openSkuForm(s),
+    onDelete: async ()=>{ try{ await S.db.doc('skus/'+s.id).delete(); toast(t('toast_deleted')); }catch(e){ toast(dbErrMsg(e)); } },
+  })), {label:t('order_btn_paste'), onClick:()=>openSkuBulkForm()}));
+  return c;
+}
+
+function openSkuForm(sku){
+  const f = [
+    {key:'code', label:t('order_field_code'), ph:'1001'},
+    {key:'name', label:t('order_field_name')},
+    {key:'unit', label:t('order_field_unit'), ph:t('order_field_unit_ph')},
+    {key:'category', label:t('order_field_category')},
+    {key:'supplier', label:t('order_field_supplier')},
+    {key:'branches', label:t('order_field_branches'), ph:'BR01, BR19'},
+    {key:'active', label:t('order_field_active'), type:'select', options:[{v:'yes',l:t('opt_yes')},{v:'no',l:t('opt_no')}],
+     default: sku && sku.active === false ? 'no' : 'yes'},
+  ];
+  const body = el('<div>'+fieldsHTML(f, sku||{})+'</div>');
+  const foot = el('<div class="sheet-foot"></div>');
+  const btn = el(`<button class="btn primary block">${esc(t('btn_save'))}</button>`);
+  btn.onclick = async ()=>{
+    const v = readFields(body, f);
+    if(!v.name || !v.name.trim()){ toast(t('order_err_name')); return; }
+    const data = {code:(v.code||'').trim(), name:v.name.trim(), unit:(v.unit||'').trim(),
+                  category:(v.category||'').trim(), supplier:(v.supplier||'').trim(),
+                  branches:(v.branches||'').trim(), active: v.active !== 'no'};
+    btn.disabled = true;
+    try{
+      if(sku) await S.db.doc('skus/'+sku.id).update(data);
+      else await S.db.collection('skus').add(Object.assign({createdAt:new Date().toISOString()}, data));
+      toast(t('toast_saved')); closeSheet();
+    }catch(e){ toast(dbErrMsg(e)); btn.disabled = false; }
+  };
+  foot.appendChild(btn); body.appendChild(foot);
+  openSheet(sku ? t('order_sheet_edit_sku') : t('order_sheet_add_sku'), body);
+}
+
+/* Paste straight out of an AutoCount item export: one line per item, tab or comma
+   separated, in the order code, name, unit, category, supplier. Only the name is
+   required, so a two-column export works just as well as a five-column one. */
+function openSkuBulkForm(){
+  const body = el('<div></div>');
+  body.appendChild(el(`<p class="hint" style="margin-top:0;">${esc(t('order_paste_hint'))}</p>`));
+  const wrap = el(`<label class="field"><span class="fl">${esc(t('order_paste_label'))}</span></label>`);
+  const ta = el('<textarea rows="9" class="num" style="font-size:12.5px;"></textarea>');
+  ta.placeholder = '1001\tCoca-Cola 320ml\tctn\tDrinks\tF&N\n1002\tGardenia White Bread\tpkt\tBakery\tGardenia';
+  wrap.appendChild(ta); body.appendChild(wrap);
+  const preview = el('<div class="hint"></div>'); body.appendChild(preview);
+  const parse = ()=>ta.value.split('\n').map(line=>{
+    const p = line.split(/\t|,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(x=>x.replace(/^"|"$/g,'').trim());
+    if(p.length === 1 && !p[0]) return null;
+    const hasCode = p.length > 1 && /^[A-Za-z0-9._\-\/]+$/.test(p[0]) && p[1];
+    const o = hasCode
+      ? {code:p[0], name:p[1], unit:p[2]||'', category:p[3]||'', supplier:p[4]||''}
+      : {code:'', name:p[0], unit:p[1]||'', category:p[2]||'', supplier:p[3]||''};
+    return o.name ? o : null;
+  }).filter(Boolean);
+  ta.oninput = ()=>{ const n = parse().length; preview.textContent = n ? t('bulk_will_import')+n : ''; };
+
+  const foot = el('<div class="sheet-foot"></div>');
+  const btn = el(`<button class="btn primary block">${esc(t('btn_bulk_add'))}</button>`);
+  btn.onclick = async ()=>{
+    const rows = parse();
+    if(rows.length === 0){ toast(t('err_bulk_min')); return; }
+    const haveCode = new Set(S.skus.filter(s=>s.code).map(s=>String(s.code).toLowerCase()));
+    const haveName = new Set(S.skus.map(s=>String(s.name).toLowerCase()));
+    const toAdd = rows.filter(r => r.code ? !haveCode.has(r.code.toLowerCase()) : !haveName.has(r.name.toLowerCase()));
+    if(toAdd.length === 0){ toast(t('toast_all_exist')); return; }
+    btn.disabled = true; btn.textContent = t('toast_adding');
+    const res = await Promise.allSettled(toAdd.map(r =>
+      S.db.collection('skus').add(Object.assign({active:true, branches:'', createdAt:new Date().toISOString()}, r))));
+    const failed = res.filter(x=>x.status === 'rejected').length;
+    toast(t('toast_added_prefix')+(toAdd.length-failed)+t('order_items_suffix')+(failed?t('toast_failed_prefix')+failed+t('toast_failed_suffix'):''));
+    closeSheet();
+  };
+  foot.appendChild(btn); body.appendChild(foot);
+  openSheet(t('order_btn_paste'), body);
+}
+
 function ib(icon, cls, size){ return `<span class="ib ${cls||'c-grey'} ${size||''}">${ICONS[icon]||''}</span>`; }
 function secH(icon, cls, text){ return el(`<h2 class="sec">${ib(icon, cls, 'sm')}${esc(text)}</h2>`); }
 function helloCard(e, clockedIn, last){
@@ -4501,6 +4972,9 @@ function funcGrid(clockedIn){
     {k:'incident', icon:'alert', cls:'c-red', label:t('tile_incident'), go:()=>openIncidentForm()},
     {k:'sos', icon:'siren', cls:'c-red', label:t('tile_sos'), go:()=>openSosSheet()},
     {k:'stock', icon:'box', cls:'c-blue', label:t('tile_stock'), go:()=>{ S.stockSection='snacks'; location.hash='#stock'; }},
+    {k:'order', icon:'download', cls:'c-teal', label:t('tile_order'),
+     count: isAdmin() ? S.stockRequests.filter(r=>r.status==='submitted').length : 0,
+     go:()=>{ S.orderTab='inbox'; location.hash='#order'; }},
   ];
   if(hasBeer) tiles.push({k:'beer', icon:'beer', cls:'c-amber', label:t('tile_beer'), go:()=>{ S.stockSection='beer'; location.hash='#stock'; }});
   tiles.push({k:'equip', icon:'machine', cls:'c-grey', label:t('tile_equip'), go:()=>{ location.hash='#equip'; }});
