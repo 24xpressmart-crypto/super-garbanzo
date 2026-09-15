@@ -264,7 +264,7 @@
   .avimg{width:100%; height:100%; object-fit:cover; border-radius:50%; display:block;} .avatar{overflow:hidden;} .hello .av{overflow:hidden;}
   .ib{display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:12px; flex-shrink:0;}
   .ib svg{width:20px; height:20px;}
-  .ib.lg{width:50px; height:50px; border-radius:15px;} .ib.lg svg{width:25px; height:25px;}
+  .ib.lg{width:62px; height:62px; border-radius:19px;} .ib.lg svg{width:31px; height:31px;}
   .ib.sm{width:26px; height:26px; border-radius:8px;} .ib.sm svg{width:15px; height:15px;}
   .sec .ib.sm{margin-right:8px; vertical-align:-7px;}
   .list-row>.ib{margin-right:2px;}
@@ -276,10 +276,17 @@
   .hello{display:flex; align-items:center; gap:12px; padding:14px 16px; border-radius:18px; background:linear-gradient(135deg, var(--accent) 0%, #1F5F8B 100%); color:#fff; margin-top:2px; box-shadow:0 8px 22px rgba(31,95,139,.22);}
   .hello .av{width:46px; height:46px; border-radius:50%; background:rgba(255,255,255,.22); display:flex; align-items:center; justify-content:center; font-weight:900; font-size:18px; flex-shrink:0;}
   .hello .g{font-size:16px; font-weight:900; line-height:1.3;} .hello .s{font-size:12.5px; opacity:.92; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-  .fgrid{display:grid; grid-template-columns:repeat(4,1fr); gap:12px 6px; margin-top:6px;}
+  .fgrid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px 8px; margin-top:6px;}
+  /* Twenty-three identical small tiles in one flat block is why nobody could find
+     anything. Each group now carries its own heading and its own colour. */
+  .fgroup{display:flex; align-items:center; gap:8px; margin:20px 0 2px;}
+  .fgroup:first-of-type{margin-top:8px;}
+  .fgroup .ft{font-size:13px; font-weight:900; letter-spacing:.2px; color:var(--ink);}
+  .fgroup .fline{flex:1; height:1px; background:var(--line, rgba(0,0,0,.10));}
+  .fgroup .fsub{font-size:11px; color:var(--ink-faint); font-weight:600;}
   .ftile{display:flex; flex-direction:column; align-items:center; gap:7px; background:transparent; border:0; padding:6px 2px; cursor:pointer; color:var(--ink); font:inherit; -webkit-tap-highlight-color:transparent;}
   .ftile:active .ib{transform:scale(.94);} .ftile .ib{transition:transform .12s;}
-  .ftile .lb{font-size:11.5px; font-weight:700; line-height:1.2; text-align:center;}
+  .ftile .lb{font-size:12.5px; font-weight:700; line-height:1.25; text-align:center;}
   .ftile .bd{position:relative;}
   .ftile .cnt{position:absolute; top:-5px; right:-7px; min-width:18px; height:18px; border-radius:9px; background:var(--critical); color:#fff; font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; padding:0 5px; border:2px solid var(--paper);}
   .weekgrid{border-collapse:collapse; min-width:560px; font-size:12px; width:100%;}
@@ -467,6 +474,7 @@ function leaveBalanceSuffix(l){
 /* ============================ I18N ============================ */
 const I18N = {
   zh: {
+    fg_daily:'每天要做', fg_daily_sub:'上班就按这几个', fg_goods:'货与设备', fg_goods_sub:'要货、盘点、机器', fg_wrong:'出状况了', fg_wrong_sub:'坏了、吵架、危险', fg_mine:'我的事', fg_mine_sub:'请假、换班、公告', fg_manage:'管理', fg_manage_sub:'经理与 HQ', fg_more:'其他', fg_more_sub:'',
     tile_order:'要货申请', order_tab_inbox:'待处理', order_tab_summary:'合并汇总', order_tab_catalog:'货品管理', order_no_branch:'请先设定你的所属门店', order_cutoff_prefix:'本轮截单：', order_cutoff_left_prefix:'还有 ', order_cutoff_left_suffix:' 小时', order_current:'本次要货单', order_empty:'还没有加任何货品。按下面的按钮开始。', order_btn_add_item:'加货品', order_btn_send:'送出要货', order_confirm_send:'送出后就不能再改了，确定送出？', order_toast_sent:'已送出，HQ 会收到', order_urgent:'紧急单（断货，等不到下一轮）', order_history:'以往的要货单', order_no_history:'还没有送过要货单', order_items_suffix:' 项', order_status_draft:'草稿', order_status_submitted:'已送出', order_status_approved:'已批准', order_status_rejected:'已退回', order_catalog_empty:'货品清单还是空的，请 HQ 先导入货品', order_search:'找货品', order_search_ph:'打品名或货号', order_search_none:'找不到这个货品', order_last_time:'上次要了 ', order_qty:'要多少？', order_btn_update:'更新数量', order_btn_add:'加入要货单', order_toast_added:'已加入', order_inbox_title:'待处理要货', order_inbox_empty:'目前没有待处理的要货单', order_done_title:'已处理', order_hq_note:'HQ 备注', order_btn_approve:'批准', order_btn_reject:'退回', order_confirm_reject:'确定退回这张单？门店会看到你的备注。', order_sheet_title:'要货单', order_summary_title:'全部门店合计', order_summary_hint:'把所有已送出和已批准的单加起来，照这个数字去下采购单。', order_btn_export:'导出 CSV（Excel 可开）', order_catalog_hint:'货品主档从 AutoCount 导出后贴进来。这里不会写回 AutoCount。', order_sku_off:'已停用', order_sku_limited:'限：', order_btn_paste:'批量贴上货品', order_field_code:'货号（AutoCount item code）', order_field_name:'品名', order_field_unit:'单位', order_field_unit_ph:'箱 / 包 / 支', order_field_category:'分类', order_field_supplier:'供应商', order_field_branches:'适用门店（留空 = 全部）', order_field_active:'启用', order_err_name:'请填品名', order_sheet_edit_sku:'编辑货品', order_sheet_add_sku:'新增货品', order_paste_hint:'从 AutoCount 货品表复制后贴上，一行一样货。用 Tab 或逗号分隔，顺序：货号、品名、单位、分类、供应商。只有品名是必填的。', order_paste_label:'贴上货品（一行一样）', field_order_cutoff_day:'要货截单日（留空 = 不设截单）', field_order_cutoff_time:'截单时间', order_cutoff_off:'不设截单',
     err_server_problem:'服务器出错，请截图给 HQ，不是你输错', invite_bulk_warn_replace:'注意：之前印过的纸条会全部作废。请印好后当天就发给员工，中途不要再按这个按钮。',
     btn_invite_bulk:'生成本店邀请码并打印', invite_bulk_hint:'为还没设 PIN 的员工各生成一张邀请纸条。邀请码只显示这一次，打印后请当面交给本人。', invite_bulk_none:'这家店的员工都已经设好 PIN 了', invite_bulk_confirm_prefix:'将为 ', invite_bulk_confirm_suffix:' 位员工生成邀请码并打开打印页面。继续？', invite_bulk_working:'生成中，请稍候…', invite_bulk_failed:'一个都没生成成功，请检查权限', invite_bulk_partial_prefix:'有 ', invite_bulk_partial_suffix:' 位生成失败，其余已打印', invite_slip_title:'首次登录邀请纸条', invite_slip_expiry:'此邀请码有效期至', invite_slip_steps:'1. 打开 App  2. 输入上面任何一个码（工号或邀请码都行），按下一步  3. 如果还没填，输入上面的「邀请码」  4. 自己设一个 6 位数字 PIN  5. 以后这部手机只问 PIN。纸条请自己收好，不要给别人。',
@@ -691,6 +699,7 @@ const I18N = {
     toast_deleted:'已删除',
   },
   en: {
+    fg_daily:'Every shift', fg_daily_sub:'start here when you come in', fg_goods:'Goods & machines', fg_goods_sub:'ordering, stock, equipment', fg_wrong:'Something is wrong', fg_wrong_sub:'broken, complaints, danger', fg_mine:'Mine', fg_mine_sub:'leave, swaps, memos', fg_manage:'Managing', fg_manage_sub:'managers and HQ', fg_more:'Other', fg_more_sub:'',
     tile_order:'Stock request', order_tab_inbox:'To handle', order_tab_summary:'Combined total', order_tab_catalog:'Goods list', order_no_branch:'Set your home store first', order_cutoff_prefix:'Cut-off for this round:', order_cutoff_left_prefix:'', order_cutoff_left_suffix:' hours left', order_current:'This order', order_empty:'Nothing added yet. Use the button below to start.', order_btn_add_item:'Add goods', order_btn_send:'Send order', order_confirm_send:'You cannot change it after sending. Send it?', order_toast_sent:'Sent — HQ will see it', order_urgent:'Urgent (out of stock, cannot wait for the next round)', order_history:'Past orders', order_no_history:'No orders sent yet', order_items_suffix:' items', order_status_draft:'Draft', order_status_submitted:'Sent', order_status_approved:'Approved', order_status_rejected:'Sent back', order_catalog_empty:'The goods list is still empty — HQ needs to import it first', order_search:'Find goods', order_search_ph:'Type a name or code', order_search_none:'Nothing matches that', order_last_time:'last time ', order_qty:'How many?', order_btn_update:'Update quantity', order_btn_add:'Add to order', order_toast_added:'Added', order_inbox_title:'Orders to handle', order_inbox_empty:'Nothing waiting right now', order_done_title:'Handled', order_hq_note:'HQ note', order_btn_approve:'Approve', order_btn_reject:'Send back', order_confirm_reject:'Send this order back? The store will see your note.', order_sheet_title:'Order', order_summary_title:'All stores combined', order_summary_hint:'Everything sent and approved, added up. Buy against these figures.', order_btn_export:'Export CSV (opens in Excel)', order_catalog_hint:'Export the item master from AutoCount and paste it in here. Nothing is ever written back to AutoCount.', order_sku_off:'disabled', order_sku_limited:'only: ', order_btn_paste:'Paste goods in bulk', order_field_code:'Code (AutoCount item code)', order_field_name:'Name', order_field_unit:'Unit', order_field_unit_ph:'ctn / pkt / btl', order_field_category:'Category', order_field_supplier:'Supplier', order_field_branches:'Stores (blank = all)', order_field_active:'Enabled', order_err_name:'Enter a name', order_sheet_edit_sku:'Edit item', order_sheet_add_sku:'Add item', order_paste_hint:'Copy from the AutoCount item list and paste, one item per line. Separate with a tab or comma, in this order: code, name, unit, category, supplier. Only the name is required.', order_paste_label:'Paste goods (one per line)', field_order_cutoff_day:'Order cut-off day (blank = no cut-off)', field_order_cutoff_time:'Cut-off time', order_cutoff_off:'No cut-off',
     err_server_problem:'Server error — screenshot this for HQ; it is not your mistake', invite_bulk_warn_replace:'Note: every slip printed earlier stops working. Print these and hand them out the same day, and do not press this button again in between.',
     btn_invite_bulk:'Generate and print invite codes for this store', invite_bulk_hint:'Makes one slip per person who has not set a PIN yet. Each code is shown this once only — print them and hand them over in person.', invite_bulk_none:'Everyone at this store already has a PIN', invite_bulk_confirm_prefix:'Generate invite codes for ', invite_bulk_confirm_suffix:' staff and open the print page. Continue?', invite_bulk_working:'Generating, one moment...', invite_bulk_failed:'None could be generated — check your permissions', invite_bulk_partial_prefix:'', invite_bulk_partial_suffix:' could not be generated; the rest are on the printout', invite_slip_title:'First-login invite slips', invite_slip_expiry:'This invite code expires on', invite_slip_steps:'1. Open the app  2. Type either code above — staff code or invite code — and tap Continue  3. Fill in the Invite code if it is not already there  4. Choose your own 6-digit PIN  5. From then on this phone only asks for the PIN. Keep this slip to yourself.',
@@ -915,6 +924,7 @@ const I18N = {
     toast_deleted:'Deleted',
   },
   ms: {
+    fg_daily:'Setiap syif', fg_daily_sub:'mula di sini bila masuk kerja', fg_goods:'Barang & mesin', fg_goods_sub:'pesanan, stok, peralatan', fg_wrong:'Ada masalah', fg_wrong_sub:'rosak, aduan, bahaya', fg_mine:'Saya', fg_mine_sub:'cuti, tukar syif, pengumuman', fg_manage:'Pengurusan', fg_manage_sub:'pengurus dan HQ', fg_more:'Lain-lain', fg_more_sub:'',
     tile_order:'Pesanan stok', order_tab_inbox:'Perlu diuruskan', order_tab_summary:'Jumlah gabungan', order_tab_catalog:'Senarai barang', order_no_branch:'Tetapkan kedai asal anda dahulu', order_cutoff_prefix:'Tutup pesanan pusingan ini:', order_cutoff_left_prefix:'tinggal ', order_cutoff_left_suffix:' jam', order_current:'Pesanan kali ini', order_empty:'Belum ada barang. Tekan butang di bawah untuk mula.', order_btn_add_item:'Tambah barang', order_btn_send:'Hantar pesanan', order_confirm_send:'Tidak boleh diubah selepas dihantar. Hantar sekarang?', order_toast_sent:'Dihantar — HQ akan lihat', order_urgent:'Segera (kehabisan stok, tidak boleh tunggu pusingan berikutnya)', order_history:'Pesanan lepas', order_no_history:'Belum ada pesanan dihantar', order_items_suffix:' barang', order_status_draft:'Draf', order_status_submitted:'Dihantar', order_status_approved:'Diluluskan', order_status_rejected:'Dikembalikan', order_catalog_empty:'Senarai barang masih kosong — HQ perlu import dahulu', order_search:'Cari barang', order_search_ph:'Taip nama atau kod', order_search_none:'Tiada padanan', order_last_time:'kali lepas ', order_qty:'Berapa banyak?', order_btn_update:'Kemas kini kuantiti', order_btn_add:'Masukkan ke pesanan', order_toast_added:'Ditambah', order_inbox_title:'Pesanan perlu diuruskan', order_inbox_empty:'Tiada pesanan menunggu', order_done_title:'Selesai diuruskan', order_hq_note:'Nota HQ', order_btn_approve:'Luluskan', order_btn_reject:'Kembalikan', order_confirm_reject:'Kembalikan pesanan ini? Kedai akan lihat nota anda.', order_sheet_title:'Pesanan', order_summary_title:'Semua kedai digabungkan', order_summary_hint:'Semua yang dihantar dan diluluskan, dicampur. Beli ikut angka ini.', order_btn_export:'Eksport CSV (buka dalam Excel)', order_catalog_hint:'Eksport fail induk barang dari AutoCount dan tampal di sini. Tiada apa-apa ditulis semula ke AutoCount.', order_sku_off:'dimatikan', order_sku_limited:'hanya: ', order_btn_paste:'Tampal barang secara pukal', order_field_code:'Kod (kod item AutoCount)', order_field_name:'Nama', order_field_unit:'Unit', order_field_unit_ph:'ktn / pkt / btl', order_field_category:'Kategori', order_field_supplier:'Pembekal', order_field_branches:'Kedai (kosong = semua)', order_field_active:'Aktif', order_err_name:'Masukkan nama', order_sheet_edit_sku:'Edit barang', order_sheet_add_sku:'Tambah barang', order_paste_hint:'Salin dari senarai item AutoCount dan tampal, satu barang sebaris. Asingkan dengan tab atau koma, ikut susunan: kod, nama, unit, kategori, pembekal. Hanya nama diperlukan.', order_paste_label:'Tampal barang (satu sebaris)', field_order_cutoff_day:'Hari tutup pesanan (kosong = tiada)', field_order_cutoff_time:'Masa tutup', order_cutoff_off:'Tiada tutup pesanan',
     err_server_problem:'Ralat pelayan — hantar tangkap layar kepada HQ; bukan salah anda', invite_bulk_warn_replace:'Perhatian: semua slip yang dicetak sebelum ini akan terbatal. Cetak dan serahkan pada hari yang sama, dan jangan tekan butang ini lagi di antaranya.',
     btn_invite_bulk:'Jana dan cetak kod jemputan kedai ini', invite_bulk_hint:'Satu slip untuk setiap staf yang belum tetapkan PIN. Setiap kod dipapar sekali sahaja — cetak dan serahkan sendiri kepada mereka.', invite_bulk_none:'Semua staf kedai ini sudah ada PIN', invite_bulk_confirm_prefix:'Jana kod jemputan untuk ', invite_bulk_confirm_suffix:' staf dan buka halaman cetak. Teruskan?', invite_bulk_working:'Sedang menjana, tunggu sebentar...', invite_bulk_failed:'Tiada yang berjaya dijana — semak kebenaran anda', invite_bulk_partial_prefix:'', invite_bulk_partial_suffix:' gagal dijana; selebihnya ada pada cetakan', invite_slip_title:'Slip jemputan log masuk pertama', invite_slip_expiry:'Kod jemputan ini sah sehingga', invite_slip_steps:'1. Buka app  2. Taip mana-mana kod di atas — kod staf atau kod jemputan — dan tekan Teruskan  3. Isi Kod jemputan jika belum ada  4. Pilih PIN 6 digit anda sendiri  5. Selepas itu telefon ini hanya minta PIN. Simpan slip ini untuk diri sendiri.',
@@ -4993,12 +5003,30 @@ function funcGrid(clockedIn){
   tiles.push({k:'help', icon:'book', cls:'c-grey', label:t('tile_help'), go:()=>{ location.hash='#guide'; }});
   const wrap=el('<div></div>');
   wrap.appendChild(secH('grid','c-blue',t('func_title')));
-  const grid=el('<div class="fgrid"></div>');
-  tiles.forEach(tl=>{
+  // every tile belongs to exactly one group; anything new falls into "more"
+  const GROUPS = [
+    {id:'daily',  keys:['clock','tasks','handover','temp']},
+    {id:'goods',  keys:['order','stock','beer','equip']},
+    {id:'wrong',  keys:['fault','incident','sos']},
+    {id:'mine',   keys:['leave','punch','swap','memos','help']},
+    {id:'manage', keys:['approvals','schedule','report','staff','audit','overview','runner','settings']},
+  ];
+  const placed = new Set(GROUPS.flatMap(g=>g.keys));
+  const byKey = Object.fromEntries(tiles.map(tl=>[tl.k, tl]));
+  const groups = GROUPS.map(g=>({id:g.id, tiles:g.keys.map(k=>byKey[k]).filter(Boolean)}))
+                       .concat([{id:'more', tiles:tiles.filter(tl=>!placed.has(tl.k))}])
+                       .filter(g=>g.tiles.length>0);
+  const mkTile = (tl)=>{
     const b=el(`<button class="ftile" type="button"><span class="bd">${ib(tl.icon, tl.cls, 'lg')}${tl.count?`<span class="cnt">${tl.count>99?'99+':tl.count}</span>`:''}</span><span class="lb">${esc(tl.label)}</span></button>`);
-    b.onclick=tl.go; grid.appendChild(b);
+    b.onclick=tl.go;
+    return b;
+  };
+  groups.forEach(g=>{
+    wrap.appendChild(el(`<div class="fgroup"><span class="ft">${esc(t('fg_'+g.id))}</span><span class="fsub">${esc(t('fg_'+g.id+'_sub'))}</span><span class="fline"></span></div>`));
+    const grid=el('<div class="fgrid"></div>');
+    g.tiles.forEach(tl=>grid.appendChild(mkTile(tl)));
+    wrap.appendChild(grid);
   });
-  wrap.appendChild(grid);
   return wrap;
 }
 function notifIcon(id){
