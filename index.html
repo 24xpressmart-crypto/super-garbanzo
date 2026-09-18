@@ -474,6 +474,7 @@ function leaveBalanceSuffix(l){
 /* ============================ I18N ============================ */
 const I18N = {
   zh: {
+    dist_km:' 公里', dist_from:'距离', dist_nearer_prefix:'但更靠近', flag_geo_unknown:'无定位', geo_recomputed:'当时手机记录的是：',
     fg_daily:'每天要做', fg_daily_sub:'上班就按这几个', fg_goods:'货与设备', fg_goods_sub:'要货、盘点、机器', fg_wrong:'出状况了', fg_wrong_sub:'坏了、吵架、危险', fg_mine:'我的事', fg_mine_sub:'请假、换班、公告', fg_manage:'管理', fg_manage_sub:'经理与 HQ', fg_more:'其他', fg_more_sub:'',
     tile_order:'要货申请', order_tab_inbox:'待处理', order_tab_summary:'合并汇总', order_tab_catalog:'货品管理', order_no_branch:'请先设定你的所属门店', order_cutoff_prefix:'本轮截单：', order_cutoff_left_prefix:'还有 ', order_cutoff_left_suffix:' 小时', order_current:'本次要货单', order_empty:'还没有加任何货品。按下面的按钮开始。', order_btn_add_item:'加货品', order_btn_send:'送出要货', order_confirm_send:'送出后就不能再改了，确定送出？', order_toast_sent:'已送出，HQ 会收到', order_urgent:'紧急单（断货，等不到下一轮）', order_history:'以往的要货单', order_no_history:'还没有送过要货单', order_items_suffix:' 项', order_status_draft:'草稿', order_status_submitted:'已送出', order_status_approved:'已批准', order_status_rejected:'已退回', order_catalog_empty:'货品清单还是空的，请 HQ 先导入货品', order_search:'找货品', order_search_ph:'打品名或货号', order_search_none:'找不到这个货品', order_last_time:'上次要了 ', order_qty:'要多少？', order_btn_update:'更新数量', order_btn_add:'加入要货单', order_toast_added:'已加入', order_inbox_title:'待处理要货', order_inbox_empty:'目前没有待处理的要货单', order_done_title:'已处理', order_hq_note:'HQ 备注', order_btn_approve:'批准', order_btn_reject:'退回', order_confirm_reject:'确定退回这张单？门店会看到你的备注。', order_sheet_title:'要货单', order_summary_title:'全部门店合计', order_summary_hint:'把所有已送出和已批准的单加起来，照这个数字去下采购单。', order_btn_export:'导出 CSV（Excel 可开）', order_catalog_hint:'货品主档从 AutoCount 导出后贴进来。这里不会写回 AutoCount。', order_sku_off:'已停用', order_sku_limited:'限：', order_btn_paste:'批量贴上货品', order_field_code:'货号（AutoCount item code）', order_field_name:'品名', order_field_unit:'单位', order_field_unit_ph:'箱 / 包 / 支', order_field_category:'分类', order_field_supplier:'供应商', order_field_branches:'适用门店（留空 = 全部）', order_field_active:'启用', order_err_name:'请填品名', order_sheet_edit_sku:'编辑货品', order_sheet_add_sku:'新增货品', order_paste_hint:'从 AutoCount 货品表复制后贴上，一行一样货。用 Tab 或逗号分隔，顺序：货号、品名、单位、分类、供应商。只有品名是必填的。', order_paste_label:'贴上货品（一行一样）', field_order_cutoff_day:'要货截单日（留空 = 不设截单）', field_order_cutoff_time:'截单时间', order_cutoff_off:'不设截单',
     err_server_problem:'服务器出错，请截图给 HQ，不是你输错', invite_bulk_warn_replace:'注意：之前印过的纸条会全部作废。请印好后当天就发给员工，中途不要再按这个按钮。',
@@ -699,6 +700,7 @@ const I18N = {
     toast_deleted:'已删除',
   },
   en: {
+    dist_km:' km', dist_from:'from', dist_nearer_prefix:'but closer to', flag_geo_unknown:'No location', geo_recomputed:'What the phone recorded that day:',
     fg_daily:'Every shift', fg_daily_sub:'start here when you come in', fg_goods:'Goods & machines', fg_goods_sub:'ordering, stock, equipment', fg_wrong:'Something is wrong', fg_wrong_sub:'broken, complaints, danger', fg_mine:'Mine', fg_mine_sub:'leave, swaps, memos', fg_manage:'Managing', fg_manage_sub:'managers and HQ', fg_more:'Other', fg_more_sub:'',
     tile_order:'Stock request', order_tab_inbox:'To handle', order_tab_summary:'Combined total', order_tab_catalog:'Goods list', order_no_branch:'Set your home store first', order_cutoff_prefix:'Cut-off for this round:', order_cutoff_left_prefix:'', order_cutoff_left_suffix:' hours left', order_current:'This order', order_empty:'Nothing added yet. Use the button below to start.', order_btn_add_item:'Add goods', order_btn_send:'Send order', order_confirm_send:'You cannot change it after sending. Send it?', order_toast_sent:'Sent — HQ will see it', order_urgent:'Urgent (out of stock, cannot wait for the next round)', order_history:'Past orders', order_no_history:'No orders sent yet', order_items_suffix:' items', order_status_draft:'Draft', order_status_submitted:'Sent', order_status_approved:'Approved', order_status_rejected:'Sent back', order_catalog_empty:'The goods list is still empty — HQ needs to import it first', order_search:'Find goods', order_search_ph:'Type a name or code', order_search_none:'Nothing matches that', order_last_time:'last time ', order_qty:'How many?', order_btn_update:'Update quantity', order_btn_add:'Add to order', order_toast_added:'Added', order_inbox_title:'Orders to handle', order_inbox_empty:'Nothing waiting right now', order_done_title:'Handled', order_hq_note:'HQ note', order_btn_approve:'Approve', order_btn_reject:'Send back', order_confirm_reject:'Send this order back? The store will see your note.', order_sheet_title:'Order', order_summary_title:'All stores combined', order_summary_hint:'Everything sent and approved, added up. Buy against these figures.', order_btn_export:'Export CSV (opens in Excel)', order_catalog_hint:'Export the item master from AutoCount and paste it in here. Nothing is ever written back to AutoCount.', order_sku_off:'disabled', order_sku_limited:'only: ', order_btn_paste:'Paste goods in bulk', order_field_code:'Code (AutoCount item code)', order_field_name:'Name', order_field_unit:'Unit', order_field_unit_ph:'ctn / pkt / btl', order_field_category:'Category', order_field_supplier:'Supplier', order_field_branches:'Stores (blank = all)', order_field_active:'Enabled', order_err_name:'Enter a name', order_sheet_edit_sku:'Edit item', order_sheet_add_sku:'Add item', order_paste_hint:'Copy from the AutoCount item list and paste, one item per line. Separate with a tab or comma, in this order: code, name, unit, category, supplier. Only the name is required.', order_paste_label:'Paste goods (one per line)', field_order_cutoff_day:'Order cut-off day (blank = no cut-off)', field_order_cutoff_time:'Cut-off time', order_cutoff_off:'No cut-off',
     err_server_problem:'Server error — screenshot this for HQ; it is not your mistake', invite_bulk_warn_replace:'Note: every slip printed earlier stops working. Print these and hand them out the same day, and do not press this button again in between.',
@@ -924,6 +926,7 @@ const I18N = {
     toast_deleted:'Deleted',
   },
   ms: {
+    dist_km:' km', dist_from:'dari', dist_nearer_prefix:'tetapi lebih dekat dengan', flag_geo_unknown:'Tiada lokasi', geo_recomputed:'Apa yang telefon rekod pada hari itu:',
     fg_daily:'Setiap syif', fg_daily_sub:'mula di sini bila masuk kerja', fg_goods:'Barang & mesin', fg_goods_sub:'pesanan, stok, peralatan', fg_wrong:'Ada masalah', fg_wrong_sub:'rosak, aduan, bahaya', fg_mine:'Saya', fg_mine_sub:'cuti, tukar syif, pengumuman', fg_manage:'Pengurusan', fg_manage_sub:'pengurus dan HQ', fg_more:'Lain-lain', fg_more_sub:'',
     tile_order:'Pesanan stok', order_tab_inbox:'Perlu diuruskan', order_tab_summary:'Jumlah gabungan', order_tab_catalog:'Senarai barang', order_no_branch:'Tetapkan kedai asal anda dahulu', order_cutoff_prefix:'Tutup pesanan pusingan ini:', order_cutoff_left_prefix:'tinggal ', order_cutoff_left_suffix:' jam', order_current:'Pesanan kali ini', order_empty:'Belum ada barang. Tekan butang di bawah untuk mula.', order_btn_add_item:'Tambah barang', order_btn_send:'Hantar pesanan', order_confirm_send:'Tidak boleh diubah selepas dihantar. Hantar sekarang?', order_toast_sent:'Dihantar — HQ akan lihat', order_urgent:'Segera (kehabisan stok, tidak boleh tunggu pusingan berikutnya)', order_history:'Pesanan lepas', order_no_history:'Belum ada pesanan dihantar', order_items_suffix:' barang', order_status_draft:'Draf', order_status_submitted:'Dihantar', order_status_approved:'Diluluskan', order_status_rejected:'Dikembalikan', order_catalog_empty:'Senarai barang masih kosong — HQ perlu import dahulu', order_search:'Cari barang', order_search_ph:'Taip nama atau kod', order_search_none:'Tiada padanan', order_last_time:'kali lepas ', order_qty:'Berapa banyak?', order_btn_update:'Kemas kini kuantiti', order_btn_add:'Masukkan ke pesanan', order_toast_added:'Ditambah', order_inbox_title:'Pesanan perlu diuruskan', order_inbox_empty:'Tiada pesanan menunggu', order_done_title:'Selesai diuruskan', order_hq_note:'Nota HQ', order_btn_approve:'Luluskan', order_btn_reject:'Kembalikan', order_confirm_reject:'Kembalikan pesanan ini? Kedai akan lihat nota anda.', order_sheet_title:'Pesanan', order_summary_title:'Semua kedai digabungkan', order_summary_hint:'Semua yang dihantar dan diluluskan, dicampur. Beli ikut angka ini.', order_btn_export:'Eksport CSV (buka dalam Excel)', order_catalog_hint:'Eksport fail induk barang dari AutoCount dan tampal di sini. Tiada apa-apa ditulis semula ke AutoCount.', order_sku_off:'dimatikan', order_sku_limited:'hanya: ', order_btn_paste:'Tampal barang secara pukal', order_field_code:'Kod (kod item AutoCount)', order_field_name:'Nama', order_field_unit:'Unit', order_field_unit_ph:'ktn / pkt / btl', order_field_category:'Kategori', order_field_supplier:'Pembekal', order_field_branches:'Kedai (kosong = semua)', order_field_active:'Aktif', order_err_name:'Masukkan nama', order_sheet_edit_sku:'Edit barang', order_sheet_add_sku:'Tambah barang', order_paste_hint:'Salin dari senarai item AutoCount dan tampal, satu barang sebaris. Asingkan dengan tab atau koma, ikut susunan: kod, nama, unit, kategori, pembekal. Hanya nama diperlukan.', order_paste_label:'Tampal barang (satu sebaris)', field_order_cutoff_day:'Hari tutup pesanan (kosong = tiada)', field_order_cutoff_time:'Masa tutup', order_cutoff_off:'Tiada tutup pesanan',
     err_server_problem:'Ralat pelayan — hantar tangkap layar kepada HQ; bukan salah anda', invite_bulk_warn_replace:'Perhatian: semua slip yang dicetak sebelum ini akan terbatal. Cetak dan serahkan pada hari yang sama, dan jangan tekan butang ini lagi di antaranya.',
@@ -2223,8 +2226,9 @@ function clockView(){
   const list=el('<div class="list" style="margin-top:10px;"></div>');
   if(rows.length===0){ list.appendChild(el(`<div class="empty">${ICONS.inbox}<div>${esc(t('empty_no_records'))}</div></div>`)); }
   rows.forEach(a=>{
-    const flag = a.geoFlag==='out_of_range' ? `<span class="pill warn">${esc(t('flag_out_of_range'))}</span>` : (a.geoFlag==='in_range' ? `<span class="pill ok">${esc(t('flag_in_range'))}</span>` : '');
-    const row=el(`<div class="list-row">${ib(a.type==='in'?'login':'logout', a.type==='in'?'c-green':'c-grey')}<div class="lr-main"><div class="lr-title">${esc(a.employeeName)} · ${a.type==='in'?esc(t('clock_in_short')):esc(t('clock_out_short'))}</div><div class="lr-sub">${fmtDateTime(a.createdAt)}${a.branch?' · '+esc(a.branch):''}${a.distanceM!=null?esc(t('dist_to_device'))+a.distanceM+esc(t('dist_meters')):''}${a.manual?' · '+esc(t('flag_manual')):''}</div></div>${a.cover?`<span class="pill accent">${esc(t('flag_cover'))}</span>`:''}${a.photo?`<span class="icon-sm" style="color:var(--ink-faint); flex-shrink:0;">${ICONS.camera}</span>`:''}${flag}</div>`);
+    const v = geoVerdict(a);
+    const flag = geoPill(v);
+    const row=el(`<div class="list-row">${ib(a.type==='in'?'login':'logout', a.type==='in'?'c-green':'c-grey')}<div class="lr-main"><div class="lr-title">${esc(a.employeeName)} · ${a.type==='in'?esc(t('clock_in_short')):esc(t('clock_out_short'))}</div><div class="lr-sub">${fmtDateTime(a.createdAt)}${a.branch?' · '+esc(a.branch):''}${geoLine(v)}${a.manual?' · '+esc(t('flag_manual')):''}</div></div>${a.cover?`<span class="pill accent">${esc(t('flag_cover'))}</span>`:''}${a.photo?`<span class="icon-sm" style="color:var(--ink-faint); flex-shrink:0;">${ICONS.camera}</span>`:''}${flag}</div>`);
     row.onclick=()=>openAttendanceDetail(a);
     list.appendChild(row);
   });
@@ -2329,10 +2333,16 @@ function attendanceReportView(){
 }
 function openAttendanceDetail(a){
   const body=el('<div></div>');
-  const flag = a.geoFlag==='out_of_range' ? `<span class="pill warn">${esc(t('flag_out_of_range'))}</span>` : (a.geoFlag==='in_range' ? `<span class="pill ok">${esc(t('flag_in_range'))}</span>` : '');
+  const v = geoVerdict(a);
+  const flag = geoPill(v);
   body.innerHTML = `<div class="row" style="margin-bottom:10px;"><span class="pill accent">${a.type==='in'?esc(t('clock_in_short')):esc(t('clock_out_short'))}</span>${flag}</div>
-    <div class="hint">${fmtDateTime(a.createdAt)}${a.nearestDeviceId?' · '+esc(devName(a.nearestDeviceId)):''}${a.distanceM!=null?esc(t('dist_to_device'))+a.distanceM+esc(t('dist_meters')):''}</div>`;
-  if(a.geo) body.appendChild(el(`<p class="hint num">${a.geo.lat.toFixed(6)}, ${a.geo.lng.toFixed(6)} (±${a.geo.accuracy}m)</p>`));
+    <div class="hint">${fmtDateTime(a.createdAt)}${geoLine(v)}</div>`;
+  // what the phone concluded on the day, kept visible so the two can be compared
+  if(a.distanceM!=null && (v.dist==null || Math.abs(a.distanceM-v.dist)>50)){
+    body.appendChild(el(`<p class="hint" style="color:var(--ink-faint);">${esc(t('geo_recomputed'))} ${esc(fmtDist(a.distanceM))}${a.nearestDeviceId?' · '+esc(devName(a.nearestDeviceId)):''}</p>`));
+  }
+  { const g = a.geo && a.geo.lat!=null ? a.geo : (a.lat!=null && a.lng!=null ? {lat:a.lat, lng:a.lng, accuracy:a.accuracy} : null);
+    if(g) body.appendChild(el(`<p class="hint num">${Number(g.lat).toFixed(6)}, ${Number(g.lng).toFixed(6)}${g.accuracy!=null?' (±'+g.accuracy+'m)':''}</p>`)); }
   if(a.photo) body.appendChild(el(`<img class="photow" src="${a.photo}">`));
   else body.appendChild(el(`<p class="hint">${esc(t('no_photo_taken'))}</p>`));
   openSheet(a.employeeName, body);
@@ -3870,6 +3880,52 @@ function allBranchIds(){
 }
 function siteCoordsFor(branch){ const s=siteFor(branch||''); return (s && s.lat!=null && s.lng!=null && s.lat!=='' && s.lng!=='') ? {lat:Number(s.lat), lng:Number(s.lng)} : null; }
 function defaultClockBranch(){ if(S.clockBranch!=null) return S.clockBranch; return myBranch()||''; }
+/* A clock-in keeps the verdict its phone reached at the time, but that verdict is
+   only as good as the coordinates the store had that day. HQ and VM had none until
+   2026-09-13, so the app fell back to "distance to the nearest vending machine" and
+   called somebody standing inside HQ 8.7 km out of range. The record itself is a
+   ledger entry and stays exactly as written; what the screen shows is worked out
+   again from the saved position and the coordinates we hold now. */
+function geoVerdict(a){
+  const radius = S.settings.geofenceRadius || 300;
+  // the phone used to save geo:{lat,lng}; punch() on the server saves them flat
+  const g = a && (a.geo && a.geo.lat!=null ? a.geo : (a.lat!=null && a.lng!=null ? {lat:a.lat, lng:a.lng, accuracy:a.accuracy} : null));
+  if(!g || g.error || g.lat==null || g.lng==null){
+    return {state: a && a.geoFlag==='out_of_range' ? 'unknown' : (a&&a.geoFlag)||'no_location'};
+  }
+  // nearest of everything we have coordinates for, so a mis-picked store is obvious
+  let nearest=null;
+  (S.sites||[]).forEach(s=>{
+    if(s.lat==null || s.lng==null) return;
+    const d=Math.round(haversine(g.lat,g.lng,s.lat,s.lng));
+    if(!nearest || d<nearest.dist) nearest={id:s.id, dist:d};
+  });
+  const c = a.branch ? siteCoordsFor(a.branch) : null;
+  if(c){
+    const dist = Math.round(haversine(g.lat,g.lng,c.lat,c.lng));
+    return {state: dist<=radius ? 'in_range' : 'out_of_range', dist, at:a.branch,
+            nearest: (nearest && nearest.id!==a.branch && nearest.dist<dist) ? nearest : null};
+  }
+  if(nearest && nearest.dist<=radius) return {state:'in_range', dist:nearest.dist, at:nearest.id, guessed:true};
+  return {state: nearest ? 'out_of_range' : 'not_configured', dist: nearest&&nearest.dist, at: nearest&&nearest.id, guessed:true};
+}
+function fmtDist(m){
+  if(m==null) return '';
+  return m<1000 ? m+t('dist_meters') : (m/1000).toFixed(m<10000?1:0)+t('dist_km');
+}
+function geoPill(v){
+  if(v.state==='out_of_range') return `<span class="pill warn">${esc(t('flag_out_of_range'))}</span>`;
+  if(v.state==='in_range')     return `<span class="pill ok">${esc(t('flag_in_range'))}</span>`;
+  if(v.state==='unknown')      return `<span class="pill n">${esc(t('flag_geo_unknown'))}</span>`;
+  return '';
+}
+function geoLine(v){
+  if(v.dist==null) return '';
+  const where = v.at ? ' ' + esc(v.at) : '';
+  const main = ' · ' + esc(t('dist_from')) + where + ' ' + esc(fmtDist(v.dist));
+  const hint = v.nearest ? ' · ' + esc(t('dist_nearer_prefix')) + ' ' + esc(v.nearest.id) + ' ' + esc(fmtDist(v.nearest.dist)) : '';
+  return main + hint;
+}
 function branchGeoInfo(geo, branch){
   if(!geo || geo.error || !branch) return null;
   const c=siteCoordsFor(branch); if(!c) return null;
