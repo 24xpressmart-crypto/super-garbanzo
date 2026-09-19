@@ -476,6 +476,8 @@ const I18N = {
   zh: {
     dist_km:' 公里', dist_from:'距离', dist_nearer_prefix:'但更靠近', flag_geo_unknown:'无定位', geo_recomputed:'当时手机记录的是：',
     fg_daily:'每天要做', fg_daily_sub:'上班就按这几个', fg_goods:'货与设备', fg_goods_sub:'要货、盘点、机器', fg_wrong:'出状况了', fg_wrong_sub:'坏了、吵架、危险', fg_mine:'我的事', fg_mine_sub:'请假、换班、公告', fg_manage:'管理', fg_manage_sub:'经理与 HQ', fg_more:'其他', fg_more_sub:'',
+    field_receiving_branches:'收货试点门店（店号，逗号分开，如 BR07,BR12；空 = 未开通）', recv_not_pilot:'这家店还没开通收货，HQ 在设定里加店号就有', recv_acc_posted:'已入 AutoCount', recv_acc_exception:'账务待处理', recv_acc_queued:'传送中',
+    tile_receive:'收货', recv_current:'本次收货', recv_step_supplier:'1. 供应商', recv_step_photo:'2. 拍单据', recv_step_lines:'3. 点数', recv_pick_supplier:'选供应商', recv_search_supplier:'搜供应商名', recv_use_typed:'用我打的名字', recv_doc_do:'送货单 DO', recv_doc_invoice:'发票 Invoice', recv_doc_no:'单号（照单上抄）', recv_amount:'单上总额（可留空）', recv_add_item:'加货品', recv_qty_received:'实收', recv_qty_short:'短交', recv_qty_damaged:'破损', recv_btn_send:'送出收货', recv_confirm_send:'送出后不能再改，确定？', recv_toast_sent:'已送出，账务会自动接手', recv_history:'以往的收货', recv_no_history:'还没有收货记录', recv_empty:'先选供应商、拍单据，再点数。', recv_need_photo:'请先拍单据照片', recv_need_supplier:'请先选供应商', recv_status_draft:'草稿', recv_status_submitted:'已送出', recv_hq_inbox:'各店收货', recv_no_branch:'请先设定你的所属门店', recv_photo2:'再拍一张（背面 / 第二页）', recv_note:'备注（短交、拒收、破损…）', recv_lines_suffix:' 项', recv_discard:'放弃这张', recv_photo_hint:'整张单据入镜，字要看得清。', recv_no_suppliers:'供应商名单还没发布，先打名字',
     tile_order:'要货申请', order_tab_inbox:'待处理', order_tab_summary:'合并汇总', order_tab_catalog:'货品管理', order_no_branch:'请先设定你的所属门店', order_cutoff_prefix:'本轮截单：', order_cutoff_left_prefix:'还有 ', order_cutoff_left_suffix:' 小时', order_current:'本次要货单', order_empty:'还没有加任何货品。按下面的按钮开始。', order_btn_add_item:'加货品', order_btn_send:'送出要货', order_confirm_send:'送出后就不能再改了，确定送出？', order_toast_sent:'已送出，HQ 会收到', order_urgent:'紧急单（断货，等不到下一轮）', order_history:'以往的要货单', order_no_history:'还没有送过要货单', order_items_suffix:' 项', order_status_draft:'草稿', order_status_submitted:'已送出', order_status_approved:'已批准', order_status_rejected:'已退回', order_catalog_empty:'货品清单还是空的，请 HQ 先导入货品', order_search:'找货品', order_search_ph:'打品名或货号', order_search_none:'找不到这个货品', order_last_time:'上次要了 ', order_qty:'要多少？', order_btn_update:'更新数量', order_btn_add:'加入要货单', order_toast_added:'已加入', order_inbox_title:'待处理要货', order_inbox_empty:'目前没有待处理的要货单', order_done_title:'已处理', order_hq_note:'HQ 备注', order_btn_approve:'批准', order_btn_reject:'退回', order_confirm_reject:'确定退回这张单？门店会看到你的备注。', order_sheet_title:'要货单', order_summary_title:'全部门店合计', order_summary_hint:'把所有已送出和已批准的单加起来，照这个数字去下采购单。', order_btn_export:'导出 CSV（Excel 可开）', order_catalog_hint:'货品主档从 AutoCount 导出后贴进来。这里不会写回 AutoCount。', order_sku_off:'已停用', order_sku_limited:'限：', order_btn_paste:'批量贴上货品', order_field_code:'货号（AutoCount item code）', order_field_name:'品名', order_field_unit:'单位', order_field_unit_ph:'箱 / 包 / 支', order_field_category:'分类', order_field_supplier:'供应商', order_field_branches:'适用门店（留空 = 全部）', order_field_active:'启用', order_err_name:'请填品名', order_sheet_edit_sku:'编辑货品', order_sheet_add_sku:'新增货品', order_paste_hint:'从 AutoCount 货品表复制后贴上，一行一样货。用 Tab 或逗号分隔，顺序：货号、品名、单位、分类、供应商。只有品名是必填的。', order_paste_label:'贴上货品（一行一样）', field_order_cutoff_day:'要货截单日（留空 = 不设截单）', field_order_cutoff_time:'截单时间', order_cutoff_off:'不设截单',
     err_server_problem:'服务器出错，请截图给 HQ，不是你输错', invite_bulk_warn_replace:'注意：之前印过的纸条会全部作废。请印好后当天就发给员工，中途不要再按这个按钮。',
     btn_invite_bulk:'生成本店邀请码并打印', invite_bulk_hint:'为还没设 PIN 的员工各生成一张邀请纸条。邀请码只显示这一次，打印后请当面交给本人。', invite_bulk_none:'这家店的员工都已经设好 PIN 了', invite_bulk_confirm_prefix:'将为 ', invite_bulk_confirm_suffix:' 位员工生成邀请码并打开打印页面。继续？', invite_bulk_working:'生成中，请稍候…', invite_bulk_failed:'一个都没生成成功，请检查权限', invite_bulk_partial_prefix:'有 ', invite_bulk_partial_suffix:' 位生成失败，其余已打印', invite_slip_title:'首次登录邀请纸条', invite_slip_expiry:'此邀请码有效期至', invite_slip_steps:'1. 打开 App  2. 输入上面任何一个码（工号或邀请码都行），按下一步  3. 如果还没填，输入上面的「邀请码」  4. 自己设一个 6 位数字 PIN  5. 以后这部手机只问 PIN。纸条请自己收好，不要给别人。',
@@ -702,6 +704,8 @@ const I18N = {
   en: {
     dist_km:' km', dist_from:'from', dist_nearer_prefix:'but closer to', flag_geo_unknown:'No location', geo_recomputed:'What the phone recorded that day:',
     fg_daily:'Every shift', fg_daily_sub:'start here when you come in', fg_goods:'Goods & machines', fg_goods_sub:'ordering, stock, equipment', fg_wrong:'Something is wrong', fg_wrong_sub:'broken, complaints, danger', fg_mine:'Mine', fg_mine_sub:'leave, swaps, memos', fg_manage:'Managing', fg_manage_sub:'managers and HQ', fg_more:'Other', fg_more_sub:'',
+    field_receiving_branches:'Goods-in pilot stores (codes, comma separated, e.g. BR07,BR12; blank = off)', recv_not_pilot:'Goods-in is not switched on for this store yet; HQ adds the store code in Settings', recv_acc_posted:'In AutoCount', recv_acc_exception:'Accounting to check', recv_acc_queued:'Sending',
+    tile_receive:'Goods in', recv_current:'This delivery', recv_step_supplier:'1. Supplier', recv_step_photo:'2. Photo the paper', recv_step_lines:'3. Count', recv_pick_supplier:'Pick supplier', recv_search_supplier:'Search supplier name', recv_use_typed:'Use the name I typed', recv_doc_do:'Delivery order (DO)', recv_doc_invoice:'Invoice', recv_doc_no:'Document no. (copy from the paper)', recv_amount:'Total on the paper (optional)', recv_add_item:'Add item', recv_qty_received:'Received', recv_qty_short:'Short', recv_qty_damaged:'Damaged', recv_btn_send:'Send goods-in', recv_confirm_send:'It cannot be changed after sending. Send?', recv_toast_sent:'Sent. Accounting takes it from here', recv_history:'Earlier deliveries', recv_no_history:'No deliveries recorded yet', recv_empty:'Pick the supplier, photo the paper, then count.', recv_need_photo:'Take a photo of the paper first', recv_need_supplier:'Pick the supplier first', recv_status_draft:'Draft', recv_status_submitted:'Sent', recv_hq_inbox:'Goods in, all stores', recv_no_branch:'Set your home store first', recv_photo2:'One more photo (back / page 2)', recv_note:'Note (short, rejected, damaged...)', recv_lines_suffix:' item(s)', recv_discard:'Discard this one', recv_photo_hint:'Whole paper in frame, text readable.', recv_no_suppliers:'Supplier list not published yet; type the name',
     tile_order:'Stock request', order_tab_inbox:'To handle', order_tab_summary:'Combined total', order_tab_catalog:'Goods list', order_no_branch:'Set your home store first', order_cutoff_prefix:'Cut-off for this round:', order_cutoff_left_prefix:'', order_cutoff_left_suffix:' hours left', order_current:'This order', order_empty:'Nothing added yet. Use the button below to start.', order_btn_add_item:'Add goods', order_btn_send:'Send order', order_confirm_send:'You cannot change it after sending. Send it?', order_toast_sent:'Sent — HQ will see it', order_urgent:'Urgent (out of stock, cannot wait for the next round)', order_history:'Past orders', order_no_history:'No orders sent yet', order_items_suffix:' items', order_status_draft:'Draft', order_status_submitted:'Sent', order_status_approved:'Approved', order_status_rejected:'Sent back', order_catalog_empty:'The goods list is still empty — HQ needs to import it first', order_search:'Find goods', order_search_ph:'Type a name or code', order_search_none:'Nothing matches that', order_last_time:'last time ', order_qty:'How many?', order_btn_update:'Update quantity', order_btn_add:'Add to order', order_toast_added:'Added', order_inbox_title:'Orders to handle', order_inbox_empty:'Nothing waiting right now', order_done_title:'Handled', order_hq_note:'HQ note', order_btn_approve:'Approve', order_btn_reject:'Send back', order_confirm_reject:'Send this order back? The store will see your note.', order_sheet_title:'Order', order_summary_title:'All stores combined', order_summary_hint:'Everything sent and approved, added up. Buy against these figures.', order_btn_export:'Export CSV (opens in Excel)', order_catalog_hint:'Export the item master from AutoCount and paste it in here. Nothing is ever written back to AutoCount.', order_sku_off:'disabled', order_sku_limited:'only: ', order_btn_paste:'Paste goods in bulk', order_field_code:'Code (AutoCount item code)', order_field_name:'Name', order_field_unit:'Unit', order_field_unit_ph:'ctn / pkt / btl', order_field_category:'Category', order_field_supplier:'Supplier', order_field_branches:'Stores (blank = all)', order_field_active:'Enabled', order_err_name:'Enter a name', order_sheet_edit_sku:'Edit item', order_sheet_add_sku:'Add item', order_paste_hint:'Copy from the AutoCount item list and paste, one item per line. Separate with a tab or comma, in this order: code, name, unit, category, supplier. Only the name is required.', order_paste_label:'Paste goods (one per line)', field_order_cutoff_day:'Order cut-off day (blank = no cut-off)', field_order_cutoff_time:'Cut-off time', order_cutoff_off:'No cut-off',
     err_server_problem:'Server error — screenshot this for HQ; it is not your mistake', invite_bulk_warn_replace:'Note: every slip printed earlier stops working. Print these and hand them out the same day, and do not press this button again in between.',
     btn_invite_bulk:'Generate and print invite codes for this store', invite_bulk_hint:'Makes one slip per person who has not set a PIN yet. Each code is shown this once only — print them and hand them over in person.', invite_bulk_none:'Everyone at this store already has a PIN', invite_bulk_confirm_prefix:'Generate invite codes for ', invite_bulk_confirm_suffix:' staff and open the print page. Continue?', invite_bulk_working:'Generating, one moment...', invite_bulk_failed:'None could be generated — check your permissions', invite_bulk_partial_prefix:'', invite_bulk_partial_suffix:' could not be generated; the rest are on the printout', invite_slip_title:'First-login invite slips', invite_slip_expiry:'This invite code expires on', invite_slip_steps:'1. Open the app  2. Type either code above — staff code or invite code — and tap Continue  3. Fill in the Invite code if it is not already there  4. Choose your own 6-digit PIN  5. From then on this phone only asks for the PIN. Keep this slip to yourself.',
@@ -928,6 +932,8 @@ const I18N = {
   ms: {
     dist_km:' km', dist_from:'dari', dist_nearer_prefix:'tetapi lebih dekat dengan', flag_geo_unknown:'Tiada lokasi', geo_recomputed:'Apa yang telefon rekod pada hari itu:',
     fg_daily:'Setiap syif', fg_daily_sub:'mula di sini bila masuk kerja', fg_goods:'Barang & mesin', fg_goods_sub:'pesanan, stok, peralatan', fg_wrong:'Ada masalah', fg_wrong_sub:'rosak, aduan, bahaya', fg_mine:'Saya', fg_mine_sub:'cuti, tukar syif, pengumuman', fg_manage:'Pengurusan', fg_manage_sub:'pengurus dan HQ', fg_more:'Lain-lain', fg_more_sub:'',
+    field_receiving_branches:'Kedai percubaan terima barang (kod, asingkan dengan koma, cth BR07,BR12; kosong = tutup)', recv_not_pilot:'Terima barang belum dibuka untuk kedai ini; HQ tambah kod kedai dalam Tetapan', recv_acc_posted:'Dalam AutoCount', recv_acc_exception:'Akaun perlu semak', recv_acc_queued:'Menghantar',
+    tile_receive:'Terima barang', recv_current:'Penghantaran ini', recv_step_supplier:'1. Pembekal', recv_step_photo:'2. Foto dokumen', recv_step_lines:'3. Kira', recv_pick_supplier:'Pilih pembekal', recv_search_supplier:'Cari nama pembekal', recv_use_typed:'Guna nama yang saya taip', recv_doc_do:'Pesanan penghantaran (DO)', recv_doc_invoice:'Invois', recv_doc_no:'No. dokumen (salin dari kertas)', recv_amount:'Jumlah pada kertas (pilihan)', recv_add_item:'Tambah barang', recv_qty_received:'Diterima', recv_qty_short:'Kurang', recv_qty_damaged:'Rosak', recv_btn_send:'Hantar terima barang', recv_confirm_send:'Tidak boleh diubah selepas dihantar. Hantar?', recv_toast_sent:'Dihantar. Akaun akan uruskan seterusnya', recv_history:'Penghantaran sebelum ini', recv_no_history:'Belum ada rekod penghantaran', recv_empty:'Pilih pembekal, foto dokumen, kemudian kira.', recv_need_photo:'Ambil foto dokumen dahulu', recv_need_supplier:'Pilih pembekal dahulu', recv_status_draft:'Draf', recv_status_submitted:'Dihantar', recv_hq_inbox:'Terima barang, semua kedai', recv_no_branch:'Tetapkan kedai asal anda dahulu', recv_photo2:'Satu lagi foto (belakang / muka 2)', recv_note:'Nota (kurang, ditolak, rosak...)', recv_lines_suffix:' barang', recv_discard:'Buang yang ini', recv_photo_hint:'Seluruh kertas dalam bingkai, tulisan jelas.', recv_no_suppliers:'Senarai pembekal belum diterbitkan; taip nama',
     tile_order:'Pesanan stok', order_tab_inbox:'Perlu diuruskan', order_tab_summary:'Jumlah gabungan', order_tab_catalog:'Senarai barang', order_no_branch:'Tetapkan kedai asal anda dahulu', order_cutoff_prefix:'Tutup pesanan pusingan ini:', order_cutoff_left_prefix:'tinggal ', order_cutoff_left_suffix:' jam', order_current:'Pesanan kali ini', order_empty:'Belum ada barang. Tekan butang di bawah untuk mula.', order_btn_add_item:'Tambah barang', order_btn_send:'Hantar pesanan', order_confirm_send:'Tidak boleh diubah selepas dihantar. Hantar sekarang?', order_toast_sent:'Dihantar — HQ akan lihat', order_urgent:'Segera (kehabisan stok, tidak boleh tunggu pusingan berikutnya)', order_history:'Pesanan lepas', order_no_history:'Belum ada pesanan dihantar', order_items_suffix:' barang', order_status_draft:'Draf', order_status_submitted:'Dihantar', order_status_approved:'Diluluskan', order_status_rejected:'Dikembalikan', order_catalog_empty:'Senarai barang masih kosong — HQ perlu import dahulu', order_search:'Cari barang', order_search_ph:'Taip nama atau kod', order_search_none:'Tiada padanan', order_last_time:'kali lepas ', order_qty:'Berapa banyak?', order_btn_update:'Kemas kini kuantiti', order_btn_add:'Masukkan ke pesanan', order_toast_added:'Ditambah', order_inbox_title:'Pesanan perlu diuruskan', order_inbox_empty:'Tiada pesanan menunggu', order_done_title:'Selesai diuruskan', order_hq_note:'Nota HQ', order_btn_approve:'Luluskan', order_btn_reject:'Kembalikan', order_confirm_reject:'Kembalikan pesanan ini? Kedai akan lihat nota anda.', order_sheet_title:'Pesanan', order_summary_title:'Semua kedai digabungkan', order_summary_hint:'Semua yang dihantar dan diluluskan, dicampur. Beli ikut angka ini.', order_btn_export:'Eksport CSV (buka dalam Excel)', order_catalog_hint:'Eksport fail induk barang dari AutoCount dan tampal di sini. Tiada apa-apa ditulis semula ke AutoCount.', order_sku_off:'dimatikan', order_sku_limited:'hanya: ', order_btn_paste:'Tampal barang secara pukal', order_field_code:'Kod (kod item AutoCount)', order_field_name:'Nama', order_field_unit:'Unit', order_field_unit_ph:'ktn / pkt / btl', order_field_category:'Kategori', order_field_supplier:'Pembekal', order_field_branches:'Kedai (kosong = semua)', order_field_active:'Aktif', order_err_name:'Masukkan nama', order_sheet_edit_sku:'Edit barang', order_sheet_add_sku:'Tambah barang', order_paste_hint:'Salin dari senarai item AutoCount dan tampal, satu barang sebaris. Asingkan dengan tab atau koma, ikut susunan: kod, nama, unit, kategori, pembekal. Hanya nama diperlukan.', order_paste_label:'Tampal barang (satu sebaris)', field_order_cutoff_day:'Hari tutup pesanan (kosong = tiada)', field_order_cutoff_time:'Masa tutup', order_cutoff_off:'Tiada tutup pesanan',
     err_server_problem:'Ralat pelayan — hantar tangkap layar kepada HQ; bukan salah anda', invite_bulk_warn_replace:'Perhatian: semua slip yang dicetak sebelum ini akan terbatal. Cetak dan serahkan pada hari yang sama, dan jangan tekan butang ini lagi di antaranya.',
     btn_invite_bulk:'Jana dan cetak kod jemputan kedai ini', invite_bulk_hint:'Satu slip untuk setiap staf yang belum tetapkan PIN. Setiap kod dipapar sekali sahaja — cetak dan serahkan sendiri kepada mereka.', invite_bulk_none:'Semua staf kedai ini sudah ada PIN', invite_bulk_confirm_prefix:'Jana kod jemputan untuk ', invite_bulk_confirm_suffix:' staf dan buka halaman cetak. Teruskan?', invite_bulk_working:'Sedang menjana, tunggu sebentar...', invite_bulk_failed:'Tiada yang berjaya dijana — semak kebenaran anda', invite_bulk_partial_prefix:'', invite_bulk_partial_suffix:' gagal dijana; selebihnya ada pada cetakan', invite_slip_title:'Slip jemputan log masuk pertama', invite_slip_expiry:'Kod jemputan ini sah sehingga', invite_slip_steps:'1. Buka app  2. Taip mana-mana kod di atas — kod staf atau kod jemputan — dan tekan Teruskan  3. Isi Kod jemputan jika belum ada  4. Pilih PIN 6 digit anda sendiri  5. Selepas itu telefon ini hanya minta PIN. Simpan slip ini untuk diri sendiri.',
@@ -1167,6 +1173,7 @@ const S = {
   stockSection:'snacks', kegFilter:'tapped', beerZoneFilter:'all', pickerBranch:null, staffBranchFilter:'all', lastGeoMsg:null, clockSub:'records', reportMonth:(function(){const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');})(), reportBranch:'all', reportData:null, reportLoading:false,
   beerProducts:[], taps:[], kegs:[], kegLogs:[], memos:[], memoReads:[],
   skus:[], stockRequests:[], orderBranch:null, orderTab:'inbox',
+  suppliers:[], receipts:[], receiveBranch:null,
   punchRequests:[], swapRequests:[], clockBranch:null, notifSeen:[], token:null, loginList:null, employeesLoaded:false, sb:null, taskTemplates:[], taskRuns:[], handovers:[], taskBranch:null, equipment:[], tempLogs:[], safetyChecks:[], incidents:[], weekStart:null, schedBranch:null, assetBranch:null, equipTabInit:false, auditTemplates:[], audits:[], rectifications:[], auditBranch:null, pushOn:false, runnerVisits:[], bankIns:[], runnerDate:null, runnerEmp:null, guideRole:null,
   notifKnown:null, pageLoadedAt:new Date().toISOString(), notifBrowser:(function(){ try{ return localStorage.getItem('bgc_notif')==='1'; }catch(e){ return false; } })(),
   showReport:false, meAdmin:false,
@@ -1549,6 +1556,8 @@ function subscribeAll(){
   sub('notifSeen','notifSeen',{limit:500});
   sub('skus','skus',{limit:2000});
   sub('stockRequests','stockRequests',{order:'createdAt',limit:400,sinceDays:120});
+  sub('suppliers','suppliers',{limit:2000});
+  sub('receipts','receipts',{order:'createdAt',limit:400,sinceDays:120});
   sub('beerProducts','beerProducts',{limit:200});
   sub('taps','taps',{limit:100});
   sub('kegs','kegs',{order:'createdAt',dir:'desc',limit:500});
@@ -1580,7 +1589,7 @@ function renderApp(){
     view.innerHTML = screenMsg(ICONS.cloudOff,t('connecting_title'),t('connecting_body')); return;
   }
   view.innerHTML='';
-  const map={home:homeView, clock:clockView, tasks:tasksView, stock:stockView, order:orderView, equip:equipView, me:meView, memos:memosView, audit:auditView, runner:runnerView, guide:guideView};
+  const map={home:homeView, clock:clockView, tasks:tasksView, stock:stockView, order:orderView, receive:receiveView, equip:equipView, me:meView, memos:memosView, audit:auditView, runner:runnerView, guide:guideView};
   view.appendChild((map[S.tab]||homeView)());
   view.querySelectorAll('.list-row, .id-pick-row').forEach(r=>{ if(r.onclick && !r.hasAttribute('tabindex')){ r.setAttribute('tabindex','0'); r.setAttribute('role','button'); } });
 }
@@ -3446,6 +3455,7 @@ function adminSection(){
      options:[{v:'',l:t('order_cutoff_off')}].concat([0,1,2,3,4,5,6].map(i=>({v:String(i), l:weekdayLabel(new Date(2026,0,4+i))}))),
      default: S.settings.orderCutoffDay==null ? '' : String(S.settings.orderCutoffDay)},
     {key:'orderCutoffTime', label:t('field_order_cutoff_time'), type:'time', default:S.settings.orderCutoffTime||'12:00'},
+    {key:'receivingBranches', label:t('field_receiving_branches'), default:S.settings.receivingBranches||''},
     {key:'slaHighHours', label:t('field_sla_high'), type:'number', default:S.settings.slaHighHours||4},
     {key:'slaMediumHours', label:t('field_sla_medium'), type:'number', default:S.settings.slaMediumHours||24},
     {key:'slaLowHours', label:t('field_sla_low'), type:'number', default:S.settings.slaLowHours||72},
@@ -4796,6 +4806,283 @@ function openQtySheet(branch, sku){
   openSheet(t('order_qty'), body);
 }
 
+/* ============================ RECEIVING (goods in) ============================
+   Patch 6. One document per delivery in `receipts`: supplier, the paper (photo),
+   what was counted. The store keeps a draft until it taps Send; submit_receipt()
+   freezes it and mirrors it into the accounting layer, which the store never sees.
+   Three steps, in this order on purpose: supplier, photo, count. */
+function receivingBranches(){ return String(S.settings.receivingBranches||'').toUpperCase().split(/[\s,;]+/).filter(Boolean); }
+function receiveBranchFor(){ return S.receiveBranch || myBranch() || (allBranchIds()[0] || ''); }
+function draftReceiptFor(branch){ return S.receipts.find(r => r.branch === branch && r.status === 'draft') || null; }
+function receiptLines(r){ return Array.isArray(r && r.lines) ? r.lines : []; }
+function receiptPhotos(r){ return Array.isArray(r && r.photos) ? r.photos : []; }
+function supplierList(){ return S.suppliers.filter(s => s.active !== false).sort((a,b)=>(a.name||'').localeCompare(b.name||'')); }
+
+async function ensureReceiptDraft(branch, patch){
+  const draft = draftReceiptFor(branch);
+  if(draft){ await S.db.doc('receipts/'+draft.id).update(patch); return draft.id; }
+  const me = currentEmployee();
+  await S.db.collection('receipts').add(Object.assign({
+    branch, status:'draft', docKind:'do', docNo:'', amount:'', note:'', photos:[], lines:[],
+    eventAt: new Date().toISOString(), createdBy: me.id, createdByName: me.name, createdAt: new Date().toISOString()}, patch));
+  return null;
+}
+
+function receiveView(){
+  const c = el('<div></div>');
+  const e = currentEmployee();
+  if(isAdmin()) return c.appendChild(receiveInboxView()), c;
+
+  const pilot = receivingBranches();
+  const branches = allBranchIds().filter(b => (b === myBranch() || coversBranch(e, b)) && pilot.includes(String(b).toUpperCase()));
+  const branch = branches.includes(receiveBranchFor()) ? receiveBranchFor() : (branches[0] || '');
+  if(branches.length > 1){
+    const chipRow = el('<div class="chiprow"></div>');
+    branches.forEach(b=>{
+      const chip = el(`<button class="chip ${branch===b?'on':''}">${esc(b)}</button>`);
+      chip.onclick = ()=>{ S.receiveBranch = b; renderApp(); };
+      chipRow.appendChild(chip);
+    });
+    c.appendChild(chipRow);
+  }
+  if(!branch){ c.appendChild(el(`<div class="empty">${ICONS.inbox}<div>${esc(t(myBranch() ? 'recv_not_pilot' : 'recv_no_branch'))}</div></div>`)); return c; }
+
+  c.appendChild(secH('inbox','c-green', t('recv_current') + ' · ' + branch));
+  const draft = draftReceiptFor(branch);
+  const card = el('<div class="card"></div>');
+  if(!draft) card.appendChild(el(`<div class="hint" style="margin:0 0 10px;">${esc(t('recv_empty'))}</div>`));
+
+  /* step 1: supplier */
+  card.appendChild(el(`<div class="lr-sub" style="font-weight:800; margin-bottom:6px;">${esc(t('recv_step_supplier'))}</div>`));
+  const supBtn = el(`<button class="btn block ${draft&&draft.supplierName?'':'primary'}">${ICONS.users}<span>${esc(draft&&draft.supplierName ? draft.supplierName : t('recv_pick_supplier'))}</span></button>`);
+  supBtn.onclick = ()=>openSupplierPicker(branch);
+  card.appendChild(supBtn);
+
+  /* step 2: the paper */
+  if(draft && draft.supplierName){
+    card.appendChild(el(`<div class="lr-sub" style="font-weight:800; margin:14px 0 6px;">${esc(t('recv_step_photo'))}</div>`));
+    const photos = receiptPhotos(draft);
+    const pw = photoPicker(async (url)=>{
+      const next = url ? [url].concat(photos.slice(1)) : photos.slice(1);
+      try{ await S.db.doc('receipts/'+draft.id).update({photos: next}); }catch(err){ toast(dbErrMsg(err)); }
+    }, true, photos[0] || null);
+    card.appendChild(pw);
+    if(photos[0]){
+      const pw2 = photoPicker(async (url)=>{
+        const next = url ? [photos[0], url] : [photos[0]];
+        try{ await S.db.doc('receipts/'+draft.id).update({photos: next}); }catch(err){ toast(dbErrMsg(err)); }
+      }, true, photos[1] || null);
+      pw2.style.marginTop = '6px';
+      if(!photos[1]) pw2.querySelector('button span').textContent = t('recv_photo2');
+      card.appendChild(pw2);
+    } else {
+      card.appendChild(el(`<div class="hint" style="margin-top:4px;">${esc(t('recv_photo_hint'))}</div>`));
+    }
+    const kind = el(`<div class="seg" style="margin:10px 0 8px;">
+      <button data-v="do" class="${draft.docKind!=='invoice'?'on':''}">${esc(t('recv_doc_do'))}</button>
+      <button data-v="invoice" class="${draft.docKind==='invoice'?'on':''}">${esc(t('recv_doc_invoice'))}</button></div>`);
+    [...kind.querySelectorAll('button')].forEach(b=>{ b.onclick=async ()=>{ try{ await S.db.doc('receipts/'+draft.id).update({docKind:b.dataset.v}); }catch(err){ toast(dbErrMsg(err)); } }; });
+    card.appendChild(kind);
+    const docNo = el(`<label class="field"><span class="fl">${esc(t('recv_doc_no'))}</span><input type="text" value="${esc(draft.docNo||'')}"></label>`);
+    docNo.querySelector('input').onchange = async (ev)=>{ try{ await S.db.doc('receipts/'+draft.id).update({docNo: ev.target.value.trim()}); }catch(err){ toast(dbErrMsg(err)); } };
+    card.appendChild(docNo);
+    const amt = el(`<label class="field"><span class="fl">${esc(t('recv_amount'))}</span><input type="number" inputmode="decimal" step="0.01" value="${esc(draft.amount||'')}"></label>`);
+    amt.querySelector('input').onchange = async (ev)=>{ try{ await S.db.doc('receipts/'+draft.id).update({amount: ev.target.value.trim()}); }catch(err){ toast(dbErrMsg(err)); } };
+    card.appendChild(amt);
+    const note = el(`<label class="field"><span class="fl">${esc(t('recv_note'))}</span><input type="text" value="${esc(draft.note||'')}"></label>`);
+    note.querySelector('input').onchange = async (ev)=>{ try{ await S.db.doc('receipts/'+draft.id).update({note: ev.target.value.trim()}); }catch(err){ toast(dbErrMsg(err)); } };
+    card.appendChild(note);
+  }
+
+  /* step 3: the count */
+  if(draft && receiptPhotos(draft).length){
+    card.appendChild(el(`<div class="lr-sub" style="font-weight:800; margin:14px 0 6px;">${esc(t('recv_step_lines'))}</div>`));
+    const lines = receiptLines(draft);
+    if(lines.length){
+      const list = el('<div class="list"></div>');
+      lines.forEach(line=>{
+        const extra = [line.short?`${t('recv_qty_short')} ${line.short}`:'', line.damaged?`${t('recv_qty_damaged')} ${line.damaged}`:''].filter(Boolean).join(' · ');
+        const row = el(`<div class="list-row" style="cursor:default;">
+          <div class="lr-main"><div class="lr-title">${esc(line.name)}</div>
+          <div class="lr-sub">${esc(line.code||'')}${line.code?' · ':''}${esc(line.unit||'')}${extra?' · '+esc(extra):''}</div></div>
+          <span class="num" style="font-weight:900; font-size:16px; margin-right:10px;">${Number(line.qty)||0}</span></div>`);
+        row.querySelector('.lr-main').onclick = ()=>openReceiptQtySheet(branch, {id:line.skuId, code:line.code, name:line.name, unit:line.unit}, line);
+        const del = el(`<button class="btn sm">${ICONS.x}</button>`);
+        del.onclick = async ()=>{ try{ await S.db.doc('receipts/'+draft.id).update({lines: lines.filter(l => l.lineId !== line.lineId)}); }catch(err){ toast(dbErrMsg(err)); } };
+        row.appendChild(del);
+        list.appendChild(row);
+      });
+      card.appendChild(list);
+    }
+    const addBtn = el(`<button class="btn block" style="margin-top:8px;">${ICONS.plus}<span>${esc(t('recv_add_item'))}</span></button>`);
+    addBtn.onclick = ()=>openReceiptSkuPicker(branch);
+    card.appendChild(addBtn);
+
+    const sendBtn = el(`<button class="btn primary block" style="margin-top:8px;">${esc(t('recv_btn_send'))}${lines.length?' ('+lines.length+')':''}</button>`);
+    sendBtn.onclick = async ()=>{
+      if(!confirm(t('recv_confirm_send'))) return;
+      sendBtn.disabled = true;
+      try{
+        await rpc('submit_receipt', {rec_id: draft.id});     // server time, server identity, then frozen
+        toast(t('recv_toast_sent'));
+      }catch(err){ toast(dbErrMsg(err)); sendBtn.disabled = false; }
+    };
+    card.appendChild(sendBtn);
+  }
+  if(draft){
+    const discard = el(`<button class="btn danger sm" style="margin-top:10px;">${esc(t('recv_discard'))}</button>`);
+    discard.onclick = async ()=>{ if(!confirm(t('recv_discard')+'?')) return; try{ await S.db.doc('receipts/'+draft.id).delete(); }catch(err){ toast(dbErrMsg(err)); } };
+    card.appendChild(discard);
+  }
+  c.appendChild(card);
+
+  const past = S.receipts.filter(r => r.branch === branch && r.status !== 'draft')
+    .sort((a,b)=>String(b.submittedAt||b.createdAt||'').localeCompare(String(a.submittedAt||a.createdAt||'')));
+  c.appendChild(el(`<div class="sec-row"><h2 class="sec">${esc(t('recv_history'))}</h2></div>`));
+  if(past.length === 0) c.appendChild(el(`<div class="hint">${esc(t('recv_no_history'))}</div>`));
+  const hist = el('<div class="list"></div>');
+  past.slice(0, 30).forEach(r=> hist.appendChild(receiptRow(r, false)));
+  c.appendChild(hist);
+  return c;
+}
+
+function receiptRow(r, showBranch){
+  const n = receiptLines(r).length;
+  const row = el(`<div class="list-row">
+    <div class="lr-main"><div class="lr-title">${esc(r.supplierName||'?')}${showBranch?' · '+esc(r.branch):''}</div>
+    <div class="lr-sub">${esc(r.docKind==='invoice'?t('recv_doc_invoice'):t('recv_doc_do'))}${r.docNo?' '+esc(r.docNo):''} · ${esc(localStamp(r.submittedAt||r.createdAt))}${n?' · '+n+esc(t('recv_lines_suffix')):''}${r.amount?' · RM '+esc(r.amount):''}</div></div>
+    ${receiptPill(r)}</div>`);
+  row.onclick = ()=>openReceiptDetail(r);
+  return row;
+}
+/* what accounting did with it: queued / sent / posted (with the AutoCount GRN number) / exception */
+function receiptPill(r){
+  if(r.status !== 'submitted') return `<span class="pill n">${esc(t('recv_status_draft'))}</span>`;
+  const a = r.accStatus || '';
+  if(a === 'posted')    return `<span class="pill ok">${esc(t('recv_acc_posted'))}${r.autocountNo?' '+esc(r.autocountNo):''}</span>`;
+  if(a === 'exception') return `<span class="pill critical">${esc(t('recv_acc_exception'))}</span>`;
+  if(a === 'queued' || a === 'sent') return `<span class="pill warn">${esc(t('recv_acc_queued'))}</span>`;
+  return `<span class="pill ok">${esc(t('recv_status_submitted'))}</span>`;
+}
+
+function openReceiptDetail(r){
+  const body = el('<div></div>');
+  body.appendChild(el(`<div class="card"><div style="font-weight:900; font-size:16px;">${esc(r.supplierName||'?')}</div>
+    <div class="lr-sub">${esc(r.branch)} · ${esc(r.docKind==='invoice'?t('recv_doc_invoice'):t('recv_doc_do'))} ${esc(r.docNo||'')} · ${esc(localStamp(r.submittedAt||r.createdAt))}</div>
+    ${r.amount?`<div class="lr-sub">RM ${esc(r.amount)}</div>`:''}${r.note?`<div class="lr-sub">${esc(r.note)}</div>`:''}
+    <div class="lr-sub">${esc(r.receivedByName||r.createdByName||'')}</div>
+    ${r.status==='submitted'?`<div style="margin-top:6px;">${receiptPill(r)}${r.accRef?` <span class="lr-sub">${esc(r.accRef)}</span>`:''}</div>`:''}
+    ${r.accStatus==='exception'&&r.accError?`<div class="lr-sub" style="color:var(--danger,#b00); margin-top:4px;">${esc(r.accError)}</div>`:''}</div>`));
+  receiptPhotos(r).forEach(p=> body.appendChild(el(`<img class="photow" src="${p}" style="margin-top:6px;">`)));
+  if(receiptLines(r).length){
+    const list = el('<div class="list" style="margin-top:8px;"></div>');
+    receiptLines(r).forEach(l=>{
+      const extra = [l.short?`${t('recv_qty_short')} ${l.short}`:'', l.damaged?`${t('recv_qty_damaged')} ${l.damaged}`:''].filter(Boolean).join(' · ');
+      list.appendChild(el(`<div class="list-row" style="cursor:default;"><div class="lr-main"><div class="lr-title">${esc(l.name)}</div><div class="lr-sub">${esc(l.code||'')}${extra?' · '+esc(extra):''}</div></div><span class="num" style="font-weight:900;">${Number(l.qty)||0}</span></div>`));
+    });
+    body.appendChild(list);
+  }
+  openSheet(t('recv_current'), body);
+}
+
+function openSupplierPicker(branch){
+  const body = el('<div></div>');
+  const search = el(`<label class="field"><span class="fl">${esc(t('recv_search_supplier'))}</span><input type="text" placeholder="${esc(t('recv_search_supplier'))}"></label>`);
+  body.appendChild(search);
+  const listWrap = el('<div class="list"></div>');
+  body.appendChild(listWrap);
+  const all = supplierList();
+  if(!all.length) body.insertBefore(el(`<div class="hint">${esc(t('recv_no_suppliers'))}</div>`), listWrap);
+  const choose = async (code, name)=>{
+    try{ await ensureReceiptDraft(branch, {supplierCode: code||'', supplierName: name}); closeSheet(); }
+    catch(err){ toast(dbErrMsg(err)); }
+  };
+  const render = ()=>{
+    const q = (search.querySelector('input').value||'').trim().toLowerCase();
+    listWrap.innerHTML = '';
+    all.filter(s => !q || (s.name||'').toLowerCase().includes(q) || (s.code||'').toLowerCase().includes(q)).slice(0, 60).forEach(s=>{
+      const row = el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(s.name)}</div><div class="lr-sub">${esc(s.code||'')}</div></div>${ib('check','c-green','sm')}</div>`);
+      row.onclick = ()=>choose(s.code, s.name);
+      listWrap.appendChild(row);
+    });
+    if(q.length >= 3){
+      const row = el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(t('recv_use_typed'))}: ${esc(search.querySelector('input').value.trim())}</div></div>${ib('plus','c-grey','sm')}</div>`);
+      row.onclick = ()=>choose('', search.querySelector('input').value.trim());
+      listWrap.appendChild(row);
+    }
+  };
+  search.querySelector('input').oninput = render;
+  render();
+  openSheet(t('recv_pick_supplier') + ' · ' + branch, body);
+  setTimeout(()=>{ const i = search.querySelector('input'); if(i) i.focus(); }, 60);
+}
+
+function openReceiptSkuPicker(branch){
+  const body = el('<div></div>');
+  const search = el(`<label class="field"><span class="fl">${esc(t('order_search'))}</span><input type="text" placeholder="${esc(t('order_search_ph'))}"></label>`);
+  body.appendChild(search);
+  const listWrap = el('<div class="list"></div>');
+  body.appendChild(listWrap);
+  const skus = activeSkus(branch);
+  const render = ()=>{
+    const q = (search.querySelector('input').value||'').trim().toLowerCase();
+    listWrap.innerHTML = '';
+    skus.filter(s => !q || (s.name||'').toLowerCase().includes(q) || (s.code||'').toLowerCase().includes(q)).slice(0, 80).forEach(s=>{
+      const row = el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(s.name)}</div><div class="lr-sub">${esc(s.unit||'')}${s.code?' · '+esc(s.code):''}</div></div>${ib('plus','c-grey','sm')}</div>`);
+      row.onclick = ()=>openReceiptQtySheet(branch, s, null);
+      listWrap.appendChild(row);
+    });
+  };
+  search.querySelector('input').oninput = render;
+  render();
+  openSheet(t('recv_add_item') + ' · ' + branch, body);
+  setTimeout(()=>{ const i = search.querySelector('input'); if(i) i.focus(); }, 60);
+}
+
+function openReceiptQtySheet(branch, sku, existing){
+  const body = el('<div></div>');
+  body.appendChild(el(`<div class="card" style="text-align:center;"><div style="font-weight:900; font-size:16px;">${esc(sku.name)}</div>
+    <div class="lr-sub">${esc(sku.unit||'')}${sku.code?' · '+esc(sku.code):''}</div></div>`));
+  const mk = (label, val)=>{
+    const w = el(`<label class="row" style="align-items:center; gap:10px; margin-top:8px;"><span class="lr-sub" style="flex:1;">${esc(label)}</span>
+      <input type="number" inputmode="numeric" min="0" step="1" value="${val}" style="width:110px; text-align:center; font-weight:900; font-size:18px;"></label>`);
+    return w;
+  };
+  const qty = mk(t('recv_qty_received'), existing ? existing.qty : 1);
+  const short = mk(t('recv_qty_short'), existing ? (existing.short||0) : 0);
+  const dmg = mk(t('recv_qty_damaged'), existing ? (existing.damaged||0) : 0);
+  body.appendChild(qty); body.appendChild(short); body.appendChild(dmg);
+  const foot = el('<div class="row" style="margin-top:12px;"></div>');
+  const btn = el(`<button class="btn primary" style="flex:1;">${esc(t('btn_save'))}</button>`);
+  btn.onclick = async ()=>{
+    const draft = draftReceiptFor(branch);
+    if(!draft){ toast(t('recv_need_supplier')); return; }
+    btn.disabled = true;
+    const n = v => Math.max(0, Number(v.querySelector('input').value)||0);
+    const line = {lineId: existing ? existing.lineId : ('l'+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),
+                  skuId: sku.id, code: sku.code||'', name: sku.name, unit: sku.unit||'', qty: n(qty), short: n(short), damaged: n(dmg)};
+    const lines = existing ? receiptLines(draft).map(l => l.lineId === existing.lineId ? line : l) : receiptLines(draft).concat([line]);
+    try{ await S.db.doc('receipts/'+draft.id).update({lines}); closeSheet(); }
+    catch(err){ toast(dbErrMsg(err)); btn.disabled = false; }
+  };
+  foot.appendChild(btn); body.appendChild(foot);
+  openSheet(t('recv_step_lines'), body);
+  setTimeout(()=>{ const i = qty.querySelector('input'); if(i){ i.focus(); i.select(); } }, 60);
+}
+
+/* HQ: every store's deliveries, newest first. Reading only -- the numbers live in accounting now. */
+function receiveInboxView(){
+  const c = el('<div></div>');
+  c.appendChild(secH('inbox','c-green', t('recv_hq_inbox')));
+  const rows = S.receipts.filter(r => r.status !== 'draft')
+    .sort((a,b)=>String(b.submittedAt||b.createdAt||'').localeCompare(String(a.submittedAt||a.createdAt||'')));
+  if(!rows.length){ c.appendChild(el(`<div class="hint">${esc(t('recv_no_history'))}</div>`)); return c; }
+  const list = el('<div class="list"></div>');
+  rows.slice(0, 200).forEach(r=> list.appendChild(receiptRow(r, true)));
+  c.appendChild(list);
+  return c;
+}
+
 /* ---------- HQ: what has come in ---------- */
 function orderInboxView(){
   const c = el('<div></div>');
@@ -5042,6 +5329,12 @@ function funcGrid(clockedIn){
      count: isAdmin() ? S.stockRequests.filter(r=>r.status==='submitted').length : 0,
      go:()=>{ S.orderTab='inbox'; location.hash='#order'; }},
   ];
+  // receiving is switched on per store (Settings > receiving pilot stores) so the trial can start with two
+  if(isAdmin() || receivingBranches().some(b => b === (myBranch()||'').toUpperCase() || coversBranch(currentEmployee(), b))){
+    tiles.push({k:'receive', icon:'inbox', cls:'c-green', label:t('tile_receive'),
+      count: isAdmin() ? S.receipts.filter(r=>r.status==='submitted' && r.accStatus==='exception').length : 0,
+      go:()=>{ location.hash='#receive'; }});
+  }
   if(hasBeer) tiles.push({k:'beer', icon:'beer', cls:'c-amber', label:t('tile_beer'), go:()=>{ S.stockSection='beer'; location.hash='#stock'; }});
   tiles.push({k:'equip', icon:'machine', cls:'c-grey', label:t('tile_equip'), go:()=>{ location.hash='#equip'; }});
   if(canManageStaff()){
@@ -5062,7 +5355,7 @@ function funcGrid(clockedIn){
   // every tile belongs to exactly one group; anything new falls into "more"
   const GROUPS = [
     {id:'daily',  keys:['clock','tasks','handover','temp']},
-    {id:'goods',  keys:['order','stock','beer','equip']},
+    {id:'goods',  keys:['order','receive','stock','beer','equip']},
     {id:'wrong',  keys:['fault','incident','sos']},
     {id:'mine',   keys:['leave','punch','swap','memos','help']},
     {id:'manage', keys:['approvals','schedule','report','staff','audit','overview','runner','settings']},
