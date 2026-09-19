@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SPIL Panorama Station</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#F7F8F7;
+  --surface:#FFFFFF;
+  --surface-2:#EDF1F0;
+  --ink:#0F1E1D;
+  --muted:#576967;
+  --line:#D5DEDC;
+  --accent:#C8004B;
+  --accent-soft:rgba(200,0,75,.10);
+  --signal:#0B6F68;
+  --hud-bg:rgba(10,18,19,.72);
+  --hud-ink:#EAF2F0;
+  --hud-line:rgba(234,242,240,.28);
+  --shadow:0 1px 2px rgba(15,30,29,.06),0 8px 24px rgba(15,30,29,.07);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0A1213;
+    --surface:#0F1B1C;
+    --surface-2:#142324;
+    --ink:#E8F0EE;
+    --muted:#8CA09D;
+    --line:#1F2F30;
+    --accent:#FF2E6B;
+    --accent-soft:rgba(255,46,107,.14);
+    --signal:#6FD8D0;
+    --hud-bg:rgba(6,12,13,.66);
+    --hud-ink:#EAF2F0;
+    --hud-line:rgba(234,242,240,.22);
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0A1213;
+  --surface:#0F1B1C;
+  --surface-2:#142324;
+  --ink:#E8F0EE;
+  --muted:#8CA09D;
+  --line:#1F2F30;
+  --accent:#FF2E6B;
+  --accent-soft:rgba(255,46,107,.14);
+  --signal:#6FD8D0;
+  --hud-bg:rgba(6,12,13,.66);
+  --hud-ink:#EAF2F0;
+  --hud-line:rgba(234,242,240,.22);
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font-family:"Archivo","Noto Sans SC",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:15px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.zh{font-family:"Noto Sans SC","Archivo",system-ui,sans-serif}
+.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:20px;padding-block:28px 56px}
+
+/* ---------- masthead ---------- */
+.masthead{display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px 28px;margin-bottom:22px}
+.eyebrow{
+  font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--accent);margin:0 0 6px
+}
+h1{font-size:clamp(28px,4.4vw,42px);font-weight:700;letter-spacing:-.022em;line-height:1.06;margin:0;text-wrap:balance}
+.lede{margin:8px 0 0;max-width:62ch;color:var(--muted);font-size:15px}
+.lede .zh{display:block;font-size:14px;margin-top:2px}
+.build-tag{
+  margin-left:auto;border:1px solid var(--line);border-radius:999px;
+  padding:5px 12px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap
+}
+
+/* ---------- stage ---------- */
+.stage{
+  position:relative;aspect-ratio:16/9;min-height:320px;max-height:70vh;
+  border:1px solid var(--line);border-radius:4px;overflow:hidden;
+  background:#0A1213;box-shadow:var(--shadow);
+  touch-action:none;isolation:isolate
+}
+.stage.is-drop{outline:2px dashed var(--accent);outline-offset:-8px}
+#view{display:block;width:100%;height:100%;cursor:grab}
+#view:active{cursor:grabbing}
+#view:focus-visible{outline:2px solid var(--accent);outline-offset:-3px}
+.layer{position:absolute;inset:0;pointer-events:none}
+
+/* telemetry bar */
+.telem{
+  position:absolute;left:0;right:0;top:0;display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;
+  padding:10px 14px;background:linear-gradient(var(--hud-bg),rgba(6,12,13,0));
+  color:var(--hud-ink);font-size:11px;letter-spacing:.09em;text-transform:uppercase
+}
+.telem .slug{font-weight:600}
+.telem .readout{margin-left:auto;display:flex;gap:14px;letter-spacing:.06em}
+.telem .readout b{font-weight:500;color:var(--signal)}
+
+/* compass */
+.compass{position:absolute;left:14px;bottom:14px;width:64px;height:64px;opacity:.92}
+.compass svg{display:block;width:100%;height:100%}
+.compass .ring{fill:rgba(6,12,13,.5);stroke:var(--hud-line);stroke-width:1}
+.compass .tick{stroke:var(--hud-line);stroke-width:1}
+.compass .card{fill:#EAF2F0;font:600 9px "IBM Plex Mono",monospace;letter-spacing:.1em}
+.compass .needle{fill:var(--accent)}
+
+/* hotspot markers */
+.spot{
+  position:absolute;pointer-events:auto;transform:translate(-50%,-50%);
+  display:flex;align-items:center;gap:8px;padding:0;border:0;background:none;
+  color:#EAF2F0;cursor:pointer;font-family:inherit
+}
+.spot .dot{
+  width:15px;height:15px;border-radius:50%;flex:none;
+  background:var(--accent);box-shadow:0 0 0 4px rgba(255,46,107,.22),0 0 0 1px rgba(0,0,0,.35)
+}
+.spot .tag{
+  background:var(--hud-bg);border:1px solid var(--hud-line);border-radius:3px;
+  padding:4px 9px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;
+  backdrop-filter:blur(6px)
+}
+.spot:hover .tag,.spot[aria-current="true"] .tag{border-color:var(--accent);color:#fff}
+.spot:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:3px}
+
+/* control rail */
+.rail{
+  position:absolute;right:14px;bottom:14px;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;pointer-events:auto
+}
+.btn{
+  font-family:inherit;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--hud-ink);background:var(--hud-bg);border:1px solid var(--hud-line);
+  border-radius:3px;padding:7px 11px;cursor:pointer;backdrop-filter:blur(6px)
+}
+.btn:hover{border-color:var(--accent)}
+.btn[aria-pressed="true"]{border-color:var(--accent);color:#fff;background:rgba(255,46,107,.26)}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.hint{
+  position:absolute;left:50%;bottom:18px;transform:translateX(-50%);
+  color:rgba(234,242,240,.78);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  transition:opacity .4s;text-align:center
+}
+.hint.gone{opacity:0}
+.fallback{
+  position:absolute;inset:0;display:none;place-content:center;padding:28px;text-align:center;
+  color:#EAF2F0;background:#0A1213;font-size:14px
+}
+.fallback.on{display:grid}
+
+/* ---------- manifest ---------- */
+.section-head{display:flex;align-items:baseline;gap:14px;margin:40px 0 14px}
+.section-head h2{font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;margin:0}
+.section-head .count{font-size:11px;color:var(--muted);letter-spacing:.08em}
+.section-head .rule{flex:1;height:1px;background:var(--line)}
+.manifest{display:grid;grid-template-columns:repeat(auto-fit,minmax(228px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.zone{
+  display:flex;flex-direction:column;gap:6px;align-items:flex-start;text-align:left;
+  background:var(--surface);border:0;padding:16px 16px 18px;cursor:pointer;font-family:inherit;color:inherit
+}
+.zone:hover{background:var(--surface-2)}
+.zone[aria-current="true"]{background:var(--accent-soft);box-shadow:inset 3px 0 0 var(--accent)}
+.zone .brg{font-size:11px;letter-spacing:.1em;color:var(--accent)}
+.zone h3{margin:0;font-size:16px;font-weight:600;letter-spacing:-.01em}
+.zone .zh{font-size:13px;color:var(--ink);opacity:.82}
+.zone p{margin:4px 0 0;font-size:13px;color:var(--muted)}
+.zone:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.zone:disabled{cursor:default;background:var(--surface);opacity:.72}
+.file-btn:disabled{opacity:.45;cursor:default}
+
+/* ---------- source panel ---------- */
+.panel{
+  margin-top:14px;border:1px solid var(--line);border-radius:4px;background:var(--surface);
+  padding:18px;display:grid;gap:14px;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)
+}
+.panel h3{margin:0 0 4px;font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+.panel p{margin:0;font-size:13px;color:var(--muted)}
+.panel p + p{margin-top:7px}
+.panel .zh{display:block;color:var(--ink);opacity:.8}
+.drop{
+  border:1px dashed var(--line);border-radius:4px;background:var(--surface-2);
+  display:grid;place-content:center;gap:8px;justify-items:center;padding:20px 16px;text-align:center
+}
+.drop.is-drop{border-color:var(--accent);background:var(--accent-soft)}
+.drop small{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.file-btn{
+  font-family:inherit;font-size:12px;font-weight:600;letter-spacing:.06em;
+  background:var(--ink);color:var(--ground);border:0;border-radius:3px;padding:9px 15px;cursor:pointer
+}
+.file-btn:hover{background:var(--accent);color:#fff}
+.file-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.note{
+  margin-top:26px;padding-top:14px;border-top:1px solid var(--line);
+  font-size:12px;color:var(--muted);max-width:76ch
+}
+.note b{color:var(--ink);font-weight:600}
+.note .zh{display:block;margin-top:4px}
+@media (max-width:720px){
+  .panel{grid-template-columns:1fr}
+  .build-tag{margin-left:0}
+  .telem .readout{margin-left:0;width:100%}
+  .compass{width:52px;height:52px}
+  .spot .tag{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div>
+      <p class="eyebrow">SPIL Project · 360° Visual Survey</p>
+      <h1>SPIL Panorama Station</h1>
+      <p class="lede">Drag to look around the full sphere, scroll or pinch to change field of view, and tap a marker to fly to that zone.
+        <span class="zh">拖动可环视全景，滚轮或双指缩放调整视角，点击标记可跳转到该区域。</span>
+      </p>
+    </div>
+    <span class="build-tag">Placeholder scene · 占位场景</span>
+  </header>
+
+  <div class="stage" id="stage">
+    <canvas id="view" tabindex="0" aria-label="360 degree panorama viewer. Use arrow keys to look around, plus and minus to zoom."></canvas>
+    <div class="layer" id="spots" aria-hidden="false"></div>
+    <div class="layer telem" aria-hidden="true">
+      <span class="slug">SPIL · <span id="src-name">Calibration sphere</span></span>
+      <span class="readout mono">
+        <span>BRG <b id="r-brg">000.0°</b></span>
+        <span>ELV <b id="r-elv">+00.0°</b></span>
+        <span>FOV <b id="r-fov">75°</b></span>
+      </span>
+    </div>
+    <div class="compass" aria-hidden="true">
+      <svg viewBox="0 0 64 64">
+        <circle class="ring" cx="32" cy="32" r="27"></circle>
+        <g id="rose">
+          <line class="tick" x1="32" y1="7" x2="32" y2="13"></line>
+          <line class="tick" x1="57" y1="32" x2="51" y2="32"></line>
+          <line class="tick" x1="32" y1="57" x2="32" y2="51"></line>
+          <line class="tick" x1="7" y1="32" x2="13" y2="32"></line>
+          <text class="card" x="32" y="20" text-anchor="middle">N</text>
+        </g>
+        <polygon class="needle" points="32,22 35.5,36 32,33 28.5,36"></polygon>
+      </svg>
+    </div>
+    <div class="rail">
+      <button class="btn" id="spin" aria-pressed="true">Auto-pan</button>
+      <button class="btn" id="reset">Reset view</button>
+      <button class="btn" id="full">Fullscreen</button>
+    </div>
+    <p class="hint mono" id="hint">Drag to look around · 拖动环视</p>
+    <div class="fallback" id="fallback">
+      <p>The 3D library could not load, so the panorama cannot be drawn.<br>
+      <span class="zh">3D 库未能载入，无法绘制全景。</span><br>
+      Reload the page or check the network connection.</p>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <h2>Scene manifest</h2>
+    <span class="count zh">场景清单 · <span id="zone-count">4</span> zones</span>
+    <span class="rule"></span>
+  </div>
+  <div class="manifest" id="manifest"></div>
+
+  <div class="panel">
+    <div>
+      <h3>Load your own panorama</h3>
+      <p>This viewer expects a single <b>equirectangular</b> image — one wide photo covering the full 360° × 180° sphere, ideally 2:1 (for example 4096 × 2048 JPG).
+        <span class="zh">本查看器需要一张等距圆柱投影全景图，宽高比 2:1，例如 4096 × 2048 的 JPG。</span>
+      </p>
+      <p>Your file stays on this device — it is read locally and never uploaded.
+        <span class="zh">文件仅在本机读取，不会上传。</span>
+      </p>
+    </div>
+    <div class="drop" id="drop">
+      <button class="file-btn" id="pick">Choose image · 选择图片</button>
+      <small>or drop a file here</small>
+      <input type="file" id="file" accept="image/*" hidden>
+    </div>
+  </div>
+
+  <p class="note"><b>About this build.</b> Every zone name and description below is placeholder copy, and the sphere you are looking at is a generated calibration grid — bearing marks every 30°, a horizon line, and zenith/nadir labels — so the controls can be checked before the real imagery lands. Send the panorama and the zone details, and both get swapped in.
+    <span class="zh"><b>关于此版本：</b>下方所有区域名称与说明均为占位内容，当前球面是自动生成的校准网格（每 30° 一个方位刻度、水平线、天顶与天底标记），便于在真实图像到位前检查操作。提供全景图与区域资料后即可替换。</span>
+  </p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.128.0/three.min.js"></script>
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  var ZONES = [
+    {id:"a", brg:20,  elv:-5, name:"Entry threshold",  zh:"入口区",
+     text:"Placeholder — first impression point, where arriving visitors orient themselves."},
+    {id:"b", brg:110, elv:0,  name:"Service counter",  zh:"服务台",
+     text:"Placeholder — staffed position handling queries, payment and handover."},
+    {id:"c", brg:205, elv:-8, name:"Display bay",      zh:"展示区",
+     text:"Placeholder — primary product or exhibit wall, the zone with the longest dwell time."},
+    {id:"d", brg:295, elv:4,  name:"Back of house",    zh:"后勤区",
+     text:"Placeholder — stock, prep and staff-only access, kept out of the customer path."}
+  ];
+
+  var ready = false;
+  var stage = document.getElementById("stage");
+  var canvas = document.getElementById("view");
+  var spotLayer = document.getElementById("spots");
+  var manifest = document.getElementById("manifest");
+  var fallback = document.getElementById("fallback");
+  var hint = document.getElementById("hint");
+  var rBrg = document.getElementById("r-brg"), rElv = document.getElementById("r-elv"), rFov = document.getElementById("r-fov");
+  var rose = document.getElementById("rose"), srcName = document.getElementById("src-name");
+  document.getElementById("zone-count").textContent = ZONES.length;
+
+  ZONES.forEach(function(z){
+    var card = document.createElement("button");
+    card.className = "zone"; card.type = "button"; card.dataset.id = z.id;
+    card.innerHTML = '<span class="brg mono"></span><h3></h3><span class="zh"></span><p></p>';
+    card.querySelector(".brg").textContent = "BRG " + ("00" + z.brg).slice(-3) + "° / ELV " + (z.elv >= 0 ? "+" : "−") + ("0" + Math.abs(z.elv)).slice(-2) + "°";
+    card.querySelector("h3").textContent = z.name;
+    card.querySelector(".zh").textContent = z.zh;
+    card.querySelector("p").textContent = z.text;
+    card.addEventListener("click", function(){ if (!ready) return; goTo(z); stage.scrollIntoView({behavior: reduce ? "auto" : "smooth", block:"nearest"}); });
+    manifest.appendChild(card);
+  });
+
+  if (typeof THREE === "undefined"){
+    fallback.classList.add("on");
+    manifest.querySelectorAll(".zone").forEach(function(c){ c.disabled = true; });
+    document.getElementById("pick").disabled = true;
+    return;
+  }
+
+  /* ---------- calibration sphere texture ---------- */
+  function calibrationCanvas(){
+    var W = 2048, H = 1024;
+    var c = document.createElement("canvas"); c.width = W; c.height = H;
+    var g = c.getContext("2d");
+
+    var grad = g.createLinearGradient(0,0,0,H);
+    grad.addColorStop(0.00,"#050D0D");
+    grad.addColorStop(0.30,"#0E2528");
+    grad.addColorStop(0.47,"#28565B");
+    grad.addColorStop(0.50,"#3C7A77");
+    grad.addColorStop(0.53,"#182827");
+    grad.addColorStop(0.78,"#0B1414");
+    grad.addColorStop(1.00,"#060C0C");
+    g.fillStyle = grad; g.fillRect(0,0,W,H);
+
+    function xOf(lon){ return (((lon % 360) + 360) % 360) / 360 * W; }
+    function yOf(lat){ return (90 - lat) / 180 * H; }
+
+    /* accent columns under each zone bearing */
+    ZONES.forEach(function(z){
+      var x = xOf(z.brg);
+      var col = g.createLinearGradient(x,yOf(60),x,yOf(-60));
+      col.addColorStop(0,"rgba(255,46,107,0)");
+      col.addColorStop(0.5,"rgba(255,46,107,0.16)");
+      col.addColorStop(1,"rgba(255,46,107,0)");
+      g.fillStyle = col; g.fillRect(x-26,yOf(60),52,yOf(-60)-yOf(60));
+    });
+
+    /* latitude lines */
+    for (var lat = -75; lat <= 75; lat += 15){
+      g.strokeStyle = lat === 0 ? "rgba(111,216,208,.55)" : "rgba(111,216,208,.13)";
+      g.lineWidth = lat === 0 ? 3 : 1;
+      g.beginPath(); g.moveTo(0, yOf(lat)); g.lineTo(W, yOf(lat)); g.stroke();
+    }
+    /* longitude lines */
+    for (var lon = 0; lon < 360; lon += 15){
+      var major = lon % 30 === 0;
+      g.strokeStyle = major ? "rgba(111,216,208,.30)" : "rgba(111,216,208,.11)";
+      g.lineWidth = 1;
+      g.beginPath(); g.moveTo(xOf(lon), yOf(82)); g.lineTo(xOf(lon), yOf(-82)); g.stroke();
+    }
+    /* bearing numerals + cardinals */
+    g.textAlign = "center"; g.textBaseline = "middle";
+    var cards = {0:"N",90:"E",180:"S",270:"W"};
+    for (var b = 0; b < 360; b += 30){
+      g.fillStyle = "rgba(234,242,240,.72)";
+      g.font = '500 24px "IBM Plex Mono", monospace';
+      g.fillText(("00" + b).slice(-3) + "°", xOf(b), yOf(0) - 34);
+      if (cards[b]){
+        g.fillStyle = "rgba(255,46,107,.92)";
+        g.font = '700 46px Archivo, system-ui, sans-serif';
+        g.fillText(cards[b], xOf(b), yOf(0) - 86);
+      }
+    }
+    /* poles + signature */
+    g.fillStyle = "rgba(234,242,240,.40)";
+    g.font = '500 22px "IBM Plex Mono", monospace';
+    g.fillText("Z E N I T H", W/2, yOf(84));
+    g.fillText("N A D I R", W/2, yOf(-84));
+    g.fillStyle = "rgba(234,242,240,.55)";
+    g.font = '600 30px Archivo, system-ui, sans-serif';
+    g.fillText("SPIL · CALIBRATION SPHERE", W/2, yOf(-40));
+    g.font = '400 20px "Noto Sans SC", system-ui, sans-serif';
+    g.fillStyle = "rgba(234,242,240,.38)";
+    g.fillText("校准球面 · 待替换真实全景", W/2, yOf(-47));
+    return c;
+  }
+
+  /* ---------- scene ---------- */
+  var renderer = new THREE.WebGLRenderer({canvas:canvas, antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  if (THREE.sRGBEncoding) renderer.outputEncoding = THREE.sRGBEncoding;
+
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(75, 16/9, 1, 1100);
+  var geo = new THREE.SphereGeometry(500, 64, 40);
+  geo.scale(-1, 1, 1);
+  var texture = new THREE.CanvasTexture(calibrationCanvas());
+  if (THREE.sRGBEncoding) texture.encoding = THREE.sRGBEncoding;
+  var material = new THREE.MeshBasicMaterial({map:texture});
+  scene.add(new THREE.Mesh(geo, material));
+
+  var lon = 8, lat = 0, fov = 75, spin = !reduce, interacted = false;
+  var fly = null;
+
+  function resize(){
+    var w = stage.clientWidth, h = stage.clientHeight;
+    if (!w || !h) return;
+    camera.aspect = w / h; camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false);
+  }
+  if (window.ResizeObserver) new ResizeObserver(resize).observe(stage);
+  window.addEventListener("resize", resize);
+  resize();
+
+  /* ---------- hotspot DOM ---------- */
+  var spots = ZONES.map(function(z){
+    var b = document.createElement("button");
+    b.className = "spot"; b.type = "button"; b.dataset.id = z.id;
+    b.innerHTML = '<span class="dot"></span><span class="tag"></span>';
+    b.querySelector(".tag").textContent = z.name + " · " + z.zh;
+    b.setAttribute("aria-label", "Fly to " + z.name + " / " + z.zh);
+    b.addEventListener("click", function(){ goTo(z); });
+    spotLayer.appendChild(b);
+    return {zone:z, el:b, vec:new THREE.Vector3()};
+  });
+  spots.forEach(function(s){
+    var phi = THREE.MathUtils.degToRad(90 - s.zone.elv), th = THREE.MathUtils.degToRad(s.zone.brg);
+    s.vec.set(450*Math.sin(phi)*Math.cos(th), 450*Math.cos(phi), 450*Math.sin(phi)*Math.sin(th));
+  });
+
+
+  var active = null;
+  function mark(id){
+    active = id;
+    spots.forEach(function(s){ s.el.setAttribute("aria-current", String(s.zone.id === id)); });
+    manifest.querySelectorAll(".zone").forEach(function(c){ c.setAttribute("aria-current", String(c.dataset.id === id)); });
+  }
+  function shortest(from, to){
+    var d = ((to - from) % 360 + 540) % 360 - 180;
+    return from + d;
+  }
+  function goTo(z){
+    mark(z.id); spin = false; spinBtn.setAttribute("aria-pressed","false"); nudge();
+    if (reduce){ lon = z.brg; lat = z.elv; fov = 68; return; }
+    fly = {t:0, fromLon:lon, toLon:shortest(lon, z.brg), fromLat:lat, toLat:z.elv, fromFov:fov, toFov:68};
+  }
+
+  /* ---------- interaction ---------- */
+  var pointers = new Map(), lastDist = 0;
+  function nudge(){ if (!interacted){ interacted = true; hint.classList.add("gone"); } }
+
+  canvas.addEventListener("pointerdown", function(e){
+    canvas.setPointerCapture(e.pointerId);
+    pointers.set(e.pointerId, {x:e.clientX, y:e.clientY});
+    spin = false; spinBtn.setAttribute("aria-pressed","false"); fly = null; nudge();
+  });
+  canvas.addEventListener("pointermove", function(e){
+    var p = pointers.get(e.pointerId); if (!p) return;
+    var dx = e.clientX - p.x, dy = e.clientY - p.y;
+    p.x = e.clientX; p.y = e.clientY;
+    if (pointers.size === 1){
+      var k = 0.0016 * fov;
+      lon -= dx * k; lat = Math.max(-85, Math.min(85, lat + dy * k));
+    } else if (pointers.size === 2){
+      var a = Array.from(pointers.values());
+      var d = Math.hypot(a[0].x - a[1].x, a[0].y - a[1].y);
+      if (lastDist) setFov(fov - (d - lastDist) * 0.12);
+      lastDist = d;
+    }
+  });
+  function release(e){ pointers.delete(e.pointerId); if (pointers.size < 2) lastDist = 0; }
+  canvas.addEventListener("pointerup", release);
+  canvas.addEventListener("pointercancel", release);
+
+  function setFov(v){ fov = Math.max(30, Math.min(100, v)); }
+  canvas.addEventListener("wheel", function(e){ e.preventDefault(); setFov(fov + e.deltaY * 0.05); nudge(); }, {passive:false});
+  canvas.addEventListener("keydown", function(e){
+    var step = 4, used = true;
+    if (e.key === "ArrowLeft") lon -= step;
+    else if (e.key === "ArrowRight") lon += step;
+    else if (e.key === "ArrowUp") lat = Math.min(85, lat + step);
+    else if (e.key === "ArrowDown") lat = Math.max(-85, lat - step);
+    else if (e.key === "+" || e.key === "=") setFov(fov - 4);
+    else if (e.key === "-" || e.key === "_") setFov(fov + 4);
+    else used = false;
+    if (used){ e.preventDefault(); spin = false; spinBtn.setAttribute("aria-pressed","false"); fly = null; nudge(); }
+  });
+
+  var spinBtn = document.getElementById("spin");
+  spinBtn.setAttribute("aria-pressed", String(spin));
+  spinBtn.addEventListener("click", function(){
+    spin = !spin; spinBtn.setAttribute("aria-pressed", String(spin)); if (spin) fly = null; nudge();
+  });
+  document.getElementById("reset").addEventListener("click", function(){
+    fly = null; lon = 8; lat = 0; fov = 75; mark(null); nudge();
+  });
+  var fullBtn = document.getElementById("full");
+  fullBtn.addEventListener("click", function(){
+    if (document.fullscreenElement) document.exitFullscreen();
+    else if (stage.requestFullscreen) stage.requestFullscreen();
+  });
+  document.addEventListener("fullscreenchange", function(){
+    fullBtn.textContent = document.fullscreenElement ? "Exit fullscreen" : "Fullscreen";
+    resize();
+  });
+
+  /* ---------- load a local panorama ---------- */
+  var fileInput = document.getElementById("file"), drop = document.getElementById("drop");
+  document.getElementById("pick").addEventListener("click", function(){ fileInput.click(); });
+  fileInput.addEventListener("change", function(){ if (fileInput.files && fileInput.files[0]) useFile(fileInput.files[0]); });
+
+  function useFile(file){
+    if (!file.type || file.type.indexOf("image/") !== 0){
+      srcName.textContent = "Not an image file · 非图片文件"; return;
+    }
+    var url = URL.createObjectURL(file);
+    new THREE.TextureLoader().load(url, function(tex){
+      if (THREE.sRGBEncoding) tex.encoding = THREE.sRGBEncoding;
+      var old = material.map;
+      material.map = tex; material.needsUpdate = true;
+      if (old) old.dispose();
+      URL.revokeObjectURL(url);
+      srcName.textContent = file.name;
+    }, undefined, function(){
+      URL.revokeObjectURL(url);
+      srcName.textContent = "Could not read that image · 读取失败";
+    });
+  }
+  ["dragenter","dragover"].forEach(function(ev){
+    [stage, drop].forEach(function(t){ t.addEventListener(ev, function(e){ e.preventDefault(); t.classList.add("is-drop"); }); });
+  });
+  ["dragleave","drop"].forEach(function(ev){
+    [stage, drop].forEach(function(t){ t.addEventListener(ev, function(e){ e.preventDefault(); t.classList.remove("is-drop"); }); });
+  });
+  [stage, drop].forEach(function(t){
+    t.addEventListener("drop", function(e){
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) useFile(e.dataTransfer.files[0]);
+    });
+  });
+
+  /* ---------- loop ---------- */
+  var target = new THREE.Vector3(), fwd = new THREE.Vector3(), proj = new THREE.Vector3();
+  function ease(t){ return 1 - Math.pow(1 - t, 3); }
+
+  function frame(){
+    if (fly){
+      fly.t = Math.min(1, fly.t + 0.022);
+      var e = ease(fly.t);
+      lon = fly.fromLon + (fly.toLon - fly.fromLon) * e;
+      lat = fly.fromLat + (fly.toLat - fly.fromLat) * e;
+      fov = fly.fromFov + (fly.toFov - fly.fromFov) * e;
+      if (fly.t >= 1) fly = null;
+    } else if (spin){
+      lon += 0.035;
+    }
+
+    camera.fov = fov; camera.updateProjectionMatrix();
+    var phi = THREE.MathUtils.degToRad(90 - lat), th = THREE.MathUtils.degToRad(lon);
+    target.set(500*Math.sin(phi)*Math.cos(th), 500*Math.cos(phi), 500*Math.sin(phi)*Math.sin(th));
+    camera.lookAt(target);
+    renderer.render(scene, camera);
+
+    /* telemetry + compass */
+    var brg = ((lon % 360) + 360) % 360;
+    rBrg.textContent = brg.toFixed(1) + "°";
+    rElv.textContent = (lat >= 0 ? "+" : "−") + Math.abs(lat).toFixed(1) + "°";
+    rFov.textContent = Math.round(fov) + "°";
+    rose.setAttribute("transform", "rotate(" + (-brg) + " 32 32)");
+
+    /* project markers */
+    camera.getWorldDirection(fwd);
+    var w = stage.clientWidth, h = stage.clientHeight;
+    spots.forEach(function(s){
+      var facing = fwd.dot(s.vec.clone().normalize());
+      if (facing <= 0.12){ s.el.style.display = "none"; return; }
+      proj.copy(s.vec).project(camera);
+      var x = (proj.x * 0.5 + 0.5) * w, y = (-proj.y * 0.5 + 0.5) * h;
+      if (x < -60 || y < -40 || x > w + 60 || y > h + 40){ s.el.style.display = "none"; return; }
+      s.el.style.display = "flex";
+      s.el.style.left = x + "px";
+      s.el.style.top = y + "px";
+      s.el.style.opacity = Math.min(1, (facing - 0.12) * 4).toFixed(2);
+    });
+
+    requestAnimationFrame(frame);
+  }
+  ready = true;
+  frame();
+})();
+</script>
+</body>
+</html>
