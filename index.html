@@ -1328,8 +1328,11 @@ function makeSupabaseDb(sb){
   }
   async function fetchRows(collection, opts){
     opts=opts||{};
+    // PostgREST answers at most 1000 rows per request. A bigger (or unbounded) ask must page,
+    // otherwise the list is silently cut -- the goods list is ~10,000 rows.
+    if(!opts.limit || opts.limit>1000) return fetchAll(collection, opts);
     let q=buildQuery(collection, opts);
-    if(opts.limit) q=q.limit(opts.limit);
+    q=q.limit(opts.limit);
     const {data, error} = await q;
     if(error) throw error;
     return data||[];
@@ -1554,7 +1557,7 @@ function subscribeAll(){
   sub('runnerVisits','runnerVisits',{order:'createdAt',limit:800,sinceDays:92});
   sub('bankIns','bankIns',{order:'createdAt',limit:400,sinceDays:92});
   sub('notifSeen','notifSeen',{limit:500});
-  sub('skus','skus',{limit:2000});
+  sub('skus','skus',{limit:20000});     // pages through the whole goods list (~10,000 rows)
   sub('stockRequests','stockRequests',{order:'createdAt',limit:400,sinceDays:120});
   sub('suppliers','suppliers',{limit:2000});
   sub('receipts','receipts',{order:'createdAt',limit:400,sinceDays:120});
@@ -4578,8 +4581,10 @@ function skuSoldAt(sku, branch){
   if(!only) return true;                       // blank means every store
   return only.toUpperCase().split(/\s*[,;]\s*/).filter(Boolean).includes((branch||'').toUpperCase());
 }
-function activeSkus(branch){
-  return S.skus.filter(s => s.active !== false && skuSoldAt(s, branch))
+/* forReceiving: consignment and other receive-only goods can be counted in at the door but are
+   never on a stock request. Ordering hides them; goods-in shows them. */
+function activeSkus(branch, forReceiving){
+  return S.skus.filter(s => s.active !== false && skuSoldAt(s, branch) && (forReceiving || !s.receiveOnly))
                .sort((a,b)=>(a.category||'~').localeCompare(b.category||'~') || (a.name||'').localeCompare(b.name||''));
 }
 function draftRequestFor(branch){
@@ -5023,7 +5028,7 @@ function openReceiptSkuPicker(branch){
   body.appendChild(search);
   const listWrap = el('<div class="list"></div>');
   body.appendChild(listWrap);
-  const skus = activeSkus(branch);
+  const skus = activeSkus(branch, true);
   const render = ()=>{
     const q = (search.querySelector('input').value||'').trim().toLowerCase();
     listWrap.innerHTML = '';
