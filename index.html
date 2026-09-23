@@ -1192,6 +1192,13 @@ function esc(s){return (s==null?'':String(s)).replace(/[&<>"']/g,c=>({'&':'&amp;
 function uidLocal(){return 'x'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
 function pad2(n){return String(n).padStart(2,'0');}
 function todayStr(d){d=d||new Date(); return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate());}
+// createdAt is UTC; the store day is the phone's local day (a 07:00 punch is 23:00Z the day before).
+function localDay(iso){ const d=new Date(iso); return isNaN(d)?String(iso||'').slice(0,10):todayStr(d); }
+// Latest punch of an employee (any date) and whether it is still an open shift:
+// an "in" younger than 16 h, the same rule the database's punch() applies. Older "in"s are stale
+// (a forgotten clock-out) and must not block the next clock-in.
+function latestPunch(empId){ return S.attendance.filter(a=>a.employeeId===empId)[0]; }
+function openPunch(empId){ const p=latestPunch(empId); return (p && p.type==='in' && (Date.now()-new Date(p.createdAt).getTime())<16*3600000) ? p : null; }
 function fmtTime(iso){const d=new Date(iso); return pad2(d.getHours())+':'+pad2(d.getMinutes());}
 function fmtDateTime(iso){const d=new Date(iso); return (d.getMonth()+1)+'-'+pad2(d.getDate())+' '+pad2(d.getHours())+':'+pad2(d.getMinutes());}
 function fmtMoney(n){return '¥'+(Number(n)||0).toFixed(2);}
@@ -2051,9 +2058,9 @@ function openVerifyPinForm(e){
 function homeView(){
   const e=currentEmployee();
   const c=el('<div></div>');
-  const todayAtt = S.attendance.filter(a=>a.employeeId===e.id && a.createdAt.slice(0,10)===todayStr());
-  const last = todayAtt[0]; // desc order
-  const clockedIn = last && last.type==='in';
+  const open = openPunch(e.id), lp = latestPunch(e.id);
+  const last = open || ((lp && localDay(lp.createdAt)===todayStr()) ? lp : null);
+  const clockedIn = !!open;
   let lowCount=0;
   S.inventory.forEach(inv=>{
     const p=byId(S.products, inv.productId);
@@ -2070,7 +2077,7 @@ function homeView(){
   if(isAdmin()){
     const activeCount = S.employees.filter(x=>x.active!==false).length;
     const inTodaySet = new Set();
-    S.attendance.filter(a=>a.createdAt.slice(0,10)===todayStr()).forEach(a=>{ if(a.type==='in') inTodaySet.add(a.employeeId); else inTodaySet.delete(a.employeeId); });
+    S.attendance.filter(a=>localDay(a.createdAt)===todayStr()).forEach(a=>{ if(a.type==='in') inTodaySet.add(a.employeeId); else inTodaySet.delete(a.employeeId); });
     tiles.innerHTML = `
       <div class="tile ok"><div class="tv">${inTodaySet.size}/${activeCount}</div><div class="tl">${esc(t('home_worked_today'))}</div></div>
       <div class="tile ${lowCount?'warn':''}"><div class="tv">${lowCount}</div><div class="tl">${esc(t('home_low_stock'))}</div></div>
@@ -2135,9 +2142,8 @@ function homeView(){
 function clockView(){
   const e=currentEmployee();
   const c=el('<div></div>');
-  const todayAtt = S.attendance.filter(a=>a.employeeId===e.id && a.createdAt.slice(0,10)===todayStr());
-  const last = todayAtt[0];
-  const nextType = (!last || last.type==='out') ? 'in' : 'out';
+  const open = openPunch(e.id);
+  const nextType = open ? 'out' : 'in';
 
   const card=el('<div class="card" style="text-align:center;"></div>');
   const now=new Date();
@@ -2222,7 +2228,7 @@ function clockView(){
 
   if(S.attnScope==='all' && canManageStaff()){
     // today status grid for active employees (managers: own branch only)
-    const todayAll = S.attendance.filter(a=>a.createdAt.slice(0,10)===todayStr());
+    const todayAll = S.attendance.filter(a=>localDay(a.createdAt)===todayStr());
     const statusList=el('<div class="list" style="margin-top:10px;"></div>');
     S.employees.filter(x=>x.active!==false && (!branchIds || branchIds.has(x.id))).forEach(emp=>{
       const recs=todayAll.filter(a=>a.employeeId===emp.id);
@@ -4489,7 +4495,7 @@ async function copyLastWeek(emps, days){
 function minsOf(tm){ const [h,m]=String(tm||'').split(':').map(Number); return isNaN(h)?null:h*60+(m||0); }
 function isNightNow(d){ d=d||new Date(); const now=d.getHours()*60+d.getMinutes(); const a=minsOf(S.settings.nightStart||'23:00'), b=minsOf(S.settings.nightEnd||'07:00'); if(a==null||b==null) return false; return a>b ? (now>=a || now<b) : (now>=a && now<b); }
 function lastClockIn(empId){ return S.attendance.filter(a=>a.employeeId===empId && a.type==='in')[0]; }
-function isClockedIn(empId){ const t0=S.attendance.filter(a=>a.employeeId===empId)[0]; return !!(t0 && t0.type==='in' && (Date.now()-new Date(t0.createdAt).getTime())<16*3600000); }
+function isClockedIn(empId){ return !!openPunch(empId); }
 function safetyDueMin(empId){
   const iv=Number(S.settings.safetyIntervalMin)||120;
   const last=S.safetyChecks.filter(s=>s.employeeId===empId && s.status==='ok')[0];
