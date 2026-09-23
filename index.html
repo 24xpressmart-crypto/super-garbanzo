@@ -2312,8 +2312,8 @@ function computeReport(){
 }
 function attendanceReportView(){
   const c=el('<div></div>');
-  const ctl=el('<div class="row" style="margin-bottom:10px;"></div>');
-  const mi=el(`<input type="month" value="${S.reportMonth}" style="flex:1;">`);
+  const ctl=el('<div class="row" style="margin-bottom:10px; flex-wrap:wrap; gap:6px;"></div>');
+  const mi=el(`<input type="month" value="${S.reportMonth}" style="flex:1 1 100%;">`);
   mi.onchange=()=>{ if(mi.value){ S.reportMonth=mi.value; S.reportData=null; loadReport(); } };
   const exp=el(`<button class="btn sm">${ICONS.download}<span>${esc(t('btn_export_csv'))}</span></button>`);
   exp.onclick=async()=>{
