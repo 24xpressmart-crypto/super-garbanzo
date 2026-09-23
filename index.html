@@ -523,7 +523,7 @@ const I18N = {
     field_template_name:'清单名称', field_branches_opt:'适用门店（all = 全部，或用逗号分隔门店代码）', field_items:'清单项目（每行一项，行首加 * 表示必须拍照）',
     tasks_overview:'各店完成情况', tasks_pick_branch:'请先在打卡页选择门店', home_tasks_today:'今日任务', label_items:'项',
     clock_branch_label:'打卡门店', clock_branch_none:'不选门店（按最近售货机核对）', clock_branch_home:'本店', geo_branch_no_coords:'该门店尚未设定位置，无法核对距离',
-    flag_cover:'支援', flag_manual:'补卡', report_cover:'支援', btn_export_detail:'导出每日明细',
+    flag_cover:'支援', flag_manual:'补卡', report_cover:'支援', btn_export_detail:'导出每日明细', btn_export_payroll:'导出工资工时', btn_export_payroll_detail:'导出工资明细', field_public_holidays:'公共假期（YYYY-MM-DD，逗号分隔）',
     btn_punch_request:'补卡申请', btn_swap_request:'换班申请', sheet_punch:'补卡申请', sheet_swap:'换班申请',
     field_punch_type:'补卡类型', field_time:'时间', field_branch_opt:'门店（可选）', field_my_shift:'要换出的班', field_swap_with:'换给谁', field_take_shift:'接手对方的班（可选）', opt_none:'不接手',
     err_no_upcoming_shift:'你没有可换的排班', err_take_shift_owner:'接手的班必须属于换班对象', punch_label:'补卡', swap_label:'换班', toast_request_submitted:'申请已提交',
@@ -751,7 +751,7 @@ const I18N = {
     field_template_name:'Checklist name', field_branches_opt:'Stores (all, or comma-separated store codes)', field_items:'Items (one per line, start with * if a photo is required)',
     tasks_overview:'Completion by store', tasks_pick_branch:'Pick a store on the Clock page first', home_tasks_today:'Tasks today', label_items:'items',
     clock_branch_label:'Store', clock_branch_none:'No store (check nearest machine)', clock_branch_home:'home', geo_branch_no_coords:'This store has no location set yet, distance not checked',
-    flag_cover:'Cover', flag_manual:'Manual', report_cover:'Cover', btn_export_detail:'Export daily detail',
+    flag_cover:'Cover', flag_manual:'Manual', report_cover:'Cover', btn_export_detail:'Export daily detail', btn_export_payroll:'Export payroll hours', btn_export_payroll_detail:'Export payroll detail', field_public_holidays:'Public holidays (YYYY-MM-DD, comma-separated)',
     btn_punch_request:'Missed punch', btn_swap_request:'Shift swap', sheet_punch:'Missed punch request', sheet_swap:'Shift swap request',
     field_punch_type:'Punch type', field_time:'Time', field_branch_opt:'Store (optional)', field_my_shift:'My shift to give', field_swap_with:'Swap with', field_take_shift:'Take their shift (optional)', opt_none:'None',
     err_no_upcoming_shift:'You have no upcoming shifts', err_take_shift_owner:'The shift to take must belong to the swap partner', punch_label:'Punch', swap_label:'Swap', toast_request_submitted:'Request submitted',
@@ -979,7 +979,7 @@ const I18N = {
     field_template_name:'Nama senarai semak', field_branches_opt:'Kedai (all, atau kod kedai dipisah koma)', field_items:'Item (satu sebaris, mula dengan * jika perlu gambar)',
     tasks_overview:'Penyiapan mengikut kedai', tasks_pick_branch:'Pilih kedai di halaman Daftar Masuk dahulu', home_tasks_today:'Tugas hari ini', label_items:'item',
     clock_branch_label:'Kedai', clock_branch_none:'Tiada kedai (semak mesin terdekat)', clock_branch_home:'kedai sendiri', geo_branch_no_coords:'Kedai ini belum ada lokasi, jarak tidak disemak',
-    flag_cover:'Bantu kedai lain', flag_manual:'Manual', report_cover:'Bantu kedai lain', btn_export_detail:'Eksport butiran harian',
+    flag_cover:'Bantu kedai lain', flag_manual:'Manual', report_cover:'Bantu kedai lain', btn_export_detail:'Eksport butiran harian', btn_export_payroll:'Eksport jam gaji', btn_export_payroll_detail:'Eksport butiran gaji', field_public_holidays:'Cuti umum (YYYY-MM-DD, dipisah koma)',
     btn_punch_request:'Terlupa daftar', btn_swap_request:'Tukar syif', sheet_punch:'Permohonan terlupa daftar', sheet_swap:'Permohonan tukar syif',
     field_punch_type:'Jenis daftar', field_time:'Masa', field_branch_opt:'Kedai (pilihan)', field_my_shift:'Syif saya untuk diserahkan', field_swap_with:'Tukar dengan', field_take_shift:'Ambil syif mereka (pilihan)', opt_none:'Tiada',
     err_no_upcoming_shift:'Anda tiada syif akan datang', err_take_shift_owner:'Syif yang diambil mesti milik rakan tukar', punch_label:'Daftar', swap_label:'Tukar', toast_request_submitted:'Permohonan dihantar',
@@ -2327,7 +2327,19 @@ function attendanceReportView(){
     if(rows.length===0){ toast(t('report_empty')); return; }
     try{ await S.downloads.save({filename:'attendance_detail_'+S.reportMonth+'.csv', data:toCSV(rows,['date','name','homeBranch','workedAt','in','out','hours','cover','manual','punches'])}); toast(t('toast_exported')); }catch(e){ if(!(e&&e.code==='declined')) toast(t('toast_export_failed')); }
   };
-  ctl.appendChild(mi); ctl.appendChild(exp); ctl.appendChild(expD); c.appendChild(ctl);
+  const expP=el(`<button class="btn sm">${ICONS.download}<span>${esc(t('btn_export_payroll'))}</span></button>`);
+  expP.onclick=async()=>{
+    const rows=computePayroll();
+    if(rows.length===0){ toast(t('report_empty')); return; }
+    try{ await S.downloads.save({filename:'payroll_hours_'+S.reportMonth+'.csv', data:toCSV(rows,['code','name','branch','rule','days','normal','ot','ph','beyond','nights','nightRM','flagDays','flags'])}); toast(t('toast_exported')); }catch(e){ if(!(e&&e.code==='declined')) toast(t('toast_export_failed')); }
+  };
+  const expPD=el(`<button class="btn sm">${ICONS.download}<span>${esc(t('btn_export_payroll_detail'))}</span></button>`);
+  expPD.onclick=async()=>{
+    const rows=computePayrollDetail();
+    if(rows.length===0){ toast(t('report_empty')); return; }
+    try{ await S.downloads.save({filename:'payroll_detail_'+S.reportMonth+'.csv', data:toCSV(rows,['date','code','name','branch','workedAt','rule','in','out','raw','brk','normal','ot','ph','beyond','night','half','flags'])}); toast(t('toast_exported')); }catch(e){ if(!(e&&e.code==='declined')) toast(t('toast_export_failed')); }
+  };
+  ctl.appendChild(mi); ctl.appendChild(exp); ctl.appendChild(expD); ctl.appendChild(expP); ctl.appendChild(expPD); c.appendChild(ctl);
   if(isAdmin() && branchList().length>0){
     const chipRow=el('<div class="chiprow"></div>');
     [['all',t('branch_all')]].concat(branchList().map(z=>[z,z])).forEach(([id,l])=>{
@@ -3455,6 +3467,7 @@ function adminSection(){
     {key:'lowStockDefault', label:t('field_low_stock_default'), type:'number', default:S.settings.lowStockDefault},
     {key:'geofenceRadius', label:t('field_geofence_radius'), type:'number', default:S.settings.geofenceRadius},
     {key:'lateGraceMin', label:t('field_late_grace'), type:'number', default:S.settings.lateGraceMin!=null?S.settings.lateGraceMin:10},
+    {key:'publicHolidays', label:t('field_public_holidays'), type:'textarea', default:S.settings.publicHolidays||''},
     {key:'nightStart', label:t('field_night_start'), type:'time', default:S.settings.nightStart||'23:00'},
     {key:'nightEnd', label:t('field_night_end'), type:'time', default:S.settings.nightEnd||'07:00'},
     {key:'safetyIntervalMin', label:t('field_safety_interval'), type:'number', default:S.settings.safetyIntervalMin||120},
@@ -4098,6 +4111,77 @@ function computeReportDetail(){
     out.push({date:day, name:emp?emp.name:recs[0].employeeName, homeBranch:emp?(emp.homeBranch||''):'', workedAt:[...branches].join('/'), in:firstIn?fmtTime(firstIn.toISOString()):'', out:lastOut?fmtTime(lastOut.toISOString()):'', hours:(minutes/60).toFixed(2), cover:cover?'Y':'', manual:manual?'Y':'', punches:recs.length});
   });
   return out.sort((a,b)=>a.name.localeCompare(b.name,'zh') || (a.date<b.date?-1:1));
+}
+
+/* ============================ PAYROLL HOURS ============================
+   Rules from HR's SQL Payroll "Guidelines and SOP" sheet (2026-09-23) plus the owner's answers:
+   - hours round at 50 minutes: 5h49 -> 5, 5h50 -> 6 (applied to the day total and to OT separately)
+   - a day of 9h or more of presence loses 1h break (owner: "9 hours includes 1 hour break")
+   - FT: 8 paid hours a day; anything beyond 9h presence is OT; a scheduled half day (<= 5.5h on
+     the roster) pays 5h, OT after that. FT_NO_OT: same, but the extra hours are only reported.
+   - PT: paid by the rounded hours; PT_PH2: public-holiday hours listed separately (paid x2).
+   - night: RM5 per night when a shift covers at least 1h between 00:00 and 07:00 (owner's definition).
+   Each employee carries payRule / staffCode (from SQL Payroll); the staffCode is the join key. */
+function payRoundHours(min){ min=Math.max(0,Math.round(min)); return Math.floor(min/60)+((min%60)>=50?1:0); }
+function payHolidays(){ return new Set(String(S.settings.publicHolidays||'').split(/[\s,;]+/).filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x))); }
+function payShifts(recs){
+  const out=[]; let open=null;
+  recs.forEach(r=>{ const tm=new Date(r.createdAt); const b=r.branch||'';
+    if(r.type==='in'){ if(open) out.push({in:open.tm, out:null, branch:open.branch, missingOut:true}); open={tm, branch:b}; }
+    else if(open){ out.push({in:open.tm, out:tm, branch:open.branch||b}); open=null; }
+    else out.push({in:null, out:tm, branch:b, missingIn:true}); });
+  if(open) out.push({in:open.tm, out:null, branch:open.branch, missingOut:true});
+  return out;
+}
+function payNightMinutes(a,b){
+  if(!a||!b||b<=a) return 0; let n=0; const d=new Date(a); d.setHours(0,0,0,0);
+  for(let k=0;k<3;k++){ const s0=new Date(d.getTime()+k*86400000), e0=new Date(s0.getTime()+7*3600000); const lo=Math.max(a,s0), hi=Math.min(b,e0); if(hi>lo) n+=(hi-lo)/60000; }
+  return n;
+}
+function computePayrollDetail(){
+  const d=S.reportData; if(!d) return [];
+  const ph=payHolidays(); const grace=S.settings.lateGraceMin!=null?S.settings.lateGraceMin:10;
+  const toMin=t=>{ const [h,m]=String(t||'').split(':').map(Number); return isNaN(h)?null:h*60+(m||0); };
+  const schedMap={}; d.sched.forEach(x=>{ schedMap[x.employeeId+'|'+x.date]=x; });
+  const byEmp={}; d.att.forEach(a=>{ (byEmp[a.employeeId]=byEmp[a.employeeId]||[]).push(a); });
+  const rows=[];
+  reportScopeEmployees().forEach(e=>{
+    const recs=(byEmp[e.id]||[]).sort((a,b)=>a.createdAt<b.createdAt?-1:1);
+    if(recs.length===0) return;
+    const rule=e.payRule||'FT';
+    const byDay={}; payShifts(recs).forEach(x=>{ const day=todayStr(x.in||x.out); (byDay[day]=byDay[day]||[]).push(x); });
+    Object.keys(byDay).sort().forEach(day=>{
+      const shifts=byDay[day], sc=schedMap[e.id+'|'+day]; const flags=[]; const branches=new Set();
+      let raw=0, night=0, firstIn=null, lastOut=null;
+      shifts.forEach(x=>{ if(x.branch) branches.add(x.branch); if(x.missingIn) flags.push('no_in'); if(x.missingOut) flags.push('no_out');
+        if(x.in&&!firstIn) firstIn=x.in; if(x.out) lastOut=x.out;
+        if(x.in&&x.out){ raw+=(x.out-x.in)/60000; night+=payNightMinutes(x.in,x.out); } });
+      const brk = raw>=9*60 ? 60 : 0, net=raw-brk;
+      let schedMin=null; if(sc){ const ss=toMin(sc.shiftStart), se=toMin(sc.shiftEnd); if(ss!=null&&se!=null){ schedMin=se-ss; if(schedMin<=0) schedMin+=1440; }
+        if(ss!=null&&firstIn&&(firstIn.getHours()*60+firstIn.getMinutes())>ss+grace) flags.push('late'); }
+      const half = schedMin!=null && schedMin<=5.5*60;
+      const totalH=payRoundHours(net); let normal=0, ot=0, phH=0, beyond=0;
+      if(rule==='PT'||rule==='PT_PH2'){ if(rule==='PT_PH2'&&ph.has(day)) phH=totalH; else normal=totalH; }
+      else { const extraH=payRoundHours(Math.max(0, net-(half?5:8)*60)); normal=Math.max(0,totalH-extraH); if(rule==='FT') ot=extraH; else beyond=extraH; }
+      if(raw>16*60) flags.push('over_16h');
+      if(rule!=='PT'&&rule!=='PT_PH2'&&raw>0&&raw<8*60&&!half) flags.push('under_8h');
+      if(raw>=8*60&&raw<9*60) flags.push('8_9h_check');
+      if(!sc) flags.push('no_schedule');
+      rows.push({date:day, code:e.staffCode||'', name:e.name, branch:e.homeBranch||'', workedAt:[...branches].join('/'), rule,
+        in:firstIn?fmtTime(firstIn.toISOString()):'', out:lastOut?fmtTime(lastOut.toISOString()):'', raw:(raw/60).toFixed(2), brk:brk/60,
+        normal, ot, ph:phH, beyond, night:night>=60?1:0, half:half?'Y':'', flags:flags.join(' ')});
+    });
+  });
+  return rows.sort((a,b)=>a.name.localeCompare(b.name,'zh')||(a.date<b.date?-1:1));
+}
+function computePayroll(){
+  const nightRM=Number(S.settings.nightAllowanceRM)||5; const agg={};
+  computePayrollDetail().forEach(r=>{
+    const a=agg[r.name]=agg[r.name]||{code:r.code,name:r.name,branch:r.branch,rule:r.rule,days:0,normal:0,ot:0,ph:0,beyond:0,nights:0,nightRM:0,flagDays:0,flags:''};
+    a.days++; a.normal+=r.normal; a.ot+=r.ot; a.ph+=r.ph; a.beyond+=r.beyond; a.nights+=r.night;
+    if(r.flags){ a.flagDays++; a.flags+=(a.flags?'; ':'')+r.date.slice(5)+':'+r.flags; }
+  });
+  return Object.values(agg).map(a=>Object.assign(a,{nightRM:a.nights*nightRM})).sort((a,b)=>(a.branch||'').localeCompare(b.branch||'')||a.name.localeCompare(b.name,'zh'));
 }
 
 /* ============================ PHASE 1B: TASK CHECKLISTS / SHIFT HANDOVER ============================ */
