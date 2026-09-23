@@ -476,6 +476,16 @@ const I18N = {
   zh: {
     dist_km:' 公里', dist_from:'距离', dist_nearer_prefix:'但更靠近', flag_geo_unknown:'无定位', geo_recomputed:'当时手机记录的是：',
     fg_daily:'每天要做', fg_daily_sub:'上班就按这几个', fg_goods:'货与设备', fg_goods_sub:'要货、盘点、机器', fg_wrong:'出状况了', fg_wrong_sub:'坏了、吵架、危险', fg_mine:'我的事', fg_mine_sub:'请假、换班、公告', fg_manage:'管理', fg_manage_sub:'经理与 HQ', fg_more:'其他', fg_more_sub:'',
+    tile_acc:'账务', acc_title:'账务工作台', acc_refresh:'刷新', acc_loading:'读取中…', acc_tab_exceptions:'例外', acc_tab_receiving:'收货看板', acc_tab_journals:'待批准分录', acc_tab_setup:'设定',
+    acc_k_receipts_today:'今日收货', acc_k_queue:'待传 AutoCount', acc_k_posted_today:'今日已入', acc_k_exceptions:'待处理', acc_k_critical:'其中严重', acc_k_drafts:'待批准分录',
+    acc_bridge_title:'桥接（HQ 电脑）', acc_bridge_none:'桥接还没跑过。HQ 电脑上执行 AcBridge.exe 后这里会出现心跳。', acc_bridge_stale:'超过 10 分钟没心跳', acc_bridge_ok:'在线', acc_bridge_last:'最后心跳', acc_bridge_queue:'队列深度',
+    acc_settings_missing:'科目代码还没填：配对发票那一步会一直等。请在「设定」分页填应付控制账与进货科目。',
+    acc_no_exceptions:'没有待处理的例外', acc_no_receiving:'还没有收货记录', acc_no_journals:'没有待批准的分录',
+    acc_btn_resolve:'已处理', acc_btn_waive:'豁免', acc_btn_fix_supplier:'指定供应商', acc_btn_fix_item:'对应货品', acc_btn_void:'作废这张', acc_btn_approve:'批准并传 AutoCount', acc_btn_reject:'退回', acc_btn_requeue:'重新排队',
+    acc_prompt_note:'写下做了什么（至少 5 个字）：', acc_prompt_supplier:'AutoCount 供应商代码（例如 4000-B012）：', acc_prompt_item:'AutoCount 货号：', acc_prompt_reason:'原因：', acc_prompt_account:'AutoCount 科目代码：',
+    acc_sev_critical:'严重', acc_sev_normal:'一般', acc_state_pending:'待传', acc_state_sent:'传送中', acc_state_confirmed:'已入', acc_state_failed:'失败待重试', acc_state_abandoned:'已放弃',
+    acc_set_ap:'应付控制账（AP control）', acc_set_pur:'进货科目（purchases）', acc_set_tax:'进项税科目（可空）', acc_set_hint:'代码要和 AutoCount 的 GLMast 完全一致。填错，分录就会被 AutoCount 拒绝，不会有别的损失。', acc_set_saved:'已保存',
+    acc_journal_lines_suffix:' 行', acc_done:'完成', acc_failed_prefix:'失败：',
     field_receiving_branches:'收货试点门店（店号，逗号分开，如 BR07,BR12；空 = 未开通）', recv_not_pilot:'这家店还没开通收货，HQ 在设定里加店号就有', recv_acc_posted:'已入 AutoCount', recv_acc_exception:'账务待处理', recv_acc_queued:'传送中',
     tile_receive:'收货', recv_current:'本次收货', recv_step_supplier:'1. 供应商', recv_step_photo:'2. 拍单据', recv_step_lines:'3. 点数', recv_pick_supplier:'选供应商', recv_search_supplier:'搜供应商名', recv_use_typed:'用我打的名字', recv_doc_do:'送货单 DO', recv_doc_invoice:'发票 Invoice', recv_doc_no:'单号（照单上抄）', recv_amount:'单上总额（可留空）', recv_add_item:'加货品', recv_qty_received:'实收', recv_qty_short:'短交', recv_qty_damaged:'破损', recv_btn_send:'送出收货', recv_confirm_send:'送出后不能再改，确定？', recv_toast_sent:'已送出，账务会自动接手', recv_history:'以往的收货', recv_no_history:'还没有收货记录', recv_empty:'先选供应商、拍单据，再点数。', recv_need_photo:'请先拍单据照片', recv_need_supplier:'请先选供应商', recv_status_draft:'草稿', recv_status_submitted:'已送出', recv_hq_inbox:'各店收货', recv_no_branch:'请先设定你的所属门店', recv_photo2:'再拍一张（背面 / 第二页）', recv_note:'备注（短交、拒收、破损…）', recv_lines_suffix:' 项', recv_discard:'放弃这张', recv_photo_hint:'整张单据入镜，字要看得清。', recv_no_suppliers:'供应商名单还没发布，先打名字',
     tile_order:'要货申请', order_tab_inbox:'待处理', order_tab_summary:'合并汇总', order_tab_catalog:'货品管理', order_no_branch:'请先设定你的所属门店', order_cutoff_prefix:'本轮截单：', order_cutoff_left_prefix:'还有 ', order_cutoff_left_suffix:' 小时', order_current:'本次要货单', order_empty:'还没有加任何货品。按下面的按钮开始。', order_btn_add_item:'加货品', order_btn_send:'送出要货', order_confirm_send:'送出后就不能再改了，确定送出？', order_toast_sent:'已送出，HQ 会收到', order_urgent:'紧急单（断货，等不到下一轮）', order_history:'以往的要货单', order_no_history:'还没有送过要货单', order_items_suffix:' 项', order_status_draft:'草稿', order_status_submitted:'已送出', order_status_approved:'已批准', order_status_rejected:'已退回', order_catalog_empty:'货品清单还是空的，请 HQ 先导入货品', order_search:'找货品', order_search_ph:'打品名或货号', order_search_none:'找不到这个货品', order_last_time:'上次要了 ', order_qty:'要多少？', order_btn_update:'更新数量', order_btn_add:'加入要货单', order_toast_added:'已加入', order_inbox_title:'待处理要货', order_inbox_empty:'目前没有待处理的要货单', order_done_title:'已处理', order_hq_note:'HQ 备注', order_btn_approve:'批准', order_btn_reject:'退回', order_confirm_reject:'确定退回这张单？门店会看到你的备注。', order_sheet_title:'要货单', order_summary_title:'全部门店合计', order_summary_hint:'把所有已送出和已批准的单加起来，照这个数字去下采购单。', order_btn_export:'导出 CSV（Excel 可开）', order_catalog_hint:'货品主档从 AutoCount 导出后贴进来。这里不会写回 AutoCount。', order_sku_off:'已停用', order_sku_limited:'限：', order_btn_paste:'批量贴上货品', order_field_code:'货号（AutoCount item code）', order_field_name:'品名', order_field_unit:'单位', order_field_unit_ph:'箱 / 包 / 支', order_field_category:'分类', order_field_supplier:'供应商', order_field_branches:'适用门店（留空 = 全部）', order_field_active:'启用', order_err_name:'请填品名', order_sheet_edit_sku:'编辑货品', order_sheet_add_sku:'新增货品', order_paste_hint:'从 AutoCount 货品表复制后贴上，一行一样货。用 Tab 或逗号分隔，顺序：货号、品名、单位、分类、供应商。只有品名是必填的。', order_paste_label:'贴上货品（一行一样）', field_order_cutoff_day:'要货截单日（留空 = 不设截单）', field_order_cutoff_time:'截单时间', order_cutoff_off:'不设截单',
@@ -704,6 +714,16 @@ const I18N = {
   en: {
     dist_km:' km', dist_from:'from', dist_nearer_prefix:'but closer to', flag_geo_unknown:'No location', geo_recomputed:'What the phone recorded that day:',
     fg_daily:'Every shift', fg_daily_sub:'start here when you come in', fg_goods:'Goods & machines', fg_goods_sub:'ordering, stock, equipment', fg_wrong:'Something is wrong', fg_wrong_sub:'broken, complaints, danger', fg_mine:'Mine', fg_mine_sub:'leave, swaps, memos', fg_manage:'Managing', fg_manage_sub:'managers and HQ', fg_more:'Other', fg_more_sub:'',
+    tile_acc:'Accounting', acc_title:'Accounting workbench', acc_refresh:'Refresh', acc_loading:'Loading…', acc_tab_exceptions:'Exceptions', acc_tab_receiving:'Goods-in board', acc_tab_journals:'Journals to approve', acc_tab_setup:'Setup',
+    acc_k_receipts_today:'Received today', acc_k_queue:'Waiting for AutoCount', acc_k_posted_today:'Posted today', acc_k_exceptions:'To handle', acc_k_critical:'of which critical', acc_k_drafts:'Journals to approve',
+    acc_bridge_title:'Bridge (HQ machine)', acc_bridge_none:'The bridge has not run yet. Once AcBridge.exe runs on the HQ machine its heartbeat shows here.', acc_bridge_stale:'no heartbeat for over 10 minutes', acc_bridge_ok:'online', acc_bridge_last:'last heartbeat', acc_bridge_queue:'queue depth',
+    acc_settings_missing:'Account codes not set: invoice matching will wait. Fill AP control and purchases account under Setup.',
+    acc_no_exceptions:'Nothing to handle', acc_no_receiving:'No goods-in yet', acc_no_journals:'No journals waiting',
+    acc_btn_resolve:'Resolved', acc_btn_waive:'Waive', acc_btn_fix_supplier:'Set supplier', acc_btn_fix_item:'Map item', acc_btn_void:'Void this one', acc_btn_approve:'Approve and send to AutoCount', acc_btn_reject:'Reject', acc_btn_requeue:'Queue again',
+    acc_prompt_note:'What was done (at least 5 characters):', acc_prompt_supplier:'AutoCount supplier code (e.g. 4000-B012):', acc_prompt_item:'AutoCount item code:', acc_prompt_reason:'Reason:', acc_prompt_account:'AutoCount account code:',
+    acc_sev_critical:'critical', acc_sev_normal:'normal', acc_state_pending:'waiting', acc_state_sent:'sending', acc_state_confirmed:'in AutoCount', acc_state_failed:'failed, will retry', acc_state_abandoned:'given up',
+    acc_set_ap:'AP control account', acc_set_pur:'Purchases account', acc_set_tax:'Input tax account (optional)', acc_set_hint:'Codes must match AutoCount GLMast exactly. A wrong code only makes AutoCount reject the journal; nothing else breaks.', acc_set_saved:'Saved',
+    acc_journal_lines_suffix:' lines', acc_done:'Done', acc_failed_prefix:'Failed: ',
     field_receiving_branches:'Goods-in pilot stores (codes, comma separated, e.g. BR07,BR12; blank = off)', recv_not_pilot:'Goods-in is not switched on for this store yet; HQ adds the store code in Settings', recv_acc_posted:'In AutoCount', recv_acc_exception:'Accounting to check', recv_acc_queued:'Sending',
     tile_receive:'Goods in', recv_current:'This delivery', recv_step_supplier:'1. Supplier', recv_step_photo:'2. Photo the paper', recv_step_lines:'3. Count', recv_pick_supplier:'Pick supplier', recv_search_supplier:'Search supplier name', recv_use_typed:'Use the name I typed', recv_doc_do:'Delivery order (DO)', recv_doc_invoice:'Invoice', recv_doc_no:'Document no. (copy from the paper)', recv_amount:'Total on the paper (optional)', recv_add_item:'Add item', recv_qty_received:'Received', recv_qty_short:'Short', recv_qty_damaged:'Damaged', recv_btn_send:'Send goods-in', recv_confirm_send:'It cannot be changed after sending. Send?', recv_toast_sent:'Sent. Accounting takes it from here', recv_history:'Earlier deliveries', recv_no_history:'No deliveries recorded yet', recv_empty:'Pick the supplier, photo the paper, then count.', recv_need_photo:'Take a photo of the paper first', recv_need_supplier:'Pick the supplier first', recv_status_draft:'Draft', recv_status_submitted:'Sent', recv_hq_inbox:'Goods in, all stores', recv_no_branch:'Set your home store first', recv_photo2:'One more photo (back / page 2)', recv_note:'Note (short, rejected, damaged...)', recv_lines_suffix:' item(s)', recv_discard:'Discard this one', recv_photo_hint:'Whole paper in frame, text readable.', recv_no_suppliers:'Supplier list not published yet; type the name',
     tile_order:'Stock request', order_tab_inbox:'To handle', order_tab_summary:'Combined total', order_tab_catalog:'Goods list', order_no_branch:'Set your home store first', order_cutoff_prefix:'Cut-off for this round:', order_cutoff_left_prefix:'', order_cutoff_left_suffix:' hours left', order_current:'This order', order_empty:'Nothing added yet. Use the button below to start.', order_btn_add_item:'Add goods', order_btn_send:'Send order', order_confirm_send:'You cannot change it after sending. Send it?', order_toast_sent:'Sent — HQ will see it', order_urgent:'Urgent (out of stock, cannot wait for the next round)', order_history:'Past orders', order_no_history:'No orders sent yet', order_items_suffix:' items', order_status_draft:'Draft', order_status_submitted:'Sent', order_status_approved:'Approved', order_status_rejected:'Sent back', order_catalog_empty:'The goods list is still empty — HQ needs to import it first', order_search:'Find goods', order_search_ph:'Type a name or code', order_search_none:'Nothing matches that', order_last_time:'last time ', order_qty:'How many?', order_btn_update:'Update quantity', order_btn_add:'Add to order', order_toast_added:'Added', order_inbox_title:'Orders to handle', order_inbox_empty:'Nothing waiting right now', order_done_title:'Handled', order_hq_note:'HQ note', order_btn_approve:'Approve', order_btn_reject:'Send back', order_confirm_reject:'Send this order back? The store will see your note.', order_sheet_title:'Order', order_summary_title:'All stores combined', order_summary_hint:'Everything sent and approved, added up. Buy against these figures.', order_btn_export:'Export CSV (opens in Excel)', order_catalog_hint:'Export the item master from AutoCount and paste it in here. Nothing is ever written back to AutoCount.', order_sku_off:'disabled', order_sku_limited:'only: ', order_btn_paste:'Paste goods in bulk', order_field_code:'Code (AutoCount item code)', order_field_name:'Name', order_field_unit:'Unit', order_field_unit_ph:'ctn / pkt / btl', order_field_category:'Category', order_field_supplier:'Supplier', order_field_branches:'Stores (blank = all)', order_field_active:'Enabled', order_err_name:'Enter a name', order_sheet_edit_sku:'Edit item', order_sheet_add_sku:'Add item', order_paste_hint:'Copy from the AutoCount item list and paste, one item per line. Separate with a tab or comma, in this order: code, name, unit, category, supplier. Only the name is required.', order_paste_label:'Paste goods (one per line)', field_order_cutoff_day:'Order cut-off day (blank = no cut-off)', field_order_cutoff_time:'Cut-off time', order_cutoff_off:'No cut-off',
@@ -932,6 +952,16 @@ const I18N = {
   ms: {
     dist_km:' km', dist_from:'dari', dist_nearer_prefix:'tetapi lebih dekat dengan', flag_geo_unknown:'Tiada lokasi', geo_recomputed:'Apa yang telefon rekod pada hari itu:',
     fg_daily:'Setiap syif', fg_daily_sub:'mula di sini bila masuk kerja', fg_goods:'Barang & mesin', fg_goods_sub:'pesanan, stok, peralatan', fg_wrong:'Ada masalah', fg_wrong_sub:'rosak, aduan, bahaya', fg_mine:'Saya', fg_mine_sub:'cuti, tukar syif, pengumuman', fg_manage:'Pengurusan', fg_manage_sub:'pengurus dan HQ', fg_more:'Lain-lain', fg_more_sub:'',
+    tile_acc:'Akaun', acc_title:'Meja kerja akaun', acc_refresh:'Muat semula', acc_loading:'Memuatkan…', acc_tab_exceptions:'Pengecualian', acc_tab_receiving:'Papan terima barang', acc_tab_journals:'Jurnal untuk kelulusan', acc_tab_setup:'Tetapan',
+    acc_k_receipts_today:'Diterima hari ini', acc_k_queue:'Menunggu AutoCount', acc_k_posted_today:'Masuk hari ini', acc_k_exceptions:'Perlu diuruskan', acc_k_critical:'kritikal', acc_k_drafts:'Jurnal menunggu',
+    acc_bridge_title:'Jambatan (komputer HQ)', acc_bridge_none:'Jambatan belum berjalan. Selepas AcBridge.exe dijalankan di HQ, degupan akan muncul di sini.', acc_bridge_stale:'tiada degupan lebih 10 minit', acc_bridge_ok:'dalam talian', acc_bridge_last:'degupan terakhir', acc_bridge_queue:'kedalaman giliran',
+    acc_settings_missing:'Kod akaun belum diisi: padanan invois akan menunggu. Isi akaun kawalan AP dan akaun belian di Tetapan.',
+    acc_no_exceptions:'Tiada yang perlu diuruskan', acc_no_receiving:'Belum ada terima barang', acc_no_journals:'Tiada jurnal menunggu',
+    acc_btn_resolve:'Selesai', acc_btn_waive:'Kecualikan', acc_btn_fix_supplier:'Tetapkan pembekal', acc_btn_fix_item:'Padankan barang', acc_btn_void:'Batalkan', acc_btn_approve:'Lulus dan hantar ke AutoCount', acc_btn_reject:'Tolak', acc_btn_requeue:'Giliran semula',
+    acc_prompt_note:'Apa yang dilakukan (sekurang-kurangnya 5 aksara):', acc_prompt_supplier:'Kod pembekal AutoCount (cth 4000-B012):', acc_prompt_item:'Kod barang AutoCount:', acc_prompt_reason:'Sebab:', acc_prompt_account:'Kod akaun AutoCount:',
+    acc_sev_critical:'kritikal', acc_sev_normal:'biasa', acc_state_pending:'menunggu', acc_state_sent:'menghantar', acc_state_confirmed:'dalam AutoCount', acc_state_failed:'gagal, akan cuba lagi', acc_state_abandoned:'dihentikan',
+    acc_set_ap:'Akaun kawalan AP', acc_set_pur:'Akaun belian', acc_set_tax:'Akaun cukai input (pilihan)', acc_set_hint:'Kod mesti sama dengan GLMast AutoCount. Kod salah hanya membuat AutoCount menolak jurnal; tiada kesan lain.', acc_set_saved:'Disimpan',
+    acc_journal_lines_suffix:' baris', acc_done:'Selesai', acc_failed_prefix:'Gagal: ',
     field_receiving_branches:'Kedai percubaan terima barang (kod, asingkan dengan koma, cth BR07,BR12; kosong = tutup)', recv_not_pilot:'Terima barang belum dibuka untuk kedai ini; HQ tambah kod kedai dalam Tetapan', recv_acc_posted:'Dalam AutoCount', recv_acc_exception:'Akaun perlu semak', recv_acc_queued:'Menghantar',
     tile_receive:'Terima barang', recv_current:'Penghantaran ini', recv_step_supplier:'1. Pembekal', recv_step_photo:'2. Foto dokumen', recv_step_lines:'3. Kira', recv_pick_supplier:'Pilih pembekal', recv_search_supplier:'Cari nama pembekal', recv_use_typed:'Guna nama yang saya taip', recv_doc_do:'Pesanan penghantaran (DO)', recv_doc_invoice:'Invois', recv_doc_no:'No. dokumen (salin dari kertas)', recv_amount:'Jumlah pada kertas (pilihan)', recv_add_item:'Tambah barang', recv_qty_received:'Diterima', recv_qty_short:'Kurang', recv_qty_damaged:'Rosak', recv_btn_send:'Hantar terima barang', recv_confirm_send:'Tidak boleh diubah selepas dihantar. Hantar?', recv_toast_sent:'Dihantar. Akaun akan uruskan seterusnya', recv_history:'Penghantaran sebelum ini', recv_no_history:'Belum ada rekod penghantaran', recv_empty:'Pilih pembekal, foto dokumen, kemudian kira.', recv_need_photo:'Ambil foto dokumen dahulu', recv_need_supplier:'Pilih pembekal dahulu', recv_status_draft:'Draf', recv_status_submitted:'Dihantar', recv_hq_inbox:'Terima barang, semua kedai', recv_no_branch:'Tetapkan kedai asal anda dahulu', recv_photo2:'Satu lagi foto (belakang / muka 2)', recv_note:'Nota (kurang, ditolak, rosak...)', recv_lines_suffix:' barang', recv_discard:'Buang yang ini', recv_photo_hint:'Seluruh kertas dalam bingkai, tulisan jelas.', recv_no_suppliers:'Senarai pembekal belum diterbitkan; taip nama',
     tile_order:'Pesanan stok', order_tab_inbox:'Perlu diuruskan', order_tab_summary:'Jumlah gabungan', order_tab_catalog:'Senarai barang', order_no_branch:'Tetapkan kedai asal anda dahulu', order_cutoff_prefix:'Tutup pesanan pusingan ini:', order_cutoff_left_prefix:'tinggal ', order_cutoff_left_suffix:' jam', order_current:'Pesanan kali ini', order_empty:'Belum ada barang. Tekan butang di bawah untuk mula.', order_btn_add_item:'Tambah barang', order_btn_send:'Hantar pesanan', order_confirm_send:'Tidak boleh diubah selepas dihantar. Hantar sekarang?', order_toast_sent:'Dihantar — HQ akan lihat', order_urgent:'Segera (kehabisan stok, tidak boleh tunggu pusingan berikutnya)', order_history:'Pesanan lepas', order_no_history:'Belum ada pesanan dihantar', order_items_suffix:' barang', order_status_draft:'Draf', order_status_submitted:'Dihantar', order_status_approved:'Diluluskan', order_status_rejected:'Dikembalikan', order_catalog_empty:'Senarai barang masih kosong — HQ perlu import dahulu', order_search:'Cari barang', order_search_ph:'Taip nama atau kod', order_search_none:'Tiada padanan', order_last_time:'kali lepas ', order_qty:'Berapa banyak?', order_btn_update:'Kemas kini kuantiti', order_btn_add:'Masukkan ke pesanan', order_toast_added:'Ditambah', order_inbox_title:'Pesanan perlu diuruskan', order_inbox_empty:'Tiada pesanan menunggu', order_done_title:'Selesai diuruskan', order_hq_note:'Nota HQ', order_btn_approve:'Luluskan', order_btn_reject:'Kembalikan', order_confirm_reject:'Kembalikan pesanan ini? Kedai akan lihat nota anda.', order_sheet_title:'Pesanan', order_summary_title:'Semua kedai digabungkan', order_summary_hint:'Semua yang dihantar dan diluluskan, dicampur. Beli ikut angka ini.', order_btn_export:'Eksport CSV (buka dalam Excel)', order_catalog_hint:'Eksport fail induk barang dari AutoCount dan tampal di sini. Tiada apa-apa ditulis semula ke AutoCount.', order_sku_off:'dimatikan', order_sku_limited:'hanya: ', order_btn_paste:'Tampal barang secara pukal', order_field_code:'Kod (kod item AutoCount)', order_field_name:'Nama', order_field_unit:'Unit', order_field_unit_ph:'ktn / pkt / btl', order_field_category:'Kategori', order_field_supplier:'Pembekal', order_field_branches:'Kedai (kosong = semua)', order_field_active:'Aktif', order_err_name:'Masukkan nama', order_sheet_edit_sku:'Edit barang', order_sheet_add_sku:'Tambah barang', order_paste_hint:'Salin dari senarai item AutoCount dan tampal, satu barang sebaris. Asingkan dengan tab atau koma, ikut susunan: kod, nama, unit, kategori, pembekal. Hanya nama diperlukan.', order_paste_label:'Tampal barang (satu sebaris)', field_order_cutoff_day:'Hari tutup pesanan (kosong = tiada)', field_order_cutoff_time:'Masa tutup', order_cutoff_off:'Tiada tutup pesanan',
@@ -1174,6 +1204,7 @@ const S = {
   beerProducts:[], taps:[], kegs:[], kegLogs:[], memos:[], memoReads:[],
   skus:[], stockRequests:[], orderBranch:null, orderTab:'inbox',
   suppliers:[], receipts:[], receiveBranch:null,
+  acc:{summary:null, receiving:[], exceptions:[], journals:[], loading:false, loadedAt:null, error:null, tab:'exceptions'},
   punchRequests:[], swapRequests:[], clockBranch:null, notifSeen:[], token:null, loginList:null, employeesLoaded:false, sb:null, taskTemplates:[], taskRuns:[], handovers:[], taskBranch:null, equipment:[], tempLogs:[], safetyChecks:[], incidents:[], weekStart:null, schedBranch:null, assetBranch:null, equipTabInit:false, auditTemplates:[], audits:[], rectifications:[], auditBranch:null, pushOn:false, runnerVisits:[], bankIns:[], runnerDate:null, runnerEmp:null, guideRole:null,
   notifKnown:null, pageLoadedAt:new Date().toISOString(), notifBrowser:(function(){ try{ return localStorage.getItem('bgc_notif')==='1'; }catch(e){ return false; } })(),
   showReport:false, meAdmin:false,
@@ -1599,7 +1630,7 @@ function renderApp(){
     view.innerHTML = screenMsg(ICONS.cloudOff,t('connecting_title'),t('connecting_body')); return;
   }
   view.innerHTML='';
-  const map={home:homeView, clock:clockView, tasks:tasksView, stock:stockView, order:orderView, receive:receiveView, equip:equipView, me:meView, memos:memosView, audit:auditView, runner:runnerView, guide:guideView};
+  const map={home:homeView, clock:clockView, tasks:tasksView, stock:stockView, order:orderView, receive:receiveView, acc:accView, equip:equipView, me:meView, memos:memosView, audit:auditView, runner:runnerView, guide:guideView};
   view.appendChild((map[S.tab]||homeView)());
   view.querySelectorAll('.list-row, .id-pick-row').forEach(r=>{ if(r.onclick && !r.hasAttribute('tabindex')){ r.setAttribute('tabindex','0'); r.setAttribute('role','button'); } });
 }
@@ -4901,6 +4932,142 @@ function openQtySheet(branch, sku){
   openSheet(t('order_qty'), body);
 }
 
+/* ============================ ACCOUNTING WORKBENCH (HQ) ============================
+   Reads the acc schema under its own RLS (handler / owner only) through supabase-js .schema('acc').
+   Every write is an RPC in acc; nothing here touches a table directly. */
+function isAccHandler(){ const e=currentEmployee(); return !!(e && (e.role==='admin' || e.accRole==='handler')); }
+function accDb(){ return S.sb.schema('acc'); }
+async function accRpc(name, args){
+  const {data,error}=await accDb().rpc(name, args||{});
+  if(error) throw {code:error.code||'rpc', message:error.message||String(error)};
+  return data;
+}
+async function accLoad(){
+  if(S.acc.loading) return;
+  S.acc.loading=true; S.acc.error=null; renderApp();
+  try{
+    const [sum, recv, exc, jrn] = await Promise.all([
+      accRpc('hq_summary', {p_entity:null}),
+      accDb().from('v_receiving').select('*').limit(80),
+      accDb().from('exception').select('*').eq('status','open').order('severity',{ascending:true}).order('created_at',{ascending:false}).limit(100),
+      accDb().from('journal').select('id,ref_no,doc_date,description,status,entity_code,source_doc,journal_line(debit,credit)').eq('status','draft').order('created_at',{ascending:false}).limit(50),
+    ]);
+    for(const r of [recv,exc,jrn]) if(r.error) throw r.error;
+    S.acc.summary=sum; S.acc.receiving=recv.data||[]; S.acc.exceptions=exc.data||[]; S.acc.journals=jrn.data||[];
+    S.acc.loadedAt=new Date();
+  }catch(err){ S.acc.error=String((err&&err.message)||err); }
+  S.acc.loading=false; renderApp();
+}
+async function accAct(fn, args, okMsg){
+  try{ const r=await accRpc(fn, args); toast((okMsg||t('acc_done'))+(typeof r==='string'?' · '+r:'')); await accLoad(); }
+  catch(err){ toast(t('acc_failed_prefix')+String((err&&err.message)||err)); }
+}
+function accAsk(label, min){ const v=prompt(label); if(v==null) return null; const s=v.trim(); if(min && s.length<min){ toast(label); return null; } return s; }
+
+function accView(){
+  const c=el('<div></div>');
+  if(!isAccHandler()){ c.appendChild(el(`<div class="empty">${ICONS.chart}<div>${esc(t('who_unselected'))}</div></div>`)); return c; }
+  if(!S.acc.loadedAt && !S.acc.loading && !S.acc.error) accLoad();
+
+  const head=el(`<div class="sec-row" style="align-items:center;"><h2 class="sec" style="margin:0;">${ib('chart','c-green','sm')}${esc(t('acc_title'))}</h2></div>`);
+  const rb=el(`<button class="btn sm">${esc(S.acc.loading?t('acc_loading'):t('acc_refresh'))}</button>`);
+  rb.disabled=S.acc.loading; rb.onclick=accLoad; head.appendChild(rb);
+  c.appendChild(head);
+  if(S.acc.error) c.appendChild(el(`<div class="card" style="border-color:var(--danger,#b00);"><div class="lr-sub">${esc(S.acc.error)}</div></div>`));
+
+  const s=S.acc.summary;
+  if(s){
+    const kpi=(k,v,cls)=>`<div class="card" style="padding:10px 12px; flex:1 1 120px;"><div class="lr-sub">${esc(t(k))}</div><div class="num" style="font-weight:900; font-size:22px; ${cls||''}">${v}</div></div>`;
+    c.appendChild(el(`<div class="row" style="flex-wrap:wrap; gap:8px;">${kpi('acc_k_receipts_today',s.receipts_today)}${kpi('acc_k_queue',s.queue_pending+(s.queue_sent?' +'+s.queue_sent:''))}${kpi('acc_k_posted_today',s.posted_today)}${kpi('acc_k_exceptions',s.exceptions_open, s.exceptions_open?'color:var(--danger,#b00);':'')}${kpi('acc_k_drafts',s.journals_draft)}</div>`));
+    const br=el(`<div class="card" style="margin-top:8px;"><div class="lr-title">${esc(t('acc_bridge_title'))}</div></div>`);
+    if(!s.bridge || !s.bridge.length) br.appendChild(el(`<div class="lr-sub">${esc(t('acc_bridge_none'))}</div>`));
+    else s.bridge.forEach(b=>{ br.appendChild(el(`<div class="lr-sub"><span class="pill ${b.stale?'critical':'ok'}">${esc(b.stale?t('acc_bridge_stale'):t('acc_bridge_ok'))}</span> ${esc(b.host)} · ${esc(b.entity||'')} · ${esc(t('acc_bridge_last'))} ${esc(localStamp(b.last_seen))} · ${esc(t('acc_bridge_queue'))} ${b.queue_depth==null?'-':b.queue_depth}${b.last_error?' · '+esc(b.last_error):''}</div>`)); });
+    c.appendChild(br);
+    if(s.settings_missing && s.settings_missing.length) c.appendChild(el(`<div class="card" style="margin-top:8px; border-color:var(--warn,#c80);"><div class="lr-sub">${esc(t('acc_settings_missing'))}</div></div>`));
+  }
+
+  const tabs=[['exceptions',t('acc_tab_exceptions')+(S.acc.exceptions.length?' ('+S.acc.exceptions.length+')':'')],['receiving',t('acc_tab_receiving')],['journals',t('acc_tab_journals')+(S.acc.journals.length?' ('+S.acc.journals.length+')':'')],['setup',t('acc_tab_setup')]];
+  const seg=el(`<div class="seg" style="margin:12px 0;">${tabs.map(([k,l])=>`<button data-v="${k}" class="${S.acc.tab===k?'on':''}">${esc(l)}</button>`).join('')}</div>`);
+  [...seg.querySelectorAll('button')].forEach(b=>{ b.onclick=()=>{ S.acc.tab=b.dataset.v; renderApp(); }; });
+  c.appendChild(seg);
+
+  if(S.acc.tab==='exceptions') c.appendChild(accExceptionsView());
+  else if(S.acc.tab==='receiving') c.appendChild(accReceivingView());
+  else if(S.acc.tab==='journals') c.appendChild(accJournalsView());
+  else c.appendChild(accSetupView());
+  return c;
+}
+
+function accExceptionsView(){
+  const w=el('<div class="list"></div>');
+  if(!S.acc.exceptions.length){ w.appendChild(el(`<div class="hint">${esc(t('acc_no_exceptions'))}</div>`)); return w; }
+  const owner=!!(S.acc.summary && S.acc.summary.is_owner);
+  S.acc.exceptions.forEach(x=>{
+    const grn=S.acc.receiving.find(r=>r.grn_id===x.grn_id);
+    const row=el(`<div class="list-row" style="cursor:default; flex-wrap:wrap;">
+      <div class="lr-main" style="flex-basis:100%; min-width:0;"><div class="lr-title" style="white-space:normal;"><span class="pill ${x.severity==='critical'?'critical':'warn'}">${esc(t(x.severity==='critical'?'acc_sev_critical':'acc_sev_normal'))}</span> ${esc(x.kind)}${grn?' · '+esc(grn.ref_no)+' · '+esc(grn.branch_code)+' · '+esc(grn.supplier_name||grn.supplier_code||''):''}</div>
+      <div class="lr-sub" style="white-space:normal;">${esc(x.message)}</div><div class="lr-sub">${esc(localStamp(x.created_at))}</div></div></div>`);
+    const btns=el('<div class="row" style="flex-wrap:wrap; gap:6px; margin-top:6px; flex-basis:100%;"></div>');
+    const mk=(label, cls, fn)=>{ const b=el(`<button class="btn sm ${cls||''}">${esc(label)}</button>`); b.onclick=fn; btns.appendChild(b); };
+    if(x.kind==='unknown_supplier' && x.grn_id) mk(t('acc_btn_fix_supplier'),'primary',()=>{ const code=accAsk(t('acc_prompt_supplier'),4); if(code) accAct('fix_grn_supplier',{p_grn:x.grn_id,p_code:code,p_remember:true}); });
+    if(x.kind==='unknown_item' && x.grn_id) mk(t('acc_btn_fix_item'),'primary',async ()=>{
+      const {data,error}=await accDb().from('grn_line').select('id,description,sku_ref,qty_received').eq('grn_id',x.grn_id).is('item_code',null).order('line_no');
+      if(error||!data||!data.length){ toast(t('acc_failed_prefix')+(error?error.message:'no line')); return; }
+      for(const l of data){ const code=accAsk(t('acc_prompt_item')+' '+(l.description||l.sku_ref||'')+' ×'+l.qty_received,3); if(!code) return; try{ await accRpc('fix_grn_item',{p_line:l.id,p_item:code,p_remember:true}); }catch(err){ toast(t('acc_failed_prefix')+err.message); return; } }
+      toast(t('acc_done')); accLoad();
+    });
+    if((x.kind==='config_missing'||x.kind==='other') && x.grn_id) mk(t('acc_btn_requeue'),'',()=>accAct('queue_grn',{p_grn:x.grn_id}));
+    mk(t('acc_btn_resolve'),'',()=>{ const n=accAsk(t('acc_prompt_note'),5); if(n) accAct('resolve_exception',{p_id:x.id,p_action:'resolved',p_note:n}); });
+    mk(t('acc_btn_waive'),'',()=>{ const n=accAsk(t('acc_prompt_note'),5); if(n) accAct('resolve_exception',{p_id:x.id,p_action:'waived',p_note:n}); });
+    if(owner && x.grn_id && grn && !grn.autocount_no) mk(t('acc_btn_void'),'danger',()=>{ const n=accAsk(t('acc_prompt_reason'),5); if(n && confirm(t('acc_btn_void')+'?')) accAct('void_grn',{p_grn:x.grn_id,p_reason:n}); });
+    row.appendChild(btns); w.appendChild(row);
+  });
+  return w;
+}
+
+function accReceivingView(){
+  const w=el('<div class="list"></div>');
+  if(!S.acc.receiving.length){ w.appendChild(el(`<div class="hint">${esc(t('acc_no_receiving'))}</div>`)); return w; }
+  const pillFor=r=>{ if(r.grn_status==='void') return `<span class="pill n">void</span>`; const st=r.queue_state; if(!st) return `<span class="pill critical">${esc(r.open_exceptions?t('acc_k_exceptions'):t('acc_state_pending'))}</span>`; const cls=st==='confirmed'?'ok':(st==='abandoned'?'critical':'warn'); return `<span class="pill ${cls}">${esc(t('acc_state_'+st))}${r.autocount_no?' '+esc(r.autocount_no):''}</span>`; };
+  S.acc.receiving.forEach(r=>{
+    w.appendChild(el(`<div class="list-row" style="cursor:default;"><div class="lr-main"><div class="lr-title">${esc(r.ref_no)} · ${esc(r.branch_code)} · ${esc(r.supplier_name||r.supplier_code||'?')}</div>
+      <div class="lr-sub">${esc(r.doc_kind)} ${esc(r.supplier_doc_no||'')} · ${esc(localStamp(r.received_at))} · ${r.lines}${esc(t('recv_lines_suffix'))}${r.received_by_name?' · '+esc(r.received_by_name):''}${r.last_error?' · '+esc(r.last_error):''}${r.open_exceptions?' · '+esc(r.open_exceptions):''}</div></div>${pillFor(r)}</div>`));
+  });
+  return w;
+}
+
+function accJournalsView(){
+  const w=el('<div class="list"></div>');
+  const owner=!!(S.acc.summary && S.acc.summary.is_owner);
+  if(!S.acc.journals.length){ w.appendChild(el(`<div class="hint">${esc(t('acc_no_journals'))}</div>`)); return w; }
+  S.acc.journals.forEach(j=>{
+    const lines=j.journal_line||[]; const dr=lines.reduce((a,l)=>a+Number(l.debit||0),0);
+    const row=el(`<div class="list-row" style="cursor:default; flex-wrap:wrap;"><div class="lr-main" style="flex-basis:100%;"><div class="lr-title">${esc(j.ref_no||'')} · ${esc(j.description)}</div>
+      <div class="lr-sub">${esc(j.entity_code)} · ${esc(j.doc_date)} · RM ${dr.toFixed(2)} · ${lines.length}${esc(t('acc_journal_lines_suffix'))}</div></div></div>`);
+    if(owner){
+      const btns=el('<div class="row" style="gap:6px; margin-top:6px; flex-basis:100%;"></div>');
+      const a=el(`<button class="btn sm primary">${esc(t('acc_btn_approve'))}</button>`); a.onclick=()=>{ if(confirm(t('acc_btn_approve')+'?')) accAct('approve_journal',{p_journal:j.id,p_note:null}); };
+      const r=el(`<button class="btn sm danger">${esc(t('acc_btn_reject'))}</button>`); r.onclick=()=>{ const n=accAsk(t('acc_prompt_reason'),5); if(n) accAct('reject_journal',{p_journal:j.id,p_reason:n}); };
+      btns.appendChild(a); btns.appendChild(r); row.appendChild(btns);
+    }
+    w.appendChild(row);
+  });
+  return w;
+}
+
+function accSetupView(){
+  const w=el('<div class="card"></div>');
+  const owner=!!(S.acc.summary && S.acc.summary.is_owner);
+  w.appendChild(el(`<div class="hint">${esc(t('acc_set_hint'))}</div>`));
+  [['RETAIL','ap_control',t('acc_set_ap')],['RETAIL','purchases_account',t('acc_set_pur')],['RETAIL','input_tax_account',t('acc_set_tax')],
+   ['FNB','ap_control',t('acc_set_ap')+' · FNB'],['FNB','purchases_account',t('acc_set_pur')+' · FNB']].forEach(([ent,key,label])=>{
+    const row=el(`<div class="list-row" style="cursor:default;"><div class="lr-main"><div class="lr-title">${esc(label)}</div><div class="lr-sub">${esc(ent)} · ${esc(key)}</div></div></div>`);
+    if(owner){ const b=el(`<button class="btn sm">${ICONS.gear}</button>`); b.onclick=()=>{ const v=accAsk(t('acc_prompt_account')+' '+label,3); if(v) accAct('set_setting',{p_entity:ent,p_key:key,p_value:v,p_note:null},t('acc_set_saved')); }; row.appendChild(b); }
+    w.appendChild(row);
+  });
+  return w;
+}
+
 /* ============================ RECEIVING (goods in) ============================
    Patch 6. One document per delivery in `receipts`: supplier, the paper (photo),
    what was counted. The store keeps a draft until it taps Send; submit_receipt()
@@ -5432,6 +5599,11 @@ function funcGrid(clockedIn){
   }
   if(hasBeer) tiles.push({k:'beer', icon:'beer', cls:'c-amber', label:t('tile_beer'), go:()=>{ S.stockSection='beer'; location.hash='#stock'; }});
   tiles.push({k:'equip', icon:'machine', cls:'c-grey', label:t('tile_equip'), go:()=>{ location.hash='#equip'; }});
+  if(isAccHandler()){
+    tiles.push({k:'acc', icon:'chart', cls:'c-green', label:t('tile_acc'),
+      count: (S.acc.summary && S.acc.summary.exceptions_open) || 0,
+      go:()=>{ location.hash='#acc'; }});
+  }
   if(canManageStaff()){
     tiles.push({k:'approvals', icon:'users', cls:'c-purple', label:t('tile_approvals'), count:pendingCount, go:()=>{ location.hash='#me'; setTimeout(()=>{ const h=[...document.querySelectorAll('#view h2')].find(x=>x.textContent.includes(t('admin_pending_prefix').replace(/[（(].*$/,''))); if(h) h.scrollIntoView({behavior:'smooth'}); },300); }});
     tiles.push({k:'schedule', icon:'calendar', cls:'c-blue', label:t('tile_schedule'), go:()=>{ location.hash='#me'; setTimeout(()=>{ const h=[...document.querySelectorAll('#view h2')].find(x=>x.textContent.includes(t('admin_schedule_mgmt'))); if(h) h.scrollIntoView({behavior:'smooth'}); },300); }});
@@ -5453,7 +5625,7 @@ function funcGrid(clockedIn){
     {id:'goods',  keys:['order','receive','stock','beer','equip']},
     {id:'wrong',  keys:['fault','incident','sos']},
     {id:'mine',   keys:['leave','punch','swap','memos','help']},
-    {id:'manage', keys:['approvals','schedule','report','staff','audit','overview','runner','settings']},
+    {id:'manage', keys:['acc','approvals','schedule','report','staff','audit','overview','runner','settings']},
   ];
   const placed = new Set(GROUPS.flatMap(g=>g.keys));
   const byKey = Object.fromEntries(tiles.map(tl=>[tl.k, tl]));
