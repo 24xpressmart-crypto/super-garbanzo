@@ -2277,7 +2277,7 @@ function clockView(){
   rows.forEach(a=>{
     const v = geoVerdict(a);
     const flag = geoPill(v);
-    const row=el(`<div class="list-row">${ib(a.type==='in'?'login':'logout', a.type==='in'?'c-green':'c-grey')}<div class="lr-main"><div class="lr-title">${esc(a.employeeName)} · ${a.type==='in'?esc(t('clock_in_short')):esc(t('clock_out_short'))}</div><div class="lr-sub">${fmtDateTime(a.createdAt)}${a.branch?' · '+esc(a.branch):''}${geoLine(v)}${a.manual?' · '+esc(t('flag_manual')):''}</div></div>${a.cover?`<span class="pill accent">${esc(t('flag_cover'))}</span>`:''}${a.photo?`<span class="icon-sm" style="color:var(--ink-faint); flex-shrink:0;">${ICONS.camera}</span>`:''}${flag}</div>`);
+    const row=el(`<div class="list-row">${ib(a.type==='in'?'login':'logout', a.type==='in'?'c-green':'c-grey')}<div class="lr-main"><div class="lr-title">${esc(a.employeeName||empName(a.employeeId))} · ${a.type==='in'?esc(t('clock_in_short')):esc(t('clock_out_short'))}</div><div class="lr-sub">${fmtDateTime(a.createdAt)}${a.branch?' · '+esc(a.branch):''}${geoLine(v)}${a.manual?' · '+esc(t('flag_manual')):''}</div></div>${a.cover?`<span class="pill accent">${esc(t('flag_cover'))}</span>`:''}${a.photo?`<span class="icon-sm" style="color:var(--ink-faint); flex-shrink:0;">${ICONS.camera}</span>`:''}${flag}</div>`);
     row.onclick=()=>openAttendanceDetail(a);
     list.appendChild(row);
   });
@@ -2406,7 +2406,7 @@ function openAttendanceDetail(a){
     if(g) body.appendChild(el(`<p class="hint num">${Number(g.lat).toFixed(6)}, ${Number(g.lng).toFixed(6)}${g.accuracy!=null?' (±'+g.accuracy+'m)':''}</p>`)); }
   if(a.photo) body.appendChild(el(`<img class="photow" src="${a.photo}">`));
   else body.appendChild(el(`<p class="hint">${esc(t('no_photo_taken'))}</p>`));
-  openSheet(a.employeeName, body);
+  openSheet(a.employeeName||empName(a.employeeId), body);
 }
 
 /* ============================ STOCK ============================ */
@@ -3569,7 +3569,24 @@ function adminSection(){
   c.appendChild(expCard);
   return c;
 }
+/* Rows written by the database (patch 4 punch, patch 5+ RPCs) carry employeeId but no employeeName,
+   and the server's geoFlag says 'not_configured' when the PHONE sent no location. Fill both in
+   at export time so the CSV reads the same for old and new rows. */
+function enrichRow(r){
+  const o=Object.assign({}, r);
+  if(!o.employeeName && o.employeeId) o.employeeName=empName(o.employeeId);
+  if(o.type==='in' || o.type==='out'){
+    const flags=Array.isArray(o.flags)?o.flags:[];
+    const hasLoc = o.lat!=null || (o.geo && o.geo.lat!=null);
+    if(!hasLoc || flags.includes('no_location')) o.geoFlag='no_location';
+    else if(flags.includes('no_site_coords')) o.geoFlag='not_configured';
+    else if(o.distanceM!=null && !o.geoFlag) o.geoFlag = Number(o.distanceM) <= Number(o.radiusM || S.settings.geofenceRadius || 300) ? 'in_range' : 'out_of_range';
+    if(o.distanceM!=null) o.distanceM=Math.round(Number(o.distanceM));
+  }
+  return o;
+}
 function toCSV(rows, cols){
+  rows=(rows||[]).map(enrichRow);
   const head = cols.join(',');
   const body = rows.map(r=>cols.map(c=>{
     let v=r[c]; if(v==null) v='';
