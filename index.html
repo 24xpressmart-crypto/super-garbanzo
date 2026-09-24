@@ -5101,8 +5101,10 @@ async function ensureReceiptDraft(branch, patch){
   const draft = draftReceiptFor(branch);
   if(draft){ await S.db.doc('receipts/'+draft.id).update(patch); return draft.id; }
   const me = currentEmployee();
+  // the paper the driver hands over IS the invoice for almost every supplier (owner, 2026-09-24), so
+  // a new receipt starts as 'invoice'; staff switch to DO only when the paper carries no prices
   await S.db.collection('receipts').add(Object.assign({
-    branch, status:'draft', docKind:'do', docNo:'', amount:'', note:'', photos:[], lines:[],
+    branch, status:'draft', docKind:'invoice', docNo:'', amount:'', note:'', photos:[], lines:[],
     eventAt: new Date().toISOString(), createdBy: me.id, createdByName: me.name, createdAt: new Date().toISOString()}, patch));
   return null;
 }
