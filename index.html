@@ -476,6 +476,7 @@ const I18N = {
   zh: {
     dist_km:' 公里', dist_from:'距离', dist_nearer_prefix:'但更靠近', flag_geo_unknown:'无定位', geo_recomputed:'当时手机记录的是：',
     fg_daily:'每天要做', fg_daily_sub:'上班就按这几个', fg_goods:'货与设备', fg_goods_sub:'要货、盘点、机器', fg_wrong:'出状况了', fg_wrong_sub:'坏了、吵架、危险', fg_mine:'我的事', fg_mine_sub:'请假、换班、公告', fg_manage:'管理', fg_manage_sub:'经理与 HQ', fg_more:'其他', fg_more_sub:'',
+    recv_paid_cash:'当场付现给送货员 RM（没有就留空）', acc_tab_payments:'付款', acc_pay_propose:'生成付款建议', acc_pay_prompt_date:'付到哪一天到期的（YYYY-MM-DD）：', acc_pay_none:'没有付款建议。按上面按钮生成。', acc_pay_approve:'批准', acc_pay_export:'下载银行档', acc_pay_paid:'已在网银付了', acc_pay_prompt_paid:'付款日 YYYY-MM-DD 和银行参考号，用空格分开：', acc_pay_void:'作废', acc_pay_lines_suffix:' 张发票', acc_pay_suppliers_suffix:' 家', acc_pay_status_proposed:'待批准', acc_pay_status_approved:'已批准，待下载', acc_pay_status_exported:'已下载，待付', acc_pay_status_paid:'已付', acc_pay_status_void:'已作废', acc_cod_title:'门店当场付现（对当天 POS cash-out）', acc_cod_none:'没有付现记录', acc_pay_rule:'规矩：只付建议里的，不临时转。建议只包含已进 AutoCount 的发票和已回拨验证的银行账号。',
     tile_acc:'账务', acc_title:'账务工作台', acc_refresh:'刷新', acc_loading:'读取中…', acc_tab_exceptions:'例外', acc_tab_receiving:'收货看板', acc_tab_journals:'待批准分录', acc_tab_setup:'设定',
     acc_k_receipts_today:'今日收货', acc_k_queue:'待传 AutoCount', acc_k_posted_today:'今日已入', acc_k_exceptions:'待处理', acc_k_critical:'其中严重', acc_k_drafts:'待批准分录',
     acc_bridge_title:'桥接（HQ 电脑）', acc_bridge_none:'桥接还没跑过。HQ 电脑上执行 AcBridge.exe 后这里会出现心跳。', acc_bridge_stale:'超过 10 分钟没心跳', acc_bridge_ok:'在线', acc_bridge_last:'最后心跳', acc_bridge_queue:'队列深度',
@@ -714,6 +715,7 @@ const I18N = {
   en: {
     dist_km:' km', dist_from:'from', dist_nearer_prefix:'but closer to', flag_geo_unknown:'No location', geo_recomputed:'What the phone recorded that day:',
     fg_daily:'Every shift', fg_daily_sub:'start here when you come in', fg_goods:'Goods & machines', fg_goods_sub:'ordering, stock, equipment', fg_wrong:'Something is wrong', fg_wrong_sub:'broken, complaints, danger', fg_mine:'Mine', fg_mine_sub:'leave, swaps, memos', fg_manage:'Managing', fg_manage_sub:'managers and HQ', fg_more:'Other', fg_more_sub:'',
+    recv_paid_cash:'Cash paid to the driver on the spot, RM (blank if none)', acc_tab_payments:'Payments', acc_pay_propose:'Propose a payment run', acc_pay_prompt_date:'Pay invoices due up to (YYYY-MM-DD):', acc_pay_none:'No payment run. Use the button above.', acc_pay_approve:'Approve', acc_pay_export:'Download bank file', acc_pay_paid:'Paid at the bank', acc_pay_prompt_paid:'Payment date YYYY-MM-DD and bank reference, separated by a space:', acc_pay_void:'Void', acc_pay_lines_suffix:' invoice(s)', acc_pay_suppliers_suffix:' supplier(s)', acc_pay_status_proposed:'to approve', acc_pay_status_approved:'approved, download next', acc_pay_status_exported:'downloaded, pay at bank', acc_pay_status_paid:'paid', acc_pay_status_void:'void', acc_cod_title:'Cash paid at outlets (check against that day\'s POS cash-out)', acc_cod_none:'No cash-on-delivery yet', acc_pay_rule:'Rule: only what is in the proposal gets paid, never an ad-hoc transfer. A proposal holds only invoices already in AutoCount and bank accounts verified by call-back.',
     tile_acc:'Accounting', acc_title:'Accounting workbench', acc_refresh:'Refresh', acc_loading:'Loading…', acc_tab_exceptions:'Exceptions', acc_tab_receiving:'Goods-in board', acc_tab_journals:'Journals to approve', acc_tab_setup:'Setup',
     acc_k_receipts_today:'Received today', acc_k_queue:'Waiting for AutoCount', acc_k_posted_today:'Posted today', acc_k_exceptions:'To handle', acc_k_critical:'of which critical', acc_k_drafts:'Journals to approve',
     acc_bridge_title:'Bridge (HQ machine)', acc_bridge_none:'The bridge has not run yet. Once AcBridge.exe runs on the HQ machine its heartbeat shows here.', acc_bridge_stale:'no heartbeat for over 10 minutes', acc_bridge_ok:'online', acc_bridge_last:'last heartbeat', acc_bridge_queue:'queue depth',
@@ -952,6 +954,7 @@ const I18N = {
   ms: {
     dist_km:' km', dist_from:'dari', dist_nearer_prefix:'tetapi lebih dekat dengan', flag_geo_unknown:'Tiada lokasi', geo_recomputed:'Apa yang telefon rekod pada hari itu:',
     fg_daily:'Setiap syif', fg_daily_sub:'mula di sini bila masuk kerja', fg_goods:'Barang & mesin', fg_goods_sub:'pesanan, stok, peralatan', fg_wrong:'Ada masalah', fg_wrong_sub:'rosak, aduan, bahaya', fg_mine:'Saya', fg_mine_sub:'cuti, tukar syif, pengumuman', fg_manage:'Pengurusan', fg_manage_sub:'pengurus dan HQ', fg_more:'Lain-lain', fg_more_sub:'',
+    recv_paid_cash:'Tunai dibayar kepada pemandu di tempat, RM (kosong jika tiada)', acc_tab_payments:'Bayaran', acc_pay_propose:'Cadang bayaran', acc_pay_prompt_date:'Bayar invois yang matang sehingga (YYYY-MM-DD):', acc_pay_none:'Tiada cadangan bayaran. Guna butang di atas.', acc_pay_approve:'Lulus', acc_pay_export:'Muat turun fail bank', acc_pay_paid:'Sudah dibayar di bank', acc_pay_prompt_paid:'Tarikh bayaran YYYY-MM-DD dan rujukan bank, dipisah dengan ruang:', acc_pay_void:'Batal', acc_pay_lines_suffix:' invois', acc_pay_suppliers_suffix:' pembekal', acc_pay_status_proposed:'menunggu kelulusan', acc_pay_status_approved:'diluluskan, muat turun', acc_pay_status_exported:'dimuat turun, bayar di bank', acc_pay_status_paid:'dibayar', acc_pay_status_void:'dibatalkan', acc_cod_title:'Tunai dibayar di kedai (semak dengan cash-out POS hari itu)', acc_cod_none:'Belum ada bayaran tunai', acc_pay_rule:'Peraturan: hanya yang dalam cadangan dibayar, tiada pindahan ad-hoc. Cadangan hanya mengandungi invois yang sudah dalam AutoCount dan akaun bank yang disahkan melalui panggilan balik.',
     tile_acc:'Akaun', acc_title:'Meja kerja akaun', acc_refresh:'Muat semula', acc_loading:'Memuatkan…', acc_tab_exceptions:'Pengecualian', acc_tab_receiving:'Papan terima barang', acc_tab_journals:'Jurnal untuk kelulusan', acc_tab_setup:'Tetapan',
     acc_k_receipts_today:'Diterima hari ini', acc_k_queue:'Menunggu AutoCount', acc_k_posted_today:'Masuk hari ini', acc_k_exceptions:'Perlu diuruskan', acc_k_critical:'kritikal', acc_k_drafts:'Jurnal menunggu',
     acc_bridge_title:'Jambatan (komputer HQ)', acc_bridge_none:'Jambatan belum berjalan. Selepas AcBridge.exe dijalankan di HQ, degupan akan muncul di sini.', acc_bridge_stale:'tiada degupan lebih 10 minit', acc_bridge_ok:'dalam talian', acc_bridge_last:'degupan terakhir', acc_bridge_queue:'kedalaman giliran',
@@ -1204,7 +1207,7 @@ const S = {
   beerProducts:[], taps:[], kegs:[], kegLogs:[], memos:[], memoReads:[],
   skus:[], stockRequests:[], orderBranch:null, orderTab:'inbox',
   suppliers:[], receipts:[], receiveBranch:null,
-  acc:{summary:null, receiving:[], exceptions:[], journals:[], loading:false, loadedAt:null, error:null, tab:'exceptions'},
+  acc:{summary:null, receiving:[], exceptions:[], journals:[], payments:[], cod:[], loading:false, loadedAt:null, error:null, tab:'exceptions'},
   punchRequests:[], swapRequests:[], clockBranch:null, notifSeen:[], token:null, loginList:null, employeesLoaded:false, sb:null, taskTemplates:[], taskRuns:[], handovers:[], taskBranch:null, equipment:[], tempLogs:[], safetyChecks:[], incidents:[], weekStart:null, schedBranch:null, assetBranch:null, equipTabInit:false, auditTemplates:[], audits:[], rectifications:[], auditBranch:null, pushOn:false, runnerVisits:[], bankIns:[], runnerDate:null, runnerEmp:null, guideRole:null,
   notifKnown:null, pageLoadedAt:new Date().toISOString(), notifBrowser:(function(){ try{ return localStorage.getItem('bgc_notif')==='1'; }catch(e){ return false; } })(),
   showReport:false, meAdmin:false,
@@ -4963,14 +4966,17 @@ async function accLoad(){
   if(S.acc.loading) return;
   S.acc.loading=true; S.acc.error=null; renderApp();
   try{
-    const [sum, recv, exc, jrn] = await Promise.all([
+    const [sum, recv, exc, jrn, pay, cod] = await Promise.all([
       accRpc('hq_summary', {p_entity:null}),
       accDb().from('v_receiving').select('*').limit(80),
       accDb().from('exception').select('*').eq('status','open').order('severity',{ascending:true}).order('created_at',{ascending:false}).limit(100),
       accDb().from('journal').select('id,ref_no,doc_date,description,status,entity_code,source_doc,journal_line(debit,credit)').eq('status','draft').order('created_at',{ascending:false}).limit(50),
+      accDb().from('v_payment_runs').select('*').limit(30),
+      accDb().from('v_cod_by_day').select('*').limit(60),
     ]);
     for(const r of [recv,exc,jrn]) if(r.error) throw r.error;
     S.acc.summary=sum; S.acc.receiving=recv.data||[]; S.acc.exceptions=exc.data||[]; S.acc.journals=jrn.data||[];
+    S.acc.payments=(pay&&pay.data)||[]; S.acc.cod=(cod&&cod.data)||[];       // RUN_7 not applied yet -> empty, no error shown
     S.acc.loadedAt=new Date();
   }catch(err){ S.acc.error=String((err&&err.message)||err); }
   S.acc.loading=false; renderApp();
@@ -5003,7 +5009,7 @@ function accView(){
     if(s.settings_missing && s.settings_missing.length) c.appendChild(el(`<div class="card" style="margin-top:8px; border-color:var(--warn,#c80);"><div class="lr-sub">${esc(t('acc_settings_missing'))}</div></div>`));
   }
 
-  const tabs=[['exceptions',t('acc_tab_exceptions')+(S.acc.exceptions.length?' ('+S.acc.exceptions.length+')':'')],['receiving',t('acc_tab_receiving')],['journals',t('acc_tab_journals')+(S.acc.journals.length?' ('+S.acc.journals.length+')':'')],['setup',t('acc_tab_setup')]];
+  const tabs=[['exceptions',t('acc_tab_exceptions')+(S.acc.exceptions.length?' ('+S.acc.exceptions.length+')':'')],['receiving',t('acc_tab_receiving')],['journals',t('acc_tab_journals')+(S.acc.journals.length?' ('+S.acc.journals.length+')':'')],['payments',t('acc_tab_payments')],['setup',t('acc_tab_setup')]];
   const seg=el(`<div class="seg" style="margin:12px 0;">${tabs.map(([k,l])=>`<button data-v="${k}" class="${S.acc.tab===k?'on':''}">${esc(l)}</button>`).join('')}</div>`);
   [...seg.querySelectorAll('button')].forEach(b=>{ b.onclick=()=>{ S.acc.tab=b.dataset.v; renderApp(); }; });
   c.appendChild(seg);
@@ -5011,8 +5017,55 @@ function accView(){
   if(S.acc.tab==='exceptions') c.appendChild(accExceptionsView());
   else if(S.acc.tab==='receiving') c.appendChild(accReceivingView());
   else if(S.acc.tab==='journals') c.appendChild(accJournalsView());
+  else if(S.acc.tab==='payments') c.appendChild(accPaymentsView());
   else c.appendChild(accSetupView());
   return c;
+}
+
+/* Payments: the owner's rule made operable. Propose (handler or owner) -> approve (owner) -> download the
+   bank file -> pay at the bank -> mark paid (owner). COD receipts are listed by day for the POS cash-out check. */
+function accPaymentsView(){
+  const w=el('<div></div>');
+  const owner=!!(S.acc.summary && S.acc.summary.is_owner);
+  w.appendChild(el(`<div class="hint" style="margin-bottom:8px;">${esc(t('acc_pay_rule'))}</div>`));
+  const open=(S.acc.payments||[]).some(r=>['proposed','approved','exported'].includes(r.status));
+  if(!open){
+    const b=el(`<button class="btn primary block" style="margin-bottom:10px;">${esc(t('acc_pay_propose'))}</button>`);
+    b.onclick=()=>{ const d=accAsk(t('acc_pay_prompt_date'),8); if(d) accAct('propose_payment_run',{p_entity:'RETAIL',p_pay_by:d,p_note:null}); };
+    w.appendChild(b);
+  }
+  const list=el('<div class="list"></div>');
+  if(!(S.acc.payments||[]).length) list.appendChild(el(`<div class="hint">${esc(t('acc_pay_none'))}</div>`));
+  (S.acc.payments||[]).forEach(r=>{
+    const cls={proposed:'warn',approved:'warn',exported:'warn',paid:'ok',void:'n'}[r.status]||'n';
+    const row=el(`<div class="list-row" style="cursor:default; flex-wrap:wrap;"><div class="lr-main" style="flex-basis:100%; min-width:0;">
+      <div class="lr-title" style="white-space:normal;">${esc(r.ref_no)} · ${esc(r.entity_code)} · RM ${Number(r.total||0).toFixed(2)} <span class="pill ${cls}">${esc(t('acc_pay_status_'+r.status))}</span></div>
+      <div class="lr-sub" style="white-space:normal;">${r.lines}${esc(t('acc_pay_lines_suffix'))} · ${r.suppliers}${esc(t('acc_pay_suppliers_suffix'))} · ${esc(t('acc_pay_prompt_date')).split('（')[0].split('(')[0]} ${esc(r.pay_by)}${r.paid_on?' · '+esc(t('acc_pay_status_paid'))+' '+esc(r.paid_on)+' '+esc(r.bank_ref||''):''}${r.note?' · '+esc(r.note):''}</div></div></div>`);
+    if(owner && r.status!=='paid' && r.status!=='void'){
+      const btns=el('<div class="row" style="flex-wrap:wrap; gap:6px; margin-top:6px; flex-basis:100%;"></div>');
+      const mk=(label, cls, fn)=>{ const b=el(`<button class="btn sm ${cls||''}">${esc(label)}</button>`); b.onclick=fn; btns.appendChild(b); };
+      if(r.status==='proposed') mk(t('acc_pay_approve'),'primary',()=>{ if(confirm(t('acc_pay_approve')+' '+r.ref_no+'?')) accAct('approve_payment_run',{p_run:r.id,p_note:null}); });
+      if(r.status==='approved'||r.status==='exported') mk(t('acc_pay_export'),'primary',async ()=>{
+        try{ const csv=await accRpc('export_payment_run',{p_run:r.id}); if(S.downloads) await S.downloads.save({filename:r.ref_no+'.csv', data:'﻿'+csv}); else toast(t('toast_no_downloads')); await accLoad(); }
+        catch(err){ if(!(err&&err.code==='declined')) toast(t('acc_failed_prefix')+String((err&&err.message)||err)); }
+      });
+      if(r.status==='approved'||r.status==='exported') mk(t('acc_pay_paid'),'',()=>{
+        const v=accAsk(t('acc_pay_prompt_paid'),12); if(!v) return; const [d,...rest]=v.split(/\s+/); const ref=rest.join(' ');
+        if(!/^\d{4}-\d{2}-\d{2}$/.test(d) || ref.length<4){ toast(t('acc_pay_prompt_paid')); return; }
+        accAct('mark_payment_run_paid',{p_run:r.id,p_paid_on:d,p_bank_ref:ref});
+      });
+      mk(t('acc_pay_void'),'danger',()=>{ const n=accAsk(t('acc_prompt_reason'),5); if(n) accAct('void_payment_run',{p_run:r.id,p_reason:n}); });
+      row.appendChild(btns);
+    }
+    list.appendChild(row);
+  });
+  w.appendChild(list);
+  w.appendChild(el(`<h2 class="sec" style="margin-top:16px;">${esc(t('acc_cod_title'))}</h2>`));
+  const cl=el('<div class="list"></div>');
+  if(!(S.acc.cod||[]).length) cl.appendChild(el(`<div class="hint">${esc(t('acc_cod_none'))}</div>`));
+  (S.acc.cod||[]).forEach(r=>{ cl.appendChild(el(`<div class="list-row" style="cursor:default;"><div class="lr-main" style="min-width:0;"><div class="lr-title">${esc(r.day)} · ${esc(r.branch_code)} · RM ${Number(r.cash_paid||0).toFixed(2)}</div><div class="lr-sub" style="white-space:normal;">${r.receipts}${esc(t('recv_lines_suffix'))} · ${esc(r.detail||'')}</div></div></div>`)); });
+  w.appendChild(cl);
+  return w;
 }
 
 function accExceptionsView(){
@@ -5170,6 +5223,11 @@ function receiveView(){
     const amt = el(`<label class="field"><span class="fl">${esc(t('recv_amount'))}</span><input type="number" inputmode="decimal" step="0.01" value="${esc(draft.amount||'')}"></label>`);
     amt.querySelector('input').onchange = async (ev)=>{ try{ await S.db.doc('receipts/'+draft.id).update({amount: ev.target.value.trim()}); }catch(err){ toast(dbErrMsg(err)); } };
     card.appendChild(amt);
+    // COD: cash handed to the driver from the till, right now. Accounting settles it from the outlet cash
+    // account and checks it against that day's POS cash-out; it never enters a bank payment run.
+    const cod = el(`<label class="field"><span class="fl">${esc(t('recv_paid_cash'))}</span><input type="number" inputmode="decimal" step="0.01" min="0" value="${esc(draft.paidCash||'')}"></label>`);
+    cod.querySelector('input').onchange = async (ev)=>{ try{ await S.db.doc('receipts/'+draft.id).update({paidCash: ev.target.value.trim()}); }catch(err){ toast(dbErrMsg(err)); } };
+    card.appendChild(cod);
     const note = el(`<label class="field"><span class="fl">${esc(t('recv_note'))}</span><input type="text" value="${esc(draft.note||'')}"></label>`);
     note.querySelector('input').onchange = async (ev)=>{ try{ await S.db.doc('receipts/'+draft.id).update({note: ev.target.value.trim()}); }catch(err){ toast(dbErrMsg(err)); } };
     card.appendChild(note);
