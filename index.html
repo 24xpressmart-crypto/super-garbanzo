@@ -496,7 +496,7 @@ const I18N = {
     guide_title:'功能图解', guide_intro:'每项功能一张卡：谁用、做什么、几步完成。选下面的角色只看自己要用的。', guide_count:'项功能', guide_open:'打开这个功能', guide_web:'📄 打开网页版图文手册（含真实截图）',
     field_pin_verify:'邀请码（向店经理或 HQ 索取）', ph_pin_verify:'例如 AB3K7Q2M', err_pin_verify:'请输入邀请码', err_pin_verify_failed:'邀请码不正确或已过期，请向店经理 / HQ 重新索取', btn_invite_make:'生成邀请码（首次登录用，只显示一次）', btn_invite_show:'重新生成邀请码', invite_msg_prefix:'员工：', invite_code_label:'邀请码', invite_msg_suffix:'7 天内有效，只显示这一次，请立即发给员工本人。员工首次登录时在「邀请码」栏输入。',
     field_cover_branches:'支援分店（逗号分隔，如 BR07, BR09）', field_runner:'外勤跑店员', opt_yes:'是', opt_no:'否', cover_badge:'支援',
-    runner_title:'外勤路线', tile_runner:'外勤路线', btn_visit:'到店登记', btn_bankin:'银行存款', runner_stops:'到店记录', runner_bankins:'存款记录', runner_collected:'今日收款', runner_banked:'已存入银行', runner_unbanked:'未存入', runner_today:'今天',
+    runner_title:'外勤路线', tile_runner:'外勤路线', tile_exceptions:'每日异常', exc_title:'每日异常', exc_hint:'每天早上 8 点自动标出昨天的异常。店经理 5 天内填原因，HR 确认；逾期不填按缺勤计。', exc_filter_open:'待处理', exc_filter_all:'全部（60 天）', exc_none:'没有异常', exc_status_open:'待经理填原因', exc_status_explained:'待 HR 确认', exc_status_confirmed:'已确认', exc_status_expired:'逾期・按缺勤', exc_kind_no_out:'缺下班卡', exc_kind_no_in:'缺上班卡', exc_kind_late:'迟到', exc_kind_over_16h:'超过 16 小时', exc_kind_no_schedule:'无排班上班', exc_kind_absent:'排班未到', exc_kind_leave_pending:'请假待批超 2 天', exc_kind_runner_missed:'外勤未到店', exc_due:'期限', exc_reason:'原因', exc_actual_time:'实际打卡时间（可选，确认后会补一条打卡）', exc_returned:'HR 退回', btn_explain:'提交原因', btn_confirm:'确认', btn_return:'退回', exc_return_note:'退回原因（可留空）', btn_run_yesterday:'重新生成昨天', toast_exc_saved:'已提交', exc_explained_by:'填写人', btn_visit:'到店登记', btn_bankin:'银行存款', runner_stops:'到店记录', runner_bankins:'存款记录', runner_collected:'今日收款', runner_banked:'已存入银行', runner_unbanked:'未存入', runner_today:'今天',
     field_docs:'收集文件', field_supplies:'配送物资', ph_supplies:'例如：饮料 5 箱、收据本', field_cash_collected:'收取现金 (RM)', field_amount:'存款金额 (RM)', field_bank:'银行', field_ref:'存款单号 / 参考号', runner_slip_hint:'必须拍存款单（bank-in slip）照片。', runner_need_slip:'请先拍存款单照片',
     sheet_visit:'到店登记', sheet_bankin:'银行存款', toast_visit_saved:'已登记到店', toast_bankin_saved:'存款已记录', notif_bankin:'银行存款', notif_unbanked:'现金未存入银行', runner_none:'今天还没有到店记录', runner_no_runner:'尚未设定外勤员工：在员工资料里把「外勤跑店员」设为「是」', export_runner:'外勤到店记录', export_bankins:'银行存款记录',
     btn_push_on:'开启手机推送通知', btn_push_off:'关闭手机推送', btn_push_test:'发送测试通知', push_on_hint:'已开启：App 关闭也会收到新排班、审批结果、公告、温度报警、SOS。', push_off_hint:'开启后，就算 App 关闭，手机也会收到新排班、审批结果、公告和紧急通知。', push_unsupported:'此浏览器不支持手机推送', push_ios_hint:'iPhone 请先在 Safari 按「分享」→「添加到主屏幕」，再从主屏幕打开 App 开启推送。', push_failed:'开启推送失败', toast_push_on:'手机推送已开启', toast_push_off:'手机推送已关闭', push_test_sent:'测试通知已发送',
@@ -735,7 +735,7 @@ const I18N = {
     guide_title:'Function guide', guide_intro:'One card per function: who uses it, what it is for, and the steps. Pick a role below to see only what you need.', guide_count:'functions', guide_open:'Open this function', guide_web:'📄 Open the illustrated web guide (with real screenshots)',
     field_pin_verify:'Invite code (ask your manager or HQ)', ph_pin_verify:'e.g. AB3K7Q2M', err_pin_verify:'Enter the invite code', err_pin_verify_failed:'Invite code wrong or expired, ask your manager / HQ for a new one', btn_invite_make:'Generate invite code (first login, shown once)', btn_invite_show:'Regenerate invite code', invite_msg_prefix:'Staff: ', invite_code_label:'Invite code', invite_msg_suffix:'Valid 7 days and shown only once; send it to the staff member now. They enter it in the Invite code field on first login.',
     field_cover_branches:'Cover stores (comma separated, e.g. BR07, BR09)', field_runner:'Runner (store visits)', opt_yes:'Yes', opt_no:'No', cover_badge:'Cover',
-    runner_title:'Runner route', tile_runner:'Runner route', btn_visit:'Log store visit', btn_bankin:'Bank-in', runner_stops:'Store visits', runner_bankins:'Bank-in records', runner_collected:'Cash collected today', runner_banked:'Banked in', runner_unbanked:'Not banked yet', runner_today:'Today',
+    runner_title:'Runner route', tile_runner:'Runner route', tile_exceptions:'Daily exceptions', exc_title:'Daily exceptions', exc_hint:'Flagged automatically at 08:00 for the previous day. The store manager explains within 5 days, HR confirms; unexplained flags expire and count as absent.', exc_filter_open:'Open', exc_filter_all:'All (60 days)', exc_none:'No exceptions', exc_status_open:'Manager to explain', exc_status_explained:'HR to confirm', exc_status_confirmed:'Confirmed', exc_status_expired:'Expired · absent', exc_kind_no_out:'No clock-out', exc_kind_no_in:'No clock-in', exc_kind_late:'Late', exc_kind_over_16h:'Over 16 hours', exc_kind_no_schedule:'Worked, not rostered', exc_kind_absent:'Rostered, no punch', exc_kind_leave_pending:'Leave pending > 2 days', exc_kind_runner_missed:'Runner visit missed', exc_due:'Due', exc_reason:'Reason', exc_actual_time:'Actual punch time (optional; a manual punch is written on confirm)', exc_returned:'Returned by HR', btn_explain:'Submit reason', btn_confirm:'Confirm', btn_return:'Return', exc_return_note:'Note for the manager (optional)', btn_run_yesterday:'Regenerate yesterday', toast_exc_saved:'Submitted', exc_explained_by:'Explained by', btn_visit:'Log store visit', btn_bankin:'Bank-in', runner_stops:'Store visits', runner_bankins:'Bank-in records', runner_collected:'Cash collected today', runner_banked:'Banked in', runner_unbanked:'Not banked yet', runner_today:'Today',
     field_docs:'Documents collected', field_supplies:'Supplies delivered', ph_supplies:'e.g. 5 cartons drinks, receipt books', field_cash_collected:'Cash collected (RM)', field_amount:'Amount banked (RM)', field_bank:'Bank', field_ref:'Bank-in slip / reference no.', runner_slip_hint:'A photo of the bank-in slip is required.', runner_need_slip:'Take a photo of the bank-in slip first',
     sheet_visit:'Store visit', sheet_bankin:'Bank-in', toast_visit_saved:'Visit logged', toast_bankin_saved:'Bank-in recorded', notif_bankin:'Bank-in', notif_unbanked:'Cash not banked in', runner_none:'No store visits today yet', runner_no_runner:'No runner set yet: set "Runner" to Yes in the staff record', export_runner:'Runner store visits', export_bankins:'Bank-in records',
     btn_push_on:'Enable phone push notifications', btn_push_off:'Disable push notifications', btn_push_test:'Send test notification', push_on_hint:'On: you get new shifts, approvals, memos, temperature alerts and SOS even when the app is closed.', push_off_hint:'When on, your phone receives new shifts, approvals, memos and emergencies even with the app closed.', push_unsupported:'This browser does not support push notifications', push_ios_hint:'iPhone: in Safari tap Share → Add to Home Screen, then open the app from the home screen to enable push.', push_failed:'Could not enable push', toast_push_on:'Push notifications on', toast_push_off:'Push notifications off', push_test_sent:'Test notification sent',
@@ -974,7 +974,7 @@ const I18N = {
     guide_title:'Panduan fungsi', guide_intro:'Satu kad setiap fungsi: siapa guna, untuk apa, dan langkahnya. Pilih peranan di bawah untuk lihat yang anda perlukan sahaja.', guide_count:'fungsi', guide_open:'Buka fungsi ini', guide_web:'📄 Buka panduan web bergambar (dengan tangkapan skrin sebenar)',
     field_pin_verify:'Kod jemputan (minta daripada pengurus atau HQ)', ph_pin_verify:'cth. AB3K7Q2M', err_pin_verify:'Masukkan kod jemputan', err_pin_verify_failed:'Kod jemputan salah atau tamat tempoh, minta yang baharu daripada pengurus / HQ', btn_invite_make:'Jana kod jemputan (log masuk pertama, dipapar sekali)', btn_invite_show:'Jana semula kod jemputan', invite_msg_prefix:'Staf: ', invite_code_label:'Kod jemputan', invite_msg_suffix:'Sah 7 hari dan dipapar sekali sahaja; hantar kepada staf sekarang. Mereka masukkan dalam ruangan Kod jemputan semasa log masuk pertama.',
     field_cover_branches:'Kedai sokongan (asingkan dengan koma, cth BR07, BR09)', field_runner:'Runner (lawatan kedai)', opt_yes:'Ya', opt_no:'Tidak', cover_badge:'Sokongan',
-    runner_title:'Laluan runner', tile_runner:'Laluan runner', btn_visit:'Rekod lawatan kedai', btn_bankin:'Bank-in', runner_stops:'Lawatan kedai', runner_bankins:'Rekod bank-in', runner_collected:'Tunai dikutip hari ini', runner_banked:'Sudah bank-in', runner_unbanked:'Belum bank-in', runner_today:'Hari ini',
+    runner_title:'Laluan runner', tile_runner:'Laluan runner', tile_exceptions:'Pengecualian harian', exc_title:'Pengecualian harian', exc_hint:'Ditanda automatik jam 08:00 untuk hari sebelumnya. Pengurus kedai beri sebab dalam 5 hari, HR sahkan; yang tidak dijelaskan luput dan dikira tidak hadir.', exc_filter_open:'Belum selesai', exc_filter_all:'Semua (60 hari)', exc_none:'Tiada pengecualian', exc_status_open:'Pengurus perlu beri sebab', exc_status_explained:'HR perlu sahkan', exc_status_confirmed:'Disahkan', exc_status_expired:'Luput · tidak hadir', exc_kind_no_out:'Tiada daftar keluar', exc_kind_no_in:'Tiada daftar masuk', exc_kind_late:'Lewat', exc_kind_over_16h:'Lebih 16 jam', exc_kind_no_schedule:'Bekerja tanpa jadual', exc_kind_absent:'Dijadual, tiada daftar', exc_kind_leave_pending:'Cuti tertunggak > 2 hari', exc_kind_runner_missed:'Runner tidak sampai', exc_due:'Tarikh akhir', exc_reason:'Sebab', exc_actual_time:'Masa daftar sebenar (pilihan; rekod manual ditulis selepas disahkan)', exc_returned:'Dikembalikan oleh HR', btn_explain:'Hantar sebab', btn_confirm:'Sahkan', btn_return:'Kembalikan', exc_return_note:'Nota untuk pengurus (pilihan)', btn_run_yesterday:'Jana semula semalam', toast_exc_saved:'Dihantar', exc_explained_by:'Diisi oleh', btn_visit:'Rekod lawatan kedai', btn_bankin:'Bank-in', runner_stops:'Lawatan kedai', runner_bankins:'Rekod bank-in', runner_collected:'Tunai dikutip hari ini', runner_banked:'Sudah bank-in', runner_unbanked:'Belum bank-in', runner_today:'Hari ini',
     field_docs:'Dokumen dikutip', field_supplies:'Bekalan dihantar', ph_supplies:'cth. 5 kotak minuman, buku resit', field_cash_collected:'Tunai dikutip (RM)', field_amount:'Jumlah bank-in (RM)', field_bank:'Bank', field_ref:'Slip bank-in / no. rujukan', runner_slip_hint:'Gambar slip bank-in wajib.', runner_need_slip:'Ambil gambar slip bank-in dahulu',
     sheet_visit:'Lawatan kedai', sheet_bankin:'Bank-in', toast_visit_saved:'Lawatan direkod', toast_bankin_saved:'Bank-in direkod', notif_bankin:'Bank-in', notif_unbanked:'Tunai belum bank-in', runner_none:'Belum ada lawatan kedai hari ini', runner_no_runner:'Belum ada runner: tetapkan "Runner" kepada Ya dalam rekod staf', export_runner:'Lawatan kedai runner', export_bankins:'Rekod bank-in',
     btn_push_on:'Hidupkan pemberitahuan tolak telefon', btn_push_off:'Matikan pemberitahuan tolak', btn_push_test:'Hantar pemberitahuan ujian', push_on_hint:'Hidup: anda terima syif baharu, kelulusan, pengumuman, amaran suhu dan SOS walaupun app ditutup.', push_off_hint:'Apabila dihidupkan, telefon menerima syif baharu, kelulusan, pengumuman dan kecemasan walaupun app ditutup.', push_unsupported:'Pelayar ini tidak menyokong pemberitahuan tolak', push_ios_hint:'iPhone: dalam Safari tekan Kongsi → Tambah ke Skrin Utama, kemudian buka app dari skrin utama untuk hidupkan.', push_failed:'Gagal hidupkan pemberitahuan tolak', toast_push_on:'Pemberitahuan tolak dihidupkan', toast_push_off:'Pemberitahuan tolak dimatikan', push_test_sent:'Pemberitahuan ujian dihantar',
@@ -1200,7 +1200,7 @@ const S = {
   lang: (function(){ try{ return localStorage.getItem('bgc_lang')||'zh'; }catch(e){ return 'zh'; } })(),
   employeeId: (function(){ try{ return localStorage.getItem('bgc_employee_id') || null; }catch(e){ return null; } })(),
   employees:[], devices:[], sites:[], products:[], inventory:[],
-  restockLogs:[], attendance:[], inspections:[], faults:[], schedules:[], leaveRequests:[],
+  restockLogs:[], attendance:[], inspections:[], faults:[], schedules:[], leaveRequests:[], exceptions:[],
   settings:{businessName:'24 Xpress', lowStockDefault:5, geofenceRadius:300, lateGraceMin:10, nightStart:'23:00', nightEnd:'07:00', safetyIntervalMin:120, emergencyPhone:'', slaHighHours:4, slaMediumHours:24, slaLowHours:72, shiftTemplates:'早班 Morning=09:00-18:00\n中班 Afternoon=14:00-23:00\n夜班 Night=23:00-07:00'},
   stockDeviceFilter:'all', equipTab:'devices', faultFilter:'open', historyRange:'today', attnScope:'mine',
   stockSection:'snacks', kegFilter:'tapped', beerZoneFilter:'all', pickerBranch:null, staffBranchFilter:'all', lastGeoMsg:null, clockSub:'records', reportMonth:(function(){const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');})(), reportBranch:'all', reportData:null, reportLoading:false,
@@ -1584,6 +1584,7 @@ function subscribeAll(){
   sub('memos','memos',{order:'createdAt',limit:200});
   sub('memoReads','memoReads',{limit:500}); // one doc per employee: {readIds:{memoId:readAt}}
   sub('punchRequests','punchRequests',{order:'createdAt',limit:300,sinceDays:120});
+  sub('exceptions','exceptions',{order:'date',limit:800,sinceDays:60,sinceField:'date',sinceDate:true});
   sub('swapRequests','swapRequests',{order:'createdAt',limit:300,sinceDays:120});
   sub('taskTemplates','taskTemplates',{limit:200});
   sub('taskRuns','taskRuns',{order:'date',limit:800,sinceDays:30,sinceField:'date',sinceDate:true});
@@ -1633,7 +1634,7 @@ function renderApp(){
     view.innerHTML = screenMsg(ICONS.cloudOff,t('connecting_title'),t('connecting_body')); return;
   }
   view.innerHTML='';
-  const map={home:homeView, clock:clockView, tasks:tasksView, stock:stockView, order:orderView, receive:receiveView, acc:accView, equip:equipView, me:meView, memos:memosView, audit:auditView, runner:runnerView, guide:guideView};
+  const map={home:homeView, clock:clockView, tasks:tasksView, stock:stockView, order:orderView, receive:receiveView, acc:accView, equip:equipView, me:meView, memos:memosView, audit:auditView, runner:runnerView, exceptions:exceptionsView, guide:guideView};
   view.appendChild((map[S.tab]||homeView)());
   view.querySelectorAll('.list-row, .id-pick-row').forEach(r=>{ if(r.onclick && !r.hasAttribute('tabindex')){ r.setAttribute('tabindex','0'); r.setAttribute('role','button'); } });
 }
@@ -5685,6 +5686,7 @@ function funcGrid(clockedIn){
     tiles.push({k:'approvals', icon:'users', cls:'c-purple', label:t('tile_approvals'), count:pendingCount, go:()=>{ location.hash='#me'; setTimeout(()=>{ const h=[...document.querySelectorAll('#view h2')].find(x=>x.textContent.includes(t('admin_pending_prefix').replace(/[（(].*$/,''))); if(h) h.scrollIntoView({behavior:'smooth'}); },300); }});
     tiles.push({k:'schedule', icon:'calendar', cls:'c-blue', label:t('tile_schedule'), go:()=>{ location.hash='#me'; setTimeout(()=>{ const h=[...document.querySelectorAll('#view h2')].find(x=>x.textContent.includes(t('admin_schedule_mgmt'))); if(h) h.scrollIntoView({behavior:'smooth'}); },300); }});
     tiles.push({k:'report', icon:'chart', cls:'c-green', label:t('tile_report'), go:()=>{ S.clockSub='report'; location.hash='#clock'; }});
+    tiles.push({k:'exceptions', icon:'alert', cls:'c-red', label:t('tile_exceptions'), count:excOpenFor(currentEmployee()).length, go:()=>{ location.hash='#exceptions'; }});
     tiles.push({k:'staff', icon:'users', cls:'c-blue', label:t('tile_staff'), go:()=>{ location.hash='#me'; setTimeout(()=>{ const h=[...document.querySelectorAll('#view h2')].find(x=>x.textContent.includes(t('admin_staff_mgmt'))); if(h) h.scrollIntoView({behavior:'smooth'}); },300); }});
   }
   if(isAdmin()){
@@ -5702,7 +5704,7 @@ function funcGrid(clockedIn){
     {id:'goods',  keys:['order','receive','stock','beer','equip']},
     {id:'wrong',  keys:['fault','incident','sos']},
     {id:'mine',   keys:['leave','punch','swap','memos','help']},
-    {id:'manage', keys:['acc','approvals','schedule','report','staff','audit','overview','runner','settings']},
+    {id:'manage', keys:['acc','approvals','exceptions','schedule','report','staff','audit','overview','runner','settings']},
   ];
   const placed = new Set(GROUPS.flatMap(g=>g.keys));
   const byKey = Object.fromEntries(tiles.map(tl=>[tl.k, tl]));
@@ -6061,6 +6063,72 @@ function coverList(e){ return String((e&&e.coverBranches)||'').split(/[,，;\s]+
 function coversBranch(e,b){ return !!b && coverList(e).includes(String(b).toUpperCase()); }
 function orderedBranches(list){ const e=currentEmployee(); const first=[myBranch(), ...coverList(e)].filter(Boolean); const rest=list.filter(b=>!first.includes(b)); return [...first.filter(b=>list.includes(b)), ...rest]; }
 function isRunner(e){ e=e||currentEmployee(); return !!(e && (e.runner===true || e.runner==='yes')); }
+
+/* ============================ DAILY EXCEPTIONS ============================
+   Rows are written only by the database (generate_daily_exceptions at 08:00, explain_exception,
+   review_exception). Manager: explain within 5 days. HR/admin: confirm or return. */
+function excKindLabel(k){ const key='exc_kind_'+k; const v=t(key); return v===key?k:v; }
+function excStatusLabel(st){ const key='exc_status_'+st; const v=t(key); return v===key?st:v; }
+function excOpenFor(e){
+  if(!e || !canManageStaff()) return [];
+  return S.exceptions.filter(x=> isAdmin() ? (x.status==='open'||x.status==='explained') : x.status==='open');
+}
+function exceptionsView(){
+  const c=el('<div></div>');
+  c.appendChild(secH('alert','c-red',t('exc_title')));
+  c.appendChild(el(`<p class="hint">${esc(t('exc_hint'))}</p>`));
+  const chips=el('<div class="chiprow"></div>');
+  [['open',t('exc_filter_open')],['all',t('exc_filter_all')]].forEach(([id,l])=>{
+    const ch=el(`<button class="chip ${(S.excFilter||'open')===id?'on':''}">${esc(l)}</button>`);
+    ch.onclick=()=>{ S.excFilter=id; renderApp(); }; chips.appendChild(ch);
+  });
+  if(isAdmin()){
+    const run=el(`<button class="chip">${esc(t('btn_run_yesterday'))}</button>`);
+    run.onclick=async()=>{ run.disabled=true; try{ const r=await rpc('generate_daily_exceptions',{}); toast((r&&r.day||'')+' · '+(r&&r.found||0)); }catch(e){ toast(dbErrMsg(e)); } run.disabled=false; };
+    chips.appendChild(run);
+  }
+  c.appendChild(chips);
+  const filt=S.excFilter||'open';
+  const rows=S.exceptions.filter(x=> filt==='all' ? true : (x.status==='open'||x.status==='explained'))
+    .sort((a,b)=> (a.status==='open'?0:a.status==='explained'?1:2)-(b.status==='open'?0:b.status==='explained'?1:2) || (a.date<b.date?1:a.date>b.date?-1:0) || (a.employeeName||'').localeCompare(b.employeeName||'','zh'));
+  const list=el('<div class="list"></div>');
+  if(rows.length===0) list.appendChild(el(`<div class="empty">${ICONS.check}<div>${esc(t('exc_none'))}</div></div>`));
+  rows.forEach(x=>{
+    const cls = x.status==='open'?'critical':x.status==='explained'?'warn':x.status==='confirmed'?'ok':'n';
+    const row=el(`<div class="list-row" style="flex-wrap:wrap;"><div class="lr-main"><div class="lr-title">${esc(x.employeeName||x.employeeId)} <span class="num" style="font-weight:500; font-size:11px; color:var(--ink-faint);">${esc(x.branch||'')}</span></div><div class="lr-sub">${esc(x.date)} · ${esc(excKindLabel(x.kind))}${x.detail?' · '+esc(x.detail):''}</div>${x.reason?'<div class="lr-sub">'+esc(t('exc_reason'))+': '+esc(x.reason)+'</div>':''}${x.rejectNote?'<div class="lr-sub" style="color:var(--red);">'+esc(t('exc_returned'))+': '+esc(x.rejectNote)+'</div>':''}</div><span class="pill ${cls}">${esc(excStatusLabel(x.status))}</span></div>`);
+    row.onclick=()=>openExceptionSheet(x);
+    list.appendChild(row);
+  });
+  c.appendChild(list);
+  return c;
+}
+function openExceptionSheet(x){
+  const body=el('<div></div>');
+  body.appendChild(el(`<div class="hint">${esc(x.date)} · ${esc(x.branch||'')} · ${esc(excKindLabel(x.kind))}${x.detail?' · '+esc(x.detail):''}<br>${esc(t('exc_due'))}: ${esc(x.dueDate||'')} · ${esc(excStatusLabel(x.status))}</div>`));
+  const canExplain = (x.status==='open'||x.status==='explained') && canManageStaff();
+  const needsTime = x.kind==='no_out'||x.kind==='no_in';
+  const f=[{key:'reason', label:t('exc_reason'), type:'textarea'}];
+  if(needsTime){ f.push({key:'date', label:t('field_date'), type:'date', default:x.actualAt?todayStr(new Date(x.actualAt)):x.date}); f.push({key:'time', label:t('exc_actual_time'), type:'time', default:x.actualAt?fmtTime(x.actualAt):''}); }
+  if(canExplain){
+    const form=el('<div>'+fieldsHTML(f,{reason:x.reason||''})+'</div>'); body.appendChild(form);
+    const b=el(`<button class="btn primary block" style="margin-top:8px;">${esc(t('btn_explain'))}</button>`);
+    b.onclick=async()=>{ const v=readFields(form,f); if(!v.reason||!v.reason.trim()){ toast(t('err_fill_all')); return; }
+      const at = needsTime && v.date && v.time ? localIso(v.date, v.time) : null;
+      b.disabled=true; try{ await rpc('explain_exception',{exc_id:x.id, reason:v.reason.trim(), actual_at:at}); toast(t('toast_exc_saved')); closeSheet(); }catch(e){ toast(dbErrMsg(e)); b.disabled=false; } };
+    body.appendChild(b);
+  } else if(x.reason){ body.appendChild(el(`<p class="hint">${esc(t('exc_reason'))}: ${esc(x.reason)}${x.actualAt?' · '+esc(fmtDateTime(x.actualAt)):''}</p>`)); }
+  if(isAdmin() && (x.status==='explained'||x.status==='open'||x.status==='expired')){
+    const nf=[{key:'note', label:t('exc_return_note'), type:'textarea'}];
+    const nform=el('<div style="margin-top:14px;">'+fieldsHTML(nf)+'</div>'); body.appendChild(nform);
+    const row=el('<div class="row" style="gap:8px; margin-top:8px;"></div>');
+    const ok=el(`<button class="btn primary" style="flex:1;">${esc(t('btn_confirm'))}</button>`);
+    const back=el(`<button class="btn" style="flex:1;">${esc(t('btn_return'))}</button>`);
+    ok.onclick=async()=>{ ok.disabled=back.disabled=true; try{ await rpc('review_exception',{exc_id:x.id, approve:true, note:readFields(nform,nf).note||null}); toast(t('toast_exc_saved')); closeSheet(); }catch(e){ toast(dbErrMsg(e)); ok.disabled=back.disabled=false; } };
+    back.onclick=async()=>{ ok.disabled=back.disabled=true; try{ await rpc('review_exception',{exc_id:x.id, approve:false, note:readFields(nform,nf).note||null}); toast(t('toast_exc_saved')); closeSheet(); }catch(e){ toast(dbErrMsg(e)); ok.disabled=back.disabled=false; } };
+    row.appendChild(ok); row.appendChild(back); body.appendChild(row);
+  }
+  openSheet(x.employeeName||t('exc_title'), body);
+}
 function runnersList(){ return S.employees.filter(e=>e.active!==false && isRunner(e)); }
 function sameDay(iso, date){ return !!iso && todayStr(new Date(iso))===date; }
 function runnerVisitsFor(empId, date){ return S.runnerVisits.filter(v=>(!empId||v.employeeId===empId) && sameDay(v.createdAt, date)); }
