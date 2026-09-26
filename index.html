@@ -363,6 +363,45 @@
   .switch .knob{position:absolute; top:2px; left:2px; width:16px; height:16px; border-radius:50%; background:var(--ink-faint); transition:.15s;}
   .switch input:checked ~ .track{background:var(--ok-soft); border-color:var(--ok);}
   .switch input:checked ~ .track ~ .knob{transform:translateX(16px); background:var(--ok);}
+
+  /* ---------- desktop (2026-09-26): the phone column becomes a full window ----------
+     Sidebar instead of the bottom tab bar, wider tile grids, pop-ups as centred dialogs.
+     Phones and tablets below 1024px are untouched. */
+  @media (min-width:1024px){
+    :root{ --shell-max:1240px; }
+    body{padding:20px 24px;}
+    #shell{
+      display:grid; grid-template-columns:220px minmax(0,1fr); grid-template-rows:auto 1fr;
+      min-height:calc(100vh - 40px); overflow:visible;
+    }
+    #shell.nonav{grid-template-columns:minmax(0,1fr);}
+    #topbar{grid-column:1 / -1; grid-row:1; padding:16px 28px 14px; border-bottom:1px solid var(--border); border-radius:26px 26px 0 0;}
+    #topbar .brand .name{font-size:18px;}
+    #topbar .who .meta .n{max-width:180px;}
+    #nav{
+      grid-column:1; grid-row:2; position:sticky; top:74px; align-self:start;
+      flex-direction:column; gap:4px; padding:18px 12px;
+      background:transparent; border-top:none;
+    }
+    #shell:not(.nonav) #nav{border-right:1px solid var(--border); min-height:calc(100vh - 150px);}
+    #nav button{flex:none; flex-direction:row; justify-content:flex-start; gap:12px; padding:11px 14px; border-radius:12px; text-align:left;}
+    #nav button .lb{font-size:14px;}
+    #nav button:hover{background:var(--surface-2);}
+    #nav button.on{background:var(--accent-soft);}
+    #view{grid-column:2; grid-row:2; padding:24px 36px 56px; overflow:visible; min-width:0;}
+    #shell.nonav #view{grid-column:1;}
+    .grid2{grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px;}
+    .fgrid{grid-template-columns:repeat(6,minmax(0,1fr)); gap:18px 12px;}
+    #modalWrap .sheet{
+      top:50%; bottom:auto; transform:translate(-50%,-50%);
+      max-width:620px; max-height:86vh; border-radius:20px;
+      padding:22px 24px 24px;
+    }
+    #toast{bottom:40px;}
+  }
+  @media (min-width:1440px){
+    .fgrid{grid-template-columns:repeat(8,minmax(0,1fr));}
+  }
 </style>
 </head>
 <body>
@@ -1666,8 +1705,9 @@ function renderTopbar(){
 }
 function renderNav(){
   const nav=$('nav'); nav.innerHTML='';
-  if(S.dbState!=='ready' || !S.token || !currentEmployee()){ nav.style.display='none'; return; }
-  nav.style.display='flex';
+  const shell=$('shell');
+  if(S.dbState!=='ready' || !S.token || !currentEmployee()){ nav.style.display='none'; if(shell) shell.classList.add('nonav'); return; }
+  nav.style.display='flex'; if(shell) shell.classList.remove('nonav');
   TABS.forEach(tb=>{
     const b=el(`<button class="${S.tab===tb.id?'on':''}">${tb.icon}<span class="lb">${esc(t(tb.label))}</span></button>`);
     b.onclick=()=>{ location.hash='#'+tb.id; };
