@@ -1368,6 +1368,7 @@ function stockStatus(qty, threshold){
    against, backed by one generic Postgres table: store(collection, id, data jsonb).
    Ordering/limiting is done client-side after fetch (collections here are small),
    which sidesteps any uncertainty around ordering by jsonb fields server-side. */
+const heavyCache = new Map(); // 'collection/id' -> {field:value} fetched by fullRecord (shared by every db instance)
 function makeSupabaseDb(sb){
   const collListeners = new Map(); // collection -> Set of {order,dir,limit,next,err}
   const docListeners = new Map();  // path -> Set of {next,err}
@@ -1395,9 +1396,37 @@ function makeSupabaseDb(sb){
     });
     return list;
   }
-  function buildQuery(collection, opts){
+  /* Egress (Supabase free plan, 5 GB/month): live lists of these collections leave the base64
+     photos out; a record's photo is fetched when that record is opened (fullRecord). Rows come
+     back with the listed keys only, plus `_lite:true`, and each heavy field set to `true` when it
+     has a value. A key missing from `keys` silently disappears from list views -- when a new
+     field is written to one of these collections, add it here (fullRecord warns in the console).
+     `full`: rows matching it are always loaded whole (receipt drafts are edited photo by photo). */
+  const LITE = {
+    attendance: {heavy:['photo'], keys:['type','employeeId','employeeName','branch','cover','createdAt','clientCreatedAt',
+      'note','status','flags','geo','lat','lng','accuracy','distanceM','radiusM','geoFlag','geoErrorReason','nearestDeviceId',
+      'manual','approvedAt','approvedBy','effectiveAt','requestId','reason','exceptionId','actualAt']},
+    bankIns: {heavy:['slip'], keys:['employeeId','employeeName','amount','bank','ref','note','createdAt','clientCreatedAt']},
+    runnerVisits: {heavy:['photo'], keys:['employeeId','employeeName','branch','docs','supplies','cash','note','createdAt',
+      'clientCreatedAt','geo','distanceM','geoFlag']},
+    receipts: {heavy:['photos'], full:{field:'status', value:'draft'}, keys:['branch','status','docKind','docNo','amount','paidCash',
+      'note','lines','supplierCode','supplierName','createdAt','createdBy','createdByName','eventAt','submittedAt','receivedBy',
+      'receivedByName','grnId','accStatus','accRef','accError','autocountNo']},
+  };
+  function liteSelect(cfg){
+    return ['id'].concat(cfg.keys.map(k=>k+':data->'+k), cfg.heavy.map(h=>h+'__has:data->>'+h+'::char')).join(',');
+  }
+  function fromLite(collection, cfg, r){
+    const data = {_lite:true};
+    cfg.keys.forEach(k=>{ if(r[k]!=null) data[k]=r[k]; });
+    const cached = heavyCache.get(collection+'/'+r.id);
+    // __has is the value's first character: null when absent, blank for "" (no photo taken)
+    cfg.heavy.forEach(h=>{ if(cached && h in cached) data[h]=cached[h]; else if(String(r[h+'__has']==null?'':r[h+'__has']).trim()) data[h]=true; });
+    return {id:r.id, data};
+  }
+  function buildQuery(collection, opts, select){
     opts=opts||{};
-    let q = sb.from('store').select('id,data').eq('collection', collection);
+    let q = sb.from('store').select(select||'id,data').eq('collection', collection);
     (opts.filters||[]).forEach(f=>{
       const col='data->>'+f.field;
       if(f.op==='>=') q=q.gte(col,f.value); else if(f.op==='<=') q=q.lte(col,f.value);
@@ -1407,24 +1436,48 @@ function makeSupabaseDb(sb){
     if(opts.order) q=q.order('data->>'+opts.order, {ascending: opts.dir!=='desc'});
     return q;
   }
-  async function fetchRows(collection, opts){
+  async function fetchRows(collection, opts, select){
     opts=opts||{};
     // PostgREST answers at most 1000 rows per request. A bigger (or unbounded) ask must page,
     // otherwise the list is silently cut -- the goods list is ~10,000 rows.
-    if(!opts.limit || opts.limit>1000) return fetchAll(collection, opts);
-    let q=buildQuery(collection, opts);
+    if(!opts.limit || opts.limit>1000) return fetchAll(collection, opts, select);
+    let q=buildQuery(collection, opts, select);
     q=q.limit(opts.limit);
     const {data, error} = await q;
     if(error) throw error;
     return data||[];
   }
+  // A live list: photo-free for the LITE collections, whole rows for everything else.
+  async function fetchList(collection, opts){
+    const cfg = LITE[collection];
+    if(!cfg) return fetchRows(collection, opts);
+    const lite = (await fetchRows(collection, opts, liteSelect(cfg))).map(r=>fromLite(collection, cfg, r));
+    if(!cfg.full) return lite;
+    const whole = await fetchRows(collection, Object.assign({}, opts, {limit:null,
+      filters:(opts.filters||[]).concat([{field:cfg.full.field, op:'==', value:cfg.full.value}])}));
+    const byId = new Map(whole.map(r=>[r.id, r]));
+    return lite.map(r=>byId.get(r.id)||r).concat(whole.filter(r=>!lite.some(x=>x.id===r.id)));
+  }
+  // The whole record behind a lite list row, for its detail view. Cached for the session.
+  async function fullRecord(collection, rec){
+    if(!rec || !rec._lite) return rec;
+    const {data, error} = await sb.from('store').select('id,data').eq('collection',collection).eq('id',rec.id).maybeSingle();
+    if(error) throw error;
+    if(!data) return rec;
+    const cfg = LITE[collection] || {heavy:[], keys:[]};
+    const heavy = {}; cfg.heavy.forEach(h=>{ heavy[h]=data.data[h]; });
+    heavyCache.set(collection+'/'+rec.id, heavy);
+    const missing = Object.keys(data.data).filter(k=>!cfg.keys.includes(k) && !cfg.heavy.includes(k));
+    if(missing.length) console.warn('LITE.'+collection+' is missing keys', missing);
+    return Object.assign({id:rec.id}, data.data);
+  }
   // Page through every matching row (PostgREST caps a single response at 1000).
   // The trailing order on id is a unique tie-breaker: without it Postgres may return rows in a
   // different order per request, so pages can skip or repeat rows. Display order comes from sortRows.
-  async function fetchAll(collection, opts){
+  async function fetchAll(collection, opts, select){
     const out=[]; let from=0; const page=1000;
     while(true){
-      const {data, error} = await buildQuery(collection, opts).order('id', {ascending:true}).range(from, from+page-1);
+      const {data, error} = await buildQuery(collection, opts, select).order('id', {ascending:true}).range(from, from+page-1);
       if(error) throw error;
       out.push(...(data||[]));
       if(!data || data.length<page) break;
@@ -1443,17 +1496,43 @@ function makeSupabaseDb(sb){
     channel = sb.channel('store-changes')
       .on('postgres_changes', {event:'*', schema:'public', table:'store'}, payload=>{
         const row = payload.new || payload.old;
-        if(row && row.collection) refreshCollection(row.collection);
+        if(row && row.collection) refreshSoon(row.collection);
       })
       .subscribe(status=>{ S.realtimeOk = (status==="SUBSCRIBED"); });
-    // Fallback: if realtime is not connected (blocked WebSockets), poll every 25s.
-    setInterval(()=>{ if(!S.realtimeOk){ [...collListeners.keys()].forEach(c=>refreshCollection(c)); } }, 25000);
+    // Fallback: if realtime is not connected (blocked WebSockets), poll every 25s -- only while
+    // the App is on screen; a phone in a pocket has nobody to show the list to.
+    setInterval(()=>{ if(!S.realtimeOk && document.visibilityState==='visible'){ [...collListeners.keys()].forEach(c=>refreshCollection(c)); } }, 25000);
   }
-  async function refreshCollection(collection){
+  // A burst of changes (a bulk import touches thousands of rows, one realtime event each)
+  // becomes one re-fetch per collection instead of one per event.
+  const soonTimers = new Map();
+  function refreshSoon(collection){
+    if(soonTimers.has(collection)) return;
+    soonTimers.set(collection, setTimeout(()=>{ soonTimers.delete(collection); refreshCollection(collection); }, 1200));
+  }
+  // At most one fetch per collection in flight; calls made meanwhile are folded into one more.
+  const inFlight = new Map(); // collection -> {again:boolean}
+  function refreshCollection(collection){
+    const cur = inFlight.get(collection);
+    if(cur){ cur.again = true; return; }
+    const st = {again:false}; inFlight.set(collection, st);
+    doRefresh(collection).finally(()=>{ inFlight.delete(collection); if(st.again) refreshCollection(collection); });
+  }
+  async function doRefresh(collection){
     const subs=[...(collListeners.get(collection)||[])];
+    if(!subs.length){
+      // Nobody lists this collection: never download all of it, just the watched documents.
+      const paths=[...docListeners.keys()].filter(p=>parsePath(p).collection===collection && docListeners.get(p).size);
+      for(const path of paths){
+        let snap;
+        try{ snap = await docRef(path).get(); }catch(e){ continue; }
+        (docListeners.get(path)||[]).forEach(s=>s.next(snap));
+      }
+      return;
+    }
     const lead=subs[0]||{};
     let rows;
-    try{ rows = await fetchRows(collection, {filters:lead.filters, order:lead.order, dir:lead.dir, limit:(subs.length===1?lead.limit:null)}); }
+    try{ rows = await fetchList(collection, {filters:lead.filters, order:lead.order, dir:lead.dir, limit:(subs.length===1?lead.limit:null)}); }
     catch(e){
       const err = {code:'unavailable', message:String((e&&e.message)||e)};
       (collListeners.get(collection)||[]).forEach(s=>s.err && s.err(err));
@@ -1544,7 +1623,7 @@ function makeSupabaseDb(sb){
     };
     return api;
   }
-  return { collection: collectionRef, doc: docRef,
+  return { collection: collectionRef, doc: docRef, fullRecord,
     rawFetch: (collection, filters, order, dir)=>fetchAll(collection, {filters, order, dir}) };
 }
 function makeBrowserDownloads(){
@@ -1599,17 +1678,33 @@ function tickClock(){
 function isoDaysAgo(n){ const d=new Date(); d.setDate(d.getDate()-n); return d.toISOString(); }
 function sub(colPath, key, opts){
   opts = opts||{};
-  let q = S.db.collection(colPath);
+  let q = (subDb||S.db).collection(colPath);
   if(opts.sinceDays){ const v=isoDaysAgo(opts.sinceDays); q = q.where(opts.sinceField||'createdAt','>=', opts.sinceDate?v.slice(0,10):v); }
   if(opts.order) q = q.orderBy(opts.order, opts.dir||'desc');
   if(opts.limit) q = q.limit(opts.limit);
   q.onSnapshot(snap=>{
     S[key] = snap.docs.map(d=>Object.assign({id:d.id}, d.data()));
     if(key==='employees') S.employeesLoaded=true;
+    if(key==='skus') S.skusLoaded=true;
     renderApp();
   }, err=>{ console.warn(colPath, err); });
 }
+/* The goods list (~10,000 rows with barcodes) and the suppliers are only needed on the order and
+   goods-in pages, so they load the first time one of those is opened, then stay live for the session. */
+function ensureCatalog(){
+  if(catalogAsked || !subDb) return;
+  catalogAsked=true;
+  sub('skus','skus',{limit:20000});     // pages through the whole goods list
+  sub('suppliers','suppliers',{limit:2000});
+}
+function catalogReady(){
+  ensureCatalog();
+  if(!S.skusLoaded) toast(t('acc_loading'));
+  return S.skusLoaded;
+}
+let subDb=null, catalogAsked=false;
 function subscribeAll(){
+  subDb=S.db; catalogAsked=false; S.skusLoaded=false;
   sub('employees','employees',{limit:500});
   sub('devices','devices',{limit:500});
   sub('sites','sites',{limit:200});
@@ -1642,9 +1737,7 @@ function subscribeAll(){
   sub('runnerVisits','runnerVisits',{order:'createdAt',limit:800,sinceDays:92});
   sub('bankIns','bankIns',{order:'createdAt',limit:400,sinceDays:92});
   sub('notifSeen','notifSeen',{limit:500});
-  sub('skus','skus',{limit:20000});     // pages through the whole goods list (~10,000 rows)
   sub('stockRequests','stockRequests',{order:'createdAt',limit:400,sinceDays:120});
-  sub('suppliers','suppliers',{limit:2000});
   sub('receipts','receipts',{order:'createdAt',limit:400,sinceDays:120});
   sub('beerProducts','beerProducts',{limit:200});
   sub('taps','taps',{limit:100});
@@ -1678,6 +1771,7 @@ function renderApp(){
   }
   view.innerHTML='';
   const map={home:homeView, clock:clockView, tasks:tasksView, stock:stockView, order:orderView, receive:receiveView, acc:accView, equip:equipView, me:meView, memos:memosView, audit:auditView, runner:runnerView, exceptions:exceptionsView, material:materialView, guide:guideView};
+  if(S.tab==='order' || S.tab==='receive') ensureCatalog();
   view.appendChild((map[S.tab]||homeView)());
   view.querySelectorAll('.list-row, .id-pick-row').forEach(r=>{ if(r.onclick && !r.hasAttribute('tabindex')){ r.setAttribute('tabindex','0'); r.setAttribute('role','button'); } });
 }
@@ -2452,9 +2546,18 @@ function openAttendanceDetail(a){
   }
   { const g = a.geo && a.geo.lat!=null ? a.geo : (a.lat!=null && a.lng!=null ? {lat:a.lat, lng:a.lng, accuracy:a.accuracy} : null);
     if(g) body.appendChild(el(`<p class="hint num">${Number(g.lat).toFixed(6)}, ${Number(g.lng).toFixed(6)}${g.accuracy!=null?' (±'+g.accuracy+'m)':''}</p>`)); }
-  if(a.photo) body.appendChild(el(`<img class="photow" src="${a.photo}">`));
-  else body.appendChild(el(`<p class="hint">${esc(t('no_photo_taken'))}</p>`));
+  body.appendChild(photoSlot('attendance', a, 'photo', p=> p ? [el(`<img class="photow" src="${p}">`)] : [el(`<p class="hint">${esc(t('no_photo_taken'))}</p>`)]));
   openSheet(a.employeeName||empName(a.employeeId), body);
+}
+/* Live lists carry no photos (LITE in the db adapter). A detail view shows the photo from the
+   whole record, fetched when the record is opened. toEls(value) -> elements to show. */
+function photoSlot(collection, rec, field, toEls){
+  const box=el('<div></div>');
+  const put=v=>{ box.innerHTML=''; toEls(v).forEach(x=>box.appendChild(x)); };
+  if(!rec || !rec._lite || rec[field]!==true){ put(rec && rec[field]!==true ? rec[field] : undefined); return box; }
+  box.appendChild(el(`<p class="hint">${esc(t('acc_loading'))}</p>`));
+  S.db.fullRecord(collection, rec).then(full=>put(full[field])).catch(()=>{ box.innerHTML=`<p class="hint">${esc(t('err_unavailable'))}</p>`; });
+  return box;
 }
 
 /* ============================ STOCK ============================ */
@@ -4918,6 +5021,7 @@ function orderView(){
 
 /* ---------- picking goods off the catalogue ---------- */
 function openSkuPicker(branch){
+  if(!catalogReady()) return;
   const body = el('<div></div>');
   const all = activeSkus(branch);
   if(all.length === 0){
@@ -5369,7 +5473,7 @@ function openReceiptDetail(r){
     <div class="lr-sub">${esc(r.receivedByName||r.createdByName||'')}</div>
     ${r.status==='submitted'?`<div style="margin-top:6px;">${receiptPill(r)}${r.accRef?` <span class="lr-sub">${esc(r.accRef)}</span>`:''}</div>`:''}
     ${r.accStatus==='exception'&&r.accError?`<div class="lr-sub" style="color:var(--danger,#b00); margin-top:4px;">${esc(r.accError)}</div>`:''}</div>`));
-  receiptPhotos(r).forEach(p=> body.appendChild(el(`<img class="photow" src="${p}" style="margin-top:6px;">`)));
+  body.appendChild(photoSlot('receipts', r, 'photos', ps=> receiptPhotos({photos:ps}).map(p=> el(`<img class="photow" src="${p}" style="margin-top:6px;">`))));
   if(receiptLines(r).length){
     const list = el('<div class="list" style="margin-top:8px;"></div>');
     receiptLines(r).forEach(l=>{
@@ -5414,6 +5518,7 @@ function openSupplierPicker(branch){
 }
 
 function openReceiptSkuPicker(branch){
+  if(!catalogReady()) return;
   const body = el('<div></div>');
   const draft = draftReceiptFor(branch);
   const supCode = draft && draft.supplierCode ? String(draft.supplierCode) : '';
@@ -5463,6 +5568,7 @@ function openReceiptSkuPicker(branch){
    pendingCode=true; HQ gives it an AutoCount code later through acc.fix_grn_item, which
    writes the code back onto this item. */
 function openNewItemForm(branch, typed){
+  if(!catalogReady()) return;
   const draft = draftReceiptFor(branch);
   if(!draft){ toast(t('recv_need_supplier')); return; }
   const unitCount = {}; S.skus.forEach(x => { if(x.unit) unitCount[x.unit] = (unitCount[x.unit]||0) + 1; });
@@ -5707,6 +5813,7 @@ function orderCatalogView(){
 }
 
 function openSkuForm(sku){
+  if(!catalogReady()) return;
   const f = [
     {key:'code', label:t('order_field_code'), ph:'1001'},
     {key:'name', label:t('order_field_name')},
@@ -5741,6 +5848,7 @@ function openSkuForm(sku){
    separated, in the order code, name, unit, category, supplier. Only the name is
    required, so a two-column export works just as well as a five-column one. */
 function openSkuBulkForm(){
+  if(!catalogReady()) return;
   const body = el('<div></div>');
   body.appendChild(el(`<p class="hint" style="margin-top:0;">${esc(t('order_paste_hint'))}</p>`));
   const wrap = el(`<label class="field"><span class="fl">${esc(t('order_paste_label'))}</span></label>`);
@@ -6460,7 +6568,7 @@ function openVisitDetail(v){
   const body=el('<div></div>');
   body.innerHTML=`<div style="font-weight:800;">${esc(v.branch)} · ${fmtDateTime(v.createdAt)}</div><div class="hint" style="margin-top:2px;">${esc(v.employeeName||'')}${v.distanceM!=null?' · '+Math.round(v.distanceM)+'m':''}${v.geo?` · <a href="https://maps.google.com/?q=${v.geo.lat},${v.geo.lng}" target="_blank" rel="noopener">map</a>`:''}</div>
     <div class="card card-tight" style="font-size:13.5px; margin-top:8px;"><div>${esc(t('field_docs'))}: ${esc(v.docs==='yes'?t('opt_yes'):t('opt_no'))}</div><div>${esc(t('field_supplies'))}: ${esc(v.supplies||'—')}</div><div>${esc(t('field_cash_collected'))}: RM ${Number(v.cash||0).toFixed(2)}</div>${v.note?`<div>${esc(v.note)}</div>`:''}</div>`;
-  if(v.photo) body.appendChild(el(`<img class="photow" src="${v.photo}">`));
+  body.appendChild(photoSlot('runnerVisits', v, 'photo', p=> p ? [el(`<img class="photow" src="${p}">`)] : []));
   openSheet(t('sheet_visit'), body);
 }
 function openBankInForm(){
@@ -6483,7 +6591,7 @@ function openBankInForm(){
 function openBankInDetail(b){
   const body=el('<div></div>');
   body.innerHTML=`<div style="font-weight:900; font-size:18px;">RM ${Number(b.amount).toFixed(2)}</div><div class="hint" style="margin-top:2px;">${esc(b.bank||'')}${b.ref?' · '+esc(b.ref):''} · ${fmtDateTime(b.createdAt)} · ${esc(b.employeeName||'')}</div>${b.note?`<p>${esc(b.note)}</p>`:''}`;
-  if(b.slip) body.appendChild(el(`<img class="photow" src="${b.slip}">`));
+  body.appendChild(photoSlot('bankIns', b, 'slip', p=> p ? [el(`<img class="photow" src="${p}">`)] : []));
   openSheet(t('sheet_bankin'), body);
 }
 
