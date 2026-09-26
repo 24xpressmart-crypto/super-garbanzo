@@ -5200,7 +5200,12 @@ function receiveBranchFor(){ return S.receiveBranch || myBranch() || (allBranchI
 function draftReceiptFor(branch){ return S.receipts.find(r => r.branch === branch && r.status === 'draft') || null; }
 function receiptLines(r){ return Array.isArray(r && r.lines) ? r.lines : []; }
 function receiptPhotos(r){ return Array.isArray(r && r.photos) ? r.photos : []; }
-function supplierList(){ return S.suppliers.filter(s => s.active !== false).sort((a,b)=>(a.name||'').localeCompare(b.name||'')); }
+// the two cafes belong to 24 Xpress F&B Sdn Bhd (acc.branch.entity_code); every other branch is the retail company.
+// Both AutoCount books use the same creditor codes for different companies (4000-E007, 4000-M017 ...), so a
+// store must only ever see its own company's suppliers.
+const FNB_BRANCHES = ['BR24','BR26'];
+function branchEntity(branch){ return FNB_BRANCHES.includes(branch) ? 'FNB' : 'RETAIL'; }
+function supplierList(branch){ const ent = branchEntity(branch); return S.suppliers.filter(s => s.active !== false && (s.entity||'RETAIL') === ent).sort((a,b)=>(a.name||'').localeCompare(b.name||'')); }
 
 async function ensureReceiptDraft(branch, patch){
   const draft = draftReceiptFor(branch);
@@ -5382,7 +5387,7 @@ function openSupplierPicker(branch){
   body.appendChild(search);
   const listWrap = el('<div class="list"></div>');
   body.appendChild(listWrap);
-  const all = supplierList();
+  const all = supplierList(branch);
   if(!all.length) body.insertBefore(el(`<div class="hint">${esc(t('recv_no_suppliers'))}</div>`), listWrap);
   const choose = async (code, name)=>{
     try{ await ensureReceiptDraft(branch, {supplierCode: code||'', supplierName: name}); closeSheet(); }
