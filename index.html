@@ -1824,7 +1824,8 @@ function openSheet(title, bodyHTML, footNode){
 function closeSheet(){ $('modalWrap').classList.remove('show'); $('sheet').innerHTML=''; }
 
 /* ============================ PHOTO HELPER ============================ */
-function photoPicker(onReady, cameraOnly, existingUrl){
+function photoPicker(onReady, cameraOnly, existingUrl, opts){
+  opts = opts || {};
   const pickLabel = cameraOnly ? t('photo_take') : t('photo_pick');
   const retakeLabel = cameraOnly ? t('photo_retake_cam') : t('photo_retake');
   const wrap=el('<div></div>');
@@ -1832,7 +1833,8 @@ function photoPicker(onReady, cameraOnly, existingUrl){
   const btnRow=el('<div class="row"></div>');
   const btn=el(`<button type="button" class="btn" style="flex:1;">${ICONS.camera}<span>${esc(existingUrl?retakeLabel:pickLabel)}</span></button>`);
   const removeBtn=el(`<button type="button" class="btn danger sm" style="display:${existingUrl?'inline-flex':'none'};">${esc(t('btn_remove_photo'))}</button>`);
-  const preview=el(`<img class="photow" style="display:${existingUrl?'block':'none'};" ${existingUrl?`src="${existingUrl}"`:''}>`);
+  const preview=el(`<img class="photow" style="display:${existingUrl?'block':'none'};" ${existingUrl && !isStoredPhoto(existingUrl)?`src="${existingUrl}"`:''}>`);
+  if(existingUrl && isStoredPhoto(existingUrl)) photoSrc(existingUrl).then(u=>{ if(u) preview.src=u; });
   let dataUrl=existingUrl||null;
   btn.onclick=()=>input.click();
   removeBtn.onclick=()=>{
@@ -1844,7 +1846,7 @@ function photoPicker(onReady, cameraOnly, existingUrl){
     const f=input.files[0]; if(!f) return;
     btn.querySelector('span').textContent=t('photo_compressing');
     try{
-      dataUrl = await compressImage(f);
+      dataUrl = await compressImage(f, opts.maxW, opts.quality, opts.maxLen);
       if(dataUrl){
         preview.src=dataUrl; preview.style.display='block';
         btn.querySelector('span').textContent=retakeLabel;
@@ -1862,8 +1864,8 @@ function photoPicker(onReady, cameraOnly, existingUrl){
   wrap.getPhoto=()=>dataUrl;
   return wrap;
 }
-function compressImage(file, maxW, quality){
-  maxW=maxW||480; quality=quality||0.55;
+function compressImage(file, maxW, quality, maxLen){
+  maxW=maxW||480; quality=quality||0.55; maxLen=maxLen||170000;
   return new Promise((resolve,reject)=>{
     const reader=new FileReader();
     reader.onload=e=>{
@@ -1874,8 +1876,8 @@ function compressImage(file, maxW, quality){
         const canvas=document.createElement('canvas'); canvas.width=w; canvas.height=h;
         canvas.getContext('2d').drawImage(img,0,0,w,h);
         let q=quality, out=canvas.toDataURL('image/jpeg',q);
-        while(out.length>170000 && q>0.25){ q-=0.1; out=canvas.toDataURL('image/jpeg',q); }
-        if(out.length>170000){ resolve(null); } else resolve(out);
+        while(out.length>maxLen && q>0.25){ q-=0.1; out=canvas.toDataURL('image/jpeg',q); }
+        if(out.length>maxLen){ resolve(null); } else resolve(out);
       };
       img.onerror=reject; img.src=e.target.result;
     };
@@ -5304,6 +5306,42 @@ function receiveBranchFor(){ return S.receiveBranch || myBranch() || (allBranchI
 function draftReceiptFor(branch){ return S.receipts.find(r => r.branch === branch && r.status === 'draft') || null; }
 function receiptLines(r){ return Array.isArray(r && r.lines) ? r.lines : []; }
 function receiptPhotos(r){ return Array.isArray(r && r.photos) ? r.photos : []; }
+/* Receipt photos live in Storage (bucket 'receipts', private; RUN_12_receipt_photos.sql): the receipt keeps
+   'sb:receipts/<branch>/<receipt>/<sha256>.jpg'. The name is the SHA-256 of the bytes, which is how the ledger
+   spots the same paper sent twice. Taken at 1400 px so the invoice reader can read small print. If the upload
+   fails (no bucket yet, offline), the photo is shrunk to the old size and kept in the row, as before. */
+const RECEIPT_PHOTO = {maxW:1400, quality:0.72, maxLen:1400000};
+const photoUrlCache = new Map();
+function isStoredPhoto(p){ return typeof p === 'string' && p.startsWith('sb:'); }
+async function photoSrc(p){
+  if(!isStoredPhoto(p)) return p;
+  const hit = photoUrlCache.get(p); if(hit && hit.until > Date.now()) return hit.url;
+  const [bucket, ...rest] = p.slice(3).split('/');
+  const {data, error} = await S.sb.storage.from(bucket).createSignedUrl(rest.join('/'), 3600);
+  if(error || !data) return null;
+  photoUrlCache.set(p, {url:data.signedUrl, until:Date.now() + 50*60*1000});
+  return data.signedUrl;
+}
+function dataUrlBlob(u){
+  const [head, b64] = u.split(','); const bin = atob(b64); const arr = new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) arr[i] = bin.charCodeAt(i);
+  return new Blob([arr], {type:(head.match(/data:([^;]+)/)||[])[1] || 'image/jpeg'});
+}
+async function storeReceiptPhoto(branch, receiptId, dataUrl){
+  if(!dataUrl) return null;
+  try{
+    const blob = dataUrlBlob(dataUrl);
+    const digest = await crypto.subtle.digest('SHA-256', await blob.arrayBuffer());
+    const sha = Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');
+    const path = branch + '/' + receiptId + '/' + sha + '.jpg';
+    const {error} = await S.sb.storage.from('receipts').upload(path, blob, {contentType:'image/jpeg', upsert:false});
+    if(error && !/exist|duplicate/i.test(error.message||'')) throw error;       // the same photo again is fine
+    return 'sb:receipts/' + path;
+  }catch(err){
+    console.warn('receipt photo not stored in Storage, keeping it in the receipt row', err);
+    return await compressImage(dataUrlBlob(dataUrl));                            // old size, fits the row
+  }
+}
 // the two cafes belong to 24 Xpress F&B Sdn Bhd (acc.branch.entity_code); every other branch is the retail company.
 // Both AutoCount books use the same creditor codes for different companies (4000-E007, 4000-M017 ...), so a
 // store must only ever see its own company's suppliers.
@@ -5358,15 +5396,19 @@ function receiveView(){
     card.appendChild(el(`<div class="lr-sub" style="font-weight:800; margin:14px 0 6px;">${esc(t('recv_step_photo'))}</div>`));
     const photos = receiptPhotos(draft);
     const pw = photoPicker(async (url)=>{
-      const next = url ? [url].concat(photos.slice(1)) : photos.slice(1);
+      const ref = await storeReceiptPhoto(branch, draft.id, url);
+      if(url && !ref){ toast(t('toast_photo_too_large')); return; }
+      const next = ref ? [ref].concat(photos.slice(1)) : photos.slice(1);
       try{ await S.db.doc('receipts/'+draft.id).update({photos: next}); }catch(err){ toast(dbErrMsg(err)); }
-    }, true, photos[0] || null);
+    }, true, photos[0] || null, RECEIPT_PHOTO);
     card.appendChild(pw);
     if(photos[0]){
       const pw2 = photoPicker(async (url)=>{
-        const next = url ? [photos[0], url] : [photos[0]];
+        const ref = await storeReceiptPhoto(branch, draft.id, url);
+        if(url && !ref){ toast(t('toast_photo_too_large')); return; }
+        const next = ref ? [photos[0], ref] : [photos[0]];
         try{ await S.db.doc('receipts/'+draft.id).update({photos: next}); }catch(err){ toast(dbErrMsg(err)); }
-      }, true, photos[1] || null);
+      }, true, photos[1] || null, RECEIPT_PHOTO);
       pw2.style.marginTop = '6px';
       if(!photos[1]) pw2.querySelector('button span').textContent = t('recv_photo2');
       card.appendChild(pw2);
@@ -5473,7 +5515,10 @@ function openReceiptDetail(r){
     <div class="lr-sub">${esc(r.receivedByName||r.createdByName||'')}</div>
     ${r.status==='submitted'?`<div style="margin-top:6px;">${receiptPill(r)}${r.accRef?` <span class="lr-sub">${esc(r.accRef)}</span>`:''}</div>`:''}
     ${r.accStatus==='exception'&&r.accError?`<div class="lr-sub" style="color:var(--danger,#b00); margin-top:4px;">${esc(r.accError)}</div>`:''}</div>`));
-  body.appendChild(photoSlot('receipts', r, 'photos', ps=> receiptPhotos({photos:ps}).map(p=> el(`<img class="photow" src="${p}" style="margin-top:6px;">`))));
+  body.appendChild(photoSlot('receipts', r, 'photos', ps=> receiptPhotos({photos:ps}).map(p=>{
+    if(!isStoredPhoto(p)) return el(`<img class="photow" src="${p}" style="margin-top:6px;">`);
+    const img = el(`<img class="photow" style="margin-top:6px;">`); photoSrc(p).then(u=>{ if(u) img.src=u; }); return img;
+  })));
   if(receiptLines(r).length){
     const list = el('<div class="list" style="margin-top:8px;"></div>');
     receiptLines(r).forEach(l=>{
