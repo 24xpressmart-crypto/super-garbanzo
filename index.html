@@ -749,7 +749,7 @@ const I18N = {
     photo_pick:'拍照 / 选择图片（可选）', photo_compressing:'压缩中…', photo_retake:'重新拍照 / 选择',
     photo_take:'拍照（可选）', photo_retake_cam:'重新拍照', btn_remove_photo:'移除',
     field_product_image:'商品图片（可选）',
-    toast_photo_too_large:'图片体积过大，已跳过，请换一张试试', toast_photo_failed:'图片处理失败',
+    toast_photo_too_large:'图片体积过大，已跳过，请换一张试试', toast_photo_pending:'照片暂未上传，已先存在记录里，稍后自动重试', photo_pending_note:'⏳ 照片待移到私有存储', photo_store_title:'照片存储', photo_store_hint:'打卡自拍、银行存款凭证、收货单分别放在私有存储，各有查看权限。上传失败的照片先留在记录里，显示为「待上传」。不会自动删除任何照片。', photo_kind_selfie:'打卡自拍', photo_kind_slip:'银行存款凭证', photo_kind_receipt:'收货单', photo_stored:'已存', photo_pending:'待上传', btn_move_photos:'把待上传照片移到私有存储', confirm_move_photos:'每张照片会先核对内容完全一致、原件留在备份里，才替换记录。继续？', photo_moving:'移动中', photo_moved_prefix:'已移动 ', photo_failed_prefix:'失败 ', toast_photo_failed:'图片处理失败',
     toast_deleted:'已删除',
   },
   en: {
@@ -988,7 +988,7 @@ const I18N = {
     photo_pick:'Take Photo / Choose Image (optional)', photo_compressing:'Compressing…', photo_retake:'Retake / Choose Again',
     photo_take:'Take Photo (optional)', photo_retake_cam:'Retake Photo', btn_remove_photo:'Remove',
     field_product_image:'Product Photo (optional)',
-    toast_photo_too_large:'Image too large, skipped — please try another one', toast_photo_failed:'Failed to process image',
+    toast_photo_too_large:'Image too large, skipped — please try another one', toast_photo_pending:'Photo not uploaded yet — kept with the record, will retry automatically', photo_pending_note:'⏳ Photo waiting to move to private storage', photo_store_title:'Photo storage', photo_store_hint:'Clock-in selfies, bank-in slips and delivery papers are kept in separate private storage, each with its own viewing rights. A photo that failed to upload stays in its record and shows as pending. No photo is deleted automatically.', photo_kind_selfie:'Clock-in selfies', photo_kind_slip:'Bank-in slips', photo_kind_receipt:'Delivery papers', photo_stored:'stored', photo_pending:'pending', btn_move_photos:'Move pending photos to private storage', confirm_move_photos:'Each photo is checked byte for byte and the original is kept in a backup before the record is switched. Continue?', photo_moving:'Moving', photo_moved_prefix:'Moved ', photo_failed_prefix:'failed ', toast_photo_failed:'Failed to process image',
     toast_deleted:'Deleted',
   },
   ms: {
@@ -1227,7 +1227,7 @@ const I18N = {
     photo_pick:'Ambil gambar / pilih imej (pilihan)', photo_compressing:'Memampatkan…', photo_retake:'Ambil semula / pilih lagi',
     photo_take:'Ambil gambar (pilihan)', photo_retake_cam:'Ambil gambar semula', btn_remove_photo:'Buang',
     field_product_image:'Gambar produk (pilihan)',
-    toast_photo_too_large:'Imej terlalu besar, dilangkau — cuba yang lain', toast_photo_failed:'Gagal memproses imej',
+    toast_photo_too_large:'Imej terlalu besar, dilangkau — cuba yang lain', toast_photo_pending:'Foto belum dimuat naik — disimpan bersama rekod, akan dicuba semula', photo_pending_note:'⏳ Foto menunggu dipindah ke storan peribadi', photo_store_title:'Storan foto', photo_store_hint:'Swafoto daftar masuk, slip bank dan kertas penghantaran disimpan dalam storan peribadi berasingan, masing-masing dengan hak lihat sendiri. Foto yang gagal dimuat naik kekal dalam rekod dan ditanda belum selesai. Tiada foto dipadam secara automatik.', photo_kind_selfie:'Swafoto daftar masuk', photo_kind_slip:'Slip bank', photo_kind_receipt:'Kertas penghantaran', photo_stored:'disimpan', photo_pending:'belum', btn_move_photos:'Pindahkan foto ke storan peribadi', confirm_move_photos:'Setiap foto disemak sama sepenuhnya dan asalnya disimpan sebagai sandaran sebelum rekod ditukar. Teruskan?', photo_moving:'Memindah', photo_moved_prefix:'Dipindah ', photo_failed_prefix:'gagal ', toast_photo_failed:'Gagal memproses imej',
     toast_deleted:'Dipadam',
   },
 };
@@ -1656,6 +1656,7 @@ async function boot(){
     subscribeAll();
     refreshPushState().then(()=>renderApp());
     refreshToken();
+    setTimeout(()=>retryPendingPhotos(false), 15000);
     setInterval(refreshToken, 30*60*1000);   // 12-hour tokens, topped up while in use
   } else {
     // A deliberately too-short code: the new function answers "not_found" without
@@ -2140,6 +2141,7 @@ function finishLogin(token, e){
   try{ LS.set('bgc_known', JSON.stringify({id:e.id, name:e.name||''})); }catch(err){}
   S.sb=makeClient(token); S.db=makeSupabaseDb(S.sb); S.dbState='ready'; closeSheet();
   subscribeAll(); renderApp();
+  setTimeout(()=>retryPendingPhotos(false), 15000);
 }
 function logout(forget){
   S.token=null; S.employeeId=null; S.pickerBranch=null;
@@ -2360,13 +2362,22 @@ function clockView(){
     else if(geoOk) rec.geoFlag='not_configured';
     else { rec.geoFlag='no_location'; if(geo && geo.error) rec.geoErrorReason=geo.error; }
     if(photo) rec.photo=photo;
+    let photoPending = false;
     try{
       // The database decides: it takes the employee from the token, checks the branch,
       // measures the distance to the store and stamps its own clock.
       if(FEAT.punch !== false){
         try{
-          await rpc('punch', {kind:nextType, branch:branch||'', lat:geoOk?geo.lat:null, lng:geoOk?geo.lng:null,
-                              accuracy:geoOk?geo.accuracy:null, photo:photo||'', note:''});
+          let sent = photo || '';
+          if(photo){ const st = await storeOrKeep('selfies', e.id + '/' + todayStr().slice(0, 7), photo); sent = st.ref; photoPending = !!st.pending; }
+          const args = {kind:nextType, branch:branch||'', lat:geoOk?geo.lat:null, lng:geoOk?geo.lng:null,
+                        accuracy:geoOk?geo.accuracy:null, photo:sent, note:''};
+          try{ await rpc('punch', args); }
+          catch(err1){
+            // the database refused the stored selfie: clock in all the same, with the photo kept in the record
+            if(!(photo && sent !== photo && /bad_photo/.test(String(err1 && err1.message)))) throw err1;
+            args.photo = photo; photoPending = true; await rpc('punch', args);
+          }
           FEAT.punch = true;
         }catch(err){
           if(!missingFn(err)) throw err;
@@ -2374,7 +2385,8 @@ function clockView(){
         }
       }
       if(FEAT.punch === false) await S.db.collection('attendance').add(rec);
-      toast(nextType==='in'?t('toast_clock_in_ok'):t('toast_clock_out_ok'));
+      toast((nextType==='in'?t('toast_clock_in_ok'):t('toast_clock_out_ok')) + (photoPending ? ' · ' + t('toast_photo_pending') : ''));
+      if(photoPending) setTimeout(()=>retryPendingPhotos(false), 60000);
       photoWrap.remove();
     }catch(err){ toast(punchErrMsg(err)); }
     bigBtn.disabled=false;
@@ -2548,7 +2560,7 @@ function openAttendanceDetail(a){
   }
   { const g = a.geo && a.geo.lat!=null ? a.geo : (a.lat!=null && a.lng!=null ? {lat:a.lat, lng:a.lng, accuracy:a.accuracy} : null);
     if(g) body.appendChild(el(`<p class="hint num">${Number(g.lat).toFixed(6)}, ${Number(g.lng).toFixed(6)}${g.accuracy!=null?' (±'+g.accuracy+'m)':''}</p>`)); }
-  body.appendChild(photoSlot('attendance', a, 'photo', p=> p ? [el(`<img class="photow" src="${p}">`)] : [el(`<p class="hint">${esc(t('no_photo_taken'))}</p>`)]));
+  body.appendChild(photoSlot('attendance', a, 'photo', p=> p ? photoEls(p) : [el(`<p class="hint">${esc(t('no_photo_taken'))}</p>`)]));
   openSheet(a.employeeName||empName(a.employeeId), body);
 }
 /* Live lists carry no photos (LITE in the db adapter). A detail view shows the photo from the
@@ -3677,6 +3689,7 @@ function adminSection(){
   };
   setCard.appendChild(saveBtn);
   c.appendChild(setCard);
+  c.appendChild(photoStorageCard());
 
   c.appendChild(el(`<h2 class="sec">${esc(t('admin_export'))}</h2>`));
   const expCard=el('<div class="card"></div>');
@@ -5327,20 +5340,111 @@ function dataUrlBlob(u){
   for(let i=0;i<bin.length;i++) arr[i] = bin.charCodeAt(i);
   return new Blob([arr], {type:(head.match(/data:([^;]+)/)||[])[1] || 'image/jpeg'});
 }
+/* Evidence photos live in three private buckets, one per kind, each with its own access rule (patch 11):
+   selfies/<employee>/<yyyy-mm>/, bankslips/<employee>/, receipts/<branch>/<receipt>/. A file is named by the
+   SHA-256 of its bytes. uploadPhoto answers the 'sb:' reference, or throws. */
+async function uploadPhoto(bucket, dir, dataUrl){
+  const blob = dataUrlBlob(dataUrl);
+  const digest = await crypto.subtle.digest('SHA-256', await blob.arrayBuffer());
+  const sha = Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  const ext = ({'image/png':'png', 'image/webp':'webp'})[blob.type] || 'jpg';
+  const path = dir + '/' + sha + '.' + ext;
+  const {error} = await S.sb.storage.from(bucket).upload(path, blob, {contentType:blob.type || 'image/jpeg', upsert:false});
+  if(error && !/exist|duplicate/i.test(error.message||'')) throw error;       // the same photo again is fine
+  return 'sb:' + bucket + '/' + path;
+}
+/* Upload, or keep the photo inside the record and say so. A photo that did not reach Storage is PENDING:
+   the caller tells the person, retryPendingPhotos() moves it later. It is never reported as stored.
+   The wait is capped so a weak signal cannot hold up a clock-in. */
+async function storeOrKeep(bucket, dir, dataUrl, waitMs){
+  if(!dataUrl) return {ref:''};
+  try{
+    const ref = await Promise.race([uploadPhoto(bucket, dir, dataUrl),
+      new Promise((_, no)=>setTimeout(()=>no(new Error('upload_timeout')), waitMs || 12000))]);
+    return {ref};
+  }catch(err){ console.warn('photo not stored in ' + bucket + ', kept in the record', err); return {ref:dataUrl, pending:true}; }
+}
 async function storeReceiptPhoto(branch, receiptId, dataUrl){
   if(!dataUrl) return null;
+  const st = await storeOrKeep('receipts', branch + '/' + receiptId, dataUrl, 30000);
+  if(!st.pending) return st.ref;
+  toast(t('toast_photo_pending'));
+  return await compressImage(dataUrlBlob(dataUrl));                            // old size, fits the row
+}
+// an inline or stored photo, plus a note while it is still waiting to move to Storage
+function photoEls(p){
+  const img = el('<img class="photow">');
+  if(isStoredPhoto(p)) photoSrc(p).then(u=>{ if(u) img.src = u; else img.replaceWith(el(`<p class="hint">${esc(t('err_unavailable'))}</p>`)); });
+  else img.src = p;
+  const out = [img];
+  if(typeof p === 'string' && p.startsWith('data:')) out.push(el(`<p class="hint">${esc(t('photo_pending_note'))}</p>`));
+  return out;
+}
+/* Move photos still kept inside records into Storage. Phones do their own new ones after login and when back
+   online (PHOTO_AUTO_SINCE); photos from before patch 11 are moved by an admin from Settings. The database
+   (attach_photo) checks the file has exactly the record's bytes and keeps the original in its backup. */
+const PHOTO_BUCKET = {attendance:'selfies', bankIns:'bankslips', receipts:'receipts'};
+const PHOTO_AUTO_SINCE = '2026-09-27T01:00:00.000Z';
+let photoRetryBusy = false;
+async function retryPendingPhotos(all, onProgress){
+  if(photoRetryBusy || !S.sb || !S.token) return null;
+  photoRetryBusy = true;
+  const res = {moved:0, failed:0, total:0, errors:[]};
   try{
-    const blob = dataUrlBlob(dataUrl);
-    const digest = await crypto.subtle.digest('SHA-256', await blob.arrayBuffer());
-    const sha = Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');
-    const path = branch + '/' + receiptId + '/' + sha + '.jpg';
-    const {error} = await S.sb.storage.from('receipts').upload(path, blob, {contentType:'image/jpeg', upsert:false});
-    if(error && !/exist|duplicate/i.test(error.message||'')) throw error;       // the same photo again is fine
-    return 'sb:receipts/' + path;
-  }catch(err){
-    console.warn('receipt photo not stored in Storage, keeping it in the receipt row', err);
-    return await compressImage(dataUrlBlob(dataUrl));                            // old size, fits the row
-  }
+    const list = (await rpc('pending_photos', {p_all:!!all, p_since: all ? null : PHOTO_AUTO_SINCE})) || [];
+    res.total = list.length; onProgress && onProgress(res);
+    for(const it of list){
+      try{
+        const {data, error} = await S.sb.from('store').select('data').eq('collection', it.c).eq('id', it.id).maybeSingle();
+        if(error) throw error;
+        const d = (data && data.data) || {};
+        const cur = it.c === 'receipts' ? (d.photos || [])[it.i] : d[it.f];
+        if(typeof cur !== 'string' || !cur.startsWith('data:')) continue;
+        const dir = it.c === 'attendance' ? d.employeeId + '/' + String(d.createdAt || '').slice(0, 7)
+                  : it.c === 'bankIns' ? d.employeeId : d.branch + '/' + it.id;
+        const ref = await uploadPhoto(PHOTO_BUCKET[it.c], dir, cur);
+        await rpc('attach_photo', {p_col:it.c, p_id:it.id, p_field:it.f, p_idx:it.i, p_ref:ref});
+        res.moved++;
+      }catch(err){ res.failed++; res.errors.push(it.c + '/' + it.id + ': ' + String((err && err.message) || err)); }
+      onProgress && onProgress(res);
+    }
+  }catch(err){ res.errors.push(String((err && err.message) || err)); }
+  finally{ photoRetryBusy = false; }
+  if(res.errors.length) console.warn('photo moves not done', res.errors);
+  return res;
+}
+window.addEventListener('online', ()=>{ if(S.token) retryPendingPhotos(false); });
+// Settings (admin): stored / pending per kind, and the one-off move of older photos
+function photoStorageCard(){
+  const card = el(`<div class="card"><div style="font-weight:800;">${esc(t('photo_store_title'))}</div><p class="hint" style="margin:4px 0 8px;">${esc(t('photo_store_hint'))}</p><div class="ps-body" style="font-size:13.5px;"></div></div>`);
+  const body = card.querySelector('.ps-body');
+  const btn = el(`<button class="btn block" style="margin-top:10px; display:none;">${esc(t('btn_move_photos'))}</button>`);
+  card.appendChild(btn);
+  const paint = ()=>{
+    const st = S.photoStatus;
+    if(S.photoMove){ btn.style.display = ''; btn.disabled = true; btn.textContent = t('photo_moving') + ' ' + (S.photoMove.moved + S.photoMove.failed) + ' / ' + S.photoMove.total; }
+    if(!st){ body.innerHTML = `<p class="hint">${esc(t('acc_loading'))}</p>`; return; }
+    if(st.error){ body.textContent = st.error; return; }
+    const row = (k, lbl)=>`<div class="row" style="justify-content:space-between; padding:3px 0;"><span>${esc(lbl)}</span><span>${esc(t('photo_stored'))} ${st[k].stored} · ${esc(t('photo_pending'))} <b>${st[k].pending}</b></span></div>`;
+    body.innerHTML = row('attendance', t('photo_kind_selfie')) + row('bankIns', t('photo_kind_slip')) + row('receipts', t('photo_kind_receipt'));
+    const pend = st.attendance.pending + st.bankIns.pending + st.receipts.pending;
+    if(!S.photoMove){ btn.style.display = pend ? '' : 'none'; btn.disabled = false; btn.textContent = t('btn_move_photos') + ' (' + pend + ')'; }
+  };
+  const load = async (force)=>{
+    if(!force && S.photoStatus && Date.now() - S.photoStatusAt < 60000) return paint();
+    try{ S.photoStatus = await rpc('photo_storage_status'); }catch(err){ S.photoStatus = {error:dbErrMsg(err)}; }
+    S.photoStatusAt = Date.now(); paint();
+  };
+  btn.onclick = async ()=>{
+    if(S.photoMove || !confirm(t('confirm_move_photos'))) return;
+    S.photoMove = {moved:0, failed:0, total:0}; paint();
+    const r = await retryPendingPhotos(true, p=>{ S.photoMove = Object.assign({}, p); paint(); });
+    S.photoMove = null;
+    if(r) toast(t('photo_moved_prefix') + r.moved + (r.failed ? ' · ' + t('photo_failed_prefix') + r.failed : ''));
+    await load(true);
+  };
+  paint(); load(false);
+  return card;
 }
 // the two cafes belong to 24 Xpress F&B Sdn Bhd (acc.branch.entity_code); every other branch is the retail company.
 // Both AutoCount books use the same creditor codes for different companies (4000-E007, 4000-M017 ...), so a
@@ -6630,13 +6734,13 @@ function openBankInForm(){
   const pw=photoPicker(null,false); body.appendChild(pw);
   const foot=el('<div class="sheet-foot"></div>'); const btn=el(`<button class="btn ok block">${esc(t('btn_bankin'))}</button>`);
   btn.onclick=async()=>{ const v=readFields(body,f); const p=pw.getPhoto(); if(!v.amount||Number(v.amount)<=0){ toast(t('err_valid_qty')); return; } if(!p){ toast(t('runner_need_slip')); return; } btn.disabled=true;
-    try{ await S.db.collection('bankIns').add({employeeId:e.id, employeeName:e.name, amount:Number(v.amount), bank:(v.bank||'').trim(), ref:(v.ref||'').trim(), note:(v.note||'').trim(), slip:p, createdAt:new Date().toISOString()}); toast(t('toast_bankin_saved')); closeSheet(); }catch(err){ toast(dbErrMsg(err)); btn.disabled=false; } };
+    try{ const st=await storeOrKeep('bankslips', e.id, p, 30000); await S.db.collection('bankIns').add({employeeId:e.id, employeeName:e.name, amount:Number(v.amount), bank:(v.bank||'').trim(), ref:(v.ref||'').trim(), note:(v.note||'').trim(), slip:st.ref, createdAt:new Date().toISOString()}); toast(t('toast_bankin_saved') + (st.pending ? ' · ' + t('toast_photo_pending') : '')); closeSheet(); }catch(err){ toast(dbErrMsg(err)); btn.disabled=false; } };
   foot.appendChild(btn); body.appendChild(foot); openSheet(t('sheet_bankin'), body);
 }
 function openBankInDetail(b){
   const body=el('<div></div>');
   body.innerHTML=`<div style="font-weight:900; font-size:18px;">RM ${Number(b.amount).toFixed(2)}</div><div class="hint" style="margin-top:2px;">${esc(b.bank||'')}${b.ref?' · '+esc(b.ref):''} · ${fmtDateTime(b.createdAt)} · ${esc(b.employeeName||'')}</div>${b.note?`<p>${esc(b.note)}</p>`:''}`;
-  body.appendChild(photoSlot('bankIns', b, 'slip', p=> p ? [el(`<img class="photow" src="${p}">`)] : []));
+  body.appendChild(photoSlot('bankIns', b, 'slip', p=> p ? photoEls(p) : []));
   openSheet(t('sheet_bankin'), body);
 }
 
