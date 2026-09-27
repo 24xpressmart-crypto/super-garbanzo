@@ -522,7 +522,7 @@ const I18N = {
     acc_bridge_title:'桥接（HQ 电脑）', acc_bridge_none:'桥接还没跑过。HQ 电脑上执行 AcBridge.exe 后这里会出现心跳。', acc_bridge_stale:'超过 10 分钟没心跳', acc_bridge_ok:'在线', acc_bridge_last:'最后心跳', acc_bridge_queue:'队列深度',
     acc_settings_missing:'科目代码还没填：配对发票那一步会一直等。请在「设定」分页填应付控制账与进货科目。',
     acc_no_exceptions:'没有待处理的例外', acc_no_receiving:'还没有收货记录', acc_no_journals:'没有待批准的分录',
-    acc_btn_resolve:'已处理', acc_btn_waive:'豁免', acc_btn_void_doc:'作废这张单据（不是收货）', acc_btn_photo:'看照片', acc_btn_prices:'价格历史', acc_prices_none:'还没有价格记录', acc_prices_note:'同一家供应商的进货单价（每个基本单位，扣折扣、含销售税，赠品不算），最新在上。', acc_prices_date:'发票日', acc_prices_unit:'单价', acc_prices_change:'比上次', acc_prices_qty:'数量', acc_j_show:'点开看明细', acc_j_hide:'收起明细', acc_j_account:'科目', acc_j_debit:'借', acc_j_credit:'贷', acc_j_desc:'说明', acc_photo_none:'这张没有照片', acc_btn_fix_supplier:'指定供应商', acc_btn_fix_item:'对应货品', acc_btn_void:'作废这张', acc_btn_approve:'批准并传 AutoCount', acc_btn_reject:'退回', acc_btn_requeue:'重新排队',
+    acc_btn_resolve:'已处理', acc_btn_waive:'豁免', acc_btn_void_doc:'作废这张单据（不是收货）', acc_btn_photo:'看照片', acc_btn_map:'对应供应商货品', acc_map_intro:'把发票上的每个货品对到我们的货号，并填「对方 1 个单位 = 我们几个」（例如 1 箱 = 20 件）。只要做一次，以后这家供应商的同一个货品会自动对上。', acc_map_counted:'门店点收了', acc_map_line:'第', acc_map_code:'对方货号', acc_map_nocode:'单上没有货号（用品名记住）', acc_map_known:'之前记为', acc_map_pick:'选门店点收的货品…', acc_map_other:'其他货号（自己输入）', acc_map_code_ph:'AutoCount 货号', acc_map_units:'对方 1 个 {s} 等于我们几个？', acc_map_their_unit:'单位', acc_map_save:'储存并重新配对', acc_map_none:'至少选一行的货品', acc_map_done:'已记住', acc_btn_prices:'价格历史', acc_prices_none:'还没有价格记录', acc_prices_note:'同一家供应商的进货单价（每个基本单位，扣折扣、含销售税，赠品不算），最新在上。', acc_prices_date:'发票日', acc_prices_unit:'单价', acc_prices_change:'比上次', acc_prices_qty:'数量', acc_j_show:'点开看明细', acc_j_hide:'收起明细', acc_j_account:'科目', acc_j_debit:'借', acc_j_credit:'贷', acc_j_desc:'说明', acc_photo_none:'这张没有照片', acc_btn_fix_supplier:'指定供应商', acc_btn_fix_item:'对应货品', acc_btn_void:'作废这张', acc_btn_approve:'批准并传 AutoCount', acc_btn_reject:'退回', acc_btn_requeue:'重新排队',
     acc_prompt_note:'写下做了什么（至少 5 个字）：', acc_prompt_supplier:'AutoCount 供应商代码（例如 4000-B012）：', acc_prompt_item:'AutoCount 货号：', acc_prompt_reason:'原因：', acc_prompt_account:'AutoCount 科目代码：',
     acc_sev_critical:'严重', acc_sev_normal:'一般', acc_state_pending:'待传', acc_state_sent:'传送中', acc_state_confirmed:'已入', acc_state_failed:'失败待重试', acc_state_abandoned:'已放弃',
     acc_set_ap:'应付控制账（AP control）', acc_set_pur:'进货科目（purchases）', acc_set_tax:'进项税科目（可空）', acc_set_hint:'代码要和 AutoCount 的 GLMast 完全一致。填错，分录就会被 AutoCount 拒绝，不会有别的损失。', acc_set_saved:'已保存',
@@ -761,7 +761,7 @@ const I18N = {
     acc_bridge_title:'Bridge (HQ machine)', acc_bridge_none:'The bridge has not run yet. Once AcBridge.exe runs on the HQ machine its heartbeat shows here.', acc_bridge_stale:'no heartbeat for over 10 minutes', acc_bridge_ok:'online', acc_bridge_last:'last heartbeat', acc_bridge_queue:'queue depth',
     acc_settings_missing:'Account codes not set: invoice matching will wait. Fill AP control and purchases account under Setup.',
     acc_no_exceptions:'Nothing to handle', acc_no_receiving:'No goods received yet', acc_no_journals:'No journals waiting',
-    acc_btn_resolve:'Resolved', acc_btn_waive:'Waive', acc_btn_void_doc:'Void this document (not the receipt)', acc_btn_photo:'View photo', acc_btn_prices:'Price history', acc_prices_none:'No prices recorded yet', acc_prices_note:'Unit cost from this supplier (per base unit, after discount, including sales tax, free goods apart), newest first.', acc_prices_date:'Invoice date', acc_prices_unit:'Unit cost', acc_prices_change:'vs last', acc_prices_qty:'Qty', acc_j_show:'tap for the lines', acc_j_hide:'hide lines', acc_j_account:'Account', acc_j_debit:'Debit', acc_j_credit:'Credit', acc_j_desc:'Description', acc_photo_none:'No photo on this one', acc_btn_fix_supplier:'Set supplier', acc_btn_fix_item:'Map item', acc_btn_void:'Void this one', acc_btn_approve:'Approve and send to AutoCount', acc_btn_reject:'Reject', acc_btn_requeue:'Queue again',
+    acc_btn_resolve:'Resolved', acc_btn_waive:'Waive', acc_btn_void_doc:'Void this document (not the receipt)', acc_btn_photo:'View photo', acc_btn_map:'Map supplier items', acc_map_intro:'Pair each product on the invoice with our item code and say how many of our units are in one of theirs (e.g. 1 carton = 20 pieces). Done once; after that the same product from this supplier matches by itself.', acc_map_counted:'The store counted', acc_map_line:'Line', acc_map_code:'Their code', acc_map_nocode:'No code on the paper (remembered by its name)', acc_map_known:'earlier saved as', acc_map_pick:'Pick an item the store counted...', acc_map_other:'Another code (type it)', acc_map_code_ph:'AutoCount item code', acc_map_units:'How many of our units in 1 {s}?', acc_map_their_unit:'unit', acc_map_save:'Save and match again', acc_map_none:'Pick the item for at least one line', acc_map_done:'Remembered', acc_btn_prices:'Price history', acc_prices_none:'No prices recorded yet', acc_prices_note:'Unit cost from this supplier (per base unit, after discount, including sales tax, free goods apart), newest first.', acc_prices_date:'Invoice date', acc_prices_unit:'Unit cost', acc_prices_change:'vs last', acc_prices_qty:'Qty', acc_j_show:'tap for the lines', acc_j_hide:'hide lines', acc_j_account:'Account', acc_j_debit:'Debit', acc_j_credit:'Credit', acc_j_desc:'Description', acc_photo_none:'No photo on this one', acc_btn_fix_supplier:'Set supplier', acc_btn_fix_item:'Map item', acc_btn_void:'Void this one', acc_btn_approve:'Approve and send to AutoCount', acc_btn_reject:'Reject', acc_btn_requeue:'Queue again',
     acc_prompt_note:'What was done (at least 5 characters):', acc_prompt_supplier:'AutoCount supplier code (e.g. 4000-B012):', acc_prompt_item:'AutoCount item code:', acc_prompt_reason:'Reason:', acc_prompt_account:'AutoCount account code:',
     acc_sev_critical:'critical', acc_sev_normal:'normal', acc_state_pending:'waiting', acc_state_sent:'sending', acc_state_confirmed:'in AutoCount', acc_state_failed:'failed, will retry', acc_state_abandoned:'given up',
     acc_set_ap:'AP control account', acc_set_pur:'Purchases account', acc_set_tax:'Input tax account (optional)', acc_set_hint:'Codes must match AutoCount GLMast exactly. A wrong code only makes AutoCount reject the journal; nothing else breaks.', acc_set_saved:'Saved',
@@ -1000,7 +1000,7 @@ const I18N = {
     acc_bridge_title:'Jambatan (komputer HQ)', acc_bridge_none:'Jambatan belum berjalan. Selepas AcBridge.exe dijalankan di HQ, degupan akan muncul di sini.', acc_bridge_stale:'tiada degupan lebih 10 minit', acc_bridge_ok:'dalam talian', acc_bridge_last:'degupan terakhir', acc_bridge_queue:'kedalaman giliran',
     acc_settings_missing:'Kod akaun belum diisi: padanan invois akan menunggu. Isi akaun kawalan AP dan akaun belian di Tetapan.',
     acc_no_exceptions:'Tiada yang perlu diuruskan', acc_no_receiving:'Belum ada terima barang', acc_no_journals:'Tiada jurnal menunggu',
-    acc_btn_resolve:'Selesai', acc_btn_waive:'Kecualikan', acc_btn_void_doc:'Batalkan dokumen ini (bukan penerimaan)', acc_btn_photo:'Lihat foto', acc_btn_prices:'Sejarah harga', acc_prices_none:'Belum ada rekod harga', acc_prices_note:'Kos seunit daripada pembekal ini (seunit asas, selepas diskaun, termasuk cukai jualan, barang percuma berasingan), terbaru di atas.', acc_prices_date:'Tarikh invois', acc_prices_unit:'Kos seunit', acc_prices_change:'berbanding lepas', acc_prices_qty:'Kuantiti', acc_j_show:'tekan untuk butiran', acc_j_hide:'sembunyi butiran', acc_j_account:'Akaun', acc_j_debit:'Debit', acc_j_credit:'Kredit', acc_j_desc:'Keterangan', acc_photo_none:'Tiada foto untuk ini', acc_btn_fix_supplier:'Tetapkan pembekal', acc_btn_fix_item:'Padankan barang', acc_btn_void:'Batalkan', acc_btn_approve:'Lulus dan hantar ke AutoCount', acc_btn_reject:'Tolak', acc_btn_requeue:'Giliran semula',
+    acc_btn_resolve:'Selesai', acc_btn_waive:'Kecualikan', acc_btn_void_doc:'Batalkan dokumen ini (bukan penerimaan)', acc_btn_photo:'Lihat foto', acc_btn_map:'Padankan barang pembekal', acc_map_intro:'Padankan setiap barang pada invois dengan kod barang kita dan nyatakan berapa unit kita dalam satu unit mereka (cth. 1 kotak = 20 keping). Sekali sahaja; selepas itu barang yang sama daripada pembekal ini dipadankan sendiri.', acc_map_counted:'Kedai mengira', acc_map_line:'Baris', acc_map_code:'Kod mereka', acc_map_nocode:'Tiada kod pada kertas (diingati ikut nama)', acc_map_known:'sebelum ini disimpan sebagai', acc_map_pick:'Pilih barang yang dikira kedai...', acc_map_other:'Kod lain (taip)', acc_map_code_ph:'Kod barang AutoCount', acc_map_units:'Berapa unit kita dalam 1 {s}?', acc_map_their_unit:'unit', acc_map_save:'Simpan dan padankan semula', acc_map_none:'Pilih barang untuk sekurang-kurangnya satu baris', acc_map_done:'Diingati', acc_btn_prices:'Sejarah harga', acc_prices_none:'Belum ada rekod harga', acc_prices_note:'Kos seunit daripada pembekal ini (seunit asas, selepas diskaun, termasuk cukai jualan, barang percuma berasingan), terbaru di atas.', acc_prices_date:'Tarikh invois', acc_prices_unit:'Kos seunit', acc_prices_change:'berbanding lepas', acc_prices_qty:'Kuantiti', acc_j_show:'tekan untuk butiran', acc_j_hide:'sembunyi butiran', acc_j_account:'Akaun', acc_j_debit:'Debit', acc_j_credit:'Kredit', acc_j_desc:'Keterangan', acc_photo_none:'Tiada foto untuk ini', acc_btn_fix_supplier:'Tetapkan pembekal', acc_btn_fix_item:'Padankan barang', acc_btn_void:'Batalkan', acc_btn_approve:'Lulus dan hantar ke AutoCount', acc_btn_reject:'Tolak', acc_btn_requeue:'Giliran semula',
     acc_prompt_note:'Apa yang dilakukan (sekurang-kurangnya 5 aksara):', acc_prompt_supplier:'Kod pembekal AutoCount (cth 4000-B012):', acc_prompt_item:'Kod barang AutoCount:', acc_prompt_reason:'Sebab:', acc_prompt_account:'Kod akaun AutoCount:',
     acc_sev_critical:'kritikal', acc_sev_normal:'biasa', acc_state_pending:'menunggu', acc_state_sent:'menghantar', acc_state_confirmed:'dalam AutoCount', acc_state_failed:'gagal, akan cuba lagi', acc_state_abandoned:'dihentikan',
     acc_set_ap:'Akaun kawalan AP', acc_set_pur:'Akaun belian', acc_set_tax:'Akaun cukai input (pilihan)', acc_set_hint:'Kod mesti sama dengan GLMast AutoCount. Kod salah hanya membuat AutoCount menolak jurnal; tiada kesan lain.', acc_set_saved:'Disimpan',
@@ -5705,6 +5705,65 @@ async function accOpenPhotos(x){
 
 /* The last prices of each item named in a price-rise exception, same supplier, newest first (RUN_15 records a price
    every time an invoice matches). Net cost per base unit: after discount, including sales tax, free goods apart. */
+/* Teach the system a supplier's products (RUN_22). Each invoice line is paired with one of the items the store
+   counted (or any AutoCount code) and "how many of our units in one of theirs" -- 1 carton = 20 pieces. Saved
+   once per supplier product; the invoice is matched again straight after the last line is saved. */
+async function accOpenMapItems(x){
+  const body=el(`<div><p class="hint">${esc(t('acc_loading'))}</p></div>`);
+  openSheet(t('acc_btn_map'), body);
+  try{
+    const dq=await accDb().from('doc').select('id,supplier_code,supplier_doc_no,grn_id,entity_code').eq('id', x.doc_id).limit(1);
+    const d=dq.data && dq.data[0]; if(!d) throw new Error('document not found');
+    const [dl, gl, xr]=await Promise.all([
+      accDb().from('doc_line').select('line_no,supplier_item,description,qty,uom,item_code').eq('doc_id', d.id).order('line_no'),
+      (d.grn_id||x.grn_id) ? accDb().from('grn_line').select('line_no,item_code,description,uom,qty_received').eq('grn_id', d.grn_id||x.grn_id).order('line_no') : Promise.resolve({data:[]}),
+      accDb().from('item_xref').select('supplier_item,item_code,pack_factor').eq('entity_code', d.entity_code).eq('supplier_code', d.supplier_code),
+    ]);
+    if(dl.error) throw dl.error;
+    const lines=dl.data||[], counted=(gl.data||[]).filter(g=>g.item_code), known=xr.data||[];
+    const keyOf=l=>{ const c=String(l.supplier_item||'').trim(); return c || ('D:'+String(l.description||'').toUpperCase().replace(/[^A-Z0-9]+/g,' ')); };
+    body.innerHTML='';
+    body.appendChild(el(`<p class="hint" style="margin-top:0; white-space:normal;">${esc(t('acc_map_intro'))}</p>`));
+    body.appendChild(el(`<div class="lr-title">${esc(d.supplier_code)} · ${esc(d.supplier_doc_no||'')}</div>`));
+    if(counted.length) body.appendChild(el(`<div class="lr-sub" style="white-space:normal; margin-bottom:8px;">${esc(t('acc_map_counted'))}: ${counted.map(g=>esc(g.item_code+' '+(g.description||'')+' ×'+Number(g.qty_received)+' '+(g.uom||''))).join(' · ')}</div>`));
+    const rows=[];
+    lines.forEach(l=>{
+      const prev=known.find(k=>k.supplier_item===keyOf(l));
+      const card=el(`<div class="card" style="margin-bottom:8px;"><div class="lr-title" style="white-space:normal;">${esc(t('acc_map_line'))} ${l.line_no}: ${esc(l.description||'')} · ${Number(l.qty)} ${esc(l.uom||'')}</div>
+        <div class="lr-sub">${esc(l.supplier_item?t('acc_map_code')+' '+l.supplier_item:t('acc_map_nocode'))}${prev?' · '+esc(t('acc_map_known'))+' '+esc(prev.item_code)+' ×'+Number(prev.pack_factor):''}</div></div>`);
+      const sel=el(`<select class="input" style="width:100%; margin-top:6px;"><option value="">${esc(t('acc_map_pick'))}</option>${counted.map(g=>'<option value="'+esc(g.item_code)+'" data-q="'+Number(g.qty_received)+'">'+esc(g.item_code+' · '+(g.description||'')+' ('+Number(g.qty_received)+' '+(g.uom||'')+')')+'</option>').join('')}<option value="__other">${esc(t('acc_map_other'))}</option></select>`);
+      const code=el(`<input type="text" class="input" style="width:100%; margin-top:6px;" placeholder="${esc(t('acc_map_code_ph'))}" hidden>`);
+      const packLbl=el(`<div class="lr-sub" style="margin-top:6px;">${esc(t('acc_map_units').replace('{s}', l.uom||t('acc_map_their_unit')))}</div>`);
+      const pack=el(`<input class="input" type="number" min="0" step="any" style="width:100%;" value="${prev?Number(prev.pack_factor):1}">`);
+      let typed=false; pack.oninput=()=>{ typed=true; };
+      // guess "our units per theirs" from what the store counted: 20 pieces counted / 1 carton billed = 20
+      const guess=()=>{
+        const o=sel.options[sel.selectedIndex]; const q=Number(o && o.dataset ? o.dataset.q : 0);
+        if(!typed && !prev && q>0 && Number(l.qty)>0){ const g=q/Number(l.qty); pack.value = Math.abs(g-Math.round(g))<1e-9 ? Math.round(g) : Math.round(g*10000)/10000; }
+      };
+      const pre=prev ? prev.item_code : (l.item_code||'');
+      if(pre){ if(counted.some(g=>g.item_code===pre)){ sel.value=pre; guess(); } else { sel.value='__other'; code.hidden=false; code.value=pre; } }
+      sel.onchange=()=>{ code.hidden = sel.value!=='__other'; guess(); };
+      card.appendChild(sel); card.appendChild(code); card.appendChild(packLbl); card.appendChild(pack);
+      body.appendChild(card);
+      rows.push({l, sel, code, pack});
+    });
+    const foot=el('<div class="sheet-foot"></div>');
+    const save=el(`<button class="btn primary block">${esc(t('acc_map_save'))}</button>`);
+    save.onclick=async()=>{
+      const todo=rows.map(r=>({line:r.l.line_no, item:(r.sel.value==='__other'?r.code.value:r.sel.value).trim(), pack:Number(r.pack.value)})).filter(r=>r.item);
+      if(!todo.length){ toast(t('acc_map_none')); return; }
+      if(todo.some(r=>!(r.pack>0))){ toast(t('acc_map_units').replace('{s}','')); return; }
+      save.disabled=true; let res='';
+      try{
+        for(let i=0;i<todo.length;i++) res=await accRpc('map_supplier_item',{p_doc:d.id, p_line_no:todo[i].line, p_item:todo[i].item, p_pack:todo[i].pack, p_rematch:i===todo.length-1});
+        toast(t('acc_map_done')+(res?' · '+res:'')); closeSheet(); await accLoad();
+      }catch(err){ toast(t('acc_failed_prefix')+String((err&&err.message)||err)); save.disabled=false; }
+    };
+    foot.appendChild(save); body.appendChild(foot);
+  }catch(err){ body.innerHTML=''; body.appendChild(el(`<p class="hint">${esc(t('acc_failed_prefix')+String((err&&err.message)||err))}</p>`)); }
+}
+
 async function accOpenPriceHistory(x){
   const body=el(`<div><p class="hint">${esc(t('acc_loading'))}</p></div>`);
   openSheet(t('acc_btn_prices'), body);
@@ -5743,6 +5802,7 @@ function accExceptionsView(){
     const mk=(label, cls, fn)=>{ const b=el(`<button class="btn sm ${cls||''}">${esc(label)}</button>`); b.onclick=fn; btns.appendChild(b); };
     if(x.doc_id || x.grn_id) mk(t('acc_btn_photo'),'',()=>accOpenPhotos(x));
     if(x.kind==='price_variance' && x.doc_id) mk(t('acc_btn_prices'),'',()=>accOpenPriceHistory(x));
+    if((x.kind==='unknown_item' || x.kind==='qty_variance') && x.doc_id) mk(t('acc_btn_map'),'primary',()=>accOpenMapItems(x));
     if(x.kind==='unknown_supplier' && x.grn_id) mk(t('acc_btn_fix_supplier'),'primary',()=>{ const code=accAsk(t('acc_prompt_supplier'),4); if(code) accAct('fix_grn_supplier',{p_grn:x.grn_id,p_code:code,p_remember:true}); });
     if(x.kind==='unknown_item' && x.grn_id) mk(t('acc_btn_fix_item'),'primary',async ()=>{
       const {data,error}=await accDb().from('grn_line').select('id,description,sku_ref,qty_received').eq('grn_id',x.grn_id).is('item_code',null).order('line_no');
