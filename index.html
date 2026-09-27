@@ -1972,38 +1972,6 @@ function readFields(container, fields){
 }
 
 /* ============================ ONBOARDING / IDENTITY ============================ */
-function onboardingView(){
-  const form=el('<div style="width:100%; max-width:280px; text-align:left;"></div>');
-  const fields=[
-    {key:'name', label:t('field_your_name'), ph:t('ph_your_name')},
-    {key:'phone', label:t('field_phone_opt'), ph:t('ph_phone_hint')},
-    {key:'pin', label:t('field_new_pin'), type:'password'},
-    {key:'pin2', label:t('field_confirm_pin'), type:'password'},
-  ];
-  form.innerHTML = fieldsHTML(fields);
-  const btn=el(`<button class="btn primary block">${esc(t('btn_create_admin'))}</button>`);
-  btn.onclick=async ()=>{
-    const v = readFields(form, fields);
-    if(!v.name || !v.name.trim()){ toast(t('err_fill_name')); return; }
-    if(!v.pin || v.pin.length<4){ toast(t('err_pin_len')); return; }
-    if(v.pin!==v.pin2){ toast(t('err_pin_mismatch')); return; }
-    if(!S.db){ toast(t('err_db_disconnected')); return; }
-    btn.disabled=true; btn.textContent=t('btn_creating');
-    try{
-      const salt=randomSalt();
-      const hash=await hashPin(v.pin, salt);
-      const ref = await S.db.collection('employees').add({name:v.name.trim(), phone:v.phone||'', role:'admin', active:true, pinHash:hash, pinSalt:salt, createdAt:new Date().toISOString()});
-      S.employeeId=ref.id; LS.set('bgc_employee_id', ref.id);
-      toast(t('toast_welcome')+v.name);
-    }catch(e){ toast(dbErrMsg(e)); btn.disabled=false; btn.textContent=t('btn_create_admin'); }
-  };
-  const container=el('<div class="center-screen"></div>');
-  container.innerHTML = `${ICONS.user}<h2>${esc(t('onboarding_welcome_prefix')+(S.settings.businessName||'24 Xpress'))}</h2><p>${esc(t('onboarding_intro'))}</p>`;
-  container.appendChild(form);
-  const spacer=el('<div style="height:14px"></div>'); container.appendChild(spacer);
-  container.appendChild(btn);
-  return container;
-}
 function identityRow(e){
   const roleLabel = e.role==='admin'?t('role_admin'):e.role==='manager'?t('role_manager'):t('role_staff');
   const row=el(`<div class="id-pick-row" tabindex="0" role="button"><span class="avatar">${avatarHTML(e)}</span>
