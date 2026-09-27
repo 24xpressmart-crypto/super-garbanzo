@@ -522,7 +522,7 @@ const I18N = {
     acc_bridge_title:'桥接（HQ 电脑）', acc_bridge_none:'桥接还没跑过。HQ 电脑上执行 AcBridge.exe 后这里会出现心跳。', acc_bridge_stale:'超过 10 分钟没心跳', acc_bridge_ok:'在线', acc_bridge_last:'最后心跳', acc_bridge_queue:'队列深度',
     acc_settings_missing:'科目代码还没填：配对发票那一步会一直等。请在「设定」分页填应付控制账与进货科目。',
     acc_no_exceptions:'没有待处理的例外', acc_no_receiving:'还没有收货记录', acc_no_journals:'没有待批准的分录',
-    acc_btn_resolve:'已处理', acc_btn_waive:'豁免', acc_btn_void_doc:'作废这张单据（不是收货）', acc_btn_fix_supplier:'指定供应商', acc_btn_fix_item:'对应货品', acc_btn_void:'作废这张', acc_btn_approve:'批准并传 AutoCount', acc_btn_reject:'退回', acc_btn_requeue:'重新排队',
+    acc_btn_resolve:'已处理', acc_btn_waive:'豁免', acc_btn_void_doc:'作废这张单据（不是收货）', acc_btn_photo:'看照片', acc_photo_none:'这张没有照片', acc_btn_fix_supplier:'指定供应商', acc_btn_fix_item:'对应货品', acc_btn_void:'作废这张', acc_btn_approve:'批准并传 AutoCount', acc_btn_reject:'退回', acc_btn_requeue:'重新排队',
     acc_prompt_note:'写下做了什么（至少 5 个字）：', acc_prompt_supplier:'AutoCount 供应商代码（例如 4000-B012）：', acc_prompt_item:'AutoCount 货号：', acc_prompt_reason:'原因：', acc_prompt_account:'AutoCount 科目代码：',
     acc_sev_critical:'严重', acc_sev_normal:'一般', acc_state_pending:'待传', acc_state_sent:'传送中', acc_state_confirmed:'已入', acc_state_failed:'失败待重试', acc_state_abandoned:'已放弃',
     acc_set_ap:'应付控制账（AP control）', acc_set_pur:'进货科目（purchases）', acc_set_tax:'进项税科目（可空）', acc_set_hint:'代码要和 AutoCount 的 GLMast 完全一致。填错，分录就会被 AutoCount 拒绝，不会有别的损失。', acc_set_saved:'已保存',
@@ -761,7 +761,7 @@ const I18N = {
     acc_bridge_title:'Bridge (HQ machine)', acc_bridge_none:'The bridge has not run yet. Once AcBridge.exe runs on the HQ machine its heartbeat shows here.', acc_bridge_stale:'no heartbeat for over 10 minutes', acc_bridge_ok:'online', acc_bridge_last:'last heartbeat', acc_bridge_queue:'queue depth',
     acc_settings_missing:'Account codes not set: invoice matching will wait. Fill AP control and purchases account under Setup.',
     acc_no_exceptions:'Nothing to handle', acc_no_receiving:'No goods received yet', acc_no_journals:'No journals waiting',
-    acc_btn_resolve:'Resolved', acc_btn_waive:'Waive', acc_btn_void_doc:'Void this document (not the receipt)', acc_btn_fix_supplier:'Set supplier', acc_btn_fix_item:'Map item', acc_btn_void:'Void this one', acc_btn_approve:'Approve and send to AutoCount', acc_btn_reject:'Reject', acc_btn_requeue:'Queue again',
+    acc_btn_resolve:'Resolved', acc_btn_waive:'Waive', acc_btn_void_doc:'Void this document (not the receipt)', acc_btn_photo:'View photo', acc_photo_none:'No photo on this one', acc_btn_fix_supplier:'Set supplier', acc_btn_fix_item:'Map item', acc_btn_void:'Void this one', acc_btn_approve:'Approve and send to AutoCount', acc_btn_reject:'Reject', acc_btn_requeue:'Queue again',
     acc_prompt_note:'What was done (at least 5 characters):', acc_prompt_supplier:'AutoCount supplier code (e.g. 4000-B012):', acc_prompt_item:'AutoCount item code:', acc_prompt_reason:'Reason:', acc_prompt_account:'AutoCount account code:',
     acc_sev_critical:'critical', acc_sev_normal:'normal', acc_state_pending:'waiting', acc_state_sent:'sending', acc_state_confirmed:'in AutoCount', acc_state_failed:'failed, will retry', acc_state_abandoned:'given up',
     acc_set_ap:'AP control account', acc_set_pur:'Purchases account', acc_set_tax:'Input tax account (optional)', acc_set_hint:'Codes must match AutoCount GLMast exactly. A wrong code only makes AutoCount reject the journal; nothing else breaks.', acc_set_saved:'Saved',
@@ -1000,7 +1000,7 @@ const I18N = {
     acc_bridge_title:'Jambatan (komputer HQ)', acc_bridge_none:'Jambatan belum berjalan. Selepas AcBridge.exe dijalankan di HQ, degupan akan muncul di sini.', acc_bridge_stale:'tiada degupan lebih 10 minit', acc_bridge_ok:'dalam talian', acc_bridge_last:'degupan terakhir', acc_bridge_queue:'kedalaman giliran',
     acc_settings_missing:'Kod akaun belum diisi: padanan invois akan menunggu. Isi akaun kawalan AP dan akaun belian di Tetapan.',
     acc_no_exceptions:'Tiada yang perlu diuruskan', acc_no_receiving:'Belum ada terima barang', acc_no_journals:'Tiada jurnal menunggu',
-    acc_btn_resolve:'Selesai', acc_btn_waive:'Kecualikan', acc_btn_void_doc:'Batalkan dokumen ini (bukan penerimaan)', acc_btn_fix_supplier:'Tetapkan pembekal', acc_btn_fix_item:'Padankan barang', acc_btn_void:'Batalkan', acc_btn_approve:'Lulus dan hantar ke AutoCount', acc_btn_reject:'Tolak', acc_btn_requeue:'Giliran semula',
+    acc_btn_resolve:'Selesai', acc_btn_waive:'Kecualikan', acc_btn_void_doc:'Batalkan dokumen ini (bukan penerimaan)', acc_btn_photo:'Lihat foto', acc_photo_none:'Tiada foto untuk ini', acc_btn_fix_supplier:'Tetapkan pembekal', acc_btn_fix_item:'Padankan barang', acc_btn_void:'Batalkan', acc_btn_approve:'Lulus dan hantar ke AutoCount', acc_btn_reject:'Tolak', acc_btn_requeue:'Giliran semula',
     acc_prompt_note:'Apa yang dilakukan (sekurang-kurangnya 5 aksara):', acc_prompt_supplier:'Kod pembekal AutoCount (cth 4000-B012):', acc_prompt_item:'Kod barang AutoCount:', acc_prompt_reason:'Sebab:', acc_prompt_account:'Kod akaun AutoCount:',
     acc_sev_critical:'kritikal', acc_sev_normal:'biasa', acc_state_pending:'menunggu', acc_state_sent:'menghantar', acc_state_confirmed:'dalam AutoCount', acc_state_failed:'gagal, akan cuba lagi', acc_state_abandoned:'dihentikan',
     acc_set_ap:'Akaun kawalan AP', acc_set_pur:'Akaun belian', acc_set_tax:'Akaun cukai input (pilihan)', acc_set_hint:'Kod mesti sama dengan GLMast AutoCount. Kod salah hanya membuat AutoCount menolak jurnal; tiada kesan lain.', acc_set_saved:'Disimpan',
@@ -5670,6 +5670,33 @@ function accMonthView(){
   return w;
 }
 
+/* The photos behind an exception: its document (and, for a duplicate, the other copies), or the documents of its
+   goods receipt. acc.doc.storage_path is 'store:receipts/<receipt id>' -> the photos listed on that receipt,
+   each 'sb:receipts/...' (private Storage, signed URL) or an older in-row data URL. Read-only. */
+async function accOpenPhotos(x){
+  const body=el(`<div><p class="hint">${esc(t('acc_loading'))}</p></div>`);
+  openSheet(t('acc_btn_photo'), body);
+  try{
+    const ids=[x.doc_id, ...(((x.detail||{}).others)||[]).map(o=>o.docId)].filter(Boolean);
+    let q=accDb().from('doc').select('id,storage_path,supplier_doc_no,gross_amount,doc_date,status');
+    q = ids.length ? q.in('id', ids) : q.eq('grn_id', x.grn_id);
+    const {data:docs, error}=await q;
+    if(error) throw error;
+    body.innerHTML='';
+    if(!docs || !docs.length){ body.appendChild(el(`<p class="hint">${esc(t('acc_photo_none'))}</p>`)); return; }
+    docs.sort((a,b)=>ids.indexOf(a.id)-ids.indexOf(b.id));
+    for(const d of docs){
+      body.appendChild(el(`<div class="lr-title" style="margin:10px 0 4px;">${d.id===x.doc_id?'👉 ':''}${esc(d.supplier_doc_no||'?')} · ${d.gross_amount==null?'':'RM '+Number(d.gross_amount).toFixed(2)} · ${esc(d.doc_date||'')} · ${esc(d.status)}</div>`));
+      const m=String(d.storage_path||'').match(/^store:([^/]+)\/(.+)$/);
+      if(!m){ body.appendChild(el(`<p class="hint">${esc(t('acc_photo_none'))}</p>`)); continue; }
+      const {data:rows}=await S.sb.from('store').select('data').eq('collection', m[1]).eq('id', m[2]).limit(1);
+      const photos=(rows && rows[0] && rows[0].data && rows[0].data.photos) || [];
+      if(!photos.length) body.appendChild(el(`<p class="hint">${esc(t('acc_photo_none'))}</p>`));
+      photos.forEach(p=>photoEls(p).forEach(n=>body.appendChild(n)));
+    }
+  }catch(err){ body.innerHTML=''; body.appendChild(el(`<p class="hint">${esc(t('acc_failed_prefix')+String((err&&err.message)||err))}</p>`)); }
+}
+
 function accExceptionsView(){
   const w=el('<div class="list"></div>');
   if(!S.acc.exceptions.length){ w.appendChild(el(`<div class="hint">${esc(t('acc_no_exceptions'))}</div>`)); return w; }
@@ -5681,6 +5708,7 @@ function accExceptionsView(){
       ${accKind(x.kind)[1]?`<div class="lr-sub" style="white-space:normal; color:var(--ink);">👉 ${esc(accKind(x.kind)[1])}</div>`:''}<div class="lr-sub" style="white-space:normal;">${esc(x.message)}</div><div class="lr-sub">${esc(localStamp(x.created_at))}</div></div></div>`);
     const btns=el('<div class="row" style="flex-wrap:wrap; gap:6px; margin-top:6px; flex-basis:100%;"></div>');
     const mk=(label, cls, fn)=>{ const b=el(`<button class="btn sm ${cls||''}">${esc(label)}</button>`); b.onclick=fn; btns.appendChild(b); };
+    if(x.doc_id || x.grn_id) mk(t('acc_btn_photo'),'',()=>accOpenPhotos(x));
     if(x.kind==='unknown_supplier' && x.grn_id) mk(t('acc_btn_fix_supplier'),'primary',()=>{ const code=accAsk(t('acc_prompt_supplier'),4); if(code) accAct('fix_grn_supplier',{p_grn:x.grn_id,p_code:code,p_remember:true}); });
     if(x.kind==='unknown_item' && x.grn_id) mk(t('acc_btn_fix_item'),'primary',async ()=>{
       const {data,error}=await accDb().from('grn_line').select('id,description,sku_ref,qty_received').eq('grn_id',x.grn_id).is('item_code',null).order('line_no');
