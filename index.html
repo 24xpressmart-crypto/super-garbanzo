@@ -1684,8 +1684,9 @@ function sub(colPath, key, opts){
   if(opts.order) q = q.orderBy(opts.order, opts.dir||'desc');
   if(opts.limit) q = q.limit(opts.limit);
   q.onSnapshot(snap=>{
-    S[key] = snap.docs.map(d=>Object.assign({id:d.id}, d.data()));
-    if(key==='employees') S.employeesLoaded=true;
+    const rows = snap.docs.map(d=>Object.assign({id:d.id}, d.data()));
+    if(key==='employees'){ empFull=rows; mergeEmployees(); S.employeesLoaded=true; loadEmployeeDirectory(false); }
+    else S[key] = rows;
     if(key==='skus') S.skusLoaded=true;
     renderApp();
   }, err=>{ console.warn(colPath, err); });
@@ -1703,6 +1704,27 @@ function catalogReady(){
   if(!S.skusLoaded) toast(t('acc_loading'));
   return S.skusLoaded;
 }
+/* Staff records (patch 11): the database lets a person read their own full record, a manager the staff of
+   their stores and an admin everyone. Colleagues elsewhere come from employee_directory(): name, store, role,
+   job title, and the phone of managers only. A full record wins over its directory entry. Before the patch
+   the directory function is missing and the full list arrives as it always did. */
+let empFull=[], empDir=[], empDirAt=0, empDirBusy=false;
+function mergeEmployees(){
+  const m=new Map(empDir.map(e=>[e.id,e]));
+  empFull.forEach(e=>m.set(e.id,e));
+  S.employees=[...m.values()];
+}
+async function loadEmployeeDirectory(force){
+  if(empDirBusy || !S.token || !S.sb || (!force && Date.now()-empDirAt<30000)) return;
+  empDirBusy=true;
+  try{
+    const rows=await rpc('employee_directory');
+    empDir=(rows||[]).map(r=>Object.assign({}, r.data, {id:r.id}));
+    empDirAt=Date.now(); mergeEmployees(); renderApp();
+  }catch(err){ empDirAt=Date.now(); if(!missingFn(err)) console.warn('employee_directory', err); }
+  finally{ empDirBusy=false; }
+}
+setInterval(()=>loadEmployeeDirectory(true), 5*60*1000);
 let subDb=null, catalogAsked=false;
 function subscribeAll(){
   subDb=S.db; catalogAsked=false; S.skusLoaded=false;
