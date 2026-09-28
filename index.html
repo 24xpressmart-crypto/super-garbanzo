@@ -239,6 +239,34 @@
   .empty{text-align:center; padding:34px 16px; color:var(--ink-faint); font-size:13px;}
   .empty svg{width:34px; height:34px; margin-bottom:8px; opacity:.5;}
   .hint{font-size:12px; color:var(--ink-faint); margin-top:8px; line-height:1.6;}
+  .vm-sum{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; text-align:center;}
+  .vm-sum .v{font-size:20px; font-weight:900;} .vm-sum .l{font-size:11.5px; color:var(--ink-soft); line-height:1.3;}
+  .vm-dev{border-left:4px solid var(--border);} .vm-dev.lvl-critical{border-left-color:var(--critical);} .vm-dev.lvl-warn{border-left-color:var(--warn);} .vm-dev.lvl-ok{border-left-color:var(--ok);}
+  .vm-chips{display:flex; flex-wrap:wrap; gap:4px; margin-top:4px;}
+  .vm-bar{height:5px; border-radius:3px; background:var(--surface-2); overflow:hidden; margin-top:6px;}
+  .vm-bar i{display:block; height:100%; background:var(--ok);}
+  .vm-submitbar{display:flex; align-items:center; gap:10px; margin:12px 0 4px;}
+  .vm-rowlb{font-size:11px; color:var(--ink-faint); margin:12px 0 5px; font-weight:700; letter-spacing:.04em;}
+  .vm-cells{display:grid; grid-template-columns:repeat(auto-fill,minmax(70px,1fr)); gap:6px;}
+  .vm-cell{position:relative; display:flex; flex-direction:column; align-items:flex-start; gap:2px; padding:6px 7px; border:1.5px solid var(--border); border-radius:9px; background:var(--surface); color:var(--ink); text-align:left; font:inherit; min-height:64px; cursor:pointer;}
+  .vm-cell .vm-no{font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--ink-faint);}
+  .vm-cell .vm-pn{font-size:11px; font-weight:700; line-height:1.2; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; word-break:break-word;}
+  .vm-cell .vm-q{font-size:12px; font-weight:900; margin-top:auto; display:flex; gap:5px; align-items:baseline;}
+  .vm-cell .vm-exp{font-size:10px; font-weight:700; color:var(--ink-soft);}
+  .vm-cell.unset{border-style:dashed; color:var(--ink-faint); background:transparent;}
+  .vm-cell.due{border-color:var(--critical); background:var(--critical-soft);}
+  .vm-cell.soon{border-color:var(--warn); background:var(--warn-soft);}
+  .vm-cell.done{border-color:var(--ok); box-shadow:inset 0 0 0 1.5px var(--ok);}
+  .vm-cell .vm-tick{position:absolute; top:4px; right:7px; color:var(--ok); font-weight:900; font-size:13px;}
+  .vm-num{display:flex; align-items:center; gap:6px; margin-top:12px;}
+  .vm-num .lbl{flex:1; font-size:13px; line-height:1.3;}
+  .vm-num input{width:70px; text-align:center; font-weight:900; font-size:18px; padding:8px 4px;}
+  .vm-step{width:40px; height:40px; padding:0; font-size:20px; font-weight:900; flex:none;}
+  .vm-quick{display:flex; gap:6px; flex-wrap:wrap; margin-top:6px;}
+  .vm-table{width:100%; border-collapse:collapse; font-size:12.5px;}
+  .vm-table th{text-align:left; font-size:11px; color:var(--ink-faint); font-weight:700; padding:4px 6px; border-bottom:1px solid var(--border); white-space:nowrap;}
+  .vm-table td{padding:6px; border-bottom:1px solid var(--border); vertical-align:top;}
+  .vm-table td.num{text-align:right; white-space:nowrap;}
   .divider{height:1px; background:var(--border); margin:18px 0;}
 
   #nav{
@@ -645,7 +673,7 @@ const I18N = {
     geo_err_unsupported:'⚠ 此浏览器不支持定位功能。',
     geo_err_insecure:'⚠ 当前页面不是安全连接（https），无法获取定位。',
     empty_no_records:'暂无记录', flag_out_of_range:'超出范围', flag_in_range:'范围内', no_photo_taken:'打卡时未拍照',
-    seg_snacks:'零食饮料', seg_beer:'鲜啤酒', beer_title:'鲜啤酒库存', empty_add_beer_product:'请先在「我的」中添加啤酒品项',
+    seg_snacks:'售货机', vm_tab_today:'今天', vm_tab_report:'报告', vm_sum_machines:'台要去', vm_sum_due:'个过期要拿出', vm_sum_soon:'个快过期', vm_today_hint:'最急的排最上面。数量是上次巡机时数到的；XY 接通后会自动更新。', vm_lvl_critical:'马上处理', vm_lvl_warn:'今天去', vm_lvl_ok:'正常', vm_lvl_n:'停运', vm_chip_due:'过期', vm_chip_soon:'快过期', vm_chip_empty:'空道', vm_chip_unset:'未设商品', vm_last:'上次：', vm_never:'还没有巡机记录', vm_days_ago:' 天前', vm_today_word:'今天', vm_draft_pill:'未提交', vm_back:'全部机器', vm_visit_hint:'逐个货道做：点货道 → 数剩几个 → 拿出过期 → 补货 → 填到期日。全部做完按「提交巡机」。没动的货道不用点。', vm_legend:'红＝有过期　橙＝快过期　虚线＝未设商品　✓＝这次已做', vm_row:'层', vm_done_n:'已做', vm_btn_submit:'提交巡机', vm_btn_discard:'放弃这次的草稿', vm_confirm_discard:'这次记的货道会全部清掉，确定放弃？', vm_slot:'货道', vm_set_product:'设置商品', vm_change_product:'换商品', vm_pick_product_first:'先选这个货道卖什么。', vm_field_product:'商品', vm_field_par:'满道数量', vm_only_manager:'已设商品的货道只有经理能换。', vm_plan_hint:'空货道谁都可以设；已经有商品的货道只有经理能换。', vm_last_record:'上次记录', vm_exp_unknown:'到期日不明', vm_f_left:'剩几个（补货前数一数）', vm_q_empty:'空的', vm_q_full:'满的', vm_q_same:'跟上次一样', vm_f_expired:'过期拿出', vm_f_damaged:'坏的 / 其他拿出', vm_f_added:'补进', vm_f_exp:'新货到期日', vm_day_short:'天', vm_after:'做完后', vm_over_par:'超过满道数量', vm_first_exp:'最早到期', vm_err_left:'先数一数剩几个', vm_err_more_out:'拿出的比剩的还多', vm_err_exp:'补了货要填到期日', vm_btn_save_slot:'保存这个货道', vm_btn_undo_slot:'撤销这个货道', vm_submit_title:'提交巡机', vm_tot_added:'补进', vm_tot_out:'拿出', vm_tot_sold:'卖出（估计）', vm_tot_waste:'损耗金额', vm_no_cost:'未设进价', vm_untouched:'没动的货道保持原样：', vm_still_due:'这些货道还有过期货没拿出：', vm_note:'备注（可不填）', vm_toast_sent:'巡机已提交', vm_only_team:'只有售货机组可以提交巡机', vm_err_offline:'没有网络。草稿还在手机里，有网后再按提交。', vm_left_short:'剩', vm_damaged_short:'坏', vm_range_7:'近 7 天', vm_range_30:'近 30 天', vm_rep_visits:'巡机次数', vm_rep_by_product:'按商品', vm_rep_by_machine:'按机器', vm_rep_recent:'最近巡机', vm_rep_hint:'卖出是估计：上次补完的数量减这次数到的剩余。XY 接通后改用真实销售。', vm_col_product:'商品', vm_col_machine:'机器', vm_col_last:'上次', vm_pcs:'个', vm_visit_title:'巡机记录', field_ac_code:'AutoCount 货号', field_shelf_days:'保质期（天）', field_pull_days:'到期前几天拿出（0＝过了到期日才拿）', notif_vm_expired:'售货机有过期货', seg_beer:'鲜啤酒', beer_title:'鲜啤酒库存', empty_add_beer_product:'请先在「我的」中添加啤酒品项',
     btn_receive_kegs:'登记到货', btn_tap_keg:'开桶上线', beer_on_tap:'使用中的酒桶', beer_no_kegs_on_tap:'目前没有开桶使用中',
     beer_remaining:'剩余', beer_expired:'已过保鲜期', beer_expiring_soon:'即将到期', beer_fresh:'新鲜',
     beer_in_stock:'未开桶库存', beer_no_stock:'暂无库存', beer_kegs_unit:'桶',
@@ -884,7 +912,7 @@ const I18N = {
     geo_err_unsupported:'⚠ This browser doesn\'t support location services.',
     geo_err_insecure:'⚠ This page isn\'t a secure (https) connection, so location can\'t be accessed.',
     empty_no_records:'No records yet', flag_out_of_range:'Out of Range', flag_in_range:'In Range', no_photo_taken:'No photo taken at clock-in',
-    seg_snacks:'Snacks & Drinks', seg_beer:'Draft Beer', beer_title:'Draft Beer Stock', empty_add_beer_product:'Add a beer product under "Me" first',
+    seg_snacks:'Vending machines', vm_tab_today:'Today', vm_tab_report:'Report', vm_sum_machines:'machines to visit', vm_sum_due:'expired to take out', vm_sum_soon:'expiring soon', vm_today_hint:'Most urgent at the top. Quantities are what was counted at the last visit; they update by themselves once XY is connected.', vm_lvl_critical:'Act now', vm_lvl_warn:'Visit today', vm_lvl_ok:'OK', vm_lvl_n:'Stopped', vm_chip_due:'Expired', vm_chip_soon:'Soon', vm_chip_empty:'Empty', vm_chip_unset:'No product', vm_last:'Last: ', vm_never:'No visit recorded yet', vm_days_ago:' d ago', vm_today_word:'today', vm_draft_pill:'Not sent', vm_back:'All machines', vm_visit_hint:'Slot by slot: tap a slot → count what is left → take out expired → refill → enter the expiry date. When done, tap Submit visit. Slots you did not touch need no tap.', vm_legend:'Red = expired   Orange = expiring soon   Dashed = no product   ✓ = done this visit', vm_row:'Row', vm_done_n:'Done', vm_btn_submit:'Submit visit', vm_btn_discard:'Discard this draft', vm_confirm_discard:'Every slot recorded on this visit will be cleared. Discard?', vm_slot:'Slot', vm_set_product:'Set product', vm_change_product:'Change product', vm_pick_product_first:'First choose what this slot sells.', vm_field_product:'Product', vm_field_par:'Full quantity', vm_only_manager:'Only a manager can change the product of a slot that has one.', vm_plan_hint:'Anyone can set an empty slot; only a manager can change a slot that already has a product.', vm_last_record:'Last record', vm_exp_unknown:'expiry unknown', vm_f_left:'Left in the slot (count before refilling)', vm_q_empty:'Empty', vm_q_full:'Full', vm_q_same:'Same as last', vm_f_expired:'Expired taken out', vm_f_damaged:'Damaged / other taken out', vm_f_added:'Added', vm_f_exp:'Expiry of the new stock', vm_day_short:'d', vm_after:'After', vm_over_par:'more than the slot holds', vm_first_exp:'earliest expiry', vm_err_left:'Count what is left first', vm_err_more_out:'More taken out than was left', vm_err_exp:'Stock added needs an expiry date', vm_btn_save_slot:'Save this slot', vm_btn_undo_slot:'Undo this slot', vm_submit_title:'Submit visit', vm_tot_added:'Added', vm_tot_out:'Taken out', vm_tot_sold:'Sold (estimate)', vm_tot_waste:'Waste value', vm_no_cost:'no cost set', vm_untouched:'Slots not touched stay as they were:', vm_still_due:'These slots still hold expired stock:', vm_note:'Note (optional)', vm_toast_sent:'Visit saved', vm_only_team:'Only the vending team can submit a visit', vm_err_offline:'No connection. The draft stays on this phone; submit again when you are online.', vm_left_short:'Left', vm_damaged_short:'Damaged', vm_range_7:'Last 7 days', vm_range_30:'Last 30 days', vm_rep_visits:'Visits', vm_rep_by_product:'By product', vm_rep_by_machine:'By machine', vm_rep_recent:'Recent visits', vm_rep_hint:'Sold is an estimate: what was in the slot after the last visit minus what is counted now. Real sales replace it once XY is connected.', vm_col_product:'Product', vm_col_machine:'Machine', vm_col_last:'Last visit', vm_pcs:'pcs', vm_visit_title:'Visit', field_ac_code:'AutoCount item code', field_shelf_days:'Shelf life (days)', field_pull_days:'Take out how many days before expiry (0 = the day after it expires)', notif_vm_expired:'Expired stock in a machine', seg_beer:'Draft Beer', beer_title:'Draft Beer Stock', empty_add_beer_product:'Add a beer product under "Me" first',
     btn_receive_kegs:'Receive Kegs', btn_tap_keg:'Tap a Keg', beer_on_tap:'On Tap', beer_no_kegs_on_tap:'Nothing on tap right now',
     beer_remaining:'remaining', beer_expired:'Past Freshness', beer_expiring_soon:'Expiring Soon', beer_fresh:'Fresh',
     beer_in_stock:'Unopened Stock', beer_no_stock:'No stock yet', beer_kegs_unit:'kegs',
@@ -1123,7 +1151,7 @@ const I18N = {
     geo_err_unsupported:'⚠ Pelayar ini tidak menyokong perkhidmatan lokasi.',
     geo_err_insecure:'⚠ Halaman ini bukan sambungan selamat (https), jadi lokasi tidak boleh diakses.',
     empty_no_records:'Belum ada rekod', flag_out_of_range:'Luar julat', flag_in_range:'Dalam julat', no_photo_taken:'Tiada gambar semasa daftar masuk',
-    seg_snacks:'Snek & minuman', seg_beer:'Bir draf', beer_title:'Stok bir draf', empty_add_beer_product:'Tambah produk bir di "Saya" dahulu',
+    seg_snacks:'Mesin layan diri', vm_tab_today:'Hari ini', vm_tab_report:'Laporan', vm_sum_machines:'mesin perlu dilawati', vm_sum_due:'tamat tempoh perlu dikeluarkan', vm_sum_soon:'hampir tamat tempoh', vm_today_hint:'Paling mendesak di atas. Kuantiti ialah kiraan pada lawatan terakhir; ia dikemas kini sendiri selepas XY disambung.', vm_lvl_critical:'Segera', vm_lvl_warn:'Lawat hari ini', vm_lvl_ok:'OK', vm_lvl_n:'Berhenti', vm_chip_due:'Tamat', vm_chip_soon:'Hampir', vm_chip_empty:'Kosong', vm_chip_unset:'Tiada produk', vm_last:'Terakhir: ', vm_never:'Belum ada lawatan direkod', vm_days_ago:' hari lalu', vm_today_word:'hari ini', vm_draft_pill:'Belum dihantar', vm_back:'Semua mesin', vm_visit_hint:'Slot demi slot: tekan slot → kira baki → keluarkan yang tamat tempoh → isi semula → masukkan tarikh tamat. Selesai, tekan Hantar lawatan. Slot yang tidak disentuh tidak perlu ditekan.', vm_legend:'Merah = tamat tempoh   Oren = hampir tamat   Putus-putus = tiada produk   ✓ = siap lawatan ini', vm_row:'Baris', vm_done_n:'Siap', vm_btn_submit:'Hantar lawatan', vm_btn_discard:'Buang draf ini', vm_confirm_discard:'Semua slot yang direkod dalam lawatan ini akan dipadam. Buang?', vm_slot:'Slot', vm_set_product:'Tetapkan produk', vm_change_product:'Tukar produk', vm_pick_product_first:'Pilih dahulu produk untuk slot ini.', vm_field_product:'Produk', vm_field_par:'Kuantiti penuh', vm_only_manager:'Hanya pengurus boleh menukar produk slot yang sudah ada produk.', vm_plan_hint:'Sesiapa boleh menetapkan slot kosong; hanya pengurus boleh menukar slot yang sudah ada produk.', vm_last_record:'Rekod terakhir', vm_exp_unknown:'tarikh tamat tidak diketahui', vm_f_left:'Baki dalam slot (kira sebelum isi)', vm_q_empty:'Kosong', vm_q_full:'Penuh', vm_q_same:'Sama seperti lepas', vm_f_expired:'Tamat tempoh dikeluarkan', vm_f_damaged:'Rosak / lain dikeluarkan', vm_f_added:'Ditambah', vm_f_exp:'Tarikh tamat stok baharu', vm_day_short:'h', vm_after:'Selepas', vm_over_par:'melebihi kapasiti slot', vm_first_exp:'tamat terawal', vm_err_left:'Kira baki dahulu', vm_err_more_out:'Lebih dikeluarkan daripada baki', vm_err_exp:'Stok ditambah perlu tarikh tamat', vm_btn_save_slot:'Simpan slot ini', vm_btn_undo_slot:'Batal slot ini', vm_submit_title:'Hantar lawatan', vm_tot_added:'Ditambah', vm_tot_out:'Dikeluarkan', vm_tot_sold:'Terjual (anggaran)', vm_tot_waste:'Nilai pembaziran', vm_no_cost:'tiada kos', vm_untouched:'Slot yang tidak disentuh kekal:', vm_still_due:'Slot ini masih ada stok tamat tempoh:', vm_note:'Nota (pilihan)', vm_toast_sent:'Lawatan disimpan', vm_only_team:'Hanya pasukan mesin boleh menghantar lawatan', vm_err_offline:'Tiada sambungan. Draf kekal dalam telefon; hantar semula bila ada talian.', vm_left_short:'Baki', vm_damaged_short:'Rosak', vm_range_7:'7 hari lepas', vm_range_30:'30 hari lepas', vm_rep_visits:'Lawatan', vm_rep_by_product:'Ikut produk', vm_rep_by_machine:'Ikut mesin', vm_rep_recent:'Lawatan terkini', vm_rep_hint:'Terjual ialah anggaran: isi slot selepas lawatan lepas tolak baki yang dikira sekarang. Jualan sebenar menggantikannya selepas XY disambung.', vm_col_product:'Produk', vm_col_machine:'Mesin', vm_col_last:'Lawatan terakhir', vm_pcs:'unit', vm_visit_title:'Lawatan', field_ac_code:'Kod item AutoCount', field_shelf_days:'Jangka hayat (hari)', field_pull_days:'Keluarkan berapa hari sebelum tamat (0 = sehari selepas tamat)', notif_vm_expired:'Stok tamat tempoh dalam mesin', seg_beer:'Bir draf', beer_title:'Stok bir draf', empty_add_beer_product:'Tambah produk bir di "Saya" dahulu',
     btn_receive_kegs:'Terima tong', btn_tap_keg:'Pasang tong', beer_on_tap:'Sedang digunakan', beer_no_kegs_on_tap:'Tiada tong dipasang sekarang',
     beer_remaining:'berbaki', beer_expired:'Lepas kesegaran', beer_expiring_soon:'Hampir tamat', beer_fresh:'Segar',
     beer_in_stock:'Stok belum dibuka', beer_no_stock:'Belum ada stok', beer_kegs_unit:'tong',
@@ -1248,7 +1276,7 @@ const S = {
   settings:{businessName:'24 Xpress', lowStockDefault:5, geofenceRadius:300, lateGraceMin:10, nightStart:'23:00', nightEnd:'07:00', safetyIntervalMin:120, emergencyPhone:'', slaHighHours:4, slaMediumHours:24, slaLowHours:72, shiftTemplates:'早班 Morning=09:00-18:00\n中班 Afternoon=14:00-23:00\n夜班 Night=23:00-07:00'},
   stockDeviceFilter:'all', equipTab:'devices', faultFilter:'open', historyRange:'today', attnScope:'mine',
   stockSection:'snacks', kegFilter:'tapped', beerZoneFilter:'all', pickerBranch:null, staffBranchFilter:'all', lastGeoMsg:null, clockSub:'records', reportMonth:(function(){const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');})(), reportBranch:'all', reportData:null, reportLoading:false,
-  beerProducts:[], taps:[], kegs:[], kegLogs:[], memos:[], memoReads:[],
+  beerProducts:[], taps:[], kegs:[], kegLogs:[], memos:[], memoReads:[], vmSlots:[], vmVisits:[], vmTab:'today', vmDev:null, vmRange:7,
   skus:[], stockRequests:[], orderBranch:null, orderTab:'inbox',
   suppliers:[], receipts:[], receiveBranch:null,
   acc:{summary:null, receiving:[], exceptions:[], journals:[], payments:[], cod:[], owed:[], owedInv:[], owedOpen:null, grni:[], posDay:[], posTender:[], posShift:[], posLoad:null, posHist:[], tillCash:[], tillGrn:[], loading:false, loadedAt:null, error:null, tab:'exceptions'},
@@ -1627,7 +1655,7 @@ function makeSupabaseDb(sb){
     };
     return api;
   }
-  return { collection: collectionRef, doc: docRef, fullRecord,
+  return { collection: collectionRef, doc: docRef, fullRecord, refresh: refreshCollection,
     rawFetch: (collection, filters, order, dir)=>fetchAll(collection, {filters, order, dir}) };
 }
 function makeBrowserDownloads(){
@@ -1738,6 +1766,8 @@ function subscribeAll(){
   sub('sites','sites',{limit:200});
   sub('products','products',{limit:500});
   sub('inventory','inventory',{limit:1000});
+  sub('vmSlots','vmSlots',{limit:2000});
+  sub('vmVisits','vmVisits',{order:'createdAt',limit:600,sinceDays:92});
   // Live views keep a rolling window (about 3 months); older history stays in the
   // database and is reachable through the month export / monthly report.
   sub('restockLogs','restockLogs',{order:'createdAt',limit:600,sinceDays:92});
@@ -2578,7 +2608,7 @@ function stockView(){
     <button data-v="snacks" class="${S.stockSection!=='beer'?'on':''}">${esc(t('seg_snacks'))}</button>
     <button data-v="beer" class="${S.stockSection==='beer'?'on':''}">${esc(t('seg_beer'))}</button></div>`));
   [...c.lastChild.querySelectorAll('button')].forEach(b=>{ b.onclick=()=>{ S.stockSection=b.dataset.v; S.showReport=false; renderApp(); }; });
-  c.appendChild(S.stockSection==='beer' ? beerStockView() : snackStockView());
+  c.appendChild(S.stockSection==='beer' ? beerStockView() : vendingView());
   return c;
 }
 function snackStockView(){
@@ -2714,6 +2744,391 @@ function stockReport(){
   if(S.restockLogs.length===0) list.appendChild(el(`<div class="empty">${ICONS.inbox}<div>${esc(t('empty_no_records'))}</div></div>`));
   c.appendChild(list);
   return c;
+}
+
+/* ============================ VENDING: slots, visits, expiry (patch 17) ============================
+   Every machine slot (vmSlots) has a product, a full quantity (par) and lots [{exp, qty}] as counted at the last
+   visit (exp null = expiry not known, the stock that was in the machine before the App). A visit is done slot by
+   slot on the phone and kept there as a draft until it is submitted in one go (vm_visit_submit), so a dropped
+   signal or a closed App loses nothing. Sales are taken from the oldest lot first (the spiral sells the front). */
+const VM_SOON_DAYS = 2;       // "expiring soon": has to come out within this many days
+const VM_VISIT_DUE_DAYS = 2;  // a machine not visited for this many days is flagged
+function vmSlotsOf(devId){ return S.vmSlots.filter(s=>s.deviceId===devId).sort((a,b)=>String(a.slot).localeCompare(String(b.slot))); }
+function vmDaysTo(date){ if(!date) return null; return Math.round((new Date(date+'T00:00:00') - new Date(todayStr()+'T00:00:00'))/86400000); }
+function vmPull(p){ return p && p.pullDays!=null && p.pullDays!=='' ? (Number(p.pullDays)||0) : 0; }
+// days left before a lot has to come out; below 0 = take it out now
+function vmOutIn(lot, p){ const d=vmDaysTo(lot.exp); return d==null ? null : d - vmPull(p); }
+function vmLotsSorted(lots){
+  return (lots||[]).filter(l=>Number(l.qty)>0).map(l=>({exp:l.exp||null, qty:Number(l.qty)}))
+    .sort((a,b)=> a.exp===b.exp ? 0 : a.exp==null ? -1 : b.exp==null ? 1 : (a.exp<b.exp ? -1 : 1));
+}
+function vmSlotInfo(s){
+  const p = s.productId ? byId(S.products, s.productId) : null;
+  const lots = vmLotsSorted(s.lots);
+  let qty=0, due=0, soon=0, unknown=0, first=null;
+  lots.forEach(l=>{ qty+=l.qty; const o=vmOutIn(l,p);
+    if(o==null) unknown+=l.qty; else if(o<0) due+=l.qty; else if(o<VM_SOON_DAYS) soon+=l.qty;
+    if(l.exp && (!first || l.exp<first)) first=l.exp; });
+  return {p, lots, qty, due, soon, unknown, first, par:Number(s.par)||0};
+}
+function vmLastVisit(devId){ return S.vmVisits.filter(v=>v.deviceId===devId).sort((a,b)=>a.createdAt<b.createdAt?1:-1)[0]||null; }
+function vmDeviceInfo(d){
+  const slots=vmSlotsOf(d.id);
+  const r={slots:slots.length, unset:0, empty:0, due:0, soon:0, qty:0, par:0, last:vmLastVisit(d.id), stopped:d.status==='stopped'};
+  slots.forEach(s=>{ const i=vmSlotInfo(s); if(!i.p){ r.unset++; return; } r.qty+=i.qty; r.par+=i.par; if(i.qty===0) r.empty++; r.due+=i.due; r.soon+=i.soon; });
+  r.fill = r.par ? Math.round(r.qty/r.par*100) : null;
+  r.daysSince = r.last ? Math.floor((Date.now()-new Date(r.last.createdAt))/86400000) : null;
+  r.level = r.stopped ? 'n' : (r.due>0 || r.empty>0) ? 'critical'
+          : (r.soon>0 || (r.fill!=null && r.fill<50) || r.daysSince==null || r.daysSince>=VM_VISIT_DUE_DAYS) ? 'warn' : 'ok';
+  return r;
+}
+function vmShort(p){ return p ? String(p.name||'').replace(/\s+\d+\s*ML$/i,'') : ''; }
+function vmMD(date){ return date ? date.slice(5) : ''; }
+
+/* the draft of a visit lives on this phone only, one per machine and person */
+function vmDraftKey(devId){ return 'vm_draft_'+devId; }
+function vmDraft(devId){ try{ const d=JSON.parse(localStorage.getItem(vmDraftKey(devId))||'null'); if(d && d.employeeId===S.employeeId) return d; }catch(e){} return null; }
+function vmSaveDraft(devId, d){ try{ if(d && Object.keys(d.lines||{}).length) localStorage.setItem(vmDraftKey(devId), JSON.stringify(d)); else localStorage.removeItem(vmDraftKey(devId)); }catch(e){} }
+function vmNewDraft(devId){ return {deviceId:devId, employeeId:S.employeeId, clientId:'v'+Date.now().toString(36)+Math.random().toString(36).slice(2,8), startedAt:new Date().toISOString(), lines:{}}; }
+
+// what a slot holds after the visit: sales come off the oldest lot, then expired stock is taken from the lots that
+// are due (then the oldest), then damaged from the oldest, and the new stock goes in as its own lot
+function vmApply(lots, p, left, expired, damaged, added, exp){
+  let L=vmLotsSorted(lots).map(l=>Object.assign({}, l));
+  const before=L.reduce((a,l)=>a+l.qty, 0);
+  const sold=before-left;
+  if(sold>0){ let k=sold; for(const l of L){ const x=Math.min(l.qty,k); l.qty-=x; k-=x; if(!k) break; } }
+  else if(sold<0) L.unshift({exp:null, qty:-sold});   // more in the slot than on record: age unknown
+  let k=0;
+  const take=pred=>{ for(const l of L){ if(!k) break; if(l.qty<=0 || !pred(l)) continue; const x=Math.min(l.qty,k); l.qty-=x; k-=x; } };
+  k=expired; take(l=>{ const o=vmOutIn(l,p); return o!=null && o<0; }); take(()=>true);
+  k=damaged; take(()=>true);
+  L=L.filter(l=>l.qty>0);
+  if(added>0){ const same=L.find(l=>l.exp===(exp||null)); if(same) same.qty+=added; else L.push({exp:exp||null, qty:added}); }
+  return {lots:vmLotsSorted(L), soldEst:Math.max(0, sold)};
+}
+function vmDueAfter(lots, p, left){
+  return vmApply(lots, p, left, 0, 0, 0, null).lots.reduce((a,l)=>{ const o=vmOutIn(l,p); return a+(o!=null && o<0 ? l.qty : 0); }, 0);
+}
+function vmAddDays(n){ const d=new Date(); d.setDate(d.getDate()+n); return todayStr(d); }
+
+function vendingView(){
+  const c=el('<div></div>');
+  if(!S.vmSlots.length){ c.appendChild(snackStockView()); return c; }  // before patch 17 is loaded
+  if(S.vmDev){ const d=byId(S.devices, S.vmDev); if(d){ c.appendChild(vmVisitView(d)); return c; } S.vmDev=null; }
+  const seg=el(`<div class="seg" style="margin:0 0 12px;"><button data-v="today" class="${S.vmTab!=='report'?'on':''}">${esc(t('vm_tab_today'))}</button><button data-v="report" class="${S.vmTab==='report'?'on':''}">${esc(t('vm_tab_report'))}</button></div>`);
+  seg.querySelectorAll('button').forEach(b=>b.onclick=()=>{ S.vmTab=b.dataset.v; renderApp(); });
+  c.appendChild(seg);
+  c.appendChild(S.vmTab==='report' ? vmReportView() : vmTodayView());
+  return c;
+}
+
+function vmTodayView(){
+  const c=el('<div></div>');
+  const chipRow=el('<div class="chiprow"></div>');
+  ['all'].concat(zoneList()).forEach(z=>{
+    const chip=el(`<button class="chip ${S.stockDeviceFilter===z?'on':''}">${esc(z==='all'?t('zone_all'):z)}</button>`);
+    chip.onclick=()=>{ S.stockDeviceFilter=z; renderApp(); };
+    chipRow.appendChild(chip);
+  });
+  c.appendChild(chipRow);
+  const devs=(S.stockDeviceFilter==='all' ? S.devices : S.devices.filter(d=>deviceZone(d)===S.stockDeviceFilter))
+    .filter(d=>vmSlotsOf(d.id).length).map(d=>({d, i:vmDeviceInfo(d)}));
+  const rank={critical:0, warn:1, ok:2, n:3};
+  devs.sort((a,b)=> rank[a.i.level]-rank[b.i.level] || ((b.i.daysSince==null?99:b.i.daysSince)-(a.i.daysSince==null?99:a.i.daysSince)) || a.d.name.localeCompare(b.d.name));
+  const need=devs.filter(x=>x.i.level==='critical'||x.i.level==='warn').length;
+  const due=devs.reduce((a,x)=>a+x.i.due,0), soon=devs.reduce((a,x)=>a+x.i.soon,0);
+  c.appendChild(el(`<div class="card vm-sum" style="margin-top:12px;">
+    <div><div class="v num">${need}</div><div class="l">${esc(t('vm_sum_machines'))}</div></div>
+    <div><div class="v num" style="${due?'color:var(--critical);':''}">${due}</div><div class="l">${esc(t('vm_sum_due'))}</div></div>
+    <div><div class="v num" style="${soon?'color:var(--warn);':''}">${soon}</div><div class="l">${esc(t('vm_sum_soon'))}</div></div></div>`));
+  c.appendChild(el(`<p class="hint">${esc(t('vm_today_hint'))}</p>`));
+  const list=el('<div class="list" style="margin-top:8px;"></div>');
+  devs.forEach(({d,i})=>{
+    const chips=[];
+    if(i.stopped) chips.push(`<span class="pill n">${esc(t('vm_lvl_n'))}</span>`);
+    if(i.due) chips.push(`<span class="pill critical">${esc(t('vm_chip_due'))} ${i.due}</span>`);
+    if(i.empty) chips.push(`<span class="pill critical">${esc(t('vm_chip_empty'))} ${i.empty}</span>`);
+    if(i.soon) chips.push(`<span class="pill warn">${esc(t('vm_chip_soon'))} ${i.soon}</span>`);
+    if(i.unset) chips.push(`<span class="pill n">${esc(t('vm_chip_unset'))} ${i.unset}</span>`);
+    const lastTxt = i.last ? t('vm_last')+(i.last.employeeName||'')+' · '+(i.daysSince===0?t('vm_today_word'):i.daysSince+t('vm_days_ago')) : t('vm_never');
+    const xy = d.platformName && d.platformName!==d.name ? ` <span class="num" style="font-weight:500; font-size:11.5px; color:var(--ink-faint);">XY ${esc(d.platformName)}</span>` : '';
+    const row=el(`<div class="list-row vm-dev lvl-${i.level}"><div class="lr-main"><div class="lr-title">${esc(d.name)}${xy}</div>
+      <div class="vm-chips">${chips.join('')}</div>
+      ${i.fill!=null?`<div class="vm-bar"><i style="width:${Math.min(100,i.fill)}%;"></i></div>`:''}
+      <div class="lr-sub">${esc(lastTxt)}${i.fill!=null?' · '+i.fill+'%':''}</div></div>
+      <div class="lr-end"><span class="pill ${i.level}">${esc(t('vm_lvl_'+i.level))}</span>${vmDraft(d.id)?`<span class="pill accent" style="margin-top:4px;">${esc(t('vm_draft_pill'))}</span>`:''}</div></div>`);
+    row.onclick=()=>{ S.vmDev=d.id; renderApp(); window.scrollTo(0,0); };
+    list.appendChild(row);
+  });
+  c.appendChild(list);
+  return c;
+}
+
+function vmVisitView(d){
+  const c=el('<div></div>');
+  const draft=vmDraft(d.id);
+  const lines=draft ? draft.lines : {};
+  const nDone=Object.keys(lines).length;
+  const i=vmDeviceInfo(d);
+  const back=el(`<button class="sec-link" style="margin:0 0 8px; padding-left:0;">← ${esc(t('vm_back'))}</button>`);
+  back.onclick=()=>{ S.vmDev=null; renderApp(); };
+  c.appendChild(back);
+  c.appendChild(el(`<div class="card"><div style="font-weight:900; font-size:17px;">${esc(d.name)} <span class="num" style="font-weight:500; font-size:12px; color:var(--ink-faint);">${esc(d.machineId||'')}${d.platformName&&d.platformName!==d.name?' · XY '+esc(d.platformName):''}</span></div>
+    <div class="lr-sub" style="margin-top:4px;">${esc(i.last ? t('vm_last')+(i.last.employeeName||'')+' · '+fmtDateTime(i.last.createdAt) : t('vm_never'))}</div>
+    <p class="hint" style="margin-top:8px;">${esc(t('vm_visit_hint'))}</p>
+    <div class="hint" style="margin-top:2px;">${esc(t('vm_legend'))}</div></div>`));
+  const bar=()=>{ const b=el(`<div class="vm-submitbar"><span class="lr-sub" style="flex:1;">${esc(t('vm_done_n'))} <b class="num">${nDone}</b> / ${i.slots}</span></div>`);
+    const btn=el(`<button class="btn primary" ${nDone?'':'disabled'}>${esc(t('vm_btn_submit'))}</button>`);
+    btn.onclick=()=>openVmSubmitSheet(d); b.appendChild(btn); return b; };
+  c.appendChild(bar());
+  const rows={};
+  vmSlotsOf(d.id).forEach(s=>{ const r=s.row!=null ? s.row : Math.floor((Number(s.slot)-1)/10); (rows[r]=rows[r]||[]).push(s); });
+  Object.keys(rows).map(Number).sort((a,b)=>a-b).forEach((r,ix)=>{   // shelves numbered from the top, as staff see them
+    c.appendChild(el(`<div class="vm-rowlb">${esc(t('vm_row'))} ${ix+1}</div>`));
+    const cells=el('<div class="vm-cells"></div>');
+    rows[r].forEach(s=>{
+      const si=vmSlotInfo(s), ln=lines[s.slot];
+      const cls = !si.p ? 'unset' : si.due ? 'due' : si.soon ? 'soon' : '';
+      const q = ln ? ln.qtyAfter : si.qty;
+      const exp = ln ? (ln.firstExp||'') : (si.first||'');
+      const cell=el(`<button class="vm-cell ${cls} ${ln?'done':''}"><span class="vm-no">${esc(s.slot)}</span>${ln?'<span class="vm-tick">✓</span>':''}
+        <span class="vm-pn">${si.p?esc(vmShort(si.p)):esc(t('vm_chip_unset'))}</span>
+        <span class="vm-q num">${si.p?q+'/'+si.par:''}${exp?`<span class="vm-exp">${esc(vmMD(exp))}</span>`:''}</span></button>`);
+      cell.onclick=()=>openVmSlotSheet(d, s);
+      cells.appendChild(cell);
+    });
+    c.appendChild(cells);
+  });
+  c.appendChild(bar());
+  if(draft){
+    const dis=el(`<button class="sec-link" style="margin-top:6px; color:var(--critical);">${esc(t('vm_btn_discard'))}</button>`);
+    dis.onclick=()=>{ if(confirm(t('vm_confirm_discard'))){ vmSaveDraft(d.id, null); renderApp(); } };
+    c.appendChild(dis);
+  }
+  return c;
+}
+
+function vmNumRow(label, val, onInput){
+  const w=el(`<div class="vm-num"><span class="lbl">${esc(label)}</span><button class="btn vm-step" type="button">−</button>
+    <input type="number" inputmode="numeric" min="0" step="1" value="${val===''||val==null?'':Number(val)}"><button class="btn vm-step" type="button">+</button></div>`);
+  const inp=w.querySelector('input'), [minus, plus]=w.querySelectorAll('button');
+  const fire=()=>{ w.touched=true; onInput && onInput(); };
+  minus.onclick=()=>{ inp.value=Math.max(0,(Number(inp.value)||0)-1); fire(); };
+  plus.onclick=()=>{ inp.value=(Number(inp.value)||0)+1; fire(); };
+  inp.oninput=fire;
+  w.get=()=> inp.value==='' ? null : Math.max(0, Math.floor(Number(inp.value)||0));
+  w.set=v=>{ inp.value = v==null ? '' : v; };
+  return w;
+}
+
+function openVmSlotSheet(d, s){
+  const si=vmSlotInfo(s), p=si.p;
+  if(!p){ openVmPlanForm(d, s); return; }   // first say what the slot sells (anyone on the team may, for an empty one)
+  const draft=vmDraft(d.id)||vmNewDraft(d.id);
+  const prev=draft.lines[s.slot]||null;
+  const body=el('<div></div>');
+  const canChange = !s.productId || isAdmin() || isManager();
+  // product and full quantity of the slot (saved at once, not part of the visit)
+  const plan=el(`<div class="card" style="padding:10px 12px;"><div class="row" style="align-items:center; gap:8px;">
+    <div style="flex:1;"><div style="font-weight:900;">${p?esc(p.name):esc(t('vm_chip_unset'))}</div>
+    <div class="lr-sub">${esc(t('vm_field_par'))} ${si.par}${s.price?' · RM '+Number(s.price).toFixed(2):''}</div></div></div></div>`);
+  if(canChange && !prev){
+    const btn=el(`<button class="sec-link">${esc(p?t('vm_change_product'):t('vm_set_product'))}</button>`);
+    btn.onclick=()=>openVmPlanForm(d, s);
+    plan.querySelector('.row').appendChild(btn);
+  }
+  body.appendChild(plan);
+  const lotTxt = si.lots.length ? si.lots.map(l=>(l.exp?vmMD(l.exp):t('vm_exp_unknown'))+' ×'+l.qty).join(' · ') : '0';
+  body.appendChild(el(`<div class="lr-sub" style="margin-top:10px;">${esc(t('vm_last_record'))}: <b class="num">${si.qty}</b> · ${esc(lotTxt)}</div>`));
+
+  let expTouched=!!prev, addTouched=!!prev;
+  const left=vmNumRow(t('vm_f_left'), prev?prev.left:'', ()=>recalc('left'));
+  const quick=el(`<div class="vm-quick"></div>`);
+  [[t('vm_q_empty'),0],[t('vm_q_full'),si.par],[t('vm_q_same')+' '+si.qty,si.qty]].forEach(([lb,v])=>{
+    const b=el(`<button class="chip" type="button">${esc(lb)}</button>`); b.onclick=()=>{ left.set(v); left.touched=true; recalc('left'); }; quick.appendChild(b); });
+  const expd=vmNumRow(t('vm_f_expired'), prev?prev.expired:0, ()=>{ expTouched=true; recalc('out'); });
+  const dmg=vmNumRow(t('vm_f_damaged'), prev?prev.damaged:0, ()=>recalc('out'));
+  const add=vmNumRow(t('vm_f_added'), prev?prev.added:'', ()=>{ addTouched=true; recalc('add'); });
+  const defExp = prev ? (prev.exp||'') : (p.shelfLifeDays ? vmAddDays(Number(p.shelfLifeDays)) : '');
+  const expWrap=el(`<label class="field" style="margin-top:10px;"><span class="fl">${esc(t('vm_f_exp'))}</span><input type="date" value="${esc(defExp)}" min="${todayStr()}"></label>`);
+  const expInput=expWrap.querySelector('input');
+  const expQuick=el('<div class="vm-quick"></div>');
+  [1,2,3,5,7].forEach(n=>{ const b=el(`<button class="chip" type="button">+${n}${esc(t('vm_day_short'))}</button>`); b.onclick=()=>{ expInput.value=vmAddDays(n); recalc(); }; expQuick.appendChild(b); });
+  expWrap.appendChild(expQuick);
+  expInput.oninput=()=>recalc();
+  const preview=el('<div class="card" style="margin-top:12px; padding:10px 12px;"></div>');
+  [left, quick, expd, dmg, add, expWrap, preview].forEach(x=>body.appendChild(x));
+
+  function recalc(src){
+    const L=left.get();
+    if(L!=null && !expTouched && src==='left') expd.set(Math.min(L, vmDueAfter(s.lots, p, L)));
+    const E=expd.get()||0, D=dmg.get()||0;
+    if(L!=null && !addTouched && src!=='add') add.set(Math.max(0, si.par-(L-E-D)));
+    const A=add.get()||0;
+    expWrap.style.display = A>0 ? '' : 'none';
+    if(L==null){ preview.innerHTML=`<span class="lr-sub">${esc(t('vm_err_left'))}</span>`; return; }
+    const r=vmApply(s.lots, p, L, E, D, A, expInput.value||null);
+    const after=r.lots.reduce((a,l)=>a+l.qty,0);
+    const first=r.lots.find(l=>l.exp);
+    preview.innerHTML=`<div style="font-weight:900;">${esc(t('vm_after'))}: <span class="num">${after}/${si.par}</span>${after>si.par?` <span class="pill warn">${esc(t('vm_over_par'))}</span>`:''}</div>
+      <div class="lr-sub">${r.lots.map(l=>(l.exp?vmMD(l.exp):esc(t('vm_exp_unknown')))+' ×'+l.qty).join(' · ')||'—'}${first?' · '+esc(t('vm_first_exp'))+' '+vmMD(first.exp):''}</div>`;
+  }
+  recalc(prev?'init':'left');
+
+  const foot=el('<div class="sheet-foot"></div>');
+  const save=el(`<button class="btn primary block">${esc(t('vm_btn_save_slot'))}</button>`);
+  save.onclick=()=>{
+    const L=left.get(), E=expd.get()||0, D=dmg.get()||0, A=add.get()||0, X=expInput.value||null;
+    if(L==null){ toast(t('vm_err_left')); return; }
+    if(E+D>L){ toast(t('vm_err_more_out')); return; }
+    if(A>0 && !X){ toast(t('vm_err_exp')); return; }
+    const r=vmApply(s.lots, p, L, E, D, A, X);
+    const after=r.lots.reduce((a,l)=>a+l.qty,0);
+    const first=r.lots.find(l=>l.exp);
+    draft.lines[s.slot]={slot:s.slot, slotId:s.id, productId:p.id, productName:p.name, cost:p.cost!=null&&p.cost!==''?Number(p.cost):null,
+      par:si.par, before:si.qty, left:L, expired:E, damaged:D, added:A, exp:A>0?X:null, soldEst:r.soldEst,
+      qtyAfter:after, firstExp:first?first.exp:null, lotsAfter:r.lots};
+    vmSaveDraft(d.id, draft); closeSheet(); renderApp();
+  };
+  foot.appendChild(save);
+  if(prev){
+    const undo=el(`<button class="btn block" style="margin-top:8px;">${esc(t('vm_btn_undo_slot'))}</button>`);
+    undo.onclick=()=>{ delete draft.lines[s.slot]; vmSaveDraft(d.id, draft); closeSheet(); renderApp(); };
+    foot.appendChild(undo);
+  }
+  body.appendChild(foot);
+  openSheet(t('vm_slot')+' '+s.slot+' · '+vmShort(p), body);
+}
+
+function openVmPlanForm(d, s){
+  const body=el('<div></div>');
+  const prods=S.products.slice().sort((a,b)=>(b.vending?1:0)-(a.vending?1:0) || String(a.name).localeCompare(String(b.name)));
+  const sel=el(`<label class="field"><span class="fl">${esc(t('vm_field_product'))}</span><select><option value="">—</option>${prods.map(p=>`<option value="${esc(p.id)}" ${p.id===s.productId?'selected':''}>${esc(p.name)}${p.autocountCode?' · '+esc(p.autocountCode):''}</option>`).join('')}</select></label>`);
+  const par=el(`<label class="field"><span class="fl">${esc(t('vm_field_par'))}</span><input type="number" inputmode="numeric" min="1" max="99" value="${Number(s.par)||''}"></label>`);
+  body.appendChild(sel); body.appendChild(par);
+  if(!isAdmin()) body.appendChild(el(`<p class="hint">${esc(t('vm_plan_hint'))}</p>`));
+  const foot=el('<div class="sheet-foot"></div>');
+  const btn=el(`<button class="btn primary block">${esc(t('btn_save'))}</button>`);
+  btn.onclick=async ()=>{
+    const pid=sel.querySelector('select').value, n=Number(par.querySelector('input').value);
+    if(!pid){ toast(t('vm_pick_product_first')); return; }
+    if(!(n>=1 && n<=99)){ toast(t('err_valid_qty')); return; }
+    btn.disabled=true;
+    try{
+      const cur=await rpc('vm_slot_set', {p_id:s.id, p_product:pid, p_par:n});
+      Object.assign(s, cur||{productId:pid, par:n});
+      if(S.db.refresh) S.db.refresh('vmSlots');
+      toast(t('toast_saved')); closeSheet(); openVmSlotSheet(d, s);
+    }catch(err){ toast(err.code==='42501' ? t('vm_only_manager') : dbErrMsg(err)); btn.disabled=false; }
+  };
+  foot.appendChild(btn); body.appendChild(foot);
+  openSheet(t('vm_slot')+' '+s.slot+' · '+t('vm_set_product'), body);
+}
+
+function vmMoney(v){ return 'RM '+(Number(v)||0).toFixed(2); }
+function openVmSubmitSheet(d){
+  const draft=vmDraft(d.id); if(!draft) return;
+  const lines=Object.values(draft.lines).sort((a,b)=>String(a.slot).localeCompare(String(b.slot)));
+  const tot={added:0, expired:0, damaged:0, sold:0, waste:0, noCost:0};
+  lines.forEach(l=>{ tot.added+=l.added; tot.expired+=l.expired; tot.damaged+=l.damaged; tot.sold+=l.soldEst;
+    if(l.expired+l.damaged){ if(l.cost==null) tot.noCost++; else tot.waste+=(l.expired+l.damaged)*l.cost; } });
+  const untouched=vmSlotsOf(d.id).filter(s=>s.productId && !draft.lines[s.slot]);
+  const stillDue=untouched.filter(s=>vmSlotInfo(s).due>0).map(s=>s.slot);
+  const body=el('<div></div>');
+  body.appendChild(el(`<div class="card vm-sum"><div><div class="v num">+${tot.added}</div><div class="l">${esc(t('vm_tot_added'))}</div></div>
+    <div><div class="v num">${tot.expired+tot.damaged}</div><div class="l">${esc(t('vm_tot_out'))}</div></div>
+    <div><div class="v num">${tot.sold}</div><div class="l">${esc(t('vm_tot_sold'))}</div></div></div>`));
+  if(tot.expired+tot.damaged) body.appendChild(el(`<div class="lr-sub" style="margin-top:6px;">${esc(t('vm_tot_waste'))}: <b>${vmMoney(tot.waste)}</b>${tot.noCost?' · '+esc(t('vm_no_cost'))+' ×'+tot.noCost:''}</div>`));
+  if(stillDue.length) body.appendChild(el(`<div class="card" style="margin-top:10px; border-color:var(--critical); background:var(--critical-soft); color:var(--critical-ink); padding:10px 12px;">${esc(t('vm_still_due'))} ${esc(stillDue.join(', '))}</div>`));
+  const list=el('<div class="list" style="margin-top:10px;"></div>');
+  lines.forEach(l=>list.appendChild(el(`<div class="list-row" style="cursor:default;"><div class="lr-main"><div class="lr-title"><span class="num">${esc(l.slot)}</span> · ${esc(l.productName)}</div>
+    <div class="lr-sub">${esc(t('vm_left_short'))} ${l.left}${l.expired?' · '+esc(t('vm_chip_due'))+' −'+l.expired:''}${l.damaged?' · '+esc(t('vm_damaged_short'))+' −'+l.damaged:''}${l.added?' · +'+l.added+(l.exp?' ('+vmMD(l.exp)+')':''):''}</div></div>
+    <div class="lr-end num" style="font-weight:900;">${l.qtyAfter}/${l.par}</div></div>`)));
+  body.appendChild(list);
+  if(untouched.length) body.appendChild(el(`<p class="hint">${esc(t('vm_untouched'))} ${untouched.length}</p>`));
+  const note=el(`<label class="field"><span class="fl">${esc(t('vm_note'))}</span><textarea></textarea></label>`);
+  body.appendChild(note);
+  const foot=el('<div class="sheet-foot"></div>');
+  const btn=el(`<button class="btn primary block">${esc(t('vm_btn_submit'))}</button>`);
+  btn.onclick=async ()=>{
+    btn.disabled=true; btn.textContent=t('toast_submitting');
+    const visit={deviceId:d.id, deviceName:d.name, machineId:d.machineId||'', clientId:draft.clientId, startedAt:draft.startedAt, createdAt:new Date().toISOString(),
+      lines:lines.map(l=>{ const x=Object.assign({}, l); delete x.lotsAfter; delete x.slotId; return x; }),
+      totals:{added:tot.added, expired:tot.expired, damaged:tot.damaged, soldEst:tot.sold, wasteValue:Math.round(tot.waste*100)/100},
+      note:note.querySelector('textarea').value||''};
+    try{
+      await rpc('vm_visit_submit', {p_visit:visit, p_slots:lines.map(l=>({id:l.slotId, lots:l.lotsAfter}))});
+      lines.forEach(l=>{ const s=byId(S.vmSlots, l.slotId); if(s){ s.lots=l.lotsAfter; s.qty=l.qtyAfter; } });
+      vmSaveDraft(d.id, null);
+      if(S.db.refresh) ['vmSlots','vmVisits','inventory'].forEach(c=>S.db.refresh(c));
+      toast(t('vm_toast_sent')); closeSheet(); S.vmDev=null; renderApp();
+    }catch(err){
+      toast(err.code==='42501' ? t('vm_only_team') : (navigator.onLine===false ? t('vm_err_offline') : dbErrMsg(err)));
+      btn.disabled=false; btn.textContent=t('vm_btn_submit');
+    }
+  };
+  foot.appendChild(btn); body.appendChild(foot);
+  openSheet(t('vm_submit_title')+' · '+d.name, body);
+}
+
+function vmReportView(){
+  const c=el('<div></div>');
+  const days=S.vmRange||7;
+  const seg=el(`<div class="chiprow">${[7,30].map(n=>`<button class="chip ${days===n?'on':''}" data-n="${n}">${esc(t('vm_range_'+n))}</button>`).join('')}</div>`);
+  seg.querySelectorAll('button').forEach(b=>b.onclick=()=>{ S.vmRange=Number(b.dataset.n); renderApp(); });
+  c.appendChild(seg);
+  const since=new Date(Date.now()-days*86400000).toISOString();
+  const vs=S.vmVisits.filter(v=>v.createdAt>=since).sort((a,b)=>a.createdAt<b.createdAt?1:-1);
+  const byP={}, byM={};
+  let added=0, sold=0, out=0, waste=0;
+  vs.forEach(v=>{
+    const m=byM[v.deviceId]=byM[v.deviceId]||{visits:0, waste:0, out:0, last:v.createdAt};
+    m.visits++;
+    (v.lines||[]).forEach(l=>{
+      const k=l.productId||'?'; const r=byP[k]=byP[k]||{name:l.productName||prodName(k), sold:0, added:0, out:0, waste:0};
+      const o=(l.expired||0)+(l.damaged||0), w=l.cost!=null ? o*l.cost : 0;
+      r.sold+=l.soldEst||0; r.added+=l.added||0; r.out+=o; r.waste+=w;
+      m.out+=o; m.waste+=w; added+=l.added||0; sold+=l.soldEst||0; out+=o; waste+=w;
+    });
+  });
+  c.appendChild(el(`<div class="card vm-sum" style="margin-top:12px; grid-template-columns:repeat(2,1fr);">
+    <div><div class="v num">${vs.length}</div><div class="l">${esc(t('vm_rep_visits'))}</div></div>
+    <div><div class="v num">${sold}</div><div class="l">${esc(t('vm_tot_sold'))}</div></div>
+    <div><div class="v num">+${added}</div><div class="l">${esc(t('vm_tot_added'))}</div></div>
+    <div><div class="v num" style="${out?'color:var(--critical);':''}">${out} · ${vmMoney(waste)}</div><div class="l">${esc(t('vm_tot_out'))} · ${esc(t('vm_tot_waste'))}</div></div></div>`));
+  c.appendChild(el(`<p class="hint">${esc(t('vm_rep_hint'))}</p>`));
+  c.appendChild(el(`<h2 class="sec">${esc(t('vm_rep_by_product'))}</h2>`));
+  const pRows=Object.values(byP).sort((a,b)=>b.waste-a.waste || b.sold-a.sold);
+  c.appendChild(el(`<div class="card" style="overflow-x:auto; padding:8px 10px;"><table class="vm-table"><tr><th>${esc(t('vm_col_product'))}</th><th>${esc(t('vm_tot_sold'))}</th><th>${esc(t('vm_tot_added'))}</th><th>${esc(t('vm_tot_out'))}</th><th>%</th><th>RM</th></tr>
+    ${pRows.map(r=>`<tr><td>${esc(r.name)}</td><td class="num">${r.sold}</td><td class="num">${r.added}</td><td class="num">${r.out}</td><td class="num">${r.sold+r.out?Math.round(r.out/(r.sold+r.out)*100):0}</td><td class="num">${r.waste.toFixed(2)}</td></tr>`).join('')||`<tr><td colspan="6" class="lr-sub">${esc(t('empty_no_records'))}</td></tr>`}</table></div>`));
+  c.appendChild(el(`<h2 class="sec">${esc(t('vm_rep_by_machine'))}</h2>`));
+  const mRows=S.devices.filter(d=>vmSlotsOf(d.id).length).map(d=>({d, m:byM[d.id]||{visits:0, waste:0, out:0}, last:vmLastVisit(d.id)}))
+    .sort((a,b)=>b.m.waste-a.m.waste || a.m.visits-b.m.visits);
+  c.appendChild(el(`<div class="card" style="overflow-x:auto; padding:8px 10px;"><table class="vm-table"><tr><th>${esc(t('vm_col_machine'))}</th><th>${esc(t('vm_rep_visits'))}</th><th>${esc(t('vm_tot_out'))}</th><th>RM</th><th>${esc(t('vm_col_last'))}</th></tr>
+    ${mRows.map(x=>`<tr><td>${esc(x.d.name)}</td><td class="num">${x.m.visits}</td><td class="num">${x.m.out}</td><td class="num">${x.m.waste.toFixed(2)}</td><td class="num">${x.last?esc(fmtDateTime(x.last.createdAt)):'—'}</td></tr>`).join('')}</table></div>`));
+  c.appendChild(el(`<h2 class="sec">${esc(t('vm_rep_recent'))}</h2>`));
+  const list=el('<div class="list"></div>');
+  vs.slice(0,30).forEach(v=>{
+    const tt=v.totals||{};
+    const row=el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(v.deviceName||devName(v.deviceId))}</div><div class="lr-sub">${esc(v.employeeName||'')} · ${fmtDateTime(v.createdAt)} · ${(v.lines||[]).length} ${esc(t('vm_slot'))}</div></div>
+      <div class="lr-end num" style="font-weight:800;">+${tt.added||0}${(tt.expired||0)+(tt.damaged||0)?`<div style="color:var(--critical); font-size:12px;">−${(tt.expired||0)+(tt.damaged||0)}</div>`:''}</div></div>`);
+    row.onclick=()=>openVmVisitDetail(v);
+    list.appendChild(row);
+  });
+  if(!vs.length) list.appendChild(el(`<div class="empty">${ICONS.inbox}<div>${esc(t('empty_no_records'))}</div></div>`));
+  c.appendChild(list);
+  return c;
+}
+function openVmVisitDetail(v){
+  const tt=v.totals||{};
+  const body=el(`<div><div class="lr-sub">${esc(v.employeeName||'')} · ${fmtDateTime(v.createdAt)}</div>
+    <div class="lr-sub" style="margin-top:4px;">${esc(t('vm_tot_added'))} +${tt.added||0} · ${esc(t('vm_tot_out'))} ${(tt.expired||0)+(tt.damaged||0)} · ${esc(t('vm_tot_sold'))} ${tt.soldEst||0} · ${esc(t('vm_tot_waste'))} ${vmMoney(tt.wasteValue)}</div>
+    ${v.note?`<div class="card" style="margin-top:8px; padding:8px 10px;">${esc(v.note)}</div>`:''}</div>`);
+  const tb=el(`<div style="overflow-x:auto; margin-top:10px;"><table class="vm-table"><tr><th>${esc(t('vm_slot'))}</th><th>${esc(t('vm_col_product'))}</th><th>${esc(t('vm_left_short'))}</th><th>${esc(t('vm_chip_due'))}</th><th>${esc(t('vm_damaged_short'))}</th><th>+</th><th>${esc(t('vm_f_exp'))}</th><th>=</th></tr>
+    ${(v.lines||[]).map(l=>`<tr><td class="num">${esc(l.slot)}</td><td>${esc(l.productName||'')}</td><td class="num">${l.left}</td><td class="num">${l.expired||''}</td><td class="num">${l.damaged||''}</td><td class="num">${l.added||''}</td><td class="num">${l.exp?esc(vmMD(l.exp)):''}</td><td class="num">${l.qtyAfter}</td></tr>`).join('')}</table></div>`);
+  body.appendChild(tb);
+  openSheet(t('vm_visit_title')+' · '+(v.deviceName||devName(v.deviceId)), body);
 }
 
 /* ============================ DRAFT BEER (鲜啤) ============================ */
@@ -3273,6 +3688,11 @@ function buildNotifications(){
         out.push({id:'keg:'+k.id, ts, title:(fr.expired?t('notif_keg_expired'):t('notif_keg_expiring'))+'：'+(p?p.name:''), sub:tapName(k.tapId), unread:ts>seen, onClick:()=>{ S.stockSection='beer'; location.hash='#stock'; }});
       }
     });
+  }
+  if(S.vmSlots.length && (isAdmin() || (isManager() && ['VM','HQ'].includes(myBranch())))){
+    S.devices.forEach(d=>{ const i=vmDeviceInfo(d); if(i.due>0 && !i.stopped){ const ts=todayStr()+'T00:00:00.000Z';
+      out.push({id:'vmdue:'+d.id+':'+todayStr(), ts, title:t('notif_vm_expired')+'：'+d.name, sub:i.due+' '+t('vm_pcs'), unread:ts>seen,
+        onClick:()=>{ S.stockSection='snacks'; S.vmDev=d.id; location.hash='#stock'; }}); } });
   }
   out.sort((a,b)=>a.ts<b.ts?1:-1);
   return out.slice(0,60);
@@ -4193,6 +4613,9 @@ function openProductForm(p){
     {key:'unit', label:t('field_unit'), ph:t('ph_unit'), default:t('unit_default')},
     {key:'price', label:t('field_price'), type:'number', step:'0.01'},
     {key:'cost', label:t('field_cost_opt'), type:'number', step:'0.01'},
+    {key:'autocountCode', label:t('field_ac_code')},
+    {key:'shelfLifeDays', label:t('field_shelf_days'), type:'number'},
+    {key:'pullDays', label:t('field_pull_days'), type:'number'},
     {key:'lowStockThreshold', label:t('field_low_stock_threshold'), type:'number'},
   ];
   const body=el('<div>'+fieldsHTML(fields, p||{})+'</div>');
@@ -7639,7 +8062,7 @@ const GUIDE_ITEMS = [
   {k:'safety', icon:'siren', cls:'c-red', roles:['staff'], go:'#home',
    zh:{t:'夜班安全确认', w:'夜班时段（默认 23:00–07:00）已打卡的同事，首页会出现确认按钮，每 2 小时按一次报平安。超时未按，店经理和 HQ 会收到提醒。', s:['首页「我在店里，一切正常」','每 2 小时按一次','超时会变红并通知上级']}},
   {k:'stock', icon:'box', cls:'c-blue', roles:['staff'], go:'#stock',
-   zh:{t:'库存与补货（售货机组）', w:'每台机器每个商品的数量，缺货会变红。补货时输入数量，系统自动更新库存。', s:['底部「库存」→ 选机器','点商品，输入补货数量','缺货的商品显示红色标签']}},
+   zh:{t:'售货机补货与过期（售货机组）', w:'机器按急迫排好：红色有过期或空道，橙色快过期或太久没去。进机器后逐个货道记：剩几个、拿出过期、补进多少、新货到期日，最后一次提交。', s:['底部「库存」→「售货机」→ 点最上面的机器','逐个货道：数剩几个 → 过期拿出 → 补进 → 到期日 → 保存','做完按「提交巡机」；经理在「报告」看卖出和损耗']}},
   {k:'beer', icon:'beer', cls:'c-amber', roles:['staff'], go:'#stock',
    zh:{t:'鲜啤酒桶（BR19 / BR20）', w:'登记到货、开桶上线、记录余量、标空桶和押金，酒桶新鲜度到期会提醒。', s:['「库存」→ 切到「鲜啤酒」','「登记到货」记新桶；「开桶上线」选龙头','点使用中的桶记录余量或标空桶']}},
   {k:'equip', icon:'machine', cls:'c-grey', roles:['staff','manager'], go:'#equip',
@@ -7753,8 +8176,8 @@ const GUIDE_TR = {
        ms:{t:'Kecemasan SOS',w:'Untuk syif malam atau bahaya. Satu ketikan menghantar lokasi anda kepada pengurus dan HQ, dan halaman menyenaraikan nombor untuk dihubungi terus.',s:['Butang SOS merah di Utama','Tekan Hantar SOS; lokasi dihantar sekali','Jika bahaya telefon 999 dahulu, butangnya ada di halaman']}},
   safety:{en:{t:'Night safety check',w:'During night hours (23:00–07:00 by default) anyone clocked in sees a confirm button on the Home page, to be tapped every 2 hours. Missing it alerts the manager and HQ.',s:['Home page: I am in the store and OK','Tap it every 2 hours','Overdue turns red and notifies your manager']},
           ms:{t:'Semakan keselamatan malam',w:'Pada waktu malam (lalai 23:00–07:00) sesiapa yang sudah daftar masuk nampak butang pengesahan di Utama, ditekan setiap 2 jam. Jika terlepas, pengurus dan HQ dimaklumkan.',s:['Utama: Saya di kedai dan OK','Tekan setiap 2 jam','Jika lewat ia bertukar merah dan memberitahu pengurus']}},
-  stock:{en:{t:'Stock and restocking (vending team)',w:'Quantity of every product in every machine; out of stock turns red. Enter what you added and the stock updates itself.',s:['Stock tab → pick the machine','Tap the product and enter the restock quantity','Out-of-stock items carry a red tag']},
-         ms:{t:'Stok dan isi semula (pasukan mesin)',w:'Kuantiti setiap produk dalam setiap mesin; kehabisan stok bertukar merah. Masukkan jumlah yang ditambah dan stok dikemas kini sendiri.',s:['Tab Stok → pilih mesin','Tekan produk dan masukkan kuantiti isi semula','Item kehabisan stok ada tanda merah']}},
+  stock:{en:{t:'Vending restock and expiry (vending team)',w:'Machines are sorted by urgency: red has expired stock or an empty slot, orange is expiring soon or not visited for a while. In a machine, record slot by slot what is left, what expired stock came out, what you added and its expiry, then submit once.',s:['Stock tab → Vending machines → tap the machine at the top','Slot by slot: count left → expired out → added → expiry → save','Tap Submit visit; the manager sees sales and waste under Report']},
+         ms:{t:'Isi semula dan tamat tempoh mesin (pasukan mesin)',w:'Mesin disusun ikut keutamaan: merah ada stok tamat tempoh atau slot kosong, oren hampir tamat atau lama tidak dilawati. Dalam mesin, rekod slot demi slot baki, stok tamat yang dikeluarkan, jumlah ditambah dan tarikh tamatnya, kemudian hantar sekali.',s:['Tab Stok → Mesin layan diri → tekan mesin paling atas','Slot demi slot: kira baki → keluarkan tamat → tambah → tarikh tamat → simpan','Tekan Hantar lawatan; pengurus lihat jualan dan pembaziran di Laporan']}},
   beer:{en:{t:'Draft beer kegs (BR19 / BR20)',w:'Receive kegs, tap them, log the level, mark empties and track deposits. Freshness expiry is flagged for you.',s:['Stock → switch to Draft beer','Receive kegs for new stock; Tap a keg to put it on line','Tap a keg in use to log the level or mark it empty']},
         ms:{t:'Tong bir draf (BR19 / BR20)',w:'Terima tong, pasang, rekod baki, tanda kosong dan jejak deposit. Tamat tempoh kesegaran ditandakan untuk anda.',s:['Stok → tukar ke Bir draf','Terima tong untuk stok baharu; Pasang tong untuk guna','Tekan tong yang digunakan untuk rekod baki atau tanda kosong']}},
   equip:{en:{t:'Store equipment & machine inspections',w:'Chillers, POS, air-con, CCTV and extinguishers get a record with brand, vendor phone, warranty and service interval, and remind you when due. Vending machines get a six-point inspection.',s:['Equipment → Store equipment for your store list','Tap an asset to report a fault, log a service or see history','The Machines tab is vending, with the six-point check']},
