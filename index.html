@@ -496,14 +496,18 @@ const LEAVE_STATUS = {pending:{t:'leave_pending', c:'warn'}, approved:{t:'leave_
 const LEAVE_KINDS = ['annual','sick','unpaid','swap'];
 function leaveKindLabel(l){ const k=l.kind||(l.type==='swap'?'swap':'leave'); return t('leave_kind_'+k); }
 function leaveDays(l){ const s=new Date(l.startDate), e=new Date(l.endDate||l.startDate); return Math.max(1, Math.round((e-s)/86400000)+1); }
-function leaveUsed(empId, kind, year){
-  return S.leaveRequests.filter(l=>l.employeeId===empId && l.status==='approved' && l.kind===kind && String(l.startDate||'').slice(0,4)===String(year)).reduce((a,l)=>a+leaveDays(l),0);
+function leaveUsed(empId, kind, year, after){
+  return S.leaveRequests.filter(l=>l.employeeId===empId && l.status==='approved' && l.kind===kind && String(l.startDate||'').slice(0,4)===String(year) && (!after || String(l.startDate||'') > after)).reduce((a,l)=>a+leaveDays(l),0);
 }
 function leaveBalance(emp, kind){
   const allow = kind==='annual' ? emp.annualLeaveDays : emp.sickLeaveDays;
   if(allow==null || allow==='') return null;
-  const used=leaveUsed(emp.id, kind, new Date().getFullYear());
-  return {allow:Number(allow), used, left:Number(allow)-used};
+  // leaveOpening (from SQL Payroll's leave balance report): what was already taken up to its asOf date; only App leave after that date is added
+  const year=new Date().getFullYear(), op=emp.leaveOpening;
+  const opening = op && String(op.asOf||'').slice(0,4)===String(year) ? op : null;
+  const before = opening && opening[kind] ? Number(opening[kind].taken||0) : 0;
+  const used = Math.round((before + leaveUsed(emp.id, kind, year, opening ? opening.asOf : null))*10)/10;
+  return {allow:Number(allow), used, left:Math.round((Number(allow)-used)*10)/10};
 }
 function leaveBalanceSuffix(l){
   const emp=byId(S.employees,l.employeeId); if(!emp || !(l.kind==='annual'||l.kind==='sick')) return '';
