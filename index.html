@@ -506,7 +506,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-09-29.26';
+const APP_BUILD = '2026-09-29.27';
 async function checkNewBuild(){
   try{
     const r = await fetch(location.pathname + '?b=' + Date.now(), {cache:'no-store'});
@@ -1769,10 +1769,21 @@ function isoDaysAgo(n){ const d=new Date(); d.setDate(d.getDate()-n); return d.t
    the page, or while the camera is open for a photo, threw away what they were doing (BR19, 2026-09-29: three
    deliveries at once, the cashier could not fill in her receipt). Data that arrives then waits until they are done. */
 function uiBusy(){
-  if(S.pickerOpenAt && Date.now() - S.pickerOpenAt < 120000) return true;          // camera / gallery open (2 min at most)
+  if(S.pickerOpenAt && Date.now() - S.pickerOpenAt < 60000) return true;           // camera / gallery open (1 min at most)
+  if(S.photoUploading > 0) return true;                                              // a photo still on its way up
   const a = document.activeElement, v = $('view');
-  return !!(a && v && v.contains(a) && (a.tagName === 'TEXTAREA' || a.tagName === 'SELECT' || (a.tagName === 'INPUT' && !/^(button|submit|file|checkbox|radio)$/.test(a.type))));
+  const inBox = a && v && v.contains(a) && (a.tagName === 'TEXTAREA' || a.tagName === 'SELECT' || (a.tagName === 'INPUT' && !/^(button|submit|file|checkbox|radio)$/.test(a.type)));
+  // only while actually typing: a cursor left in a box (iPhone keeps it there after a tap) must not freeze the page
+  return !!(inBox && Date.now() - (S.lastTypeAt || 0) < 15000);
 }
+document.addEventListener('input', e=>{ const v = $('view'); if(v && v.contains(e.target)) S.lastTypeAt = Date.now(); }, true);
+// a tap on a button or row first takes the cursor out of the box, so what was typed is saved (its change event runs)
+// before the button acts -- iPhone does not do this by itself
+document.addEventListener('pointerdown', e=>{
+  const tgt = e.target && e.target.closest ? e.target.closest('button, .list-row, .chip, a, [role=button]') : null;
+  const a = document.activeElement;
+  if(tgt && a && a !== tgt && !tgt.contains(a) && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) a.blur();
+}, true);
 let dataRenderWaiting = false;
 function renderFromData(){
   if(!uiBusy()) return renderApp();
@@ -1782,7 +1793,7 @@ function renderFromData(){
   setTimeout(again, 700);
 }
 // back from the camera: the photo (if any) has been handed over by now
-function pickerClosed(){ if(S.pickerOpenAt) setTimeout(()=>{ S.pickerOpenAt = 0; }, 1500); }
+function pickerClosed(){ const at = S.pickerOpenAt; if(at) setTimeout(()=>{ if(S.pickerOpenAt === at) S.pickerOpenAt = 0; }, 1500); }
 window.addEventListener('focus', pickerClosed);
 document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState === 'visible') pickerClosed(); });
 function sub(colPath, key, opts){
@@ -1829,7 +1840,7 @@ async function loadEmployeeDirectory(force){
   try{
     const rows=await rpc('employee_directory');
     empDir=(rows||[]).map(r=>Object.assign({}, r.data, {id:r.id}));
-    empDirAt=Date.now(); mergeEmployees(); renderApp();
+    empDirAt=Date.now(); mergeEmployees(); renderFromData();
   }catch(err){ empDirAt=Date.now(); if(!missingFn(err)) console.warn('employee_directory', err); }
   finally{ empDirBusy=false; }
 }
@@ -1880,7 +1891,7 @@ function subscribeAll(){
   sub('kegLogs','kegLogs',{order:'createdAt',limit:400,sinceDays:92});
   S.db.doc('meta/settings').onSnapshot(snap=>{
     if(snap.exists){ S.settings = Object.assign({}, S.settings, snap.data()); }
-    renderApp();
+    renderFromData();
   }, ()=>{});
 }
 
@@ -1978,6 +1989,7 @@ function photoPicker(onReady, cameraOnly, existingUrl, opts){
     removeBtn.style.display='none'; btn.querySelector('span').textContent=pickLabel;
     onReady && onReady(null);
   };
+  input.addEventListener('cancel', ()=>{ S.pickerOpenAt = 0; });                  // camera closed without a photo
   input.onchange=async ()=>{
     S.pickerOpenAt = 0;
     const f=input.files[0]; if(!f) return;
