@@ -506,11 +506,12 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-09-29.35';
+const APP_BUILD = '2026-09-30.36';
 async function checkNewBuild(){
   try{
-    const r = await fetch(location.pathname + '?b=' + Date.now(), {cache:'no-store'});
-    const m = (await r.text()).match(/APP_BUILD\s*=\s*'([\w.-]+)'/);
+    const r = await fetch(location.pathname.replace(/[^/]*$/, '') + 'version.json?b=' + Date.now(), {cache:'no-store'});
+    if(!r.ok) return;
+    const j = await r.json(); const m = j && j.build ? [null, String(j.build)] : null;
     if(m && m[1] !== APP_BUILD && !document.getElementById('updBar')){
       const b = el(`<button id="updBar" class="upd-bar">${esc(t('app_update'))}</button>`);
       b.onclick = ()=>location.replace(location.pathname + '?v=' + Date.now() + location.hash);
@@ -731,7 +732,7 @@ const I18N = {
     geo_err_unsupported:'⚠ 此浏览器不支持定位功能。',
     geo_err_insecure:'⚠ 当前页面不是安全连接（https），无法获取定位。',
     empty_no_records:'暂无记录', flag_out_of_range:'超出范围', flag_in_range:'范围内', no_photo_taken:'打卡时未拍照',
-    seg_snacks:'售货机', balance_annual_prorated:'年假可用（按比例）', balance_full_year:'全年', balance_prorated:'按比例剩 ', leave_rules_hint:'年假要提前 {n} 天申请，不到 {n} 天会改成无薪假（UPL）。年假按比例累积，每个月多一点。不能申请已经过去的日子；病假最多可以补 {s} 天内的。', leave_al_short_notice:'年假要提前 {n} 天申请。这次不到 {n} 天，会改成无薪假（UPL）提交。确定吗？', err_leave_backdate:'不能申请已经过去的日子。看病请选「病假」。', err_sick_backdate:'病假最多只能补 {s} 天内的，更早的请找 HR。', err_leave_end_before:'结束日期不能早于开始日期', err_al_not_set:'HR 还没设定你的年假天数，请先找 HR。', err_al_over:'年假不够：按比例到那个月你只有 {n} 天可用（待批的也算在内）。多出的日子请另外申请无薪假。', toast_leave_as_upl:'已提交为无薪假（UPL）', app_update:'有新版本，点这里更新', recv_open_title:'这间店正在收的货', recv_no_supplier_yet:'还没选供应商', recv_open_current:'我正在做', recv_open_switch:'点开接手', recv_open_new:'另一家供应商也到了：开始另一张收货', recv_open_hint:'上面是同事正在收的货，不要动别人的。你收的是另一家，就直接在下面选供应商开始。', recv_keg_note:'一桶 {l}L = {m} 杯（每杯 {ml}ml，每桶扣 {w} 杯损耗）。数一下收到几桶、几公升，再看数字对不对。', recv_keg_mugs:'杯数', recv_keg_helper:'按桶算杯数', recv_keg_fill:'填入杯数', recv_keg_rule:'每杯 {ml}ml，每桶扣 {w} 杯损耗：10L = {m10} 杯，20L = {m20} 杯。', field_keg_mug_ml:'鲜啤一杯几 ml（收货换算用）', field_keg_waste:'鲜啤每桶扣几杯损耗', recv_err_sent:'这张单已经送出（可能是同事送的），这次的修改没有存。', recv_err_gone:'这张单已经不在了（被放弃或送出）。', recv_err_busy:'同事正在改同一张单，请再按一次。', recv_err_no_photo:'要先拍单据才能送出。', recv_err_no_supplier:'要先选供应商。', recv_err_not_pilot:'这间店还没开放收货。', recv_err_ai_lines:'还有 AI 读到的行没核对。', recv_err_read_used:'这张单已经开始核对，不能重新读。', recv_err_forbidden:'你没有权限改这张单。', recv_err_amount:'金额不能是负数。', recv_discard_confirm:'放弃这张单？开单人：{who}，已有 {n} 项。放弃后不能恢复。', recv_discard_not_mine:'这张单是 {who} 开的，只有开单人或经理能放弃。', recv_ai_dup_manual:'这个商品你已经手动加了 {n} 个。要用 AI 这一行取代手动那一行吗？（按取消就不改）', err_leave_date:'日期不对，请重新选。', vm_err_slot_changed:'这些货道刚被别人更新过，已从这次记录里拿掉，请重新数：{s}', vm_stale_dropped:'这些货道在你上次记录后被更新过，已拿掉，请重新数：{s}', photo_from_gallery:'从相册选', recv_photo_gallery_hint:'拍照后 App 重新打开、照片不见了？先用手机自己的相机拍单据，再按「从相册选」。', recv_ai_rounding:'尾数调整', sim_title:'供应商商品记忆', sim_hint:'门市确认过的每一行：供应商单据上的写法和单位（箱 CTN / 散装 PC）对应到我们的 AutoCount 货品和每单位几个。下次同一家供应商会自动对上。对错了就按「忘掉」，下次确认会重新学。', sim_search_ph:'供应商、单据写法、货号', sim_times:'确认次数', sim_changed:'曾改过，原本是', sim_forget:'忘掉', sim_forget_confirm:'忘掉这一条？下次要门市重新确认。', sim_unit:'单位', tile_stockout:"退货 / 报废", so_admin_record:"替门市记录", so_approvals:"等批准的报废", so_kind_return:"退货给供应商", so_kind_disposal:"报废", so_return_hint:"货品或空箱/空桶交还供应商（过期、破损、送错、多送、空箱退押金…）。拍供应商给的退货单，送出后 HQ 会在 AutoCount 做退货/扣账。", so_disposal_hint:"过期、破损、变质的货丢掉前先记录：拍货品照片、填数量和原因。送出后要店长或 HQ 批准（自己不能批自己的），批准后 HQ 在 AutoCount 做库存调整。", so_hist_return:"以往的退货", so_hist_disposal:"以往的报废", so_none:"还没有记录", so_open_title:"还没送出的单", so_start_new:"开新的一张", so_empty_return:"先选供应商，再拍退货单，然后加货品。", so_empty_disposal:"拍要丢掉的货品，加货品和数量，然后送出等批准。", so_step_photo_return:"拍供应商的退货单（Return Note / Empties Return）", so_step_photo_disposal:"拍要报废的货品（看得到数量和到期日）", so_photo2:"再拍一张（第二页 / 货品）", so_photo_hint_return:"司机签收的退货单整张入镜，单号看得清。没有单就拍交回的货品。", so_photo_hint_disposal:"把要丢的货排好一起拍，到期日或破损处要看得到。", so_doc_no:"退货单号（照单上抄）", so_doc_short:"单号", so_ref_invoice:"原发票号（知道就填）", so_outcome:"供应商怎么处理", so_out_credit_note:"开贷项单（扣下次货款）", so_out_replacement:"换新货", so_out_cash_refund:"退现金", so_out_deposit_refund:"退押金（空箱/空桶）", so_step_lines:"货品和数量", so_total:"总数量", so_value:"成本约", so_note_label:"备注", so_send_return:"送出退货", so_send_disposal:"送出等批准", so_err_no_lines:"请至少加一样货品", so_err_photo:"请先拍照片", so_wait_photo:"照片还在上传，请等一下", so_confirm_return:"送出后不能再改，确定送出这张退货？", so_confirm_disposal:"送出后不能再改，要店长或 HQ 批准。确定？", so_toast_pending:"已送出，等店长 / HQ 批准", so_toast_sent:"已送出，HQ 会在 AutoCount 处理", so_discard_confirm:"放弃这张单？里面的货品会一起删掉。", so_qty:"数量", so_reason:"原因", so_r_expired:"过期", so_r_damaged:"破损", so_r_wrong_item:"送错货", so_r_excess:"多送 / 卖不完", so_r_empties:"空箱 / 空桶", so_r_recall:"厂家回收", so_r_other:"其他", so_r_spoilt:"变质 / 坏掉", so_r_pest:"虫鼠咬", so_err_qty:"请填数量（大过 0）", so_err_pick_reason:"请选原因", so_err_bad_line:"有货品没有数量或原因，请检查", so_err_own:"不能批准自己送出的报废，请其他店长或 HQ 批准", so_err_decided:"这张已经有人批准或退回了", so_err_reason:"退回要写原因", so_st_draft:"草稿", so_st_submitted:"已送出", so_st_pending:"等批准", so_st_approved:"已批准", so_st_rejected:"已退回", so_decided_by:"处理人", so_decision_note:"备注（退回必填）", so_approve:"批准报废", so_reject:"退回", so_confirm_approve:"确定批准？批准后 HQ 会在 AutoCount 扣库存。", so_confirm_reject:"确定退回这张报废？", so_toast_approved:"已批准", so_toast_rejected:"已退回", so_wait_other:"等店长或 HQ 批准（自己不能批）", so_wait_manager:"等店长或 HQ 批准", so_no_waiting:"没有等批准的报废", so_open:"看退货 / 报废单", so_task_missing:"这张单不在最近 120 天的清单里", so_photo_take:'拍照（必须）', recv_doc_online:"网购包裹", recv_online_no:"面单上的订单号（拼多多填集运单号）", recv_online_step_photo:"2. 拍包裹面单", recv_online_photo_hint:"拍包裹上的面单，订单号或集运单号要看得清。拆开后可以再拍一张里面的货。", ol_title:"网购订单", ol_hq_only:"只有 HQ 可以登记网购订单", ol_add:"登记网购订单", ol_hq_hint:"付款后马上登记：订单号、送到哪间店、哪张卡付的、总额、平台收据截图，还有每一样货（卖的要选我们的货品，自用的写名字）。拼多多走集运，集运单号出来后再补上。门市收到包裹时会自动对上。", ol_st_ordered:"运送中", ol_st_received:"已收到", ol_st_cancelled:"已取消", ol_tracking_short:"运单", ol_platform:"平台", ol_branch:"送到哪间店", ol_not_pilot:"还没开放收货", ol_order_no:"订单号（平台上的 Order ID / 订单编号）", ol_tracking:"运单号 / 拼多多集运单号（可以之后补）", ol_seller:"卖家店名（可留空）", ol_card:"付款的卡", ol_paid_at:"付款日期", ol_amount:"实付总额 RM（含运费）", ol_receipt_photo:"平台收据（截图或收据 PDF 的截图）", ol_receipt_hint:"Shopee：我的 → 订单 → 订单详情 → 收据。拼多多：订单详情截图。", ol_err_branch:"请选送到哪间店", ol_items:"买了什么", ol_line_desc:"货品（照收据上写）", ol_line_amount:"这一行金额 RM", ol_use_sale:"卖的（入库存）", ol_use_store:"门市自用", ol_pick_item:"选我们的货品", ol_add_line:"加一样货", ol_err_order_no:"请填订单号", ol_err_amount:"请填实付总额", ol_err_line:"每一样货都要填名字、数量，并选卖的或自用", ol_err_sale_item:"卖的货要选我们的货品（找不到就先在 AutoCount 开货号）", ol_confirm_no_photo:"还没有收据照片，照样保存？", ol_confirm_dup:"已经有一张同样订单号的订单，确定再登记？", ol_confirm_sum:"各行加起来 RM {a}，实付 RM {b}（差额通常是运费或折扣）。照样保存？", ol_cancel:"取消这张订单", ol_confirm_cancel:"取消这张订单（退款 / 没寄出）？", ol_open_receipt:"看门市的收货单", ol_back:"返回", ol_type_2:"打至少 2 个字来找", ol_match_title:"对上网购订单", ol_match_hint:"把面单上的订单号填在上面的「单号」，系统会找出 HQ 登记的订单，按「对上」。找不到就看下面「其他运送中的订单」。", ol_no_orders:"HQ 还没登记送来这间店的网购订单。照样拍面单、数货、送出，HQ 会补登记再对上。", ol_ordered:"订单", ol_counted:"收到", ol_count:"点数", ol_unlink:"不是这张", ol_link:"对上", ol_suggested:"号码对得上的订单", ol_others:"其他运送中的订单", ol_confirm_unmatched:"没有对上 HQ 的订单。照样送出，HQ 会再跟进？", ol_err_use_count:"自用的货也要填收到几个（没收到填 0）", ol_confirm_sale_missing:"有 {n} 样卖的货还没点数，当作没收到，照样送出？", ol_incoming:"运送中的网购", ol_open_orders:"网购订单", ol_all:'全部', ol_err_taken:"这张订单已经被另一张收货单收了，请按「不是这张」", ol_err_gone:"对上的订单不在了或不是这间店的，请重新对", ol_err_changed:"另一位同事刚改过这张订单，请关掉再打开重改", ol_taken_by:"已被 {who} 正在收的单对上", ol_err_no_no:"请先把面单上的号码填在单号", ol_confirm_dup_no:"这个号码已经收过一次。如果是同一张单的第二箱，请在号码后面加「-2」再送出。照样送出？", ol_late:"逾期 {n} 天", ol_none_open:"没有运送中的订单", ol_restored:"已恢复刚才没保存的订单", ol_photo_kept:"照片已上传，订单还没保存：按「登记网购订单」继续", ol_err_photo_branch:"收据照片是放在另一间店的，改了门店后请移除再重新上传照片", ol_clear:"清空重填", ol_confirm_clear:"清空这张还没保存的订单？", ol_not_on_phone:"这台手机的清单里找不到这张单（可能超过 120 天，或不是你的门市）", recv_admin_inbox:'所有门市', recv_admin_receive:'我来收货', recv_ai_title:'AI 读单（试行）', recv_ai_hint:'按下后大约 15 秒，AI 会把单据上的商品、数量、金额列出来。每一行都要你自己数过、核对后按确认。', recv_ai_btn:'AI 读单，自动列出商品', recv_ai_failed:'读不到。请重新拍清楚一点再试，或照旧手动加商品。', recv_ai_asked:'已送出，大约 15 秒', recv_ai_limit:'这张单已经读过 3 次，请手动加商品。', recv_ai_cap:'今天 AI 读单的次数已用完，请手动加商品。', recv_ai_reading:'AI 正在读单…', recv_ai_wait:'大约 15 秒，可以先开始点货', recv_ai_again:'重新读', recv_ai_done:'AI 读到', recv_ai_check_each:'每一行都要点开：看商品对不对、数实收数量、看金额，然后按确认。没收到的按「这行没收到」。', recv_ai_all_checked:'每一行都核对好了。最后确认单据总额。', recv_ai_confirmed:'已确认', recv_ai_skipped:'没收到', recv_ai_to_check:'待核对', recv_ai_no_match:'没对上我们的商品，请选', recv_ai_paper:'单据上', recv_ai_how_name:'按名字配对，请看清楚', recv_ai_how_learned:'以前确认过的配对', recv_ai_how_barcode:'按条码配对', recv_ai_how_code:'按货号配对', recv_ai_lines_sum:'已确认各行合计', recv_ai_discount:'折扣', recv_ai_tax:'税', recv_ai_total:'单据总额 RM（看纸上的）', recv_ai_total_confirm:'总额和纸上一样，确认', recv_ai_total_ok:'总额已确认', recv_ai_docno_diff:'AI 读到的单号不一样，请对照纸上', recv_ai_our_item:'我们的商品', recv_ai_change_item:'换商品', recv_ai_pick_item:'选商品', recv_ai_counted:'实际收到（自己数）', recv_ai_unit_note:'单据写的是 {u}，请数实际收到多少个（用我们的单位）。', recv_ai_amount:'这一行金额 RM（看纸上的）', recv_ai_confirm_hint:'按确认，就表示你数过数量、看过金额，都和纸上一样。数量比单据少，会自动记成短少。', recv_ai_confirm:'数量和金额都对，确认', recv_ai_not_received:'这行没收到', recv_ai_need_amount:'请填这一行的金额', recv_ai_line_title:'核对第 {n} 行', recv_ai_block_lines:'还有 {n} 行 AI 读到的商品没核对', recv_ai_block_total:'请先确认单据总额', recv_ai_block_reading:'AI 还在读，请等一下（超过 3 分钟可以直接送出）', vm_tab_today:'今天', vm_tab_report:'报告', vm_sum_machines:'台要去', vm_sum_due:'个过期要拿出', vm_sum_soon:'个快过期', vm_today_hint:'最急的排最上面。数量是上次巡机时数到的；XY 接通后会自动更新。', vm_lvl_critical:'马上处理', vm_lvl_warn:'今天去', vm_lvl_ok:'正常', vm_lvl_n:'停运', vm_chip_due:'过期', vm_chip_soon:'快过期', vm_chip_empty:'空道', vm_chip_unset:'未设商品', vm_last:'上次：', vm_never:'还没有巡机记录', vm_days_ago:' 天前', vm_today_word:'今天', vm_draft_pill:'未提交', vm_back:'全部机器', vm_visit_hint:'逐个货道做：点货道 → 数剩几个 → 拿出过期 → 补货 → 填到期日。全部做完按「提交巡机」。没动的货道不用点。', vm_legend:'红＝有过期　橙＝快过期　虚线＝未设商品　✓＝这次已做', vm_row:'层', vm_done_n:'已做', vm_btn_submit:'提交巡机', vm_btn_discard:'放弃这次的草稿', vm_confirm_discard:'这次记的货道会全部清掉，确定放弃？', vm_slot:'货道', vm_set_product:'设置商品', vm_change_product:'换商品', vm_pick_product_first:'先选这个货道卖什么。', vm_field_product:'商品', vm_field_par:'满道数量', vm_only_manager:'已设商品的货道只有经理能换。', vm_plan_hint:'空货道谁都可以设；已经有商品的货道只有经理能换。', vm_last_record:'上次记录', vm_exp_unknown:'到期日不明', vm_f_left:'剩几个（补货前数一数）', vm_q_empty:'空的', vm_q_full:'满的', vm_q_same:'跟上次一样', vm_f_expired:'过期拿出', vm_f_damaged:'坏的 / 其他拿出', vm_f_added:'补进', vm_f_exp:'新货到期日', vm_day_short:'天', vm_after:'做完后', vm_over_par:'超过满道数量', vm_first_exp:'最早到期', vm_err_left:'先数一数剩几个', vm_err_more_out:'拿出的比剩的还多', vm_err_exp:'补了货要填到期日', vm_btn_save_slot:'保存这个货道', vm_btn_undo_slot:'撤销这个货道', vm_submit_title:'提交巡机', vm_tot_added:'补进', vm_tot_out:'拿出', vm_tot_sold:'卖出（估计）', vm_tot_waste:'损耗金额', vm_no_cost:'未设进价', vm_untouched:'没动的货道保持原样：', vm_still_due:'这些货道还有过期货没拿出：', vm_note:'备注（可不填）', vm_toast_sent:'巡机已提交', vm_only_team:'只有售货机组可以提交巡机', vm_err_offline:'没有网络。草稿还在手机里，有网后再按提交。', vm_left_short:'剩', vm_damaged_short:'坏', vm_range_7:'近 7 天', vm_range_30:'近 30 天', vm_rep_visits:'巡机次数', vm_rep_by_product:'按商品', vm_rep_by_machine:'按机器', vm_rep_recent:'最近巡机', vm_rep_hint:'卖出是估计：上次补完的数量减这次数到的剩余。XY 接通后改用真实销售。', vm_col_product:'商品', vm_col_machine:'机器', vm_col_last:'上次', vm_pcs:'个', vm_visit_title:'巡机记录', field_ac_code:'AutoCount 货号', field_tray_qty:'每盘几个', vm_tray:'每盘', field_shelf_days:'保质期（天）', field_pull_days:'到期前几天拿出（0＝过了到期日才拿）', notif_vm_expired:'售货机有过期货', seg_beer:'鲜啤酒', beer_title:'鲜啤酒库存', empty_add_beer_product:'请先在「我的」中添加啤酒品项',
+    seg_snacks:'售货机', balance_annual_prorated:'年假可用（按比例）', balance_full_year:'全年', balance_prorated:'按比例剩 ', leave_rules_hint:'年假要提前 {n} 天申请，不到 {n} 天会改成无薪假（UPL）。年假按比例累积，每个月多一点。不能申请已经过去的日子；病假最多可以补 {s} 天内的。', leave_al_short_notice:'年假要提前 {n} 天申请。这次不到 {n} 天，会改成无薪假（UPL）提交。确定吗？', err_leave_backdate:'不能申请已经过去的日子。看病请选「病假」。', err_sick_backdate:'病假最多只能补 {s} 天内的，更早的请找 HR。', err_leave_end_before:'结束日期不能早于开始日期', err_al_not_set:'HR 还没设定你的年假天数，请先找 HR。', err_al_over:'年假不够：按比例到那个月你只有 {n} 天可用（待批的也算在内）。多出的日子请另外申请无薪假。', toast_leave_as_upl:'已提交为无薪假（UPL）', app_update:'有新版本，点这里更新', recv_open_title:'这间店正在收的货', recv_no_supplier_yet:'还没选供应商', recv_open_current:'我正在做', recv_open_switch:'点开接手', recv_open_new:'另一家供应商也到了：开始另一张收货', recv_open_hint:'上面是同事正在收的货，不要动别人的。你收的是另一家，就直接在下面选供应商开始。', recv_keg_note:'一桶 {l}L = {m} 杯（每杯 {ml}ml，每桶扣 {w} 杯损耗）。数一下收到几桶、几公升，再看数字对不对。', recv_keg_mugs:'杯数', recv_keg_helper:'按桶算杯数', recv_keg_fill:'填入杯数', recv_keg_rule:'每杯 {ml}ml，每桶扣 {w} 杯损耗：10L = {m10} 杯，20L = {m20} 杯。', field_keg_mug_ml:'鲜啤一杯几 ml（收货换算用）', field_keg_waste:'鲜啤每桶扣几杯损耗', recv_err_sent:'这张单已经送出（可能是同事送的），这次的修改没有存。', recv_err_gone:'这张单已经不在了（被放弃或送出）。', recv_err_busy:'同事正在改同一张单，请再按一次。', recv_err_no_photo:'要先拍单据才能送出。', recv_err_no_supplier:'要先选供应商。', recv_err_not_pilot:'这间店还没开放收货。', recv_err_ai_lines:'还有 AI 读到的行没核对。', recv_err_read_used:'这张单已经开始核对，不能重新读。', recv_err_forbidden:'你没有权限改这张单。', recv_err_amount:'金额不能是负数。', recv_discard_confirm:'放弃这张单？开单人：{who}，已有 {n} 项。放弃后不能恢复。', recv_discard_not_mine:'这张单是 {who} 开的，只有开单人或经理能放弃。', recv_ai_dup_manual:'这个商品你已经手动加了 {n} 个。要用 AI 这一行取代手动那一行吗？（按取消就不改）', err_leave_date:'日期不对，请重新选。', vm_err_slot_changed:'这些货道刚被别人更新过，已从这次记录里拿掉，请重新数：{s}', vm_stale_dropped:'这些货道在你上次记录后被更新过，已拿掉，请重新数：{s}', photo_from_gallery:'从相册选', recv_photo_gallery_hint:'拍照后 App 重新打开、照片不见了？先用手机自己的相机拍单据，再按「从相册选」。', recv_ai_rounding:'尾数调整', sim_title:'供应商商品记忆', sim_hint:'门市确认过的每一行：供应商单据上的写法和单位（箱 CTN / 散装 PC）对应到我们的 AutoCount 货品和每单位几个。下次同一家供应商会自动对上。对错了就按「忘掉」，下次确认会重新学。', sim_search_ph:'供应商、单据写法、货号', sim_times:'确认次数', sim_changed:'曾改过，原本是', sim_forget:'忘掉', sim_forget_confirm:'忘掉这一条？下次要门市重新确认。', sim_unit:'单位', tile_stockout:"退货 / 报废", so_admin_record:"替门市记录", so_approvals:"等批准的报废", so_kind_return:"退货给供应商", so_kind_disposal:"报废", so_return_hint:"货品或空箱/空桶交还供应商（过期、破损、送错、多送、空箱退押金…）。拍供应商给的退货单，送出后 HQ 会在 AutoCount 做退货/扣账。", so_disposal_hint:"过期、破损、变质的货丢掉前先记录：拍货品照片、填数量和原因。送出后要店长或 HQ 批准（自己不能批自己的），批准后 HQ 在 AutoCount 做库存调整。", so_hist_return:"以往的退货", so_hist_disposal:"以往的报废", so_none:"还没有记录", so_open_title:"还没送出的单", so_start_new:"开新的一张", so_empty_return:"先选供应商，再拍退货单，然后加货品。", so_empty_disposal:"拍要丢掉的货品，加货品和数量，然后送出等批准。", so_step_photo_return:"拍供应商的退货单（Return Note / Empties Return）", so_step_photo_disposal:"拍要报废的货品（看得到数量和到期日）", so_photo2:"再拍一张（第二页 / 货品）", so_photo_hint_return:"司机签收的退货单整张入镜，单号看得清。没有单就拍交回的货品。", so_photo_hint_disposal:"把要丢的货排好一起拍，到期日或破损处要看得到。", so_doc_no:"退货单号（照单上抄）", so_doc_short:"单号", so_ref_invoice:"原发票号（知道就填）", so_outcome:"供应商怎么处理", so_out_credit_note:"开贷项单（扣下次货款）", so_out_replacement:"换新货", so_out_cash_refund:"退现金", so_out_deposit_refund:"退押金（空箱/空桶）", so_step_lines:"货品和数量", so_total:"总数量", so_value:"成本约", so_note_label:"备注", so_send_return:"送出退货", so_send_disposal:"送出等批准", so_err_no_lines:"请至少加一样货品", so_err_photo:"请先拍照片", so_wait_photo:"照片还在上传，请等一下", so_confirm_return:"送出后不能再改，确定送出这张退货？", so_confirm_disposal:"送出后不能再改，要店长或 HQ 批准。确定？", so_toast_pending:"已送出，等店长 / HQ 批准", so_toast_sent:"已送出，HQ 会在 AutoCount 处理", so_discard_confirm:"放弃这张单？里面的货品会一起删掉。", so_qty:"数量", so_reason:"原因", so_r_expired:"过期", so_r_damaged:"破损", so_r_wrong_item:"送错货", so_r_excess:"多送 / 卖不完", so_r_empties:"空箱 / 空桶", so_r_recall:"厂家回收", so_r_other:"其他", so_r_spoilt:"变质 / 坏掉", so_r_pest:"虫鼠咬", so_err_qty:"请填数量（大过 0）", so_err_pick_reason:"请选原因", so_err_bad_line:"有货品没有数量或原因，请检查", so_err_own:"不能批准自己送出的报废，请其他店长或 HQ 批准", so_err_decided:"这张已经有人批准或退回了", so_err_reason:"退回要写原因", so_st_draft:"草稿", so_st_submitted:"已送出", so_st_pending:"等批准", so_st_approved:"已批准", so_st_rejected:"已退回", so_decided_by:"处理人", so_decision_note:"备注（退回必填）", so_approve:"批准报废", so_reject:"退回", so_confirm_approve:"确定批准？批准后 HQ 会在 AutoCount 扣库存。", so_confirm_reject:"确定退回这张报废？", so_toast_approved:"已批准", so_toast_rejected:"已退回", so_wait_other:"等店长或 HQ 批准（自己不能批）", so_wait_manager:"等店长或 HQ 批准", so_no_waiting:"没有等批准的报废", so_open:"看退货 / 报废单", so_task_missing:"这张单不在最近 120 天的清单里", so_photo_take:'拍照（必须）', recv_doc_online:"网购包裹", recv_online_no:"面单上的订单号（拼多多填集运单号）", recv_online_step_photo:"2. 拍包裹面单", recv_online_photo_hint:"拍包裹上的面单，订单号或集运单号要看得清。拆开后可以再拍一张里面的货。", ol_title:"网购订单", ol_hq_only:"只有 HQ 可以登记网购订单", ol_add:"登记网购订单", ol_hq_hint:"付款后马上登记：订单号、送到哪间店、哪张卡付的、总额、平台收据截图，还有每一样货（卖的要选我们的货品，自用的写名字）。拼多多走集运，集运单号出来后再补上。门市收到包裹时会自动对上。", ol_st_ordered:"运送中", ol_st_received:"已收到", ol_st_cancelled:"已取消", ol_tracking_short:"运单", ol_platform:"平台", ol_branch:"送到哪间店", ol_not_pilot:"还没开放收货", ol_order_no:"订单号（平台上的 Order ID / 订单编号）", ol_tracking:"运单号 / 拼多多集运单号（可以之后补）", ol_seller:"卖家店名（可留空）", ol_card:"付款的卡", ol_paid_at:"付款日期", ol_amount:"实付总额 RM（含运费）", ol_receipt_photo:"平台收据（截图或收据 PDF 的截图）", ol_receipt_hint:"Shopee：我的 → 订单 → 订单详情 → 收据。拼多多：订单详情截图。", ol_err_branch:"请选送到哪间店", ol_items:"买了什么", ol_line_desc:"货品（照收据上写）", ol_line_amount:"这一行金额 RM", ol_use_sale:"卖的（入库存）", ol_use_store:"门市自用", ol_pick_item:"选我们的货品", ol_add_line:"加一样货", ol_err_order_no:"请填订单号", ol_err_amount:"请填实付总额", ol_err_line:"每一样货都要填名字、数量，并选卖的或自用", ol_err_sale_item:"卖的货要选我们的货品（找不到就先在 AutoCount 开货号）", ol_confirm_no_photo:"还没有收据照片，照样保存？", ol_confirm_dup:"已经有一张同样订单号的订单，确定再登记？", ol_confirm_sum:"各行加起来 RM {a}，实付 RM {b}（差额通常是运费或折扣）。照样保存？", ol_cancel:"取消这张订单", ol_confirm_cancel:"取消这张订单（退款 / 没寄出）？", ol_open_receipt:"看门市的收货单", ol_back:"返回", ol_type_2:"打至少 2 个字来找", ol_match_title:"对上网购订单", ol_match_hint:"把面单上的订单号填在上面的「单号」，系统会找出 HQ 登记的订单，按「对上」。找不到就看下面「其他运送中的订单」。", ol_no_orders:"HQ 还没登记送来这间店的网购订单。照样拍面单、数货、送出，HQ 会补登记再对上。", ol_ordered:"订单", ol_counted:"收到", ol_count:"点数", ol_unlink:"不是这张", ol_link:"对上", ol_suggested:"号码对得上的订单", ol_others:"其他运送中的订单", ol_confirm_unmatched:"没有对上 HQ 的订单。照样送出，HQ 会再跟进？", ol_err_use_count:"自用的货也要填收到几个（没收到填 0）", ol_confirm_sale_missing:"有 {n} 样卖的货还没点数，当作没收到，照样送出？", ol_incoming:"运送中的网购", ol_open_orders:"网购订单", ol_all:'全部', ol_err_taken:"这张订单已经被另一张收货单收了，请按「不是这张」", ol_err_gone:"对上的订单不在了或不是这间店的，请重新对", ol_err_changed:"另一位同事刚改过这张订单，请关掉再打开重改", ol_taken_by:"已被 {who} 正在收的单对上", ol_err_no_no:"请先把面单上的号码填在单号", ol_confirm_dup_no:"这个号码已经收过一次。如果是同一张单的第二箱，请在号码后面加「-2」再送出。照样送出？", ol_late:"逾期 {n} 天", ol_none_open:"没有运送中的订单", ol_restored:"已恢复刚才没保存的订单", ol_photo_kept:"照片已上传，订单还没保存：按「登记网购订单」继续", ol_err_photo_branch:"收据照片是放在另一间店的，改了门店后请移除再重新上传照片", ol_clear:"清空重填", ol_confirm_clear:"清空这张还没保存的订单？", ol_not_on_phone:"这台手机的清单里找不到这张单（可能超过 120 天，或不是你的门市）", err_line_gone:"这一行刚被同事改掉或删掉了，请重新打开再改", err_forbidden:"没有权限，这次没有存进去（可能已被送出或不是你的门店）", clock_selfie:"打卡自拍（前镜头）", clock_confirm_out:"确定现在下班打卡？", task_items_open:"还有项目没做完", task_run_done:"这张清单已经完成，不能再改", sos_ack:"我来处理（已收到）", sos_acked_by:"已由", sos_open_map:"打开地图", sos_tap_ack:"点开，按「我来处理」", push_mgr_ask:"你还没开通知：SOS、温度异常、请假都要开了才收得到。", push_turn_on:"开启通知", order_sku_delete_confirm:"关掉这个货品？（不会删除，以往的单据还会找得到）", vm_team_only:"售货机补货只有售货机组 / HQ 能记录。", acc_load_partial:"有些资料没载入，数字可能不完整", acc_void_word:"作废", acc_m_queue:"单据都已传到 AutoCount", acc_m_held:"张被暂停", acc_release_held:"放行暂停的单", recv_admin_inbox:'所有门市', recv_admin_receive:'我来收货', recv_ai_title:'AI 读单（试行）', recv_ai_hint:'按下后大约 15 秒，AI 会把单据上的商品、数量、金额列出来。每一行都要你自己数过、核对后按确认。', recv_ai_btn:'AI 读单，自动列出商品', recv_ai_failed:'读不到。请重新拍清楚一点再试，或照旧手动加商品。', recv_ai_asked:'已送出，大约 15 秒', recv_ai_limit:'这张单已经读过 3 次，请手动加商品。', recv_ai_cap:'今天 AI 读单的次数已用完，请手动加商品。', recv_ai_reading:'AI 正在读单…', recv_ai_wait:'大约 15 秒，可以先开始点货', recv_ai_again:'重新读', recv_ai_done:'AI 读到', recv_ai_check_each:'每一行都要点开：看商品对不对、数实收数量、看金额，然后按确认。没收到的按「这行没收到」。', recv_ai_all_checked:'每一行都核对好了。最后确认单据总额。', recv_ai_confirmed:'已确认', recv_ai_skipped:'没收到', recv_ai_to_check:'待核对', recv_ai_no_match:'没对上我们的商品，请选', recv_ai_paper:'单据上', recv_ai_how_name:'按名字配对，请看清楚', recv_ai_how_learned:'以前确认过的配对', recv_ai_how_barcode:'按条码配对', recv_ai_how_code:'按货号配对', recv_ai_lines_sum:'已确认各行合计', recv_ai_discount:'折扣', recv_ai_tax:'税', recv_ai_total:'单据总额 RM（看纸上的）', recv_ai_total_confirm:'总额和纸上一样，确认', recv_ai_total_ok:'总额已确认', recv_ai_docno_diff:'AI 读到的单号不一样，请对照纸上', recv_ai_our_item:'我们的商品', recv_ai_change_item:'换商品', recv_ai_pick_item:'选商品', recv_ai_counted:'实际收到（自己数）', recv_ai_unit_note:'单据写的是 {u}，请数实际收到多少个（用我们的单位）。', recv_ai_amount:'这一行金额 RM（看纸上的）', recv_ai_confirm_hint:'按确认，就表示你数过数量、看过金额，都和纸上一样。数量比单据少，会自动记成短少。', recv_ai_confirm:'数量和金额都对，确认', recv_ai_not_received:'这行没收到', recv_ai_need_amount:'请填这一行的金额', recv_ai_line_title:'核对第 {n} 行', recv_ai_block_lines:'还有 {n} 行 AI 读到的商品没核对', recv_ai_block_total:'请先确认单据总额', recv_ai_block_reading:'AI 还在读，请等一下（超过 3 分钟可以直接送出）', vm_tab_today:'今天', vm_tab_report:'报告', vm_sum_machines:'台要去', vm_sum_due:'个过期要拿出', vm_sum_soon:'个快过期', vm_today_hint:'最急的排最上面。数量是上次巡机时数到的；XY 接通后会自动更新。', vm_lvl_critical:'马上处理', vm_lvl_warn:'今天去', vm_lvl_ok:'正常', vm_lvl_n:'停运', vm_chip_due:'过期', vm_chip_soon:'快过期', vm_chip_empty:'空道', vm_chip_unset:'未设商品', vm_last:'上次：', vm_never:'还没有巡机记录', vm_days_ago:' 天前', vm_today_word:'今天', vm_draft_pill:'未提交', vm_back:'全部机器', vm_visit_hint:'逐个货道做：点货道 → 数剩几个 → 拿出过期 → 补货 → 填到期日。全部做完按「提交巡机」。没动的货道不用点。', vm_legend:'红＝有过期　橙＝快过期　虚线＝未设商品　✓＝这次已做', vm_row:'层', vm_done_n:'已做', vm_btn_submit:'提交巡机', vm_btn_discard:'放弃这次的草稿', vm_confirm_discard:'这次记的货道会全部清掉，确定放弃？', vm_slot:'货道', vm_set_product:'设置商品', vm_change_product:'换商品', vm_pick_product_first:'先选这个货道卖什么。', vm_field_product:'商品', vm_field_par:'满道数量', vm_only_manager:'已设商品的货道只有经理能换。', vm_plan_hint:'空货道谁都可以设；已经有商品的货道只有经理能换。', vm_last_record:'上次记录', vm_exp_unknown:'到期日不明', vm_f_left:'剩几个（补货前数一数）', vm_q_empty:'空的', vm_q_full:'满的', vm_q_same:'跟上次一样', vm_f_expired:'过期拿出', vm_f_damaged:'坏的 / 其他拿出', vm_f_added:'补进', vm_f_exp:'新货到期日', vm_day_short:'天', vm_after:'做完后', vm_over_par:'超过满道数量', vm_first_exp:'最早到期', vm_err_left:'先数一数剩几个', vm_err_more_out:'拿出的比剩的还多', vm_err_exp:'补了货要填到期日', vm_btn_save_slot:'保存这个货道', vm_btn_undo_slot:'撤销这个货道', vm_submit_title:'提交巡机', vm_tot_added:'补进', vm_tot_out:'拿出', vm_tot_sold:'卖出（估计）', vm_tot_waste:'损耗金额', vm_no_cost:'未设进价', vm_untouched:'没动的货道保持原样：', vm_still_due:'这些货道还有过期货没拿出：', vm_note:'备注（可不填）', vm_toast_sent:'巡机已提交', vm_only_team:'只有售货机组可以提交巡机', vm_err_offline:'没有网络。草稿还在手机里，有网后再按提交。', vm_left_short:'剩', vm_damaged_short:'坏', vm_range_7:'近 7 天', vm_range_30:'近 30 天', vm_rep_visits:'巡机次数', vm_rep_by_product:'按商品', vm_rep_by_machine:'按机器', vm_rep_recent:'最近巡机', vm_rep_hint:'卖出是估计：上次补完的数量减这次数到的剩余。XY 接通后改用真实销售。', vm_col_product:'商品', vm_col_machine:'机器', vm_col_last:'上次', vm_pcs:'个', vm_visit_title:'巡机记录', field_ac_code:'AutoCount 货号', field_tray_qty:'每盘几个', vm_tray:'每盘', field_shelf_days:'保质期（天）', field_pull_days:'到期前几天拿出（0＝过了到期日才拿）', notif_vm_expired:'售货机有过期货', seg_beer:'鲜啤酒', beer_title:'鲜啤酒库存', empty_add_beer_product:'请先在「我的」中添加啤酒品项',
     btn_receive_kegs:'登记到货', btn_tap_keg:'开桶上线', beer_on_tap:'使用中的酒桶', beer_no_kegs_on_tap:'目前没有开桶使用中',
     beer_remaining:'剩余', beer_expired:'已过保鲜期', beer_expiring_soon:'即将到期', beer_fresh:'新鲜',
     beer_in_stock:'未开桶库存', beer_no_stock:'暂无库存', beer_kegs_unit:'桶',
@@ -751,7 +752,7 @@ const I18N = {
     field_keg_size:'桶容量（公升）', field_freshness_days:'开桶后保鲜天数', label_freshness_days:'保鲜 ',
     field_cost_per_keg_opt:'每桶成本（可选）', field_deposit_per_keg_opt:'每桶押金（可选，留空=不收押金）',
     field_low_stock_kegs:'低库存预警桶数', sheet_edit_beer_product:'编辑啤酒品项', sheet_add_beer_product:'添加啤酒品项',
-    field_tap_name:'龙头名称', field_branch:'所属分店（可选）', field_cleaning_interval:'管路清洗周期（天）', err_fill_tap_name:'请填写龙头名称',
+    field_tap_name:'龙头名称', field_cleaning_interval:'管路清洗周期（天）', err_fill_tap_name:'请填写龙头名称',
     branch_all:'全部分店',
     sheet_edit_tap:'编辑酒龙头', sheet_add_tap:'添加酒龙头', admin_beer_mgmt:'啤酒品项管理', admin_tap_mgmt:'酒龙头管理',
     label_last_cleaned:'上次清洗 ',
@@ -970,7 +971,7 @@ const I18N = {
     geo_err_unsupported:'⚠ This browser doesn\'t support location services.',
     geo_err_insecure:'⚠ This page isn\'t a secure (https) connection, so location can\'t be accessed.',
     empty_no_records:'No records yet', flag_out_of_range:'Out of Range', flag_in_range:'In Range', no_photo_taken:'No photo taken at clock-in',
-    seg_snacks:'Vending machines', balance_annual_prorated:'AL available (prorated)', balance_full_year:'full year', balance_prorated:'prorated left ', leave_rules_hint:'Annual leave must be applied {n} days ahead; with less notice it becomes unpaid leave (UPL). Annual leave builds up month by month. No leave for days already past; sick leave can go back at most {s} days.', leave_al_short_notice:'Annual leave needs {n} days notice. This is less, so it will be sent as unpaid leave (UPL). Continue?', err_leave_backdate:'You cannot apply for days already past. For a doctor visit choose Sick leave.', err_sick_backdate:'Sick leave can go back at most {s} days; for older dates see HR.', err_leave_end_before:'End date cannot be before start date', err_al_not_set:'HR has not set your annual leave yet. Please see HR first.', err_al_over:'Not enough annual leave: by that month you have only {n} day(s) available (pending requests included). Apply unpaid leave for the extra days.', toast_leave_as_upl:'Sent as unpaid leave (UPL)', app_update:'New version available. Tap to update.', recv_open_title:'Deliveries being received in this store', recv_no_supplier_yet:'No supplier yet', recv_open_current:'Mine now', recv_open_switch:'Open to take over', recv_open_new:'Another supplier arrived: start another receipt', recv_open_hint:'Above are receipts colleagues are working on; leave them alone. For a different supplier, just choose it below to start yours.', recv_keg_note:'One {l} L keg = {m} mugs ({ml} ml a mug, less {w} mugs lost per keg). Count the kegs and check their size, then check the number.', recv_keg_mugs:'mugs', recv_keg_helper:'Kegs to mugs', recv_keg_fill:'fill in mugs', recv_keg_rule:'{ml} ml a mug, less {w} mugs lost per keg: 10 L = {m10} mugs, 20 L = {m20} mugs.', field_keg_mug_ml:'Draught beer: ml per mug (receiving)', field_keg_waste:'Draught beer: mugs lost per keg', recv_err_sent:'This receipt was already sent (maybe by a colleague); this change was not saved.', recv_err_gone:'This receipt no longer exists (discarded or sent).', recv_err_busy:'A colleague is changing the same receipt; tap again.', recv_err_no_photo:'Photograph the paper before sending.', recv_err_no_supplier:'Choose the supplier first.', recv_err_not_pilot:'Receiving is not open for this store yet.', recv_err_ai_lines:'Some lines read by the AI are not checked yet.', recv_err_read_used:'Checking has started on this reading; it cannot be read again.', recv_err_forbidden:'You are not allowed to change this receipt.', recv_err_amount:'The amount cannot be negative.', recv_discard_confirm:'Discard this receipt? Started by {who}, {n} item(s). This cannot be undone.', recv_discard_not_mine:'{who} started this receipt; only they or a manager can discard it.', recv_ai_dup_manual:'You already added {n} of this product by hand. Replace that line with the AI line? (Cancel keeps both unchanged)', err_leave_date:'The date is not valid; choose it again.', vm_err_slot_changed:'These slots were just updated by someone else and were taken out of this visit; count them again: {s}', vm_stale_dropped:'These slots were updated after you counted them and were taken out; count them again: {s}', photo_from_gallery:'From gallery', recv_photo_gallery_hint:'Photo lost because the App reopened after the camera? Take the picture with the phone\'s own camera, then tap From gallery.', recv_ai_rounding:'rounding', sim_title:'Supplier item memory', sim_hint:'Every line stores confirmed: how the supplier writes it and its unit (carton CTN / loose PC) -> our AutoCount item and pieces per unit. The same supplier matches automatically next time. Tap Forget for a wrong one; the next confirmation teaches it again.', sim_search_ph:'Supplier, printed text, item code', sim_times:'Confirmed', sim_changed:'Changed, was', sim_forget:'Forget', sim_forget_confirm:'Forget this one? Stores will confirm it again next time.', sim_unit:'unit', tile_stockout:"Return / Disposal", so_admin_record:"Record for a store", so_approvals:"Disposals to approve", so_kind_return:"Return to supplier", so_kind_disposal:"Disposal", so_return_hint:"Goods or empty crates / kegs handed back to a supplier (expired, damaged, wrong item, excess, empties for deposit...). Photo the supplier's return note; after you send, HQ posts the return in AutoCount.", so_disposal_hint:"Before throwing away expired, damaged or spoilt stock, record it: photo the goods, enter qty and reason. After you send, the store manager or HQ approves (nobody approves their own); HQ then adjusts stock in AutoCount.", so_hist_return:"Earlier returns", so_hist_disposal:"Earlier disposals", so_none:"Nothing recorded yet", so_open_title:"Not sent yet", so_start_new:"Start another", so_empty_return:"Pick the supplier, photo the return note, then add the goods.", so_empty_disposal:"Photo the goods to throw away, add items and qty, then send for approval.", so_step_photo_return:"Photo the supplier's return note (Return Note / Empties Return)", so_step_photo_disposal:"Photo the goods being thrown away (qty and expiry visible)", so_photo2:"One more photo (page 2 / the goods)", so_photo_hint_return:"The return note the driver signed, whole page in frame, number readable. No note? Photo the goods handed back.", so_photo_hint_disposal:"Lay the goods out together; the expiry date or damage must show.", so_doc_no:"Return note no. (copy from the paper)", so_doc_short:"No.", so_ref_invoice:"Original invoice no. (if known)", so_outcome:"What the supplier does", so_out_credit_note:"Credit note (off the next bill)", so_out_replacement:"Replacement goods", so_out_cash_refund:"Cash refund", so_out_deposit_refund:"Deposit refund (empties)", so_step_lines:"Goods and quantity", so_total:"Total qty", so_value:"cost about", so_note_label:"Note", so_send_return:"Send return", so_send_disposal:"Send for approval", so_err_no_lines:"Add at least one item", so_err_photo:"Take the photo first", so_wait_photo:"The photo is still uploading; wait a moment", so_confirm_return:"It cannot be changed after sending. Send this return?", so_confirm_disposal:"It cannot be changed after sending, and needs the manager or HQ to approve. Send?", so_toast_pending:"Sent; waiting for the manager / HQ", so_toast_sent:"Sent; HQ will post it in AutoCount", so_discard_confirm:"Discard this one? Its items are deleted too.", so_qty:"Qty", so_reason:"Reason", so_r_expired:"Expired", so_r_damaged:"Damaged", so_r_wrong_item:"Wrong item", so_r_excess:"Excess / unsold", so_r_empties:"Empty crates / kegs", so_r_recall:"Recall", so_r_other:"Other", so_r_spoilt:"Spoilt", so_r_pest:"Pest damage", so_err_qty:"Enter a quantity above 0", so_err_pick_reason:"Pick a reason", so_err_bad_line:"An item has no quantity or reason; check the list", so_err_own:"You cannot approve your own disposal; another manager or HQ must", so_err_decided:"Someone already approved or rejected this one", so_err_reason:"Write the reason for rejecting", so_st_draft:"Draft", so_st_submitted:"Sent", so_st_pending:"To approve", so_st_approved:"Approved", so_st_rejected:"Rejected", so_decided_by:"Decided by", so_decision_note:"Note (required to reject)", so_approve:"Approve disposal", so_reject:"Reject", so_confirm_approve:"Approve? HQ then takes the stock off in AutoCount.", so_confirm_reject:"Reject this disposal?", so_toast_approved:"Approved", so_toast_rejected:"Rejected", so_wait_other:"Waiting for a manager or HQ (you cannot approve your own)", so_wait_manager:"Waiting for the manager or HQ", so_no_waiting:"No disposals waiting", so_open:"Open the return / disposal", so_task_missing:"This one is not in the last 120 days' list", so_photo_take:'Take photo (required)', recv_doc_online:"Online parcel", recv_online_no:"Order no. on the label (Pinduoduo: consolidation waybill no.)", recv_online_step_photo:"2. Photo the parcel label", recv_online_photo_hint:"Photograph the label on the parcel; the order no. or waybill no. must be readable. After opening it you can add a photo of the contents.", ol_title:"Online orders", ol_hq_only:"Only HQ records online orders", ol_add:"Record an online order", ol_hq_hint:"Record it as soon as you pay: order no., which store it ships to, the card used, the total, a screenshot of the platform receipt, and every item (for sale: pick our item; store use: type the name). Pinduoduo ships consolidated; add the waybill no. when it is known. The store's parcel is matched automatically.", ol_st_ordered:"On the way", ol_st_received:"Received", ol_st_cancelled:"Cancelled", ol_tracking_short:"Waybill", ol_platform:"Platform", ol_branch:"Ships to store", ol_not_pilot:"receiving not on yet", ol_order_no:"Order no. (the platform's Order ID)", ol_tracking:"Tracking no. / Pinduoduo consolidation waybill (can be added later)", ol_seller:"Seller shop (optional)", ol_card:"Paid with card", ol_paid_at:"Paid on", ol_amount:"Total paid RM (incl. shipping)", ol_receipt_photo:"Platform receipt (screenshot, or a screenshot of the receipt PDF)", ol_receipt_hint:"Shopee: Me → My Purchases → order details → Receipt. Pinduoduo: screenshot of the order details.", ol_err_branch:"Choose the store it ships to", ol_items:"What was bought", ol_line_desc:"Item (as on the receipt)", ol_line_amount:"Line amount RM", ol_use_sale:"For sale (stock)", ol_use_store:"Store use", ol_pick_item:"Pick our item", ol_add_line:"Add an item", ol_err_order_no:"Enter the order no.", ol_err_amount:"Enter the total paid", ol_err_line:"Every item needs a name, a quantity, and For sale or Store use", ol_err_sale_item:"Items for sale need our goods-list item (create the code in AutoCount first if missing)", ol_confirm_no_photo:"No receipt photo yet. Save anyway?", ol_confirm_dup:"An order with the same order no. already exists. Record it again?", ol_confirm_sum:"The lines add up to RM {a}, paid RM {b} (usually shipping or a discount). Save anyway?", ol_cancel:"Cancel this order", ol_confirm_cancel:"Cancel this order (refunded / never shipped)?", ol_open_receipt:"Open the store's goods receive", ol_back:"Back", ol_type_2:"Type at least 2 characters", ol_match_title:"Match the online order", ol_match_hint:"Type the order no. from the label in Document no. above; the App finds HQ's order: tap Match. Not found? Look under Other orders on the way.", ol_no_orders:"HQ has not recorded any online order for this store. Photo the label, count and send anyway; HQ records it later and matches it.", ol_ordered:"Ordered", ol_counted:"Received", ol_count:"Count", ol_unlink:"Not this one", ol_link:"Match", ol_suggested:"Orders with this number", ol_others:"Other orders on the way", ol_confirm_unmatched:"Not matched to an HQ order. Send anyway and let HQ follow up?", ol_err_use_count:"Store-use items need a received quantity too (0 if missing)", ol_confirm_sale_missing:"{n} item(s) for sale not counted. Treat them as not received and send?", ol_incoming:"Online orders on the way", ol_open_orders:"Online orders", ol_all:'All', ol_err_taken:"This order was already received on another receipt; tap Not this one", ol_err_gone:"A matched order is gone or belongs to another store; match again", ol_err_changed:"A colleague just changed this order; close it and open it again", ol_taken_by:"matched on {who}'s open receipt", ol_err_no_no:"Type the number on the label into Document no. first", ol_confirm_dup_no:"This number was already received once. If this is a second carton of the same order, add \"-2\" to the number before sending. Send anyway?", ol_late:"{n} days late", ol_none_open:"No orders on the way", ol_restored:"Your unsaved order was restored", ol_photo_kept:"Photo uploaded; the order is not saved yet: tap Record an online order to continue", ol_err_photo_branch:"The receipt photo sits in another store's folder; after changing the store, remove it and upload it again", ol_clear:"Clear and start again", ol_confirm_clear:"Clear this unsaved order?", ol_not_on_phone:"Not in this phone's list (older than 120 days, or not your store)", recv_admin_inbox:'All stores', recv_admin_receive:'Receive goods', recv_ai_title:'AI paper reading (pilot)', recv_ai_hint:'About 15 seconds after you tap, the AI lists the items, quantities and amounts on the paper. You count and check every line yourself and confirm it.', recv_ai_btn:'Read the paper with AI', recv_ai_failed:'Could not read it. Take a clearer photo and try again, or add the items by hand as before.', recv_ai_asked:'Sent, about 15 seconds', recv_ai_limit:'This paper was read 3 times already; please add the items by hand.', recv_ai_cap:'Today\'s AI readings are used up; please add the items by hand.', recv_ai_reading:'AI is reading the paper…', recv_ai_wait:'About 15 seconds; you can start counting', recv_ai_again:'Read again', recv_ai_done:'AI read', recv_ai_check_each:'Open every line: check the product, count what arrived, check the amount, then confirm. Tap Not received for a line that did not come.', recv_ai_all_checked:'Every line is checked. Finally confirm the total.', recv_ai_confirmed:'Confirmed', recv_ai_skipped:'Not received', recv_ai_to_check:'To check', recv_ai_no_match:'Not matched to our product; please choose', recv_ai_paper:'On the paper', recv_ai_how_name:'Matched by name; check it', recv_ai_how_learned:'Matched as confirmed before', recv_ai_how_barcode:'Matched by barcode', recv_ai_how_code:'Matched by item code', recv_ai_lines_sum:'Confirmed lines add up to', recv_ai_discount:'discount', recv_ai_tax:'tax', recv_ai_total:'Paper total RM (read it from the paper)', recv_ai_total_confirm:'Total matches the paper, confirm', recv_ai_total_ok:'Total confirmed', recv_ai_docno_diff:'The AI read a different number; check the paper', recv_ai_our_item:'Our product', recv_ai_change_item:'Change product', recv_ai_pick_item:'Choose product', recv_ai_counted:'Actually received (count it)', recv_ai_unit_note:'The paper says {u}; count how many arrived in our unit.', recv_ai_amount:'Line amount RM (from the paper)', recv_ai_confirm_hint:'Confirming means you counted the quantity and checked the amount, and both match the paper. Fewer than the paper is recorded as short.', recv_ai_confirm:'Quantity and amount are right, confirm', recv_ai_not_received:'This line was not received', recv_ai_need_amount:'Enter this line\'s amount', recv_ai_line_title:'Check line {n}', recv_ai_block_lines:'{n} line(s) read by the AI are not checked yet', recv_ai_block_total:'Confirm the paper total first', recv_ai_block_reading:'The AI is still reading; please wait (after 3 minutes you can send without it)', vm_tab_today:'Today', vm_tab_report:'Report', vm_sum_machines:'machines to visit', vm_sum_due:'expired to take out', vm_sum_soon:'expiring soon', vm_today_hint:'Most urgent at the top. Quantities are what was counted at the last visit; they update by themselves once XY is connected.', vm_lvl_critical:'Act now', vm_lvl_warn:'Visit today', vm_lvl_ok:'OK', vm_lvl_n:'Stopped', vm_chip_due:'Expired', vm_chip_soon:'Soon', vm_chip_empty:'Empty', vm_chip_unset:'No product', vm_last:'Last: ', vm_never:'No visit recorded yet', vm_days_ago:' d ago', vm_today_word:'today', vm_draft_pill:'Not sent', vm_back:'All machines', vm_visit_hint:'Slot by slot: tap a slot → count what is left → take out expired → refill → enter the expiry date. When done, tap Submit visit. Slots you did not touch need no tap.', vm_legend:'Red = expired   Orange = expiring soon   Dashed = no product   ✓ = done this visit', vm_row:'Row', vm_done_n:'Done', vm_btn_submit:'Submit visit', vm_btn_discard:'Discard this draft', vm_confirm_discard:'Every slot recorded on this visit will be cleared. Discard?', vm_slot:'Slot', vm_set_product:'Set product', vm_change_product:'Change product', vm_pick_product_first:'First choose what this slot sells.', vm_field_product:'Product', vm_field_par:'Full quantity', vm_only_manager:'Only a manager can change the product of a slot that has one.', vm_plan_hint:'Anyone can set an empty slot; only a manager can change a slot that already has a product.', vm_last_record:'Last record', vm_exp_unknown:'expiry unknown', vm_f_left:'Left in the slot (count before refilling)', vm_q_empty:'Empty', vm_q_full:'Full', vm_q_same:'Same as last', vm_f_expired:'Expired taken out', vm_f_damaged:'Damaged / other taken out', vm_f_added:'Added', vm_f_exp:'Expiry of the new stock', vm_day_short:'d', vm_after:'After', vm_over_par:'more than the slot holds', vm_first_exp:'earliest expiry', vm_err_left:'Count what is left first', vm_err_more_out:'More taken out than was left', vm_err_exp:'Stock added needs an expiry date', vm_btn_save_slot:'Save this slot', vm_btn_undo_slot:'Undo this slot', vm_submit_title:'Submit visit', vm_tot_added:'Added', vm_tot_out:'Taken out', vm_tot_sold:'Sold (estimate)', vm_tot_waste:'Waste value', vm_no_cost:'no cost set', vm_untouched:'Slots not touched stay as they were:', vm_still_due:'These slots still hold expired stock:', vm_note:'Note (optional)', vm_toast_sent:'Visit saved', vm_only_team:'Only the vending team can submit a visit', vm_err_offline:'No connection. The draft stays on this phone; submit again when you are online.', vm_left_short:'Left', vm_damaged_short:'Damaged', vm_range_7:'Last 7 days', vm_range_30:'Last 30 days', vm_rep_visits:'Visits', vm_rep_by_product:'By product', vm_rep_by_machine:'By machine', vm_rep_recent:'Recent visits', vm_rep_hint:'Sold is an estimate: what was in the slot after the last visit minus what is counted now. Real sales replace it once XY is connected.', vm_col_product:'Product', vm_col_machine:'Machine', vm_col_last:'Last visit', vm_pcs:'pcs', vm_visit_title:'Visit', field_ac_code:'AutoCount item code', field_tray_qty:'Pieces per tray', vm_tray:'per tray', field_shelf_days:'Shelf life (days)', field_pull_days:'Take out how many days before expiry (0 = the day after it expires)', notif_vm_expired:'Expired stock in a machine', seg_beer:'Draft Beer', beer_title:'Draft Beer Stock', empty_add_beer_product:'Add a beer product under "Me" first',
+    seg_snacks:'Vending machines', balance_annual_prorated:'AL available (prorated)', balance_full_year:'full year', balance_prorated:'prorated left ', leave_rules_hint:'Annual leave must be applied {n} days ahead; with less notice it becomes unpaid leave (UPL). Annual leave builds up month by month. No leave for days already past; sick leave can go back at most {s} days.', leave_al_short_notice:'Annual leave needs {n} days notice. This is less, so it will be sent as unpaid leave (UPL). Continue?', err_leave_backdate:'You cannot apply for days already past. For a doctor visit choose Sick leave.', err_sick_backdate:'Sick leave can go back at most {s} days; for older dates see HR.', err_leave_end_before:'End date cannot be before start date', err_al_not_set:'HR has not set your annual leave yet. Please see HR first.', err_al_over:'Not enough annual leave: by that month you have only {n} day(s) available (pending requests included). Apply unpaid leave for the extra days.', toast_leave_as_upl:'Sent as unpaid leave (UPL)', app_update:'New version available. Tap to update.', recv_open_title:'Deliveries being received in this store', recv_no_supplier_yet:'No supplier yet', recv_open_current:'Mine now', recv_open_switch:'Open to take over', recv_open_new:'Another supplier arrived: start another receipt', recv_open_hint:'Above are receipts colleagues are working on; leave them alone. For a different supplier, just choose it below to start yours.', recv_keg_note:'One {l} L keg = {m} mugs ({ml} ml a mug, less {w} mugs lost per keg). Count the kegs and check their size, then check the number.', recv_keg_mugs:'mugs', recv_keg_helper:'Kegs to mugs', recv_keg_fill:'fill in mugs', recv_keg_rule:'{ml} ml a mug, less {w} mugs lost per keg: 10 L = {m10} mugs, 20 L = {m20} mugs.', field_keg_mug_ml:'Draught beer: ml per mug (receiving)', field_keg_waste:'Draught beer: mugs lost per keg', recv_err_sent:'This receipt was already sent (maybe by a colleague); this change was not saved.', recv_err_gone:'This receipt no longer exists (discarded or sent).', recv_err_busy:'A colleague is changing the same receipt; tap again.', recv_err_no_photo:'Photograph the paper before sending.', recv_err_no_supplier:'Choose the supplier first.', recv_err_not_pilot:'Receiving is not open for this store yet.', recv_err_ai_lines:'Some lines read by the AI are not checked yet.', recv_err_read_used:'Checking has started on this reading; it cannot be read again.', recv_err_forbidden:'You are not allowed to change this receipt.', recv_err_amount:'The amount cannot be negative.', recv_discard_confirm:'Discard this receipt? Started by {who}, {n} item(s). This cannot be undone.', recv_discard_not_mine:'{who} started this receipt; only they or a manager can discard it.', recv_ai_dup_manual:'You already added {n} of this product by hand. Replace that line with the AI line? (Cancel keeps both unchanged)', err_leave_date:'The date is not valid; choose it again.', vm_err_slot_changed:'These slots were just updated by someone else and were taken out of this visit; count them again: {s}', vm_stale_dropped:'These slots were updated after you counted them and were taken out; count them again: {s}', photo_from_gallery:'From gallery', recv_photo_gallery_hint:'Photo lost because the App reopened after the camera? Take the picture with the phone\'s own camera, then tap From gallery.', recv_ai_rounding:'rounding', sim_title:'Supplier item memory', sim_hint:'Every line stores confirmed: how the supplier writes it and its unit (carton CTN / loose PC) -> our AutoCount item and pieces per unit. The same supplier matches automatically next time. Tap Forget for a wrong one; the next confirmation teaches it again.', sim_search_ph:'Supplier, printed text, item code', sim_times:'Confirmed', sim_changed:'Changed, was', sim_forget:'Forget', sim_forget_confirm:'Forget this one? Stores will confirm it again next time.', sim_unit:'unit', tile_stockout:"Return / Disposal", so_admin_record:"Record for a store", so_approvals:"Disposals to approve", so_kind_return:"Return to supplier", so_kind_disposal:"Disposal", so_return_hint:"Goods or empty crates / kegs handed back to a supplier (expired, damaged, wrong item, excess, empties for deposit...). Photo the supplier's return note; after you send, HQ posts the return in AutoCount.", so_disposal_hint:"Before throwing away expired, damaged or spoilt stock, record it: photo the goods, enter qty and reason. After you send, the store manager or HQ approves (nobody approves their own); HQ then adjusts stock in AutoCount.", so_hist_return:"Earlier returns", so_hist_disposal:"Earlier disposals", so_none:"Nothing recorded yet", so_open_title:"Not sent yet", so_start_new:"Start another", so_empty_return:"Pick the supplier, photo the return note, then add the goods.", so_empty_disposal:"Photo the goods to throw away, add items and qty, then send for approval.", so_step_photo_return:"Photo the supplier's return note (Return Note / Empties Return)", so_step_photo_disposal:"Photo the goods being thrown away (qty and expiry visible)", so_photo2:"One more photo (page 2 / the goods)", so_photo_hint_return:"The return note the driver signed, whole page in frame, number readable. No note? Photo the goods handed back.", so_photo_hint_disposal:"Lay the goods out together; the expiry date or damage must show.", so_doc_no:"Return note no. (copy from the paper)", so_doc_short:"No.", so_ref_invoice:"Original invoice no. (if known)", so_outcome:"What the supplier does", so_out_credit_note:"Credit note (off the next bill)", so_out_replacement:"Replacement goods", so_out_cash_refund:"Cash refund", so_out_deposit_refund:"Deposit refund (empties)", so_step_lines:"Goods and quantity", so_total:"Total qty", so_value:"cost about", so_note_label:"Note", so_send_return:"Send return", so_send_disposal:"Send for approval", so_err_no_lines:"Add at least one item", so_err_photo:"Take the photo first", so_wait_photo:"The photo is still uploading; wait a moment", so_confirm_return:"It cannot be changed after sending. Send this return?", so_confirm_disposal:"It cannot be changed after sending, and needs the manager or HQ to approve. Send?", so_toast_pending:"Sent; waiting for the manager / HQ", so_toast_sent:"Sent; HQ will post it in AutoCount", so_discard_confirm:"Discard this one? Its items are deleted too.", so_qty:"Qty", so_reason:"Reason", so_r_expired:"Expired", so_r_damaged:"Damaged", so_r_wrong_item:"Wrong item", so_r_excess:"Excess / unsold", so_r_empties:"Empty crates / kegs", so_r_recall:"Recall", so_r_other:"Other", so_r_spoilt:"Spoilt", so_r_pest:"Pest damage", so_err_qty:"Enter a quantity above 0", so_err_pick_reason:"Pick a reason", so_err_bad_line:"An item has no quantity or reason; check the list", so_err_own:"You cannot approve your own disposal; another manager or HQ must", so_err_decided:"Someone already approved or rejected this one", so_err_reason:"Write the reason for rejecting", so_st_draft:"Draft", so_st_submitted:"Sent", so_st_pending:"To approve", so_st_approved:"Approved", so_st_rejected:"Rejected", so_decided_by:"Decided by", so_decision_note:"Note (required to reject)", so_approve:"Approve disposal", so_reject:"Reject", so_confirm_approve:"Approve? HQ then takes the stock off in AutoCount.", so_confirm_reject:"Reject this disposal?", so_toast_approved:"Approved", so_toast_rejected:"Rejected", so_wait_other:"Waiting for a manager or HQ (you cannot approve your own)", so_wait_manager:"Waiting for the manager or HQ", so_no_waiting:"No disposals waiting", so_open:"Open the return / disposal", so_task_missing:"This one is not in the last 120 days' list", so_photo_take:'Take photo (required)', recv_doc_online:"Online parcel", recv_online_no:"Order no. on the label (Pinduoduo: consolidation waybill no.)", recv_online_step_photo:"2. Photo the parcel label", recv_online_photo_hint:"Photograph the label on the parcel; the order no. or waybill no. must be readable. After opening it you can add a photo of the contents.", ol_title:"Online orders", ol_hq_only:"Only HQ records online orders", ol_add:"Record an online order", ol_hq_hint:"Record it as soon as you pay: order no., which store it ships to, the card used, the total, a screenshot of the platform receipt, and every item (for sale: pick our item; store use: type the name). Pinduoduo ships consolidated; add the waybill no. when it is known. The store's parcel is matched automatically.", ol_st_ordered:"On the way", ol_st_received:"Received", ol_st_cancelled:"Cancelled", ol_tracking_short:"Waybill", ol_platform:"Platform", ol_branch:"Ships to store", ol_not_pilot:"receiving not on yet", ol_order_no:"Order no. (the platform's Order ID)", ol_tracking:"Tracking no. / Pinduoduo consolidation waybill (can be added later)", ol_seller:"Seller shop (optional)", ol_card:"Paid with card", ol_paid_at:"Paid on", ol_amount:"Total paid RM (incl. shipping)", ol_receipt_photo:"Platform receipt (screenshot, or a screenshot of the receipt PDF)", ol_receipt_hint:"Shopee: Me → My Purchases → order details → Receipt. Pinduoduo: screenshot of the order details.", ol_err_branch:"Choose the store it ships to", ol_items:"What was bought", ol_line_desc:"Item (as on the receipt)", ol_line_amount:"Line amount RM", ol_use_sale:"For sale (stock)", ol_use_store:"Store use", ol_pick_item:"Pick our item", ol_add_line:"Add an item", ol_err_order_no:"Enter the order no.", ol_err_amount:"Enter the total paid", ol_err_line:"Every item needs a name, a quantity, and For sale or Store use", ol_err_sale_item:"Items for sale need our goods-list item (create the code in AutoCount first if missing)", ol_confirm_no_photo:"No receipt photo yet. Save anyway?", ol_confirm_dup:"An order with the same order no. already exists. Record it again?", ol_confirm_sum:"The lines add up to RM {a}, paid RM {b} (usually shipping or a discount). Save anyway?", ol_cancel:"Cancel this order", ol_confirm_cancel:"Cancel this order (refunded / never shipped)?", ol_open_receipt:"Open the store's goods receive", ol_back:"Back", ol_type_2:"Type at least 2 characters", ol_match_title:"Match the online order", ol_match_hint:"Type the order no. from the label in Document no. above; the App finds HQ's order: tap Match. Not found? Look under Other orders on the way.", ol_no_orders:"HQ has not recorded any online order for this store. Photo the label, count and send anyway; HQ records it later and matches it.", ol_ordered:"Ordered", ol_counted:"Received", ol_count:"Count", ol_unlink:"Not this one", ol_link:"Match", ol_suggested:"Orders with this number", ol_others:"Other orders on the way", ol_confirm_unmatched:"Not matched to an HQ order. Send anyway and let HQ follow up?", ol_err_use_count:"Store-use items need a received quantity too (0 if missing)", ol_confirm_sale_missing:"{n} item(s) for sale not counted. Treat them as not received and send?", ol_incoming:"Online orders on the way", ol_open_orders:"Online orders", ol_all:'All', ol_err_taken:"This order was already received on another receipt; tap Not this one", ol_err_gone:"A matched order is gone or belongs to another store; match again", ol_err_changed:"A colleague just changed this order; close it and open it again", ol_taken_by:"matched on {who}'s open receipt", ol_err_no_no:"Type the number on the label into Document no. first", ol_confirm_dup_no:"This number was already received once. If this is a second carton of the same order, add \"-2\" to the number before sending. Send anyway?", ol_late:"{n} days late", ol_none_open:"No orders on the way", ol_restored:"Your unsaved order was restored", ol_photo_kept:"Photo uploaded; the order is not saved yet: tap Record an online order to continue", ol_err_photo_branch:"The receipt photo sits in another store's folder; after changing the store, remove it and upload it again", ol_clear:"Clear and start again", ol_confirm_clear:"Clear this unsaved order?", ol_not_on_phone:"Not in this phone's list (older than 120 days, or not your store)", err_line_gone:"A colleague just changed or removed this line; open it again", err_forbidden:"Not allowed: this was not saved (already sent, or not your store)", clock_selfie:"Clock selfie (front camera)", clock_confirm_out:"Clock out now?", task_items_open:"Some items are not done yet", task_run_done:"This checklist is complete and cannot change", sos_ack:"I'm on it (acknowledge)", sos_acked_by:"Taken by", sos_open_map:"Open map", sos_tap_ack:"Tap, then I'm on it", push_mgr_ask:"Your alerts are off: SOS, temperature and leave alerts only reach you with them on.", push_turn_on:"Turn on alerts", order_sku_delete_confirm:"Switch this item off? (Not erased; old papers still find it)", vm_team_only:"Vending restock is recorded by the vending team / HQ only.", acc_load_partial:"Some data did not load; figures may be incomplete", acc_void_word:"void", acc_m_queue:"Everything sent to AutoCount", acc_m_held:"on hold", acc_release_held:"Release held documents", recv_admin_inbox:'All stores', recv_admin_receive:'Receive goods', recv_ai_title:'AI paper reading (pilot)', recv_ai_hint:'About 15 seconds after you tap, the AI lists the items, quantities and amounts on the paper. You count and check every line yourself and confirm it.', recv_ai_btn:'Read the paper with AI', recv_ai_failed:'Could not read it. Take a clearer photo and try again, or add the items by hand as before.', recv_ai_asked:'Sent, about 15 seconds', recv_ai_limit:'This paper was read 3 times already; please add the items by hand.', recv_ai_cap:'Today\'s AI readings are used up; please add the items by hand.', recv_ai_reading:'AI is reading the paper…', recv_ai_wait:'About 15 seconds; you can start counting', recv_ai_again:'Read again', recv_ai_done:'AI read', recv_ai_check_each:'Open every line: check the product, count what arrived, check the amount, then confirm. Tap Not received for a line that did not come.', recv_ai_all_checked:'Every line is checked. Finally confirm the total.', recv_ai_confirmed:'Confirmed', recv_ai_skipped:'Not received', recv_ai_to_check:'To check', recv_ai_no_match:'Not matched to our product; please choose', recv_ai_paper:'On the paper', recv_ai_how_name:'Matched by name; check it', recv_ai_how_learned:'Matched as confirmed before', recv_ai_how_barcode:'Matched by barcode', recv_ai_how_code:'Matched by item code', recv_ai_lines_sum:'Confirmed lines add up to', recv_ai_discount:'discount', recv_ai_tax:'tax', recv_ai_total:'Paper total RM (read it from the paper)', recv_ai_total_confirm:'Total matches the paper, confirm', recv_ai_total_ok:'Total confirmed', recv_ai_docno_diff:'The AI read a different number; check the paper', recv_ai_our_item:'Our product', recv_ai_change_item:'Change product', recv_ai_pick_item:'Choose product', recv_ai_counted:'Actually received (count it)', recv_ai_unit_note:'The paper says {u}; count how many arrived in our unit.', recv_ai_amount:'Line amount RM (from the paper)', recv_ai_confirm_hint:'Confirming means you counted the quantity and checked the amount, and both match the paper. Fewer than the paper is recorded as short.', recv_ai_confirm:'Quantity and amount are right, confirm', recv_ai_not_received:'This line was not received', recv_ai_need_amount:'Enter this line\'s amount', recv_ai_line_title:'Check line {n}', recv_ai_block_lines:'{n} line(s) read by the AI are not checked yet', recv_ai_block_total:'Confirm the paper total first', recv_ai_block_reading:'The AI is still reading; please wait (after 3 minutes you can send without it)', vm_tab_today:'Today', vm_tab_report:'Report', vm_sum_machines:'machines to visit', vm_sum_due:'expired to take out', vm_sum_soon:'expiring soon', vm_today_hint:'Most urgent at the top. Quantities are what was counted at the last visit; they update by themselves once XY is connected.', vm_lvl_critical:'Act now', vm_lvl_warn:'Visit today', vm_lvl_ok:'OK', vm_lvl_n:'Stopped', vm_chip_due:'Expired', vm_chip_soon:'Soon', vm_chip_empty:'Empty', vm_chip_unset:'No product', vm_last:'Last: ', vm_never:'No visit recorded yet', vm_days_ago:' d ago', vm_today_word:'today', vm_draft_pill:'Not sent', vm_back:'All machines', vm_visit_hint:'Slot by slot: tap a slot → count what is left → take out expired → refill → enter the expiry date. When done, tap Submit visit. Slots you did not touch need no tap.', vm_legend:'Red = expired   Orange = expiring soon   Dashed = no product   ✓ = done this visit', vm_row:'Row', vm_done_n:'Done', vm_btn_submit:'Submit visit', vm_btn_discard:'Discard this draft', vm_confirm_discard:'Every slot recorded on this visit will be cleared. Discard?', vm_slot:'Slot', vm_set_product:'Set product', vm_change_product:'Change product', vm_pick_product_first:'First choose what this slot sells.', vm_field_product:'Product', vm_field_par:'Full quantity', vm_only_manager:'Only a manager can change the product of a slot that has one.', vm_plan_hint:'Anyone can set an empty slot; only a manager can change a slot that already has a product.', vm_last_record:'Last record', vm_exp_unknown:'expiry unknown', vm_f_left:'Left in the slot (count before refilling)', vm_q_empty:'Empty', vm_q_full:'Full', vm_q_same:'Same as last', vm_f_expired:'Expired taken out', vm_f_damaged:'Damaged / other taken out', vm_f_added:'Added', vm_f_exp:'Expiry of the new stock', vm_day_short:'d', vm_after:'After', vm_over_par:'more than the slot holds', vm_first_exp:'earliest expiry', vm_err_left:'Count what is left first', vm_err_more_out:'More taken out than was left', vm_err_exp:'Stock added needs an expiry date', vm_btn_save_slot:'Save this slot', vm_btn_undo_slot:'Undo this slot', vm_submit_title:'Submit visit', vm_tot_added:'Added', vm_tot_out:'Taken out', vm_tot_sold:'Sold (estimate)', vm_tot_waste:'Waste value', vm_no_cost:'no cost set', vm_untouched:'Slots not touched stay as they were:', vm_still_due:'These slots still hold expired stock:', vm_note:'Note (optional)', vm_toast_sent:'Visit saved', vm_only_team:'Only the vending team can submit a visit', vm_err_offline:'No connection. The draft stays on this phone; submit again when you are online.', vm_left_short:'Left', vm_damaged_short:'Damaged', vm_range_7:'Last 7 days', vm_range_30:'Last 30 days', vm_rep_visits:'Visits', vm_rep_by_product:'By product', vm_rep_by_machine:'By machine', vm_rep_recent:'Recent visits', vm_rep_hint:'Sold is an estimate: what was in the slot after the last visit minus what is counted now. Real sales replace it once XY is connected.', vm_col_product:'Product', vm_col_machine:'Machine', vm_col_last:'Last visit', vm_pcs:'pcs', vm_visit_title:'Visit', field_ac_code:'AutoCount item code', field_tray_qty:'Pieces per tray', vm_tray:'per tray', field_shelf_days:'Shelf life (days)', field_pull_days:'Take out how many days before expiry (0 = the day after it expires)', notif_vm_expired:'Expired stock in a machine', seg_beer:'Draft Beer', beer_title:'Draft Beer Stock', empty_add_beer_product:'Add a beer product under "Me" first',
     btn_receive_kegs:'Receive Kegs', btn_tap_keg:'Tap a Keg', beer_on_tap:'On Tap', beer_no_kegs_on_tap:'Nothing on tap right now',
     beer_remaining:'remaining', beer_expired:'Past Freshness', beer_expiring_soon:'Expiring Soon', beer_fresh:'Fresh',
     beer_in_stock:'Unopened Stock', beer_no_stock:'No stock yet', beer_kegs_unit:'kegs',
@@ -990,7 +991,7 @@ const I18N = {
     field_keg_size:'Keg Size (liters)', field_freshness_days:'Freshness After Opening (days)', label_freshness_days:'Fresh for ',
     field_cost_per_keg_opt:'Cost per Keg (optional)', field_deposit_per_keg_opt:'Deposit per Keg (optional, blank = no deposit)',
     field_low_stock_kegs:'Low-Stock Alert (kegs)', sheet_edit_beer_product:'Edit Beer Product', sheet_add_beer_product:'Add Beer Product',
-    field_tap_name:'Tap Name', field_branch:'Branch (optional)', field_cleaning_interval:'Line Cleaning Interval (days)', err_fill_tap_name:'Please enter a tap name',
+    field_tap_name:'Tap Name', field_cleaning_interval:'Line Cleaning Interval (days)', err_fill_tap_name:'Please enter a tap name',
     branch_all:'All Branches',
     sheet_edit_tap:'Edit Tap', sheet_add_tap:'Add Tap', admin_beer_mgmt:'Beer Product Management', admin_tap_mgmt:'Tap Management',
     label_last_cleaned:'Last cleaned ',
@@ -1209,7 +1210,7 @@ const I18N = {
     geo_err_unsupported:'⚠ Pelayar ini tidak menyokong perkhidmatan lokasi.',
     geo_err_insecure:'⚠ Halaman ini bukan sambungan selamat (https), jadi lokasi tidak boleh diakses.',
     empty_no_records:'Belum ada rekod', flag_out_of_range:'Luar julat', flag_in_range:'Dalam julat', no_photo_taken:'Tiada gambar semasa daftar masuk',
-    seg_snacks:'Mesin layan diri', balance_annual_prorated:'Cuti tahunan tersedia (prorata)', balance_full_year:'setahun', balance_prorated:'baki prorata ', leave_rules_hint:'Cuti tahunan mesti dipohon {n} hari lebih awal; kurang daripada itu menjadi cuti tanpa gaji (UPL). Cuti tahunan terkumpul setiap bulan. Tiada cuti untuk hari yang sudah lepas; cuti sakit boleh ke belakang paling lama {s} hari.', leave_al_short_notice:'Cuti tahunan perlu notis {n} hari. Ini kurang, jadi ia akan dihantar sebagai cuti tanpa gaji (UPL). Teruskan?', err_leave_backdate:'Tidak boleh memohon untuk hari yang sudah lepas. Untuk ke klinik pilih Cuti sakit.', err_sick_backdate:'Cuti sakit boleh ke belakang paling lama {s} hari; tarikh lebih awal sila jumpa HR.', err_leave_end_before:'Tarikh tamat tidak boleh sebelum tarikh mula', err_al_not_set:'HR belum menetapkan cuti tahunan anda. Sila jumpa HR dahulu.', err_al_over:'Cuti tahunan tidak cukup: sehingga bulan itu anda hanya ada {n} hari (termasuk permohonan menunggu). Mohon cuti tanpa gaji untuk hari lebihan.', toast_leave_as_upl:'Dihantar sebagai cuti tanpa gaji (UPL)', app_update:'Versi baharu tersedia. Tekan untuk kemas kini.', recv_open_title:'Penghantaran yang sedang diterima di kedai ini', recv_no_supplier_yet:'Belum pilih pembekal', recv_open_current:'Saya sedang buat', recv_open_switch:'Buka untuk ambil alih', recv_open_new:'Pembekal lain juga sampai: mula resit lain', recv_open_hint:'Di atas ialah resit yang rakan sedang buat; jangan ubah. Untuk pembekal lain, pilih sahaja di bawah untuk mula.', recv_keg_note:'Satu tong {l} L = {m} gelas ({ml} ml segelas, tolak {w} gelas pembaziran setiap tong). Kira tong dan semak saiznya, kemudian semak nombor.', recv_keg_mugs:'gelas', recv_keg_helper:'Tong ke gelas', recv_keg_fill:'isi gelas', recv_keg_rule:'{ml} ml segelas, tolak {w} gelas setiap tong: 10 L = {m10} gelas, 20 L = {m20} gelas.', field_keg_mug_ml:'Bir draf: ml segelas (terima barang)', field_keg_waste:'Bir draf: gelas dibazir setiap tong', recv_err_sent:'Resit ini sudah dihantar (mungkin oleh rakan); perubahan ini tidak disimpan.', recv_err_gone:'Resit ini tiada lagi (dibuang atau dihantar).', recv_err_busy:'Rakan sedang mengubah resit yang sama; tekan sekali lagi.', recv_err_no_photo:'Ambil gambar kertas sebelum menghantar.', recv_err_no_supplier:'Pilih pembekal dahulu.', recv_err_not_pilot:'Terima barang belum dibuka untuk kedai ini.', recv_err_ai_lines:'Ada baris bacaan AI yang belum disemak.', recv_err_read_used:'Semakan sudah bermula untuk bacaan ini; tidak boleh dibaca semula.', recv_err_forbidden:'Anda tidak dibenarkan mengubah resit ini.', recv_err_amount:'Amaun tidak boleh negatif.', recv_discard_confirm:'Buang resit ini? Dimulakan oleh {who}, {n} item. Tidak boleh dibatalkan.', recv_discard_not_mine:'{who} memulakan resit ini; hanya dia atau pengurus boleh membuangnya.', recv_ai_dup_manual:'Anda sudah menambah {n} produk ini secara manual. Ganti baris itu dengan baris AI? (Batal: tiada perubahan)', err_leave_date:'Tarikh tidak sah; pilih semula.', vm_err_slot_changed:'Slot ini baru dikemas kini oleh orang lain dan dikeluarkan daripada lawatan ini; kira semula: {s}', vm_stale_dropped:'Slot ini dikemas kini selepas anda mengira dan dikeluarkan; kira semula: {s}', photo_from_gallery:'Dari galeri', recv_photo_gallery_hint:'Gambar hilang kerana App dibuka semula selepas kamera? Ambil gambar dengan kamera telefon, kemudian tekan Dari galeri.', recv_ai_rounding:'pembundaran', sim_title:'Memori barang pembekal', sim_hint:'Setiap baris yang disahkan kedai: tulisan pembekal dan unitnya (karton CTN / pukal PC) -> item AutoCount kita dan bilangan seunit. Pembekal yang sama dipadankan sendiri lain kali. Tekan Lupakan untuk yang salah; pengesahan seterusnya mengajarnya semula.', sim_search_ph:'Pembekal, tulisan, kod item', sim_times:'Disahkan', sim_changed:'Pernah ditukar, asal', sim_forget:'Lupakan', sim_forget_confirm:'Lupakan yang ini? Kedai akan mengesahkannya semula lain kali.', sim_unit:'unit', tile_stockout:"Pulangan / Pelupusan", so_admin_record:"Rekod untuk kedai", so_approvals:"Pelupusan untuk diluluskan", so_kind_return:"Pulang kepada pembekal", so_kind_disposal:"Pelupusan", so_return_hint:"Barang atau krat / tong kosong dipulangkan kepada pembekal (luput, rosak, salah barang, berlebihan, kosong untuk deposit...). Foto nota pulangan pembekal; selepas dihantar, HQ merekodkannya dalam AutoCount.", so_disposal_hint:"Sebelum membuang barang luput, rosak atau basi, rekodkan: foto barang, isi kuantiti dan sebab. Selepas dihantar, pengurus kedai atau HQ meluluskan (tiada siapa lulus sendiri); HQ kemudian melaraskan stok dalam AutoCount.", so_hist_return:"Pulangan sebelum ini", so_hist_disposal:"Pelupusan sebelum ini", so_none:"Belum ada rekod", so_open_title:"Belum dihantar", so_start_new:"Mula yang baharu", so_empty_return:"Pilih pembekal, foto nota pulangan, kemudian tambah barang.", so_empty_disposal:"Foto barang yang dibuang, tambah barang dan kuantiti, kemudian hantar untuk kelulusan.", so_step_photo_return:"Foto nota pulangan pembekal (Return Note / Empties Return)", so_step_photo_disposal:"Foto barang yang dibuang (kuantiti dan tarikh luput kelihatan)", so_photo2:"Satu lagi foto (muka 2 / barang)", so_photo_hint_return:"Nota pulangan yang ditandatangani pemandu, seluruh halaman, nombor jelas. Tiada nota? Foto barang yang dipulangkan.", so_photo_hint_disposal:"Susun barang bersama; tarikh luput atau kerosakan mesti kelihatan.", so_doc_no:"No. nota pulangan (salin dari kertas)", so_doc_short:"No.", so_ref_invoice:"No. invois asal (jika tahu)", so_outcome:"Tindakan pembekal", so_out_credit_note:"Nota kredit (tolak bil seterusnya)", so_out_replacement:"Barang ganti", so_out_cash_refund:"Bayaran balik tunai", so_out_deposit_refund:"Pulangan deposit (kosong)", so_step_lines:"Barang dan kuantiti", so_total:"Jumlah kuantiti", so_value:"kos lebih kurang", so_note_label:"Nota", so_send_return:"Hantar pulangan", so_send_disposal:"Hantar untuk kelulusan", so_err_no_lines:"Tambah sekurang-kurangnya satu barang", so_err_photo:"Ambil foto dahulu", so_wait_photo:"Foto masih dimuat naik; tunggu sebentar", so_confirm_return:"Tidak boleh diubah selepas dihantar. Hantar pulangan ini?", so_confirm_disposal:"Tidak boleh diubah selepas dihantar, dan perlu kelulusan pengurus atau HQ. Hantar?", so_toast_pending:"Dihantar; menunggu pengurus / HQ", so_toast_sent:"Dihantar; HQ akan merekodkannya dalam AutoCount", so_discard_confirm:"Buang yang ini? Barangnya turut dipadam.", so_qty:"Kuantiti", so_reason:"Sebab", so_r_expired:"Luput", so_r_damaged:"Rosak", so_r_wrong_item:"Salah barang", so_r_excess:"Berlebihan / tak laku", so_r_empties:"Krat / tong kosong", so_r_recall:"Tarik balik", so_r_other:"Lain-lain", so_r_spoilt:"Basi / rosak", so_r_pest:"Dirosakkan perosak", so_err_qty:"Isi kuantiti lebih daripada 0", so_err_pick_reason:"Pilih sebab", so_err_bad_line:"Ada barang tanpa kuantiti atau sebab; semak senarai", so_err_own:"Anda tidak boleh meluluskan pelupusan sendiri; pengurus lain atau HQ mesti", so_err_decided:"Seseorang sudah meluluskan atau menolak ini", so_err_reason:"Tulis sebab penolakan", so_st_draft:"Draf", so_st_submitted:"Dihantar", so_st_pending:"Untuk kelulusan", so_st_approved:"Diluluskan", so_st_rejected:"Ditolak", so_decided_by:"Diputuskan oleh", so_decision_note:"Nota (wajib jika menolak)", so_approve:"Luluskan pelupusan", so_reject:"Tolak", so_confirm_approve:"Luluskan? HQ kemudian menolak stok dalam AutoCount.", so_confirm_reject:"Tolak pelupusan ini?", so_toast_approved:"Diluluskan", so_toast_rejected:"Ditolak", so_wait_other:"Menunggu pengurus atau HQ (anda tidak boleh lulus sendiri)", so_wait_manager:"Menunggu pengurus atau HQ", so_no_waiting:"Tiada pelupusan menunggu", so_open:"Buka pulangan / pelupusan", so_task_missing:"Ini tiada dalam senarai 120 hari lepas", so_photo_take:'Ambil foto (wajib)', recv_doc_online:"Bungkusan online", recv_online_no:"No. pesanan pada label (Pinduoduo: no. waybill konsolidasi)", recv_online_step_photo:"2. Foto label bungkusan", recv_online_photo_hint:"Foto label pada bungkusan; no. pesanan atau waybill mesti jelas. Selepas dibuka boleh tambah foto isinya.", ol_title:"Pesanan online", ol_hq_only:"Hanya HQ merekod pesanan online", ol_add:"Rekod pesanan online", ol_hq_hint:"Rekod sebaik sahaja dibayar: no. pesanan, kedai penerima, kad yang digunakan, jumlah, tangkapan skrin resit platform, dan setiap barang (untuk dijual: pilih barang kita; kegunaan kedai: taip nama). Pinduoduo dihantar secara konsolidasi; tambah no. waybill apabila diketahui. Bungkusan di kedai dipadankan secara automatik.", ol_st_ordered:"Dalam perjalanan", ol_st_received:"Diterima", ol_st_cancelled:"Dibatalkan", ol_tracking_short:"Waybill", ol_platform:"Platform", ol_branch:"Dihantar ke kedai", ol_not_pilot:"terima barang belum dibuka", ol_order_no:"No. pesanan (Order ID platform)", ol_tracking:"No. penjejakan / waybill konsolidasi Pinduoduo (boleh ditambah kemudian)", ol_seller:"Kedai penjual (pilihan)", ol_card:"Dibayar dengan kad", ol_paid_at:"Tarikh bayar", ol_amount:"Jumlah dibayar RM (termasuk penghantaran)", ol_receipt_photo:"Resit platform (tangkapan skrin, atau tangkapan skrin PDF resit)", ol_receipt_hint:"Shopee: Saya → Pembelian Saya → butiran pesanan → Resit. Pinduoduo: tangkapan skrin butiran pesanan.", ol_err_branch:"Pilih kedai penerima", ol_items:"Apa yang dibeli", ol_line_desc:"Barang (seperti pada resit)", ol_line_amount:"Jumlah baris RM", ol_use_sale:"Untuk dijual (stok)", ol_use_store:"Kegunaan kedai", ol_pick_item:"Pilih barang kita", ol_add_line:"Tambah barang", ol_err_order_no:"Isi no. pesanan", ol_err_amount:"Isi jumlah dibayar", ol_err_line:"Setiap barang perlu nama, kuantiti, dan Untuk dijual atau Kegunaan kedai", ol_err_sale_item:"Barang untuk dijual perlu barang dalam senarai kita (buka kod dalam AutoCount dahulu jika tiada)", ol_confirm_no_photo:"Belum ada foto resit. Simpan juga?", ol_confirm_dup:"Pesanan dengan no. yang sama sudah ada. Rekod lagi?", ol_confirm_sum:"Baris berjumlah RM {a}, dibayar RM {b} (biasanya penghantaran atau diskaun). Simpan juga?", ol_cancel:"Batalkan pesanan ini", ol_confirm_cancel:"Batalkan pesanan ini (dipulangkan wang / tidak dihantar)?", ol_open_receipt:"Buka terima barang kedai", ol_back:"Kembali", ol_type_2:"Taip sekurang-kurangnya 2 aksara", ol_match_title:"Padankan pesanan online", ol_match_hint:"Taip no. pesanan dari label dalam No. dokumen di atas; App mencari pesanan HQ: tekan Padan. Tiada? Lihat Pesanan lain dalam perjalanan.", ol_no_orders:"HQ belum merekod pesanan online untuk kedai ini. Foto label, kira dan hantar juga; HQ akan merekod dan memadankannya kemudian.", ol_ordered:"Dipesan", ol_counted:"Diterima", ol_count:"Kira", ol_unlink:"Bukan yang ini", ol_link:"Padan", ol_suggested:"Pesanan dengan nombor ini", ol_others:"Pesanan lain dalam perjalanan", ol_confirm_unmatched:"Tidak dipadankan dengan pesanan HQ. Hantar juga dan biar HQ susuli?", ol_err_use_count:"Barang kegunaan kedai juga perlu kuantiti diterima (0 jika tiada)", ol_confirm_sale_missing:"{n} barang untuk dijual belum dikira. Anggap tidak diterima dan hantar?", ol_incoming:"Pesanan online dalam perjalanan", ol_open_orders:"Pesanan online", ol_all:'Semua', ol_err_taken:"Pesanan ini sudah diterima pada resit lain; tekan Bukan yang ini", ol_err_gone:"Pesanan yang dipadankan tiada lagi atau milik kedai lain; padankan semula", ol_err_changed:"Rakan baru mengubah pesanan ini; tutup dan buka semula", ol_taken_by:"dipadankan pada resit terbuka {who}", ol_err_no_no:"Taip nombor pada label dalam No. dokumen dahulu", ol_confirm_dup_no:"Nombor ini sudah diterima sekali. Jika ini karton kedua pesanan yang sama, tambah \"-2\" pada nombor sebelum hantar. Hantar juga?", ol_late:"lewat {n} hari", ol_none_open:"Tiada pesanan dalam perjalanan", ol_restored:"Pesanan yang belum disimpan dipulihkan", ol_photo_kept:"Foto dimuat naik; pesanan belum disimpan: tekan Rekod pesanan online untuk teruskan", ol_err_photo_branch:"Foto resit berada dalam folder kedai lain; selepas menukar kedai, buang dan muat naik semula", ol_clear:"Kosongkan dan mula semula", ol_confirm_clear:"Kosongkan pesanan yang belum disimpan ini?", ol_not_on_phone:"Tiada dalam senarai telefon ini (lebih 120 hari, atau bukan kedai anda)", recv_admin_inbox:'Semua kedai', recv_admin_receive:'Terima barang', recv_ai_title:'Bacaan kertas AI (percubaan)', recv_ai_hint:'Kira-kira 15 saat selepas ditekan, AI menyenaraikan barang, kuantiti dan amaun pada kertas. Anda sendiri kira dan semak setiap baris, kemudian sahkan.', recv_ai_btn:'Baca kertas dengan AI', recv_ai_failed:'Tidak dapat dibaca. Ambil gambar lebih jelas dan cuba lagi, atau tambah barang secara manual.', recv_ai_asked:'Dihantar, kira-kira 15 saat', recv_ai_limit:'Kertas ini sudah dibaca 3 kali; sila tambah barang secara manual.', recv_ai_cap:'Bacaan AI hari ini sudah habis; sila tambah barang secara manual.', recv_ai_reading:'AI sedang membaca kertas…', recv_ai_wait:'Kira-kira 15 saat; boleh mula mengira', recv_ai_again:'Baca semula', recv_ai_done:'AI membaca', recv_ai_check_each:'Buka setiap baris: semak produk, kira yang diterima, semak amaun, kemudian sahkan. Tekan Tidak diterima jika baris itu tidak sampai.', recv_ai_all_checked:'Semua baris sudah disemak. Akhir sekali sahkan jumlah.', recv_ai_confirmed:'Disahkan', recv_ai_skipped:'Tidak diterima', recv_ai_to_check:'Untuk disemak', recv_ai_no_match:'Tidak dipadankan dengan produk kita; sila pilih', recv_ai_paper:'Pada kertas', recv_ai_how_name:'Dipadankan ikut nama; semak', recv_ai_how_learned:'Padanan yang pernah disahkan', recv_ai_how_barcode:'Dipadankan ikut kod bar', recv_ai_how_code:'Dipadankan ikut kod item', recv_ai_lines_sum:'Jumlah baris yang disahkan', recv_ai_discount:'diskaun', recv_ai_tax:'cukai', recv_ai_total:'Jumlah kertas RM (baca pada kertas)', recv_ai_total_confirm:'Jumlah sama dengan kertas, sahkan', recv_ai_total_ok:'Jumlah disahkan', recv_ai_docno_diff:'AI membaca nombor lain; semak kertas', recv_ai_our_item:'Produk kita', recv_ai_change_item:'Tukar produk', recv_ai_pick_item:'Pilih produk', recv_ai_counted:'Sebenarnya diterima (kira)', recv_ai_unit_note:'Kertas menulis {u}; kira berapa yang diterima dalam unit kita.', recv_ai_amount:'Amaun baris RM (pada kertas)', recv_ai_confirm_hint:'Mengesahkan bermaksud anda sudah kira kuantiti dan semak amaun, dan kedua-duanya sama dengan kertas. Kurang daripada kertas direkod sebagai kurang.', recv_ai_confirm:'Kuantiti dan amaun betul, sahkan', recv_ai_not_received:'Baris ini tidak diterima', recv_ai_need_amount:'Masukkan amaun baris ini', recv_ai_line_title:'Semak baris {n}', recv_ai_block_lines:'{n} baris yang dibaca AI belum disemak', recv_ai_block_total:'Sahkan jumlah kertas dahulu', recv_ai_block_reading:'AI masih membaca; sila tunggu (selepas 3 minit boleh hantar tanpanya)', vm_tab_today:'Hari ini', vm_tab_report:'Laporan', vm_sum_machines:'mesin perlu dilawati', vm_sum_due:'tamat tempoh perlu dikeluarkan', vm_sum_soon:'hampir tamat tempoh', vm_today_hint:'Paling mendesak di atas. Kuantiti ialah kiraan pada lawatan terakhir; ia dikemas kini sendiri selepas XY disambung.', vm_lvl_critical:'Segera', vm_lvl_warn:'Lawat hari ini', vm_lvl_ok:'OK', vm_lvl_n:'Berhenti', vm_chip_due:'Tamat', vm_chip_soon:'Hampir', vm_chip_empty:'Kosong', vm_chip_unset:'Tiada produk', vm_last:'Terakhir: ', vm_never:'Belum ada lawatan direkod', vm_days_ago:' hari lalu', vm_today_word:'hari ini', vm_draft_pill:'Belum dihantar', vm_back:'Semua mesin', vm_visit_hint:'Slot demi slot: tekan slot → kira baki → keluarkan yang tamat tempoh → isi semula → masukkan tarikh tamat. Selesai, tekan Hantar lawatan. Slot yang tidak disentuh tidak perlu ditekan.', vm_legend:'Merah = tamat tempoh   Oren = hampir tamat   Putus-putus = tiada produk   ✓ = siap lawatan ini', vm_row:'Baris', vm_done_n:'Siap', vm_btn_submit:'Hantar lawatan', vm_btn_discard:'Buang draf ini', vm_confirm_discard:'Semua slot yang direkod dalam lawatan ini akan dipadam. Buang?', vm_slot:'Slot', vm_set_product:'Tetapkan produk', vm_change_product:'Tukar produk', vm_pick_product_first:'Pilih dahulu produk untuk slot ini.', vm_field_product:'Produk', vm_field_par:'Kuantiti penuh', vm_only_manager:'Hanya pengurus boleh menukar produk slot yang sudah ada produk.', vm_plan_hint:'Sesiapa boleh menetapkan slot kosong; hanya pengurus boleh menukar slot yang sudah ada produk.', vm_last_record:'Rekod terakhir', vm_exp_unknown:'tarikh tamat tidak diketahui', vm_f_left:'Baki dalam slot (kira sebelum isi)', vm_q_empty:'Kosong', vm_q_full:'Penuh', vm_q_same:'Sama seperti lepas', vm_f_expired:'Tamat tempoh dikeluarkan', vm_f_damaged:'Rosak / lain dikeluarkan', vm_f_added:'Ditambah', vm_f_exp:'Tarikh tamat stok baharu', vm_day_short:'h', vm_after:'Selepas', vm_over_par:'melebihi kapasiti slot', vm_first_exp:'tamat terawal', vm_err_left:'Kira baki dahulu', vm_err_more_out:'Lebih dikeluarkan daripada baki', vm_err_exp:'Stok ditambah perlu tarikh tamat', vm_btn_save_slot:'Simpan slot ini', vm_btn_undo_slot:'Batal slot ini', vm_submit_title:'Hantar lawatan', vm_tot_added:'Ditambah', vm_tot_out:'Dikeluarkan', vm_tot_sold:'Terjual (anggaran)', vm_tot_waste:'Nilai pembaziran', vm_no_cost:'tiada kos', vm_untouched:'Slot yang tidak disentuh kekal:', vm_still_due:'Slot ini masih ada stok tamat tempoh:', vm_note:'Nota (pilihan)', vm_toast_sent:'Lawatan disimpan', vm_only_team:'Hanya pasukan mesin boleh menghantar lawatan', vm_err_offline:'Tiada sambungan. Draf kekal dalam telefon; hantar semula bila ada talian.', vm_left_short:'Baki', vm_damaged_short:'Rosak', vm_range_7:'7 hari lepas', vm_range_30:'30 hari lepas', vm_rep_visits:'Lawatan', vm_rep_by_product:'Ikut produk', vm_rep_by_machine:'Ikut mesin', vm_rep_recent:'Lawatan terkini', vm_rep_hint:'Terjual ialah anggaran: isi slot selepas lawatan lepas tolak baki yang dikira sekarang. Jualan sebenar menggantikannya selepas XY disambung.', vm_col_product:'Produk', vm_col_machine:'Mesin', vm_col_last:'Lawatan terakhir', vm_pcs:'unit', vm_visit_title:'Lawatan', field_ac_code:'Kod item AutoCount', field_tray_qty:'Unit setiap dulang', vm_tray:'setiap dulang', field_shelf_days:'Jangka hayat (hari)', field_pull_days:'Keluarkan berapa hari sebelum tamat (0 = sehari selepas tamat)', notif_vm_expired:'Stok tamat tempoh dalam mesin', seg_beer:'Bir draf', beer_title:'Stok bir draf', empty_add_beer_product:'Tambah produk bir di "Saya" dahulu',
+    seg_snacks:'Mesin layan diri', balance_annual_prorated:'Cuti tahunan tersedia (prorata)', balance_full_year:'setahun', balance_prorated:'baki prorata ', leave_rules_hint:'Cuti tahunan mesti dipohon {n} hari lebih awal; kurang daripada itu menjadi cuti tanpa gaji (UPL). Cuti tahunan terkumpul setiap bulan. Tiada cuti untuk hari yang sudah lepas; cuti sakit boleh ke belakang paling lama {s} hari.', leave_al_short_notice:'Cuti tahunan perlu notis {n} hari. Ini kurang, jadi ia akan dihantar sebagai cuti tanpa gaji (UPL). Teruskan?', err_leave_backdate:'Tidak boleh memohon untuk hari yang sudah lepas. Untuk ke klinik pilih Cuti sakit.', err_sick_backdate:'Cuti sakit boleh ke belakang paling lama {s} hari; tarikh lebih awal sila jumpa HR.', err_leave_end_before:'Tarikh tamat tidak boleh sebelum tarikh mula', err_al_not_set:'HR belum menetapkan cuti tahunan anda. Sila jumpa HR dahulu.', err_al_over:'Cuti tahunan tidak cukup: sehingga bulan itu anda hanya ada {n} hari (termasuk permohonan menunggu). Mohon cuti tanpa gaji untuk hari lebihan.', toast_leave_as_upl:'Dihantar sebagai cuti tanpa gaji (UPL)', app_update:'Versi baharu tersedia. Tekan untuk kemas kini.', recv_open_title:'Penghantaran yang sedang diterima di kedai ini', recv_no_supplier_yet:'Belum pilih pembekal', recv_open_current:'Saya sedang buat', recv_open_switch:'Buka untuk ambil alih', recv_open_new:'Pembekal lain juga sampai: mula resit lain', recv_open_hint:'Di atas ialah resit yang rakan sedang buat; jangan ubah. Untuk pembekal lain, pilih sahaja di bawah untuk mula.', recv_keg_note:'Satu tong {l} L = {m} gelas ({ml} ml segelas, tolak {w} gelas pembaziran setiap tong). Kira tong dan semak saiznya, kemudian semak nombor.', recv_keg_mugs:'gelas', recv_keg_helper:'Tong ke gelas', recv_keg_fill:'isi gelas', recv_keg_rule:'{ml} ml segelas, tolak {w} gelas setiap tong: 10 L = {m10} gelas, 20 L = {m20} gelas.', field_keg_mug_ml:'Bir draf: ml segelas (terima barang)', field_keg_waste:'Bir draf: gelas dibazir setiap tong', recv_err_sent:'Resit ini sudah dihantar (mungkin oleh rakan); perubahan ini tidak disimpan.', recv_err_gone:'Resit ini tiada lagi (dibuang atau dihantar).', recv_err_busy:'Rakan sedang mengubah resit yang sama; tekan sekali lagi.', recv_err_no_photo:'Ambil gambar kertas sebelum menghantar.', recv_err_no_supplier:'Pilih pembekal dahulu.', recv_err_not_pilot:'Terima barang belum dibuka untuk kedai ini.', recv_err_ai_lines:'Ada baris bacaan AI yang belum disemak.', recv_err_read_used:'Semakan sudah bermula untuk bacaan ini; tidak boleh dibaca semula.', recv_err_forbidden:'Anda tidak dibenarkan mengubah resit ini.', recv_err_amount:'Amaun tidak boleh negatif.', recv_discard_confirm:'Buang resit ini? Dimulakan oleh {who}, {n} item. Tidak boleh dibatalkan.', recv_discard_not_mine:'{who} memulakan resit ini; hanya dia atau pengurus boleh membuangnya.', recv_ai_dup_manual:'Anda sudah menambah {n} produk ini secara manual. Ganti baris itu dengan baris AI? (Batal: tiada perubahan)', err_leave_date:'Tarikh tidak sah; pilih semula.', vm_err_slot_changed:'Slot ini baru dikemas kini oleh orang lain dan dikeluarkan daripada lawatan ini; kira semula: {s}', vm_stale_dropped:'Slot ini dikemas kini selepas anda mengira dan dikeluarkan; kira semula: {s}', photo_from_gallery:'Dari galeri', recv_photo_gallery_hint:'Gambar hilang kerana App dibuka semula selepas kamera? Ambil gambar dengan kamera telefon, kemudian tekan Dari galeri.', recv_ai_rounding:'pembundaran', sim_title:'Memori barang pembekal', sim_hint:'Setiap baris yang disahkan kedai: tulisan pembekal dan unitnya (karton CTN / pukal PC) -> item AutoCount kita dan bilangan seunit. Pembekal yang sama dipadankan sendiri lain kali. Tekan Lupakan untuk yang salah; pengesahan seterusnya mengajarnya semula.', sim_search_ph:'Pembekal, tulisan, kod item', sim_times:'Disahkan', sim_changed:'Pernah ditukar, asal', sim_forget:'Lupakan', sim_forget_confirm:'Lupakan yang ini? Kedai akan mengesahkannya semula lain kali.', sim_unit:'unit', tile_stockout:"Pulangan / Pelupusan", so_admin_record:"Rekod untuk kedai", so_approvals:"Pelupusan untuk diluluskan", so_kind_return:"Pulang kepada pembekal", so_kind_disposal:"Pelupusan", so_return_hint:"Barang atau krat / tong kosong dipulangkan kepada pembekal (luput, rosak, salah barang, berlebihan, kosong untuk deposit...). Foto nota pulangan pembekal; selepas dihantar, HQ merekodkannya dalam AutoCount.", so_disposal_hint:"Sebelum membuang barang luput, rosak atau basi, rekodkan: foto barang, isi kuantiti dan sebab. Selepas dihantar, pengurus kedai atau HQ meluluskan (tiada siapa lulus sendiri); HQ kemudian melaraskan stok dalam AutoCount.", so_hist_return:"Pulangan sebelum ini", so_hist_disposal:"Pelupusan sebelum ini", so_none:"Belum ada rekod", so_open_title:"Belum dihantar", so_start_new:"Mula yang baharu", so_empty_return:"Pilih pembekal, foto nota pulangan, kemudian tambah barang.", so_empty_disposal:"Foto barang yang dibuang, tambah barang dan kuantiti, kemudian hantar untuk kelulusan.", so_step_photo_return:"Foto nota pulangan pembekal (Return Note / Empties Return)", so_step_photo_disposal:"Foto barang yang dibuang (kuantiti dan tarikh luput kelihatan)", so_photo2:"Satu lagi foto (muka 2 / barang)", so_photo_hint_return:"Nota pulangan yang ditandatangani pemandu, seluruh halaman, nombor jelas. Tiada nota? Foto barang yang dipulangkan.", so_photo_hint_disposal:"Susun barang bersama; tarikh luput atau kerosakan mesti kelihatan.", so_doc_no:"No. nota pulangan (salin dari kertas)", so_doc_short:"No.", so_ref_invoice:"No. invois asal (jika tahu)", so_outcome:"Tindakan pembekal", so_out_credit_note:"Nota kredit (tolak bil seterusnya)", so_out_replacement:"Barang ganti", so_out_cash_refund:"Bayaran balik tunai", so_out_deposit_refund:"Pulangan deposit (kosong)", so_step_lines:"Barang dan kuantiti", so_total:"Jumlah kuantiti", so_value:"kos lebih kurang", so_note_label:"Nota", so_send_return:"Hantar pulangan", so_send_disposal:"Hantar untuk kelulusan", so_err_no_lines:"Tambah sekurang-kurangnya satu barang", so_err_photo:"Ambil foto dahulu", so_wait_photo:"Foto masih dimuat naik; tunggu sebentar", so_confirm_return:"Tidak boleh diubah selepas dihantar. Hantar pulangan ini?", so_confirm_disposal:"Tidak boleh diubah selepas dihantar, dan perlu kelulusan pengurus atau HQ. Hantar?", so_toast_pending:"Dihantar; menunggu pengurus / HQ", so_toast_sent:"Dihantar; HQ akan merekodkannya dalam AutoCount", so_discard_confirm:"Buang yang ini? Barangnya turut dipadam.", so_qty:"Kuantiti", so_reason:"Sebab", so_r_expired:"Luput", so_r_damaged:"Rosak", so_r_wrong_item:"Salah barang", so_r_excess:"Berlebihan / tak laku", so_r_empties:"Krat / tong kosong", so_r_recall:"Tarik balik", so_r_other:"Lain-lain", so_r_spoilt:"Basi / rosak", so_r_pest:"Dirosakkan perosak", so_err_qty:"Isi kuantiti lebih daripada 0", so_err_pick_reason:"Pilih sebab", so_err_bad_line:"Ada barang tanpa kuantiti atau sebab; semak senarai", so_err_own:"Anda tidak boleh meluluskan pelupusan sendiri; pengurus lain atau HQ mesti", so_err_decided:"Seseorang sudah meluluskan atau menolak ini", so_err_reason:"Tulis sebab penolakan", so_st_draft:"Draf", so_st_submitted:"Dihantar", so_st_pending:"Untuk kelulusan", so_st_approved:"Diluluskan", so_st_rejected:"Ditolak", so_decided_by:"Diputuskan oleh", so_decision_note:"Nota (wajib jika menolak)", so_approve:"Luluskan pelupusan", so_reject:"Tolak", so_confirm_approve:"Luluskan? HQ kemudian menolak stok dalam AutoCount.", so_confirm_reject:"Tolak pelupusan ini?", so_toast_approved:"Diluluskan", so_toast_rejected:"Ditolak", so_wait_other:"Menunggu pengurus atau HQ (anda tidak boleh lulus sendiri)", so_wait_manager:"Menunggu pengurus atau HQ", so_no_waiting:"Tiada pelupusan menunggu", so_open:"Buka pulangan / pelupusan", so_task_missing:"Ini tiada dalam senarai 120 hari lepas", so_photo_take:'Ambil foto (wajib)', recv_doc_online:"Bungkusan online", recv_online_no:"No. pesanan pada label (Pinduoduo: no. waybill konsolidasi)", recv_online_step_photo:"2. Foto label bungkusan", recv_online_photo_hint:"Foto label pada bungkusan; no. pesanan atau waybill mesti jelas. Selepas dibuka boleh tambah foto isinya.", ol_title:"Pesanan online", ol_hq_only:"Hanya HQ merekod pesanan online", ol_add:"Rekod pesanan online", ol_hq_hint:"Rekod sebaik sahaja dibayar: no. pesanan, kedai penerima, kad yang digunakan, jumlah, tangkapan skrin resit platform, dan setiap barang (untuk dijual: pilih barang kita; kegunaan kedai: taip nama). Pinduoduo dihantar secara konsolidasi; tambah no. waybill apabila diketahui. Bungkusan di kedai dipadankan secara automatik.", ol_st_ordered:"Dalam perjalanan", ol_st_received:"Diterima", ol_st_cancelled:"Dibatalkan", ol_tracking_short:"Waybill", ol_platform:"Platform", ol_branch:"Dihantar ke kedai", ol_not_pilot:"terima barang belum dibuka", ol_order_no:"No. pesanan (Order ID platform)", ol_tracking:"No. penjejakan / waybill konsolidasi Pinduoduo (boleh ditambah kemudian)", ol_seller:"Kedai penjual (pilihan)", ol_card:"Dibayar dengan kad", ol_paid_at:"Tarikh bayar", ol_amount:"Jumlah dibayar RM (termasuk penghantaran)", ol_receipt_photo:"Resit platform (tangkapan skrin, atau tangkapan skrin PDF resit)", ol_receipt_hint:"Shopee: Saya → Pembelian Saya → butiran pesanan → Resit. Pinduoduo: tangkapan skrin butiran pesanan.", ol_err_branch:"Pilih kedai penerima", ol_items:"Apa yang dibeli", ol_line_desc:"Barang (seperti pada resit)", ol_line_amount:"Jumlah baris RM", ol_use_sale:"Untuk dijual (stok)", ol_use_store:"Kegunaan kedai", ol_pick_item:"Pilih barang kita", ol_add_line:"Tambah barang", ol_err_order_no:"Isi no. pesanan", ol_err_amount:"Isi jumlah dibayar", ol_err_line:"Setiap barang perlu nama, kuantiti, dan Untuk dijual atau Kegunaan kedai", ol_err_sale_item:"Barang untuk dijual perlu barang dalam senarai kita (buka kod dalam AutoCount dahulu jika tiada)", ol_confirm_no_photo:"Belum ada foto resit. Simpan juga?", ol_confirm_dup:"Pesanan dengan no. yang sama sudah ada. Rekod lagi?", ol_confirm_sum:"Baris berjumlah RM {a}, dibayar RM {b} (biasanya penghantaran atau diskaun). Simpan juga?", ol_cancel:"Batalkan pesanan ini", ol_confirm_cancel:"Batalkan pesanan ini (dipulangkan wang / tidak dihantar)?", ol_open_receipt:"Buka terima barang kedai", ol_back:"Kembali", ol_type_2:"Taip sekurang-kurangnya 2 aksara", ol_match_title:"Padankan pesanan online", ol_match_hint:"Taip no. pesanan dari label dalam No. dokumen di atas; App mencari pesanan HQ: tekan Padan. Tiada? Lihat Pesanan lain dalam perjalanan.", ol_no_orders:"HQ belum merekod pesanan online untuk kedai ini. Foto label, kira dan hantar juga; HQ akan merekod dan memadankannya kemudian.", ol_ordered:"Dipesan", ol_counted:"Diterima", ol_count:"Kira", ol_unlink:"Bukan yang ini", ol_link:"Padan", ol_suggested:"Pesanan dengan nombor ini", ol_others:"Pesanan lain dalam perjalanan", ol_confirm_unmatched:"Tidak dipadankan dengan pesanan HQ. Hantar juga dan biar HQ susuli?", ol_err_use_count:"Barang kegunaan kedai juga perlu kuantiti diterima (0 jika tiada)", ol_confirm_sale_missing:"{n} barang untuk dijual belum dikira. Anggap tidak diterima dan hantar?", ol_incoming:"Pesanan online dalam perjalanan", ol_open_orders:"Pesanan online", ol_all:'Semua', ol_err_taken:"Pesanan ini sudah diterima pada resit lain; tekan Bukan yang ini", ol_err_gone:"Pesanan yang dipadankan tiada lagi atau milik kedai lain; padankan semula", ol_err_changed:"Rakan baru mengubah pesanan ini; tutup dan buka semula", ol_taken_by:"dipadankan pada resit terbuka {who}", ol_err_no_no:"Taip nombor pada label dalam No. dokumen dahulu", ol_confirm_dup_no:"Nombor ini sudah diterima sekali. Jika ini karton kedua pesanan yang sama, tambah \"-2\" pada nombor sebelum hantar. Hantar juga?", ol_late:"lewat {n} hari", ol_none_open:"Tiada pesanan dalam perjalanan", ol_restored:"Pesanan yang belum disimpan dipulihkan", ol_photo_kept:"Foto dimuat naik; pesanan belum disimpan: tekan Rekod pesanan online untuk teruskan", ol_err_photo_branch:"Foto resit berada dalam folder kedai lain; selepas menukar kedai, buang dan muat naik semula", ol_clear:"Kosongkan dan mula semula", ol_confirm_clear:"Kosongkan pesanan yang belum disimpan ini?", ol_not_on_phone:"Tiada dalam senarai telefon ini (lebih 120 hari, atau bukan kedai anda)", err_line_gone:"Rakan baru mengubah atau membuang baris ini; buka semula", err_forbidden:"Tidak dibenarkan: ini tidak disimpan (sudah dihantar, atau bukan kedai anda)", clock_selfie:"Swafoto daftar (kamera depan)", clock_confirm_out:"Daftar keluar sekarang?", task_items_open:"Ada item belum siap", task_run_done:"Senarai semak ini sudah siap dan tidak boleh diubah", sos_ack:"Saya uruskan (terima)", sos_acked_by:"Diambil oleh", sos_open_map:"Buka peta", sos_tap_ack:"Tekan, kemudian Saya uruskan", push_mgr_ask:"Notifikasi anda dimatikan: amaran SOS, suhu dan cuti hanya sampai jika dihidupkan.", push_turn_on:"Hidupkan notifikasi", order_sku_delete_confirm:"Matikan barang ini? (Tidak dipadam; dokumen lama masih menemuinya)", vm_team_only:"Isi semula mesin layan diri direkod oleh pasukan mesin / HQ sahaja.", acc_load_partial:"Sebahagian data tidak dimuat; angka mungkin tidak lengkap", acc_void_word:"batal", acc_m_queue:"Semua dihantar ke AutoCount", acc_m_held:"ditahan", acc_release_held:"Lepaskan dokumen ditahan", recv_admin_inbox:'Semua kedai', recv_admin_receive:'Terima barang', recv_ai_title:'Bacaan kertas AI (percubaan)', recv_ai_hint:'Kira-kira 15 saat selepas ditekan, AI menyenaraikan barang, kuantiti dan amaun pada kertas. Anda sendiri kira dan semak setiap baris, kemudian sahkan.', recv_ai_btn:'Baca kertas dengan AI', recv_ai_failed:'Tidak dapat dibaca. Ambil gambar lebih jelas dan cuba lagi, atau tambah barang secara manual.', recv_ai_asked:'Dihantar, kira-kira 15 saat', recv_ai_limit:'Kertas ini sudah dibaca 3 kali; sila tambah barang secara manual.', recv_ai_cap:'Bacaan AI hari ini sudah habis; sila tambah barang secara manual.', recv_ai_reading:'AI sedang membaca kertas…', recv_ai_wait:'Kira-kira 15 saat; boleh mula mengira', recv_ai_again:'Baca semula', recv_ai_done:'AI membaca', recv_ai_check_each:'Buka setiap baris: semak produk, kira yang diterima, semak amaun, kemudian sahkan. Tekan Tidak diterima jika baris itu tidak sampai.', recv_ai_all_checked:'Semua baris sudah disemak. Akhir sekali sahkan jumlah.', recv_ai_confirmed:'Disahkan', recv_ai_skipped:'Tidak diterima', recv_ai_to_check:'Untuk disemak', recv_ai_no_match:'Tidak dipadankan dengan produk kita; sila pilih', recv_ai_paper:'Pada kertas', recv_ai_how_name:'Dipadankan ikut nama; semak', recv_ai_how_learned:'Padanan yang pernah disahkan', recv_ai_how_barcode:'Dipadankan ikut kod bar', recv_ai_how_code:'Dipadankan ikut kod item', recv_ai_lines_sum:'Jumlah baris yang disahkan', recv_ai_discount:'diskaun', recv_ai_tax:'cukai', recv_ai_total:'Jumlah kertas RM (baca pada kertas)', recv_ai_total_confirm:'Jumlah sama dengan kertas, sahkan', recv_ai_total_ok:'Jumlah disahkan', recv_ai_docno_diff:'AI membaca nombor lain; semak kertas', recv_ai_our_item:'Produk kita', recv_ai_change_item:'Tukar produk', recv_ai_pick_item:'Pilih produk', recv_ai_counted:'Sebenarnya diterima (kira)', recv_ai_unit_note:'Kertas menulis {u}; kira berapa yang diterima dalam unit kita.', recv_ai_amount:'Amaun baris RM (pada kertas)', recv_ai_confirm_hint:'Mengesahkan bermaksud anda sudah kira kuantiti dan semak amaun, dan kedua-duanya sama dengan kertas. Kurang daripada kertas direkod sebagai kurang.', recv_ai_confirm:'Kuantiti dan amaun betul, sahkan', recv_ai_not_received:'Baris ini tidak diterima', recv_ai_need_amount:'Masukkan amaun baris ini', recv_ai_line_title:'Semak baris {n}', recv_ai_block_lines:'{n} baris yang dibaca AI belum disemak', recv_ai_block_total:'Sahkan jumlah kertas dahulu', recv_ai_block_reading:'AI masih membaca; sila tunggu (selepas 3 minit boleh hantar tanpanya)', vm_tab_today:'Hari ini', vm_tab_report:'Laporan', vm_sum_machines:'mesin perlu dilawati', vm_sum_due:'tamat tempoh perlu dikeluarkan', vm_sum_soon:'hampir tamat tempoh', vm_today_hint:'Paling mendesak di atas. Kuantiti ialah kiraan pada lawatan terakhir; ia dikemas kini sendiri selepas XY disambung.', vm_lvl_critical:'Segera', vm_lvl_warn:'Lawat hari ini', vm_lvl_ok:'OK', vm_lvl_n:'Berhenti', vm_chip_due:'Tamat', vm_chip_soon:'Hampir', vm_chip_empty:'Kosong', vm_chip_unset:'Tiada produk', vm_last:'Terakhir: ', vm_never:'Belum ada lawatan direkod', vm_days_ago:' hari lalu', vm_today_word:'hari ini', vm_draft_pill:'Belum dihantar', vm_back:'Semua mesin', vm_visit_hint:'Slot demi slot: tekan slot → kira baki → keluarkan yang tamat tempoh → isi semula → masukkan tarikh tamat. Selesai, tekan Hantar lawatan. Slot yang tidak disentuh tidak perlu ditekan.', vm_legend:'Merah = tamat tempoh   Oren = hampir tamat   Putus-putus = tiada produk   ✓ = siap lawatan ini', vm_row:'Baris', vm_done_n:'Siap', vm_btn_submit:'Hantar lawatan', vm_btn_discard:'Buang draf ini', vm_confirm_discard:'Semua slot yang direkod dalam lawatan ini akan dipadam. Buang?', vm_slot:'Slot', vm_set_product:'Tetapkan produk', vm_change_product:'Tukar produk', vm_pick_product_first:'Pilih dahulu produk untuk slot ini.', vm_field_product:'Produk', vm_field_par:'Kuantiti penuh', vm_only_manager:'Hanya pengurus boleh menukar produk slot yang sudah ada produk.', vm_plan_hint:'Sesiapa boleh menetapkan slot kosong; hanya pengurus boleh menukar slot yang sudah ada produk.', vm_last_record:'Rekod terakhir', vm_exp_unknown:'tarikh tamat tidak diketahui', vm_f_left:'Baki dalam slot (kira sebelum isi)', vm_q_empty:'Kosong', vm_q_full:'Penuh', vm_q_same:'Sama seperti lepas', vm_f_expired:'Tamat tempoh dikeluarkan', vm_f_damaged:'Rosak / lain dikeluarkan', vm_f_added:'Ditambah', vm_f_exp:'Tarikh tamat stok baharu', vm_day_short:'h', vm_after:'Selepas', vm_over_par:'melebihi kapasiti slot', vm_first_exp:'tamat terawal', vm_err_left:'Kira baki dahulu', vm_err_more_out:'Lebih dikeluarkan daripada baki', vm_err_exp:'Stok ditambah perlu tarikh tamat', vm_btn_save_slot:'Simpan slot ini', vm_btn_undo_slot:'Batal slot ini', vm_submit_title:'Hantar lawatan', vm_tot_added:'Ditambah', vm_tot_out:'Dikeluarkan', vm_tot_sold:'Terjual (anggaran)', vm_tot_waste:'Nilai pembaziran', vm_no_cost:'tiada kos', vm_untouched:'Slot yang tidak disentuh kekal:', vm_still_due:'Slot ini masih ada stok tamat tempoh:', vm_note:'Nota (pilihan)', vm_toast_sent:'Lawatan disimpan', vm_only_team:'Hanya pasukan mesin boleh menghantar lawatan', vm_err_offline:'Tiada sambungan. Draf kekal dalam telefon; hantar semula bila ada talian.', vm_left_short:'Baki', vm_damaged_short:'Rosak', vm_range_7:'7 hari lepas', vm_range_30:'30 hari lepas', vm_rep_visits:'Lawatan', vm_rep_by_product:'Ikut produk', vm_rep_by_machine:'Ikut mesin', vm_rep_recent:'Lawatan terkini', vm_rep_hint:'Terjual ialah anggaran: isi slot selepas lawatan lepas tolak baki yang dikira sekarang. Jualan sebenar menggantikannya selepas XY disambung.', vm_col_product:'Produk', vm_col_machine:'Mesin', vm_col_last:'Lawatan terakhir', vm_pcs:'unit', vm_visit_title:'Lawatan', field_ac_code:'Kod item AutoCount', field_tray_qty:'Unit setiap dulang', vm_tray:'setiap dulang', field_shelf_days:'Jangka hayat (hari)', field_pull_days:'Keluarkan berapa hari sebelum tamat (0 = sehari selepas tamat)', notif_vm_expired:'Stok tamat tempoh dalam mesin', seg_beer:'Bir draf', beer_title:'Stok bir draf', empty_add_beer_product:'Tambah produk bir di "Saya" dahulu',
     btn_receive_kegs:'Terima tong', btn_tap_keg:'Pasang tong', beer_on_tap:'Sedang digunakan', beer_no_kegs_on_tap:'Tiada tong dipasang sekarang',
     beer_remaining:'berbaki', beer_expired:'Lepas kesegaran', beer_expiring_soon:'Hampir tamat', beer_fresh:'Segar',
     beer_in_stock:'Stok belum dibuka', beer_no_stock:'Belum ada stok', beer_kegs_unit:'tong',
@@ -1352,6 +1353,8 @@ const LS = {
 };
 function $(id){return document.getElementById(id);}
 function el(html){const t=document.createElement('template'); t.innerHTML=html.trim(); return t.content.firstChild;}
+// an <img src> value: image data, a blob or an https link, escaped -- anything else shows nothing
+function safeSrc(u){ u=String(u==null?'':u); return /^(data:image\/[a-z+.-]+;base64,|blob:|https:\/\/)/i.test(u) ? esc(u) : ''; }
 function esc(s){return (s==null?'':String(s)).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function uidLocal(){return 'x'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
 function pad2(n){return String(n).padStart(2,'0');}
@@ -1362,10 +1365,10 @@ function localDay(iso){ const d=new Date(iso); return isNaN(d)?String(iso||'').s
 // an "in" younger than 16 h, the same rule the database's punch() applies. Older "in"s are stale
 // (a forgotten clock-out) and must not block the next clock-in.
 function latestPunch(empId){ return S.attendance.filter(a=>a.employeeId===empId)[0]; }
-function openPunch(empId){ const p=latestPunch(empId); return (p && p.type==='in' && (Date.now()-new Date(p.createdAt).getTime())<16*3600000) ? p : null; }
+function openPunch(empId){ const p=latestPunch(empId); return (p && p.type==='in' && (Date.now()-new Date(p.createdAt).getTime())<20*3600000) ? p : null; }   // night shifts run 17:00-09:00
 function fmtTime(iso){const d=new Date(iso); return pad2(d.getHours())+':'+pad2(d.getMinutes());}
 function fmtDateTime(iso){const d=new Date(iso); return (d.getMonth()+1)+'-'+pad2(d.getDate())+' '+pad2(d.getHours())+':'+pad2(d.getMinutes());}
-function fmtMoney(n){return '¥'+(Number(n)||0).toFixed(2);}
+function fmtMoney(n){return 'RM '+(Number(n)||0).toFixed(2);}
 function weekdayCN(d){return ['周日','周一','周二','周三','周四','周五','周六'][d.getDay()];}
 function weekdayLabel(d){
   const en=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -1430,7 +1433,10 @@ async function hashPin(pin, salt){
 function randomSalt(){
   return (self.crypto&&crypto.randomUUID) ? crypto.randomUUID() : uidLocal();
 }
+// a refusal by the database (row-level security) is not a network problem: say so
+function dbErr(e){ const m=String((e&&(e.message||e.details||e.hint))||''); return Object.assign(e||{}, {code: ((e&&e.code)==='42501' || /row-level security|permission denied|not_saved/i.test(m)) ? 'forbidden' : 'unavailable'}); }
 function dbErrMsg(e){
+  if(e && e.code === 'forbidden') return t('err_forbidden');
   const m={invalid_argument:t('err_invalid_argument'), resource_exhausted:t('err_resource_exhausted'),
     quota_exceeded:t('err_quota_exceeded'), unavailable:t('err_unavailable'),
     revoked:t('err_revoked'), not_granted:t('err_not_granted')};
@@ -1596,14 +1602,14 @@ function makeSupabaseDb(sb){
       .subscribe(status=>{ S.realtimeOk = (status==="SUBSCRIBED"); });
     // Fallback: if realtime is not connected (blocked WebSockets), poll every 25s -- only while
     // the App is on screen; a phone in a pocket has nobody to show the list to.
-    setInterval(()=>{ if(!S.realtimeOk && document.visibilityState==='visible'){ [...collListeners.keys()].forEach(c=>refreshCollection(c)); } }, 25000);
+    setInterval(()=>{ if(!S.realtimeOk && document.visibilityState==='visible'){ [...collListeners.keys()].filter(c=>c!=='skus' && c!=='suppliers').forEach(c=>refreshCollection(c)); } }, 25000);
   }
   // A burst of changes (a bulk import touches thousands of rows, one realtime event each)
   // becomes one re-fetch per collection instead of one per event.
   const soonTimers = new Map();
   function refreshSoon(collection){
     if(soonTimers.has(collection)) return;
-    soonTimers.set(collection, setTimeout(()=>{ soonTimers.delete(collection); refreshCollection(collection); }, 1200));
+    soonTimers.set(collection, setTimeout(()=>{ soonTimers.delete(collection); refreshCollection(collection); }, (collection==='skus' || collection==='suppliers') ? 30000 : 1200));
   }
   // At most one fetch per collection in flight; calls made meanwhile are folded into one more.
   const inFlight = new Map(); // collection -> {again:boolean}
@@ -1659,7 +1665,7 @@ function makeSupabaseDb(sb){
       },
       async set(data){
         const {error} = await sb.from('store').upsert({collection, id, data, updated_at:new Date().toISOString()}, {onConflict:'collection,id'});
-        if(error) throw Object.assign(error, {code:'unavailable'});
+        if(error) throw dbErr(error);
         refreshCollection(collection);
       },
       // Read, change, write -- but only if nobody wrote the record in between (else read again and redo the change).
@@ -1668,14 +1674,14 @@ function makeSupabaseDb(sb){
       async updateWith(fn){
         for(let i = 0; i < 6; i++){
           const {data:cur, error:e1} = await sb.from('store').select('data,updated_at').eq('collection',collection).eq('id',id).maybeSingle();
-          if(e1) throw Object.assign(e1, {code:'unavailable'});
+          if(e1) throw dbErr(e1);
           if(!cur) throw {code:'not_found', message:'not_found'};
           const patch = fn(cur.data);
           if(!patch) return cur.data;
           const merged = Object.assign({}, cur.data, patch);
           const {data:rows, error} = await sb.from('store').update({data:merged, updated_at:new Date().toISOString()})
             .eq('collection',collection).eq('id',id).eq('updated_at',cur.updated_at).select('id');
-          if(error) throw Object.assign(error, {code:'unavailable'});
+          if(error) throw dbErr(error);
           if(rows && rows.length){ refreshCollection(collection); return merged; }
           await new Promise(r=>setTimeout(r, 150 + Math.random()*350));    // someone else wrote first: read again
         }
@@ -1683,16 +1689,17 @@ function makeSupabaseDb(sb){
       },
       async update(data){
         const {data:cur, error:e1} = await sb.from('store').select('data').eq('collection',collection).eq('id',id).maybeSingle();
-        if(e1) throw Object.assign(e1, {code:'unavailable'});
+        if(e1) throw dbErr(e1);
         if(!cur) throw {code:'invalid_argument', message:'document does not exist'};
         const merged = Object.assign({}, cur.data, data);
-        const {error} = await sb.from('store').update({data:merged, updated_at:new Date().toISOString()}).eq('collection',collection).eq('id',id);
-        if(error) throw Object.assign(error, {code:'unavailable'});
+        const {data:rows, error} = await sb.from('store').update({data:merged, updated_at:new Date().toISOString()}).eq('collection',collection).eq('id',id).select('id');
+        if(error) throw dbErr(error);
+        if(!rows || !rows.length) throw {code:'forbidden', message:'not_saved'};     // refused by the database: nothing changed
         refreshCollection(collection);
       },
       async delete(){
         const {error} = await sb.from('store').delete().eq('collection',collection).eq('id',id);
-        if(error) throw Object.assign(error, {code:'unavailable'});
+        if(error) throw dbErr(error);
         refreshCollection(collection);
       },
       onSnapshot(next, err){
@@ -1771,7 +1778,7 @@ async function boot(){
     refreshPushState().then(()=>renderApp());
     refreshToken();
     setTimeout(()=>retryPendingPhotos(false), 15000);
-    setInterval(refreshToken, 30*60*1000);   // 12-hour tokens, topped up while in use
+    if(!S.tokenTimer) S.tokenTimer = setInterval(refreshToken, 30*60*1000);   // 12-hour tokens, topped up while in use
   } else {
     // A deliberately too-short code: the new function answers "not_found" without
     // touching anything, an old database answers "no such function".
@@ -1824,7 +1831,8 @@ function renderFromData(){
 // back from the camera: the photo (if any) has been handed over by now
 function pickerClosed(){ const at = S.pickerOpenAt; if(at) setTimeout(()=>{ if(S.pickerOpenAt === at) S.pickerOpenAt = 0; }, 1500); }
 window.addEventListener('focus', pickerClosed);
-document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState === 'visible'){ pickerClosed(); freshLook(); } });
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState === 'visible'){ pickerClosed(); freshLook();
+  if(S.token && Date.now() - (S.tokenAt || 0) > 20*60000) refreshToken(); } });   // a phone asleep for hours tops up at once
 function freshLook(){
   if(!(S.db && S.db.refresh && S.token)) return;
   const h = location.hash;
@@ -1911,7 +1919,7 @@ function subscribeAll(){
   sub('attendance','attendance',{order:'createdAt',limit:1000,sinceDays:92});
   sub('inspections','inspections',{order:'createdAt',limit:300,sinceDays:92});
   sub('faults','faults',{order:'createdAt',limit:300});
-  sub('schedules','schedules',{order:'date',dir:'asc',limit:600,sinceDays:30,sinceField:'date',sinceDate:true});
+  sub('schedules','schedules',{order:'date',dir:'asc',limit:4000,sinceDays:30,sinceField:'date',sinceDate:true});   // HQ sees every store's weeks, not the oldest 600 rows
   sub('leaveRequests','leaveRequests',{order:'createdAt',limit:400,sinceDays:400});
   sub('memos','memos',{order:'createdAt',limit:200});
   sub('memoReads','memoReads',{limit:500}); // one doc per employee: {readIds:{memoId:readAt}}
@@ -2028,11 +2036,11 @@ function photoPicker(onReady, cameraOnly, existingUrl, opts){
   const pickLabel = cameraOnly ? t('photo_take') : t('photo_pick');
   const retakeLabel = cameraOnly ? t('photo_retake_cam') : t('photo_retake');
   const wrap=el('<div></div>');
-  const input=el(`<input type="file" accept="image/*" ${cameraOnly?'capture="environment"':''} style="display:none">`);
+  const input=el(`<input type="file" accept="image/*" ${cameraOnly?(opts.front?'capture="user"':'capture="environment"'):''} style="display:none">`);
   const btnRow=el('<div class="row"></div>');
   const btn=el(`<button type="button" class="btn" style="flex:1;">${ICONS.camera}<span>${esc(existingUrl?retakeLabel:pickLabel)}</span></button>`);
   const removeBtn=el(`<button type="button" class="btn danger sm" style="display:${existingUrl?'inline-flex':'none'};">${esc(t('btn_remove_photo'))}</button>`);
-  const preview=el(`<img class="photow" style="display:${existingUrl?'block':'none'};" ${existingUrl && !isStoredPhoto(existingUrl)?`src="${existingUrl}"`:''}>`);
+  const preview=el(`<img class="photow" style="display:${existingUrl?'block':'none'};" ${existingUrl && !isStoredPhoto(existingUrl)?`src="${safeSrc(existingUrl)}"`:''}>`);
   if(existingUrl && isStoredPhoto(existingUrl)) photoSrc(existingUrl).then(u=>{ if(u) preview.src=u; });
   let dataUrl=existingUrl||null;
   btn.onclick=()=>{ S.pickerOpenAt = Date.now(); input.click(); };
@@ -2112,7 +2120,11 @@ function getGeo(){
       pos=>resolve({lat:pos.coords.latitude, lng:pos.coords.longitude, accuracy:Math.round(pos.coords.accuracy)}),
       err=>{
         const reason = err.code===1 ? 'denied' : err.code===2 ? 'unavailable' : err.code===3 ? 'timeout' : 'unknown';
-        resolve({error:reason});
+        if(err.code===1){ resolve({error:reason}); return; }
+        // indoors the precise fix often fails: ask once more for the ordinary one
+        navigator.geolocation.getCurrentPosition(
+          pos=>resolve({lat:pos.coords.latitude, lng:pos.coords.longitude, accuracy:Math.round(pos.coords.accuracy)}),
+          ()=>resolve({error:reason}), {enableHighAccuracy:false, timeout:6000, maximumAge:120000});
       },
       {enableHighAccuracy:true, timeout:8000, maximumAge:20000}
     );
@@ -2309,7 +2321,7 @@ async function refreshToken(){
   try{
     const tok = await rpc('refresh_token');
     // the same connection stays: the lists listen on it, and a new one left them deaf to this phone's own saves
-    if(tok){ S.token=tok; LS.set('bgc_token', tok); allClients.forEach(c=>{ try{ c.realtime && c.realtime.setAuth && c.realtime.setAuth(tok); }catch(e){} }); }
+    if(tok){ S.token=tok; S.tokenAt=Date.now(); LS.set('bgc_token', tok); allClients.forEach(c=>{ try{ c.realtime && c.realtime.setAuth && c.realtime.setAuth(tok); }catch(e){} }); }
   }catch(err){
     if(missingFn(err)) return;                 // database patch 4 not applied yet
     if(!tokenValid(S.token)){ toast(t('session_expired')); logout(); }
@@ -2329,8 +2341,20 @@ function finishLogin(token, e){
   S.sb=makeClient(token); S.db=makeSupabaseDb(S.sb); S.dbState='ready'; closeSheet();
   subscribeAll(); renderApp();
   setTimeout(()=>retryPendingPhotos(false), 15000);
+  S.tokenAt = Date.now();
+  if(!S.tokenTimer) S.tokenTimer = setInterval(refreshToken, 30*60*1000);   // an in-App login is topped up too
 }
-function logout(forget){
+async function dropMyPushSub(){
+  try{ const reg=await swReg(); const sub=reg && await reg.pushManager.getSubscription(); if(sub && S.employeeId && S.db){ await S.db.doc('pushSubs/'+S.employeeId+'__'+(await subIdFor(sub.endpoint))).delete(); } }catch(e){}
+}
+// whoever is logged in on a phone with alerts on gets its row (a shared phone, or a browser that renewed its endpoint)
+async function savePushRow(){
+  try{ const e=currentEmployee(); const reg=await swReg(); const sub=reg && await reg.pushManager.getSubscription(); if(!e || !sub || Notification.permission!=='granted') return;
+    const j=sub.toJSON(); await S.db.doc('pushSubs/'+e.id+'__'+(await subIdFor(j.endpoint))).set({employeeId:e.id, employeeName:e.name, branch:e.homeBranch||'', role:e.role||'staff', endpoint:j.endpoint, keys:j.keys, ua:navigator.userAgent.slice(0,120), createdAt:new Date().toISOString()});
+  }catch(err){}
+}
+async function logout(forget){
+  try{ await Promise.race([dropMyPushSub(), new Promise(r=>setTimeout(r, 1500))]); }catch(e){}
   S.token=null; S.employeeId=null; S.pickerBranch=null;
   LS.remove('bgc_token'); LS.remove('bgc_employee_id');
   if(forget) LS.remove('bgc_known');
@@ -2433,10 +2457,22 @@ function homeView(){
     const st=stockStatus(inv.qty, lowThreshold(p));
     if(st.c!=='ok'){ lowCount++; }
   });
-  const openFaults = S.faults.filter(f=>f.status==='open').length;
+  const openFaults = S.faults.filter(f=>f.status!=='done' && f.status!=='closed' && f.status!=='resolved' && f.status!=='cancelled').length;   // being fixed still counts
   const pendingLeave = S.leaveRequests.filter(l=>l.status==='pending').concat(S.punchRequests.filter(r=>r.status==='pending'), S.swapRequests.filter(r=>r.status==='pending'));
 
   c.appendChild(helloCard(e, clockedIn, last));
+  if(canManageStaff()){
+    // an SOS nobody has taken yet stays on top of the home screen of every manager of that store and HQ
+    const since12=new Date(Date.now()-12*3600000).toISOString();
+    S.safetyChecks.filter(x=>x.status==='sos' && !x.ackAt && x.createdAt>=since12 && (isAdmin() || x.branch===myBranch() || coversBranch(e, x.branch))).forEach(x=>{
+      const b=el(`<div class="card" style="border:2px solid var(--bad,#C1392B); background:var(--bad-soft,#F6DCD8); cursor:pointer; margin-bottom:10px;"><div style="font-weight:900;">🆘 ${esc(t('notif_sos'))} · ${esc(x.branch||'')} · ${esc(x.employeeName||'')}</div><div class="lr-sub">${fmtDateTime(x.createdAt)} · ${esc(t('sos_tap_ack'))}</div></div>`);
+      b.onclick=()=>openSosDetail(x); c.appendChild(b); });
+    if(!S.pushOn && pushSupported() && !(isIOS() && !isStandalone())){
+      const pb=el(`<div class="card card-tight" style="margin-bottom:10px;"><div class="lr-title" style="white-space:normal;">🔔 ${esc(t('push_mgr_ask'))}</div></div>`);
+      const go=el(`<button class="btn primary sm" style="margin-top:6px;">${esc(t('push_turn_on'))}</button>`); go.onclick=()=>enablePush(); pb.appendChild(go); c.appendChild(pb);
+    }
+  }
+  if(S.pushOn && !S.pushRowSaved && e){ S.pushRowSaved=true; savePushRow(); }
   c.appendChild(secH('chart','c-green',t('home_overview')));
   const tiles=el('<div class="grid2"></div>');
   if(isAdmin()){
@@ -2514,18 +2550,19 @@ function clockView(){
   const now=new Date();
   card.innerHTML = `<div style="font-size:13px; color:var(--ink-soft); font-weight:700;">${weekdayLabel(now)} · ${todayStr(now)}</div>`;
   let clockSel=null;
-  { const branches=allBranchIds();
+  { const branches = isAdmin() ? allBranchIds() : [myBranch()].concat(coverList(currentEmployee())).filter((b,i,a)=>b && a.indexOf(b)===i);   // only stores the server accepts
     if(branches.length>0){
       clockSel=el('<select style="margin:8px auto 2px; display:block; max-width:240px;"></select>');
-      [{v:'',l:t('clock_branch_none')}].concat(orderedBranches(branches).map(b=>({v:b, l:b+(b===myBranch()?' · '+t('clock_branch_home'):(coversBranch(currentEmployee(),b)?' · '+t('cover_badge'):''))}))).forEach(o=>{ const op=document.createElement('option'); op.value=o.v; op.textContent=o.l; clockSel.appendChild(op); });
-      clockSel.value=defaultClockBranch(); if(clockSel.value!==defaultClockBranch()) clockSel.value='';
+      (isAdmin()?[{v:'',l:t('clock_branch_none')}]:[]).concat(orderedBranches(branches).map(b=>({v:b, l:b+(b===myBranch()?' · '+t('clock_branch_home'):(coversBranch(currentEmployee(),b)?' · '+t('cover_badge'):''))}))).forEach(o=>{ const op=document.createElement('option'); op.value=o.v; op.textContent=o.l; clockSel.appendChild(op); });
+      clockSel.value=defaultClockBranch(); if(clockSel.value!==defaultClockBranch()) clockSel.value=branches.includes(myBranch())?myBranch():(clockSel.options[0]?clockSel.options[0].value:'');
       clockSel.onchange=()=>{ S.clockBranch=clockSel.value; };
       card.appendChild(el(`<div class="hint" style="margin:6px 0 0;">${esc(t('clock_branch_label'))}</div>`));
       card.appendChild(clockSel);
     } }
   const bigBtn=el(`<button class="clockbtn ${nextType==='out'?'out':''}"><span class="t">${nextType==='in'?esc(t('btn_clock_in')):esc(t('btn_clock_out'))}</span><span class="s" id="clockNow">${pad2(now.getHours())}:${pad2(now.getMinutes())}</span></button>`);
   card.appendChild(bigBtn);
-  const photoWrap = photoPicker(null, true);
+  const photoWrap = photoPicker(null, true, null, {front:true});                       // a selfie: the front camera
+  { const sp = photoWrap.querySelector('button span'); if(sp) sp.textContent = t('clock_selfie'); }
   photoWrap.style.margin='12px auto 0'; photoWrap.style.maxWidth='260px';
   card.appendChild(photoWrap);
   const geoStatus=el(`<div class="hint" id="geoStatus">${esc(S.lastGeoMsg||t('clock_geo_hint'))}</div>`);
@@ -2534,8 +2571,11 @@ function clockView(){
 
   bigBtn.onclick=async ()=>{
     if(!S.db){ toast(t('err_db_disconnected')); return; }
+    if(bigBtn.disabled) return;
+    if(nextType==='out' && !confirm(t('clock_confirm_out'))) return;          // no clock-out by a stray tap
     bigBtn.disabled=true;
     geoStatus.textContent=t('clock_geo_getting');
+    let punched=false;
     const geo = await getGeo();
     const geoOk = geo && !geo.error;
     const branch = clockSel ? clockSel.value : defaultClockBranch();
@@ -2575,9 +2615,11 @@ function clockView(){
       if(FEAT.punch === false) await S.db.collection('attendance').add(rec);
       toast((nextType==='in'?t('toast_clock_in_ok'):t('toast_clock_out_ok')) + (photoPending ? ' · ' + t('toast_photo_pending') : ''));
       if(photoPending) setTimeout(()=>retryPendingPhotos(false), 60000);
-      photoWrap.remove();
+      photoWrap.remove(); punched=true;
+      if(S.db.refresh) S.db.refresh('attendance');                               // the button shows the new state at once
     }catch(err){ toast(punchErrMsg(err)); }
-    bigBtn.disabled=false;
+    // after a punch the button stays off for a few seconds: a second tap is not a second punch
+    if(punched) setTimeout(()=>{ bigBtn.disabled=false; }, 8000); else bigBtn.disabled=false;
     const gi = bInfo || (near&&near.configured ? near : null);
     S.lastGeoMsg = geoStatus.textContent = geoOk ? (gi ? (gi.inRange?t('geo_in_range'):t('geo_out_of_range')+gi.distance+t('geo_out_of_range_suffix')) : (branch ? t('geo_branch_no_coords') : t('geo_no_coords'))) : geoErrorMessage(geo&&geo.error);
   };
@@ -2635,12 +2677,22 @@ function monthFilters(ym, field){
   const fmt = field==='date' ? d=>todayStr(d) : d=>d.toISOString();
   return [{field, op:'>=', value:fmt(start)},{field, op:'<', value:fmt(end)}];
 }
+// the month plus a day either side, so a shift crossing midnight at the month's edges keeps both its punches
+function monthFiltersPadded(ym){ const [y,m]=ym.split('-').map(Number); return [{field:'createdAt', op:'>=', value:new Date(y,m-1,0).toISOString()},{field:'createdAt', op:'<', value:new Date(y,m,2).toISOString()}]; }
+// each person's shifts (in paired with the out that follows), kept when the shift STARTED in the month
+function monthShifts(att, ym){
+  const byEmp={}; att.forEach(a=>{ (byEmp[a.employeeId]=byEmp[a.employeeId]||[]).push(a); });
+  const out={};
+  Object.keys(byEmp).forEach(id=>{ const recs=byEmp[id].sort((a,b)=>a.createdAt<b.createdAt?-1:1);
+    out[id]=payShifts(recs).filter(x=>todayStr(x.in||x.out).slice(0,7)===ym); });
+  return out;
+}
 async function loadReport(){
   if(S.reportLoading) return;
   S.reportLoading=true; renderApp();
   try{
     const [att, sched] = await Promise.all([
-      S.db.rawFetch('attendance', monthFilters(S.reportMonth), 'createdAt', 'asc'),
+      S.db.rawFetch('attendance', monthFiltersPadded(S.reportMonth), 'createdAt', 'asc'),
       S.db.rawFetch('schedules', monthFilters(S.reportMonth,'date'), 'date', 'asc'),
     ]);
     S.reportData={month:S.reportMonth, att:att.map(r=>Object.assign({id:r.id}, r.data)), sched:sched.map(r=>Object.assign({id:r.id}, r.data))};
@@ -2658,28 +2710,25 @@ function computeReport(){
   const grace = S.settings.lateGraceMin!=null ? S.settings.lateGraceMin : 10;
   const toMin = t=>{ const [h,m]=String(t||'').split(':').map(Number); return isNaN(h)?null:h*60+(m||0); };
   const schedMap={}; d.sched.forEach(s=>{ schedMap[s.employeeId+'|'+s.date]=s; });
-  const byEmpDay={};
-  d.att.forEach(a=>{ const day=todayStr(new Date(a.createdAt)); const k=a.employeeId+'|'+day; (byEmpDay[k]=byEmpDay[k]||[]).push(a); });
   const stats={};
-  Object.keys(byEmpDay).forEach(k=>{
-    const [empId, day]=k.split('|');
-    const recs=byEmpDay[k].sort((a,b)=>a.createdAt<b.createdAt?-1:1);
+  const shiftsByEmp = monthShifts(d.att, d.month);
+  Object.keys(shiftsByEmp).forEach(empId=>{
+    const byDay={}; shiftsByEmp[empId].forEach(x=>{ const day=todayStr(x.in||x.out); (byDay[day]=byDay[day]||[]).push(x); });
     const st = stats[empId] = stats[empId] || {days:0, minutes:0, late:0, early:0, missing:0, cover:0};
-    let hadIn=false, openIn=null, firstIn=null, lastOut=null;
-    recs.forEach(r=>{
-      const tm=new Date(r.createdAt);
-      if(r.type==='in'){ if(openIn){ st.missing++; } openIn=tm; hadIn=true; if(!firstIn) firstIn=tm; }
-      else { if(openIn){ st.minutes += (tm-openIn)/60000; openIn=null; } lastOut=tm; }
+    Object.keys(byDay).forEach(day=>{
+      const xs=byDay[day]; let firstIn=null, lastOut=null;
+      xs.forEach(x=>{ if(x.in && x.out) st.minutes += (x.out-x.in)/60000; if(x.missingIn || x.missingOut) st.missing++;
+        if(x.in && !firstIn) firstIn=x.in; if(x.out) lastOut=x.out; });
+      if(firstIn) st.days++;
+      if(xs.some(x=>(x.recs||[]).some(r=>r.cover))) st.cover++;
+      const sc=schedMap[empId+'|'+day];
+      if(sc){
+        const ss=toMin(sc.shiftStart), se=toMin(sc.shiftEnd);
+        if(ss!=null && firstIn && (firstIn.getHours()*60+firstIn.getMinutes()) > ss+grace) st.late++;
+        if(se!=null && ss!=null && lastOut){ const end=new Date(day+'T00:00:00'); end.setMinutes(se + (se<=ss ? 1440 : 0));   // an overnight roster ends the next day
+          if(lastOut < new Date(end.getTime()-grace*60000)) st.early++; }
+      }
     });
-    if(openIn) st.missing++;
-    if(hadIn) st.days++;
-    if(recs.some(r=>r.cover)) st.cover++;
-    const sc=schedMap[empId+'|'+day];
-    if(sc){
-      const ss=toMin(sc.shiftStart), se=toMin(sc.shiftEnd);
-      if(ss!=null && firstIn && (firstIn.getHours()*60+firstIn.getMinutes()) > ss+grace) st.late++;
-      if(se!=null && lastOut && (lastOut.getHours()*60+lastOut.getMinutes()) < se-grace) st.early++;
-    }
   });
   return reportScopeEmployees().map(e=>Object.assign({emp:e}, stats[e.id]||{days:0,minutes:0,late:0,early:0,missing:0,cover:0}))
     .filter(r=>r.days>0 || r.emp.active!==false)
@@ -2806,7 +2855,7 @@ function snackStockView(){
       const inv = invRow(dv.id,p.id);
       const qty = inv ? inv.qty : 0;
       const st = stockStatus(qty, lowThreshold(p));
-      const row=el(`<div class="list-row">${p.image?`<img class="lr-thumb" src="${p.image}">`:''}<div class="lr-main"><div class="lr-title">${esc(p.name)}</div><div class="lr-sub">${esc(p.spec||'')}</div></div>
+      const row=el(`<div class="list-row">${p.image?`<img class="lr-thumb" src="${safeSrc(p.image)}">`:''}<div class="lr-main"><div class="lr-title">${esc(p.name)}</div><div class="lr-sub">${esc(p.spec||'')}</div></div>
         <div class="lr-end"><div class="num" style="font-weight:900; font-size:15px;">${qty}${esc(p.unit||'')}</div><span class="pill ${st.c}" style="margin-top:3px;">${st.t}</span></div></div>`);
       row.onclick=()=>openRestockForm(dv,p,qty);
       list.appendChild(row);
@@ -2926,12 +2975,12 @@ function vmIndex(){
 }
 function vmSlotsOf(devId){ return vmIndex().byDev.get(devId) || []; }
 function vmDaysTo(date){ if(!date) return null; return Math.round((new Date(date+'T00:00:00') - new Date(todayStr()+'T00:00:00'))/86400000); }
-function vmPull(p){ return p && p.pullDays!=null && p.pullDays!=='' ? (Number(p.pullDays)||0) : 0; }
+function vmPull(p){ return p && p.pullDays!=null && p.pullDays!=='' ? (Number(p.pullDays)||0) : 1; }   // not set yet: take it out the day before it expires
 // days left before a lot has to come out; below 0 = take it out now
 function vmOutIn(lot, p){ const d=vmDaysTo(lot.exp); return d==null ? null : d - vmPull(p); }
+// lots in the order they were loaded: a spiral sells the front (first in) first, whatever its date
 function vmLotsSorted(lots){
-  return (lots||[]).filter(l=>Number(l.qty)>0).map(l=>({exp:l.exp||null, qty:Number(l.qty)}))
-    .sort((a,b)=> a.exp===b.exp ? 0 : a.exp==null ? -1 : b.exp==null ? 1 : (a.exp<b.exp ? -1 : 1));
+  return (lots||[]).filter(l=>Number(l.qty)>0).map(l=>({exp:l.exp||null, qty:Number(l.qty)}));
 }
 function vmSlotInfo(s){
   const p = s.productId ? (vmIndex().prod.get(s.productId) || null) : null;
@@ -2958,7 +3007,9 @@ function vmMD(date){ return date ? date.slice(5) : ''; }
 
 /* the draft of a visit lives on this phone only, one per machine and person */
 function vmDraftKey(devId){ return 'vm_draft_'+devId+'_'+(S.employeeId||''); }   // one per machine and person on a shared phone
-function vmDraft(devId){ try{ const d=JSON.parse(localStorage.getItem(vmDraftKey(devId))||'null'); if(d && d.employeeId===S.employeeId) return d; }catch(e){} return null; }
+function vmDraft(devId){ try{ const d=JSON.parse(localStorage.getItem(vmDraftKey(devId))||'null'); if(d && d.employeeId===S.employeeId){
+  if(Date.now() - new Date(d.startedAt || 0).getTime() > 12*3600000){ localStorage.removeItem(vmDraftKey(devId)); return null; }   // an old count is not today's
+  return d; } }catch(e){} return null; }
 function vmSaveDraft(devId, d){ try{ if(d && Object.keys(d.lines||{}).length) localStorage.setItem(vmDraftKey(devId), JSON.stringify(d)); else localStorage.removeItem(vmDraftKey(devId)); }catch(e){} }
 // lines counted against a slot that was visited or re-assigned since: their numbers are no longer true, drop them
 function vmDropStale(devId, alsoSlot){
@@ -2986,7 +3037,7 @@ function vmApply(lots, p, left, expired, damaged, added, exp){
   k=expired; take(l=>{ const o=vmOutIn(l,p); return o!=null && o<0; }); take(()=>true);
   k=damaged; take(()=>true);
   L=L.filter(l=>l.qty>0);
-  if(added>0){ const same=L.find(l=>l.exp===(exp||null)); if(same) same.qty+=added; else L.push({exp:exp||null, qty:added}); }
+  if(added>0){ const last=L[L.length-1]; if(last && last.exp===(exp||null)) last.qty+=added; else L.push({exp:exp||null, qty:added}); }   // new stock goes in at the back
   return {lots:vmLotsSorted(L), soldEst:Math.max(0, sold)};
 }
 function vmDueAfter(lots, p, left){
@@ -3049,6 +3100,8 @@ function vmTodayView(){
 
 function vmVisitView(d){
   const c=el('<div></div>');
+  { const me=currentEmployee(); if(!(isAdmin() || (me && ['VM','HQ'].includes(String(me.homeBranch||'').toUpperCase())))){
+      c.appendChild(el(`<div class="empty">${ICONS.box}<div>${esc(t('vm_team_only'))}</div></div>`)); return c; } }   // the server takes vending visits from the vending team only
   const staleGone = vmDropStale(d.id);
   if(staleGone.length) c.appendChild(el(`<div class="card" style="border-color:var(--warn); background:var(--warn-soft); padding:10px 12px; margin-bottom:8px;">${esc(t('vm_stale_dropped').split('{s}').join(staleGone.join(', ')))}</div>`));
   const draft=vmDraft(d.id);
@@ -3371,7 +3424,7 @@ function beerStockView(){
         : fresh.soon ? `<span class="pill warn">${esc(t('beer_expiring_soon'))}</span>`
         : `<span class="pill ok">${esc(t('beer_fresh'))}</span>`;
     }
-    const row=el(`<div class="list-row">${p&&p.image?`<img class="lr-thumb" src="${p.image}">`:''}<div class="lr-main"><div class="lr-title">${esc(p?p.name:t('deleted_placeholder'))} · ${esc(tapName(k.tapId))}</div><div class="lr-sub">${pct!=null?pct+'% '+esc(t('beer_remaining')):''}</div></div>${freshPill}</div>`);
+    const row=el(`<div class="list-row">${p&&p.image?`<img class="lr-thumb" src="${safeSrc(p.image)}">`:''}<div class="lr-main"><div class="lr-title">${esc(p?p.name:t('deleted_placeholder'))} · ${esc(tapName(k.tapId))}</div><div class="lr-sub">${pct!=null?pct+'% '+esc(t('beer_remaining')):''}</div></div>${freshPill}</div>`);
     row.onclick=()=>openKegDetail(k);
     tapList.appendChild(row);
   });
@@ -3384,7 +3437,7 @@ function beerStockView(){
   S.beerProducts.forEach(p=>{
     const count = grouped[p.id]||0;
     const low = count <= (p.lowStockKegs!=null?p.lowStockKegs:1);
-    const row=el(`<div class="list-row" style="cursor:default;">${p.image?`<img class="lr-thumb" src="${p.image}">`:''}<div class="lr-main"><div class="lr-title">${esc(p.name)}</div><div class="lr-sub">${esc(p.brand||'')}</div></div><span class="pill ${count===0?'critical':(low?'warn':'ok')}">${count} ${esc(t('beer_kegs_unit'))}</span></div>`);
+    const row=el(`<div class="list-row" style="cursor:default;">${p.image?`<img class="lr-thumb" src="${safeSrc(p.image)}">`:''}<div class="lr-main"><div class="lr-title">${esc(p.name)}</div><div class="lr-sub">${esc(p.brand||'')}</div></div><span class="pill ${count===0?'critical':(low?'warn':'ok')}">${count} ${esc(t('beer_kegs_unit'))}</span></div>`);
     stockList.appendChild(row);
   });
   c.appendChild(stockList);
@@ -3460,7 +3513,7 @@ function openLevelCheckForm(k){
     const e=currentEmployee();
     try{
       const delta = v.remainingLiters - (k.remainingLiters||0);
-      await S.db.collection('kegLogs').add({kegId:k.id, productId:k.productId, type:'level_check', deltaLiters:delta, remainingAfter:v.remainingLiters, employeeId:e.id, employeeName:e.name, note:v.note||'', createdAt:new Date().toISOString()});
+      await S.db.collection('kegLogs').add({zone:k.zone||(defaultClockBranch()||myBranch()||''), branch:k.zone||(defaultClockBranch()||myBranch()||''), kegId:k.id, productId:k.productId, type:'level_check', deltaLiters:delta, remainingAfter:v.remainingLiters, employeeId:e.id, employeeName:e.name, note:v.note||'', createdAt:new Date().toISOString()});
       await S.db.doc('kegs/'+k.id).update({remainingLiters:v.remainingLiters});
       toast(t('toast_saved')); closeSheet();
     }catch(err){ toast(dbErrMsg(err)); btn.disabled=false; btn.textContent=t('btn_submit'); }
@@ -3481,7 +3534,7 @@ function openEmptyKegForm(k){
     btn.disabled=true; btn.textContent=t('toast_submitting');
     const e=currentEmployee();
     try{
-      await S.db.collection('kegLogs').add({kegId:k.id, productId:k.productId, type:'emptied', deltaLiters:-(v.wasteLiters||0), employeeId:e.id, employeeName:e.name, note:v.note||'', createdAt:new Date().toISOString()});
+      await S.db.collection('kegLogs').add({zone:k.zone||(defaultClockBranch()||myBranch()||''), branch:k.zone||(defaultClockBranch()||myBranch()||''), kegId:k.id, productId:k.productId, type:'emptied', deltaLiters:-(v.wasteLiters||0), employeeId:e.id, employeeName:e.name, note:v.note||'', createdAt:new Date().toISOString()});
       await S.db.doc('kegs/'+k.id).update({status:'empty', remainingLiters:0, emptiedAt:new Date().toISOString(), tapId:null});
       toast(t('toast_saved')); closeSheet();
     }catch(err){ toast(dbErrMsg(err)); btn.disabled=false; btn.textContent=t('btn_confirm_empty'); }
@@ -3512,7 +3565,7 @@ function openReceiveKegsForm(){
     try{
       const writes=[];
       for(let i=0;i<qty;i++){
-        writes.push(S.db.collection('kegs').add({
+        writes.push(S.db.collection('kegs').add({zone:(defaultClockBranch()||myBranch()||''), branch:(defaultClockBranch()||myBranch()||''), 
           productId:v.productId, batchNo:v.batchNo||'', supplierName:v.supplierName||'', cost:v.cost!=null?v.cost:null,
           sizeLiters: prod&&prod.kegSizeLiters!=null?prod.kegSizeLiters:30,
           status:'in_stock', depositStatus: prod&&prod.depositPerKeg?'held':'none',
@@ -3520,7 +3573,7 @@ function openReceiveKegsForm(){
         }));
       }
       await Promise.all(writes);
-      await S.db.collection('kegLogs').add({productId:v.productId, type:'received', qty, employeeId:e.id, employeeName:e.name, note:v.batchNo||'', createdAt:new Date().toISOString()});
+      await S.db.collection('kegLogs').add({zone:(defaultClockBranch()||myBranch()||''), branch:(defaultClockBranch()||myBranch()||''), productId:v.productId, type:'received', qty, employeeId:e.id, employeeName:e.name, note:v.batchNo||'', createdAt:new Date().toISOString()});
       toast(t('toast_saved')); closeSheet();
     }catch(err){ toast(dbErrMsg(err)); btn.disabled=false; btn.textContent=t('btn_submit'); }
   };
@@ -3551,8 +3604,8 @@ function openTapKegForm(){
     btn.disabled=true; btn.textContent=t('toast_submitting');
     const e=currentEmployee();
     try{
-      await S.db.doc('kegs/'+v.kegId).update({status:'tapped', tapId:v.tapId, openedAt:new Date().toISOString(), remainingLiters:keg.sizeLiters});
-      await S.db.collection('kegLogs').add({kegId:v.kegId, productId:keg.productId, type:'tapped', tapId:v.tapId, employeeId:e.id, employeeName:e.name, note:'', createdAt:new Date().toISOString()});
+      await S.db.doc('kegs/'+v.kegId).update({status:'tapped', tapId:v.tapId, openedAt:new Date().toISOString(), remainingLiters:keg.sizeLiters, zone:(byId(S.taps,v.tapId)||{}).zone||keg.zone||''});
+      await S.db.collection('kegLogs').add({zone:(byId(S.taps,v.tapId)||{}).zone||keg.zone||'', kegId:v.kegId, productId:keg.productId, type:'tapped', tapId:v.tapId, employeeId:e.id, employeeName:e.name, note:'', createdAt:new Date().toISOString()});
       toast(t('toast_saved')); closeSheet();
     }catch(err){ toast(dbErrMsg(err)); btn.disabled=false; btn.textContent=t('btn_tap_keg'); }
   };
@@ -3681,6 +3734,7 @@ function openPdpaNotice(opts){
 }
 // asked once per app open until acknowledged, only while the owner has it turned on
 function pdpaMaybePrompt(){
+  { const mw = typeof document!=='undefined' && document.getElementById ? document.getElementById('modalWrap') : null; if(mw && mw.classList && mw.classList.contains('show')) return; }   // not over an open form
   const e=currentEmployee();
   if(!e || S.pdpaAsked || !pdpaOn() || !S.employeesLoaded || !S.memoReadsLoaded) return;   // wait for the read receipts, or someone who has read it is asked again
   if(pdpaAckedBy(e.id)) return;
@@ -3736,7 +3790,7 @@ function memoRow(m){
   const audienceLabel = m.audience==='all' ? t('memo_audience_all') : m.audience;
   const stats = canManageStaff() ? ` · ${t('memo_read_stats_prefix')}${readCount}/${members.length}` : '';
   const pill = m.important ? `<span class="pill critical">${esc(t('memo_important'))}</span>` : (unread ? `<span class="pill accent">${esc(t('memo_unread'))}</span>` : '');
-  const row=el(`<div class="list-row">${m.image?`<img class="lr-thumb" src="${m.image}">`:ib('megaphone', m.important?'c-red':'c-orange')}<div class="lr-main"><div class="lr-title" style="${unread?'':'font-weight:500;'}">${esc(m.title)}</div><div class="lr-sub">${esc(m.authorName||'')} · ${fmtDateTime(m.createdAt)} · ${esc(audienceLabel)}${esc(stats)}</div></div>${pill}</div>`);
+  const row=el(`<div class="list-row">${m.image?`<img class="lr-thumb" src="${safeSrc(m.image)}">`:ib('megaphone', m.important?'c-red':'c-orange')}<div class="lr-main"><div class="lr-title" style="${unread?'':'font-weight:500;'}">${esc(m.title)}</div><div class="lr-sub">${esc(m.authorName||'')} · ${fmtDateTime(m.createdAt)} · ${esc(audienceLabel)}${esc(stats)}</div></div>${pill}</div>`);
   row.onclick=()=>openMemoDetail(m);
   return row;
 }
@@ -3760,8 +3814,9 @@ async function markMemoRead(memoId){
   const e=currentEmployee(); if(!e) return;
   const cur=memoReadMap(e.id);
   if(cur[memoId]) return;
-  const readIds=Object.assign({}, cur, {[memoId]:new Date().toISOString()});
-  try{ await S.db.doc('memoReads/'+e.id).set({employeeId:e.id, employeeName:e.name, readIds}); }catch(err){ console.warn(err); }
+  const at=new Date().toISOString();
+  try{ await S.db.doc('memoReads/'+e.id).updateWith(d=>({readIds:Object.assign({}, d.readIds||{}, {[memoId]:at})})); }
+  catch(err){ if(err && err.code==='not_found'){ try{ await S.db.doc('memoReads/'+e.id).set({employeeId:e.id, employeeName:e.name, readIds:{[memoId]:at}}); }catch(e2){ console.warn(e2); } } else console.warn(err); }
 }
 function openMemoDetail(m){
   const e=currentEmployee();
@@ -3770,7 +3825,7 @@ function openMemoDetail(m){
   body.innerHTML=`<div class="row" style="margin-bottom:8px;">${m.important?`<span class="pill critical">${esc(t('memo_important'))}</span>`:''}<span class="pill n">${esc(audienceLabel)}</span></div>
     <div class="hint">${esc(t('memo_posted_by'))}${esc(m.authorName||'')} · ${fmtDateTime(m.createdAt)}</div>
     <div class="memo-body">${esc(m.body||'')}</div>`;
-  if(m.image) body.appendChild(el(`<img class="photow" src="${m.image}">`));
+  if(m.image) body.appendChild(el(`<img class="photow" src="${safeSrc(m.image)}">`));
   if(canManageStaff()){
     const members=memoAudienceMembers(m);
     const unreadPeople=members.filter(x=>!memoIsReadBy(m.id,x.id));
@@ -3858,7 +3913,7 @@ function buildNotifications(){
   }
   if(canManageStaff()){
     const mineB = b => isAdmin() || b===myBranch();
-    S.safetyChecks.filter(s=>s.status==='sos' && mineB(s.branch)).forEach(s=>{ out.push({id:'sos:'+s.id, ts:s.createdAt, title:'🆘 '+t('notif_sos')+'：'+s.employeeName, sub:(s.branch||'')+' · '+fmtDateTime(s.createdAt)+(s.geo?' · '+s.geo.lat.toFixed(5)+','+s.geo.lng.toFixed(5):''), unread:s.createdAt>seen, onClick:()=>{ if(s.geo) window.open('https://maps.google.com/?q='+s.geo.lat+','+s.geo.lng,'_blank'); }}); });
+    S.safetyChecks.filter(s=>s.status==='sos' && mineB(s.branch)).forEach(s=>{ out.push({id:'sos:'+s.id, ts:s.createdAt, title:'🆘 '+t('notif_sos')+'：'+s.employeeName+(s.ackAt?' ✓ '+(s.ackByName||''):''), openSos:s, sub:(s.branch||'')+' · '+fmtDateTime(s.createdAt)+(s.geo?' · '+s.geo.lat.toFixed(5)+','+s.geo.lng.toFixed(5):''), unread:s.createdAt>seen, onClick:()=>{ if(s.geo) window.open('https://maps.google.com/?q='+s.geo.lat+','+s.geo.lng,'_blank'); }}); });
     S.incidents.filter(i=>i.status==='open' && mineB(i.branch)).forEach(i=>{ out.push({id:'inc:'+i.id, ts:i.createdAt, title:t('notif_incident')+'：'+incidentKindLabel(i.kind)+' · '+(i.branch||''), sub:(i.employeeName||'')+' · '+(i.description||'').slice(0,60), unread:i.createdAt>seen, onClick:()=>openIncidentDetail(i)}); });
     S.equipment.filter(q=>q.active!==false && mineB(q.branch)).forEach(q=>{ const w=daysUntil(q.warrantyExpiry); const s=serviceDueDays(q); const ts=todayStr()+'T00:00:00.000Z'; if(w!=null && w<=30) out.push({id:'equip:w:'+q.id+':'+q.warrantyExpiry, ts, title:t('notif_warranty')+'：'+q.name, sub:(q.branch||'')+' · '+q.warrantyExpiry+' · '+docDaysLabel(w), unread:false, onClick:()=>openAssetActions(q)}); if(s!=null && s<=7) out.push({id:'equip:s:'+q.id+':'+(q.lastServiceAt||''), ts, title:t('notif_service_due')+'：'+q.name, sub:(q.branch||'')+' · '+(s<0?t('equip_overdue'):docDaysLabel(s)), unread:false, onClick:()=>openAssetActions(q)}); });
     S.faults.filter(f=>faultOverdue(f) && (f.deviceId ? isAdmin() : mineB(f.branch))).forEach(f=>{ out.push({id:'fault:od:'+f.id, ts:f.dueAt, title:t('notif_fault_overdue')+'：'+faultTitle(f), sub:(f.description||'').slice(0,60), unread:f.dueAt>seen, onClick:()=>openFaultDetail(f)}); });
@@ -3909,7 +3964,9 @@ function maybeBrowserNotify(){
   const ids=new Set(items.map(n=>n.id));
   if(S.notifKnown===null){ S.notifKnown=ids; return; } // first paint: don't fire for history
   if(S.notifBrowser && self.Notification && Notification.permission==='granted'){
-    items.forEach(n=>{ if(!S.notifKnown.has(n.id) && n.unread && n.ts>S.pageLoadedAt){ try{ new Notification(n.title, {body:n.sub||''}); }catch(e){} } });
+    items.forEach(n=>{ if(!S.notifKnown.has(n.id) && n.unread && n.ts>S.pageLoadedAt){
+      // Android Chrome has no new Notification(): show it through the service worker
+      swReg().then(reg=>{ if(reg && reg.showNotification) return reg.showNotification(n.title, {body:n.sub||'', tag:n.id}); try{ new Notification(n.title, {body:n.sub||''}); }catch(e){} }).catch(()=>{}); } });
   }
   S.notifKnown=ids;
 }
@@ -4055,7 +4112,7 @@ function openFaultDetail(f){
   body.innerHTML=`<div class="row" style="margin-bottom:10px;"><span class="pill ${SEVERITY[f.severity].c}">${esc(t(SEVERITY[f.severity].t))}</span><span class="pill ${FAULT_STATUS[f.status].c}">${esc(t(FAULT_STATUS[f.status].t))}</span></div>
     <div style="font-size:14px; margin-bottom:6px;">${esc(f.description||'')}</div>
     <div class="hint">${esc(t('fault_device_label'))}${esc(faultTitle(f))} · ${esc(t('fault_by_label'))}${esc(f.employeeName)} · ${fmtDateTime(f.createdAt)}${f.dueAt?' · '+esc(t('fault_due_label'))+fmtDateTime(f.dueAt):''}${f.vendor?' · '+esc(f.vendor):''}${f.cost?' · RM '+esc(String(f.cost)):''}</div>`;
-  if(f.photo) body.appendChild(el(`<img class="photow" src="${f.photo}">`));
+  if(f.photo) body.appendChild(el(`<img class="photow" src="${safeSrc(f.photo)}">`));
   if(f.resolvedNote){ body.appendChild(el(`<div class="divider"></div>`)); body.appendChild(el(`<div class="hint"><b style="color:var(--ink);">${esc(t('fault_resolve_note_label'))}</b>${esc(f.resolvedNote)}</div>`)); }
   if(canManageStaff() && f.status!=='resolved'){
     const vendorWrap=el(`<label class="field" style="margin-top:14px;"><span class="fl">${esc(t('field_vendor'))}</span><input type="text" value="${esc(f.vendor||'')}"></label>`); const vendorInput=vendorWrap.querySelector('input'); body.appendChild(vendorWrap);
@@ -4194,7 +4251,7 @@ function managerSection(){
   }
   const branchEmpIds = new Set(S.employees.filter(e=>e.homeBranch===branch).map(e=>e.id));
 
-  const pending = S.leaveRequests.filter(l=>l.status==='pending' && branchEmpIds.has(l.employeeId));
+  const pending = S.leaveRequests.filter(l=>l.status==='pending' && branchEmpIds.has(l.employeeId) && l.employeeId!==(currentEmployee()||{}).id);
   c.appendChild(el(`<div class="sec-row"><h2 class="sec" style="margin:0;">${esc(t('admin_pending_prefix')+pending.length+t('admin_pending_suffix'))}</h2></div>`));
   const list=el('<div class="list"></div>');
   if(pending.length===0) list.appendChild(el(`<div class="hint">${esc(t('empty_no_pending'))}</div>`));
@@ -4581,7 +4638,7 @@ function adminBlock(title, onAdd, items, extraBtn){
   const list=el('<div class="list"></div>');
   if(items.length===0) list.appendChild(el(`<div class="hint">${esc(t('empty_no_data'))}</div>`));
   items.forEach(it=>{
-    const row=el(`<div class="list-row">${it.thumb?`<img class="lr-thumb" src="${it.thumb}">`:''}<div class="lr-main"><div class="lr-title">${esc(it.title)}</div><div class="lr-sub">${esc(it.sub||'')}</div></div></div>`);
+    const row=el(`<div class="list-row">${it.thumb?`<img class="lr-thumb" src="${safeSrc(it.thumb)}">`:''}<div class="lr-main"><div class="lr-title">${esc(it.title)}</div><div class="lr-sub">${esc(it.sub||'')}</div></div></div>`);
     if(it.right) row.appendChild(it.right);
     if(it.onDelete){
       const delBtn=el(`<button class="btn sm danger" style="flex-shrink:0;">${esc(t('btn_delete'))}</button>`);
@@ -5016,7 +5073,7 @@ function openSwapRequestForm(){
   foot.appendChild(btn); body.appendChild(foot);
   openSheet(t('sheet_swap'), body);
 }
-function punchSummary(r){ return (r.type==='in'?t('clock_in_short'):t('clock_out_short'))+' · '+r.date+' '+r.time+(r.branch?' · '+r.branch:''); }
+function punchSummary(r){ return (r.type==='in'?t('clock_in_short'):t('clock_out_short'))+' · '+(r.at && !isNaN(new Date(r.at)) ? fmtDateTime(r.at) : r.date+' '+r.time)+(r.branch?' · '+r.branch:''); }
 function swapSummary(r){ return t('swap_gives')+' '+r.date+' '+r.shift+' → '+r.withName+(r.takeDate?' · '+t('swap_takes')+' '+r.takeDate+' '+r.takeShift:''); }
 async function reviewPunch(r, approve){
   // The back-dated punch is written by a database transaction, never by the phone.
@@ -5038,7 +5095,8 @@ async function reviewSwap(r, approve){
 }
 function pendingRequestsBlock(scopeIds){
   const c=el('<div></div>');
-  const inScope = r => !scopeIds || scopeIds.has(r.employeeId);
+  const meId = (currentEmployee()||{}).id;
+  const inScope = r => (!scopeIds || scopeIds.has(r.employeeId)) && (isAdmin() || r.employeeId !== meId);
   const punch=S.punchRequests.filter(r=>r.status==='pending' && inScope(r));
   const swap=S.swapRequests.filter(r=>r.status==='pending' && inScope(r));
   if(punch.length===0 && swap.length===0) return c;
@@ -5073,14 +5131,15 @@ function computeReportDetail(){
   const d=S.reportData; if(!d) return [];
   const scope=new Set(reportScopeEmployees().map(e=>e.id));
   const byEmpDay={};
-  d.att.filter(a=>scope.has(a.employeeId)).forEach(a=>{ const day=todayStr(new Date(a.createdAt)); const k=a.employeeId+'|'+day; (byEmpDay[k]=byEmpDay[k]||[]).push(a); });
+  const shiftsByEmp = monthShifts(d.att.filter(a=>scope.has(a.employeeId)), d.month);
+  Object.keys(shiftsByEmp).forEach(empId=>shiftsByEmp[empId].forEach(x=>{ const k=empId+'|'+todayStr(x.in||x.out); (byEmpDay[k]=byEmpDay[k]||[]).push(x); }));
   const out=[];
   Object.keys(byEmpDay).sort().forEach(k=>{
     const [empId, day]=k.split('|'); const emp=byId(S.employees,empId);
-    const recs=byEmpDay[k].sort((a,b)=>a.createdAt<b.createdAt?-1:1);
-    let openIn=null, minutes=0, firstIn=null, lastOut=null; const branches=new Set(); let cover=false, manual=false;
-    recs.forEach(r=>{ const tm=new Date(r.createdAt); if(r.branch) branches.add(r.branch); if(r.cover) cover=true; if(r.manual) manual=true;
-      if(r.type==='in'){ openIn=tm; if(!firstIn) firstIn=tm; } else { if(openIn){ minutes+=(tm-openIn)/60000; openIn=null; } lastOut=tm; } });
+    const xs=byEmpDay[k]; const recs=[].concat(...xs.map(x=>x.recs||[]));
+    let minutes=0, firstIn=null, lastOut=null; const branches=new Set(); let cover=false, manual=false;
+    recs.forEach(r=>{ if(r.branch) branches.add(r.branch); if(r.cover) cover=true; if(r.manual) manual=true; });
+    xs.forEach(x=>{ if(x.in && x.out) minutes+=(x.out-x.in)/60000; if(x.in && !firstIn) firstIn=x.in; if(x.out) lastOut=x.out; });
     out.push({date:day, name:emp?emp.name:recs[0].employeeName, homeBranch:emp?(emp.homeBranch||''):'', workedAt:[...branches].join('/'), in:firstIn?fmtTime(firstIn.toISOString()):'', out:lastOut?fmtTime(lastOut.toISOString()):'', hours:(minutes/60).toFixed(2), cover:cover?'Y':'', manual:manual?'Y':'', punches:recs.length});
   });
   return out.sort((a,b)=>a.name.localeCompare(b.name,'zh') || (a.date<b.date?-1:1));
@@ -5100,10 +5159,10 @@ function payHolidays(){ return new Set(String(S.settings.publicHolidays||'').spl
 function payShifts(recs){
   const out=[]; let open=null;
   recs.forEach(r=>{ const tm=new Date(r.createdAt); const b=r.branch||'';
-    if(r.type==='in'){ if(open) out.push({in:open.tm, out:null, branch:open.branch, missingOut:true}); open={tm, branch:b}; }
-    else if(open){ out.push({in:open.tm, out:tm, branch:open.branch||b}); open=null; }
-    else out.push({in:null, out:tm, branch:b, missingIn:true}); });
-  if(open) out.push({in:open.tm, out:null, branch:open.branch, missingOut:true});
+    if(r.type==='in'){ if(open) out.push({in:open.tm, out:null, branch:open.branch, missingOut:true, recs:[open.r]}); open={tm, branch:b, r}; }
+    else if(open){ out.push({in:open.tm, out:tm, branch:open.branch||b, recs:[open.r, r]}); open=null; }
+    else out.push({in:null, out:tm, branch:b, missingIn:true, recs:[r]}); });
+  if(open) out.push({in:open.tm, out:null, branch:open.branch, missingOut:true, recs:[open.r]});
   return out;
 }
 function payNightMinutes(a,b){
@@ -5116,13 +5175,13 @@ function computePayrollDetail(){
   const ph=payHolidays(); const grace=S.settings.lateGraceMin!=null?S.settings.lateGraceMin:10;
   const toMin=t=>{ const [h,m]=String(t||'').split(':').map(Number); return isNaN(h)?null:h*60+(m||0); };
   const schedMap={}; d.sched.forEach(x=>{ schedMap[x.employeeId+'|'+x.date]=x; });
-  const byEmp={}; d.att.forEach(a=>{ (byEmp[a.employeeId]=byEmp[a.employeeId]||[]).push(a); });
+  const shiftsByEmp = monthShifts(d.att, d.month);
   const rows=[];
   reportScopeEmployees().forEach(e=>{
-    const recs=(byEmp[e.id]||[]).sort((a,b)=>a.createdAt<b.createdAt?-1:1);
-    if(recs.length===0) return;
+    const empShifts = shiftsByEmp[e.id] || [];
+    if(empShifts.length===0) return;
     const rule=e.payRule||'FT';
-    const byDay={}; payShifts(recs).forEach(x=>{ const day=todayStr(x.in||x.out); (byDay[day]=byDay[day]||[]).push(x); });
+    const byDay={}; empShifts.forEach(x=>{ const day=todayStr(x.in||x.out); (byDay[day]=byDay[day]||[]).push(x); });
     Object.keys(byDay).sort().forEach(day=>{
       const shifts=byDay[day], sc=schedMap[e.id+'|'+day]; const flags=[]; const branches=new Set();
       let raw=0, night=0, firstIn=null, lastOut=null;
@@ -5140,7 +5199,7 @@ function computePayrollDetail(){
       if(rule!=='PT'&&rule!=='PT_PH2'&&raw>0&&raw<8*60&&!half) flags.push('under_8h');
       if(raw>=8*60&&raw<9*60) flags.push('8_9h_check');
       if(!sc) flags.push('no_schedule');
-      rows.push({date:day, code:e.staffCode||'', name:e.name, branch:e.homeBranch||'', workedAt:[...branches].join('/'), rule,
+      rows.push({empId:e.id, date:day, code:e.staffCode||'', name:e.name, branch:e.homeBranch||'', workedAt:[...branches].join('/'), rule,
         in:firstIn?fmtTime(firstIn.toISOString()):'', out:lastOut?fmtTime(lastOut.toISOString()):'', raw:(raw/60).toFixed(2), brk:brk/60,
         normal, ot, ph:phH, beyond, night:night>=60?1:0, half:half?'Y':'', flags:flags.join(' ')});
     });
@@ -5150,7 +5209,7 @@ function computePayrollDetail(){
 function computePayroll(){
   const nightRM=Number(S.settings.nightAllowanceRM)||5; const agg={};
   computePayrollDetail().forEach(r=>{
-    const a=agg[r.name]=agg[r.name]||{code:r.code,name:r.name,branch:r.branch,rule:r.rule,days:0,normal:0,ot:0,ph:0,beyond:0,nights:0,nightRM:0,flagDays:0,flags:''};
+    const a=agg[r.empId]=agg[r.empId]||{code:r.code,name:r.name,branch:r.branch,rule:r.rule,days:0,normal:0,ot:0,ph:0,beyond:0,nights:0,nightRM:0,flagDays:0,flags:''};
     a.days++; a.normal+=r.normal; a.ot+=r.ot; a.ph+=r.ph; a.beyond+=r.beyond; a.nights+=r.night;
     if(r.flags){ a.flagDays++; a.flags+=(a.flags?'; ':'')+r.date.slice(5)+':'+r.flags; }
   });
@@ -5170,17 +5229,19 @@ function runFor(tp, branch, date){ return byId(S.taskRuns, runIdFor(tp,branch,da
 function runProgress(run, tp){ const items=run?run.items:(tp.items||[]); const done=items.filter(i=>i.done).length; return {done, total:items.length}; }
 function runStatus(run, tp){ if(!run) return 'not_started'; if(run.status==='done') return 'done'; return runProgress(run,tp).done>0?'in_progress':'not_started'; }
 const TASK_STATUS={not_started:{t:'task_not_started',c:'n'}, in_progress:{t:'task_in_progress',c:'warn'}, done:{t:'task_done',c:'ok'}};
-async function saveRun(run){ const {id, ...data}=run; await S.db.doc('taskRuns/'+id).set(data); }
+function taskErrMsg(e){ const m=String((e&&e.message)||''); if(/need_photo/.test(m)) return t('task_need_photo'); if(/items_open/.test(m)) return t('task_items_open'); if(/run_done/.test(m)) return t('task_run_done'); return dbErrMsg(e); }
 function newRun(tp, branch, date){
   const me=currentEmployee();
   return {id:runIdFor(tp,branch,date), templateId:tp.id, templateName:tp.name, shift:tp.shift||'open', branch, date, status:'open', startedBy:me.name, startedById:me.id, createdAt:new Date().toISOString(),
     items:(tp.items||[]).map(i=>({text:i.text, photo:!!i.photo, done:false}))};
 }
 function tasksSummaryText(tps, branch, today){ return tps.map(tp=>esc(shiftKindLabel(tp.shift))+' '+esc(t(TASK_STATUS[runStatus(runFor(tp,branch,today),tp)].t))).join(' · '); }
+// a store's checklist day: a closing done at 00:30 belongs to the day that is closing
+function taskDay(){ return todayStr(new Date(Date.now()-4*3600000)); }
 function tasksView(){
   const c=el('<div></div>');
-  const branches=allBranchIds();
-  const today=todayStr();
+  const branches = isAdmin() ? allBranchIds() : [myBranch()].concat(coverList(currentEmployee())).filter((b,i,a)=>b && a.indexOf(b)===i);
+  const today=taskDay();
   let branch=taskBranch();
   if(isAdmin()){
     if(!branch) branch='__all__';
@@ -5191,7 +5252,7 @@ function tasksView(){
     const sel=el('<select style="margin-bottom:10px;"></select>');
     branches.forEach(b=>{ const o=document.createElement('option'); o.value=b; o.textContent=b+(b===myBranch()?' · '+t('clock_branch_home'):''); sel.appendChild(o); });
     if(!branch) branch=myBranch()||branches[0];
-    sel.value=branch; sel.onchange=()=>{ S.taskBranch=sel.value; S.clockBranch=sel.value; renderApp(); };
+    sel.value=branch; sel.onchange=()=>{ S.taskBranch=sel.value; renderApp(); };      // looking at a store's list does not move clock-in or SOS there
     c.appendChild(sel);
   }
   if(branch==='__all__'){
@@ -5250,23 +5311,34 @@ function openTaskRun(tp, branch, date){
   const list=el('<div class="list"></div>'); body.appendChild(list);
   const foot=el('<div class="sheet-foot"></div>');
   const doneBtn=el('<button class="btn primary block"></button>');
-  let saving=false;
-  async function persist(){ if(saving) return; saving=true; try{ await saveRun(run); }catch(e){ toast(dbErrMsg(e)); } saving=false; }
+  // every tick is its own server call, one after another: nothing is dropped, two phones cannot overwrite each other,
+  // and the server stamps who and when (taskRuns is a ledger: a whole-record write was refused after the first tick)
+  let chain=Promise.resolve();
+  const header={id:run.id, templateId:tp.id, templateName:tp.name, shift:tp.shift||'open', branch, date, items:(tp.items||[]).map(i=>({text:i.text, photo:!!i.photo}))};
+  const applyServer=d=>{ if(!d) return; run=Object.assign({id:run.id}, d); const i=S.taskRuns.findIndex(x=>x.id===run.id); if(i>=0) S.taskRuns[i]=run; else S.taskRuns.unshift(run); };
+  const sendItem=(idx, done, photo)=>{ chain=chain.then(()=>rpc('task_run_item', {p_run:header, p_idx:idx, p_done:done, p_photo:photo||null}))
+      .then(d=>{ applyServer(d); refresh(); })
+      .catch(e=>{ toast(taskErrMsg(e)); if(S.db.refresh) S.db.refresh('taskRuns'); }); return chain; };
   function refresh(){
     list.innerHTML='';
     run.items.forEach(it=>{
       const row=el(`<div class="list-row" style="align-items:flex-start; cursor:default;"><button class="btn sm ${it.done?'ok':''}" style="flex-shrink:0; min-width:44px;">${it.done?'✓':''}</button><div class="lr-main"><div class="lr-title" style="white-space:normal; ${it.done?'color:var(--ink-faint); text-decoration:line-through;':''}">${esc(it.text)}</div><div class="lr-sub">${it.photo?esc(t('task_photo_required')):''}${it.by?' · '+esc(it.by)+' '+fmtTime(it.at):''}</div></div></div>`);
       const tick=row.querySelector('button');
-      tick.onclick=async ()=>{
+      const idx=run.items.indexOf(it);
+      tick.onclick=()=>{
         if(run.status==='done') return;
         if(!it.done && it.photo && !it.photoUrl){ toast(t('task_need_photo')); return; }
         it.done=!it.done; it.by=it.done?me.name:''; it.at=it.done?new Date().toISOString():'';
-        refresh(); await persist();
+        refresh(); sendItem(idx, it.done, null);
       };
       if(it.photo && run.status!=='done'){
-        const pw=photoPicker(async (url)=>{ if(url){ it.photoUrl=url; it.done=true; it.by=me.name; it.at=new Date().toISOString(); refresh(); await persist(); } }, true, it.photoUrl||null);
+        const pw=photoPicker(async (url)=>{ if(!url) return;
+          S.photoUploading=(S.photoUploading||0)+1;
+          try{ const st=await storeOrKeep('receipts', branch+'/tasks/'+run.id, url, 30000);         // to storage, not inside the record
+            it.photoUrl=st.ref; it.done=true; it.by=me.name; it.at=new Date().toISOString(); refresh(); await sendItem(idx, true, st.ref); }
+          finally{ S.photoUploading=Math.max(0,(S.photoUploading||1)-1); } }, true, it.photoUrl && !isStoredPhoto(it.photoUrl) ? it.photoUrl : null);
         pw.style.width='100%'; row.querySelector('.lr-main').appendChild(pw);
-      } else if(it.photoUrl){ row.querySelector('.lr-main').appendChild(el(`<img class="photow" src="${it.photoUrl}" style="max-width:160px;">`)); }
+      } else if(it.photoUrl){ const img=el(`<img class="photow" style="max-width:160px;">`); if(isStoredPhoto(it.photoUrl)) photoSrc(it.photoUrl).then(u=>{ if(u) img.src=u; }); else img.src=safeSrc(it.photoUrl).replace(/&amp;/g,'&'); row.querySelector('.lr-main').appendChild(img); }
       list.appendChild(row);
     });
     const p=runProgress(run,tp);
@@ -5274,9 +5346,10 @@ function openTaskRun(tp, branch, date){
     else { doneBtn.textContent=t('btn_complete_checklist')+' ('+p.done+'/'+p.total+')'; doneBtn.disabled = p.done<p.total; }
   }
   doneBtn.onclick=async ()=>{
-    run.status='done'; run.completedBy=me.name; run.completedById=me.id; run.completedAt=new Date().toISOString();
     doneBtn.disabled=true;
-    try{ await saveRun(run); toast(t('toast_checklist_done')); closeSheet(); }catch(e){ toast(dbErrMsg(e)); doneBtn.disabled=false; }
+    await chain;                                              // the last ticks first
+    try{ applyServer(await rpc('task_run_complete', {p_id:run.id})); toast(t('toast_checklist_done')); closeSheet(); renderFromData(); }
+    catch(e){ toast(taskErrMsg(e)); doneBtn.disabled=false; }
   };
   refresh();
   foot.appendChild(doneBtn); body.appendChild(foot);
@@ -5311,7 +5384,7 @@ function openHandoverDetail(h){
   const body=el('<div></div>');
   body.innerHTML=`<div class="hint">${esc(h.branch)} · ${esc(shiftKindLabel(h.shift))} · ${fmtDateTime(h.createdAt)} · ${esc(h.employeeName)}</div>
     <div class="card card-tight" style="margin-top:8px;"><div class="lr-sub" style="white-space:normal;">${esc(t('field_cash'))}: ${esc(h.cash||'—')}</div><div class="lr-sub" style="white-space:normal;">${esc(t('field_pending_items'))}: ${esc(h.pending||'—')}</div><div class="lr-sub" style="white-space:normal;">${esc(t('field_issues'))}: ${esc(h.issues||'—')}</div></div>`;
-  if(h.photo) body.appendChild(el(`<img class="photow" src="${h.photo}">`));
+  if(h.photo) body.appendChild(el(`<img class="photow" src="${safeSrc(h.photo)}">`));
   openSheet(t('sheet_handover'), body);
 }
 function openTaskTemplateForm(tp){
@@ -5343,7 +5416,7 @@ function openTaskTemplateForm(tp){
 }
 function homeTasksBlock(){
   const branch=taskBranch(); if(!branch || branch==='__all__') return null;
-  const today=todayStr(); const tps=templatesForBranch(branch); if(tps.length===0) return null;
+  const today=taskDay(); const tps=templatesForBranch(branch); if(tps.length===0) return null;
   const done=tps.filter(tp=>runStatus(runFor(tp,branch,today),tp)==='done').length;
   const row=el(`<div class="list-row" style="margin-top:12px;"><div class="lr-main"><div class="lr-title">${esc(t('home_tasks_today'))} · ${esc(branch)}</div><div class="lr-sub">${tasksSummaryText(tps,branch,today)}</div></div><span class="pill ${done===tps.length?'ok':'warn'}">${done}/${tps.length}</span><span class="icon-sm" style="color:var(--ink-faint); flex-shrink:0;">${ICONS.chev}</span></div>`);
   row.onclick=()=>{ location.hash='#tasks'; };
@@ -5582,6 +5655,8 @@ function parseShiftCell(txt){
     const r = p.split(/\s*(?:-|–|—|~|to)\s*/i);
     const a = r.length === 2 ? schedTime(r[0]) : null, b = r.length === 2 ? schedTime(r[1]) : null;
     if(!a || !b || a === b) return {error:s};
+    { const mm=x=>{ const [h,m]=String(x).split(':').map(Number); return h*60+(m||0); };
+      if(b < a && (mm(b)+1440-mm(a)) > 16*60) return {error:s}; }        // "9-6" is not a 21-hour night shift: write 09:00-18:00
     shifts.push({start:a, end:b});
   }
   return shifts.length ? {shifts} : {error:s};
@@ -5797,6 +5872,19 @@ function homeQuickRow2(){
 }
 function managerPhones(branch){ return S.employees.filter(x=>x.active!==false && x.phone && x.role==='manager' && x.homeBranch===branch).map(x=>({name:x.name, phone:x.phone})); }
 function telHref(p){ return 'tel:'+String(p).replace(/[^0-9+]/g,''); }
+function openSosDetail(s){
+  const body=el('<div></div>');
+  body.appendChild(el(`<div class="card card-tight"><div style="font-weight:900;">🆘 ${esc(s.employeeName||'')} · ${esc(s.branch||'')}</div><div class="lr-sub">${fmtDateTime(s.createdAt)}</div>
+    ${s.geo?`<div class="lr-sub">${s.geo.lat.toFixed(5)}, ${s.geo.lng.toFixed(5)}</div>`:''}
+    ${s.ackAt?`<div class="lr-sub" style="color:var(--ok,#3F9463);">✓ ${esc(t('sos_acked_by'))} ${esc(s.ackByName||'')} · ${fmtDateTime(s.ackAt)}</div>`:''}</div>`));
+  if(s.geo) body.appendChild(el(`<a class="btn block" style="margin-top:8px; text-decoration:none;" target="_blank" rel="noopener" href="https://maps.google.com/?q=${s.geo.lat},${s.geo.lng}">📍 ${esc(t('sos_open_map'))}</a>`));
+  if(!s.ackAt && canManageStaff()){
+    const b=el(`<button class="btn danger block" style="margin-top:8px;">${esc(t('sos_ack'))}</button>`);
+    b.onclick=async()=>{ b.disabled=true; try{ const d=await rpc('sos_ack', {p_id:s.id}); Object.assign(s, d||{}); toast(t('toast_saved')); closeSheet(); if(S.db.refresh) S.db.refresh('safetyChecks'); renderFromData(); }catch(err){ toast(dbErrMsg(err)); b.disabled=false; } };
+    body.appendChild(b);
+  }
+  openSheet(t('sheet_sos'), body);
+}
 function openSosSheet(){
   const e=currentEmployee(); const branch=defaultClockBranch()||e.homeBranch||'';
   const body=el('<div></div>');
@@ -5830,7 +5918,7 @@ function openIncidentDetail(i){
   const sv=SEVERITY[i.severity]||SEVERITY.medium;
   const body=el('<div></div>');
   body.innerHTML=`<div class="row" style="margin-bottom:8px;"><span class="pill ${sv.c}">${esc(t(sv.t))}</span><span class="pill ${i.status==='open'?'critical':'ok'}">${esc(i.status==='open'?t('inc_open'):t('inc_resolved'))}</span></div><div class="hint">${esc(incidentKindLabel(i.kind))} · ${esc(i.branch||'')} · ${esc(i.employeeName||'')} · ${fmtDateTime(i.createdAt)}</div><p style="white-space:pre-wrap;">${esc(i.description||'')}</p>${i.resolvedBy?`<div class="hint">${esc(t('inc_resolved'))} · ${esc(i.resolvedBy)} · ${fmtDateTime(i.resolvedAt)}</div>`:''}`;
-  if(i.photo) body.appendChild(el(`<img class="photow" src="${i.photo}">`));
+  if(i.photo) body.appendChild(el(`<img class="photow" src="${safeSrc(i.photo)}">`));
   if(canManageStaff() && i.status==='open'){ const b=el(`<button class="btn ok block" style="margin-top:10px;">${esc(t('btn_mark_resolved'))}</button>`); b.onclick=async()=>{ try{ await S.db.doc('incidents/'+i.id).update({status:'resolved', resolvedBy:currentEmployee().name, resolvedAt:new Date().toISOString()}); toast(t('toast_saved')); closeSheet(); }catch(e){ toast(dbErrMsg(e)); } }; body.appendChild(b); }
   openSheet(t('sheet_incident'), body);
 }
@@ -5960,8 +6048,8 @@ function orderView(){
         <span class="num" style="font-weight:900; font-size:16px; margin-right:10px;">${Number(line.qty)||0}</span></div>`);
       const del = el(`<button class="btn sm">${ICONS.x}</button>`);
       del.onclick = async ()=>{
-        const lines = requestLines(draft).filter(l => l.lineId !== line.lineId);
-        try{ await S.db.doc('stockRequests/'+draft.id).update({lines}); }catch(err){ toast(dbErrMsg(err)); }
+        try{ await S.db.doc('stockRequests/'+draft.id).updateWith(d=>{ if((d.status||'draft')!=='draft') throw {code:'already_sent', message:'already_sent'};
+          return {lines: requestLines(d).filter(l => l.lineId !== line.lineId)}; }); }catch(err){ toast(recvErrMsg(err)); }
       };
       row.appendChild(del);
       list.appendChild(row);
@@ -6081,10 +6169,9 @@ function openQtySheet(branch, sku){
                   skuId: sku.id, code: sku.code||'', name: sku.name, unit: sku.unit||'', qty: n};
     try{
       if(draft){
-        const lines = existing
-          ? requestLines(draft).map(l => l.lineId === existing.lineId ? line : l)
-          : requestLines(draft).concat([line]);
-        await S.db.doc('stockRequests/'+draft.id).update({lines});
+        // on the server copy: a colleague's line added meanwhile stays, a request already sent is not changed
+        await S.db.doc('stockRequests/'+draft.id).updateWith(d=>{ if((d.status||'draft')!=='draft') throw {code:'already_sent', message:'already_sent'};
+          const ls=requestLines(d); return {lines: ls.some(l=>l.lineId===line.lineId) ? ls.map(l => l.lineId === line.lineId ? line : l) : ls.concat([line])}; });
       } else {
         const me = currentEmployee();
         await S.db.collection('stockRequests').add({
@@ -6093,7 +6180,7 @@ function openQtySheet(branch, sku){
       }
       toast(t('order_toast_added'));
       closeSheet();
-    }catch(err){ toast(dbErrMsg(err)); btn.disabled = false; }
+    }catch(err){ toast(recvErrMsg(err)); btn.disabled = false; }
   };
   foot.appendChild(btn); body.appendChild(foot);
   openSheet(t('order_qty'), body);
@@ -6130,11 +6217,14 @@ async function accLoad(){
       accDb().from('pos_tender_day').select('*').gte('day', since7).limit(2000),
       accDb().from('v_pos_shift_diff').select('*').gte('day', since7).order('start_at',{ascending:true}).limit(2000),
       accDb().from('pos_load').select('loaded_at,day_from,day_to').order('loaded_at',{ascending:false}).limit(1),
-      accDb().from('pos_cash').select('at,outlet,amount,remarks,user_id').gte('at', since14).lt('amount',0).not('remarks','ilike','%cspu%').order('at',{ascending:true}).limit(3000),
+      accDb().from('pos_cash').select('at,outlet,amount,remarks,user_id').gte('at', since14).lt('amount',0).or('remarks.is.null,remarks.not.ilike.%cspu%').order('at',{ascending:true}).limit(3000),
       accDb().from('grn').select('ref_no,branch_code,supplier_name,supplier_doc_no,received_at,paid_cash,status').gte('received_at', since14).neq('status','void').limit(2000),
       accDb().from('pos_day').select('day,outlet').gte('day', since21).limit(2000),
     ]);
     for(const r of [recv,exc,jrn]) if(r.error) throw r.error;
+    // any other list that failed is said, never shown as an empty (all clear) list
+    const failed=[['AP',owed],['AP',owedInv],['GRNI',grni],['POS',posDay],['POS',posTender],['POS',posShift],['cash',tillCash],['payments',pay]].filter(([,r])=>r && r.error).map(([n])=>n);
+    S.acc.warn = failed.length ? [...new Set(failed)].join(', ') : null;
     S.acc.summary=sum; S.acc.receiving=recv.data||[]; S.acc.exceptions=exc.data||[]; S.acc.journals=jrn.data||[];
     S.acc.payments=(pay&&pay.data)||[]; S.acc.cod=(cod&&cod.data)||[];
     S.acc.owed=(owed&&owed.data)||[]; S.acc.owedInv=(owedInv&&owedInv.data)||[];
@@ -6157,6 +6247,7 @@ function accView(){
 
   const head=el(`<div class="sec-row" style="align-items:center;"><h2 class="sec" style="margin:0;">${ib('chart','c-green','sm')}${esc(t('acc_title'))}</h2></div>`);
   const rb=el(`<button class="btn sm">${esc(S.acc.loading?t('acc_loading'):t('acc_refresh'))}</button>`);
+  if(S.acc.warn) setTimeout(()=>{ const v=$('view'); if(v && !v.querySelector('.acc-warn')) { const w0=el(`<div class="card card-tight acc-warn" style="border-color:var(--bad,#C1392B); margin-bottom:8px;">⚠ ${esc(t('acc_load_partial'))}: ${esc(S.acc.warn)}</div>`); v.insertBefore(w0, v.firstChild); } }, 0);
   rb.disabled=S.acc.loading; rb.onclick=accLoad; head.appendChild(rb);
   c.appendChild(head);
   if(S.acc.error) c.appendChild(el(`<div class="card" style="border-color:var(--danger,#b00);"><div class="lr-sub">${esc(S.acc.error)}</div></div>`));
@@ -6194,12 +6285,14 @@ function accPaymentsView(){
   const owner=!!(S.acc.summary && S.acc.summary.is_owner);
   w.appendChild(el(`<div class="hint" style="margin-bottom:8px;">${esc(t('acc_pay_rule'))}</div>`));
   w.appendChild(accOwedView());
-  const open=(S.acc.payments||[]).some(r=>['proposed','approved','exported'].includes(r.status));
-  if(!open){
-    const b=el(`<button class="btn primary block" style="margin-bottom:10px;">${esc(t('acc_pay_propose'))}</button>`);
-    b.onclick=()=>{ const d=accAsk(t('acc_pay_prompt_date'),8); if(d) accAct('propose_payment_run',{p_entity:'RETAIL',p_pay_by:d,p_note:null}); };
+  // one run per company: the cafés (FNB) are paid in their own run
+  ['RETAIL','FNB'].forEach(ent=>{
+    const open=(S.acc.payments||[]).some(r=>['proposed','approved','exported'].includes(r.status) && (r.entity_code||'RETAIL')===ent);
+    if(open) return;
+    const b=el(`<button class="btn primary block" style="margin-bottom:10px;">${esc(t('acc_pay_propose'))} · ${ent}</button>`);
+    b.onclick=()=>{ const d=accAsk(t('acc_pay_prompt_date'),8); if(d) accAct('propose_payment_run',{p_entity:ent,p_pay_by:d,p_note:null}); };
     w.appendChild(b);
-  }
+  });
   const list=el('<div class="list"></div>');
   if(!(S.acc.payments||[]).length) list.appendChild(el(`<div class="hint">${esc(t('acc_pay_none'))}</div>`));
   (S.acc.payments||[]).forEach(r=>{
@@ -6453,9 +6546,11 @@ function accMonthView(){
     {ok:!openRun, t:t('acc_m_run'), d:openRun?openRun.ref_no+' · '+t('acc_pay_status_'+openRun.status):'', go:'payments'},
     {ok:!stale && !noBridge, t:t('acc_m_bridge'), d:noBridge?t('acc_bridge_none'):(stale?t('acc_bridge_stale'):''), go:null},
     {ok:!cfg, t:t('acc_m_settings'), d:cfg?t('acc_settings_missing'):'', go:'setup'},
+    {ok:!(Number(sum.queue_pending)||0), t:t('acc_m_queue'), d:(Number(sum.queue_pending)||0)?(sum.queue_pending+t('acc_m_waiting')+((Number(sum.queue_held)||0)?' · '+sum.queue_held+' '+t('acc_m_held'):'')):'', go:null},
   ];
   const done=items.filter(i=>i.ok).length;
   w.appendChild(el(`<div class="hint" style="margin-bottom:8px; white-space:normal;">${esc(t('acc_m_intro'))}</div>`));
+  if((Number(sum.queue_held)||0) && sum.is_owner){ ['RETAIL','FNB'].forEach(ent=>{ const b=el(`<button class="btn sm" style="margin:0 6px 8px 0;">${esc(t('acc_release_held'))} · ${ent}</button>`); b.onclick=()=>{ if(confirm(t('acc_release_held')+' '+ent+'?')) accAct('release_held',{p_entity:ent}); }; w.appendChild(b); }); }
   w.appendChild(el(`<div class="lr-title" style="margin-bottom:6px;">${done}/${items.length} ${esc(t('acc_m_clear'))}</div>`));
   const list=el('<div class="list"></div>');
   items.forEach(i=>{
@@ -6635,7 +6730,7 @@ function accReceivingView(){
   outer.appendChild(accGrniView());
   const w=el('<div class="list"></div>'); outer.appendChild(w);
   if(!S.acc.receiving.length){ w.appendChild(el(`<div class="hint">${esc(t('acc_no_receiving'))}</div>`)); return outer; }
-  const pillFor=r=>{ if(r.grn_status==='void') return `<span class="pill n">void</span>`; const st=r.queue_state; if(!st) return `<span class="pill critical">${esc(r.open_exceptions?t('acc_k_exceptions'):t('acc_state_pending'))}</span>`; const cls=st==='confirmed'?'ok':(st==='abandoned'?'critical':'warn'); return `<span class="pill ${cls}">${esc(t('acc_state_'+st))}${r.autocount_no?' '+esc(r.autocount_no):''}</span>`; };
+  const pillFor=r=>{ if(r.grn_status==='void') return `<span class="pill n">${esc(t('acc_void_word'))}</span>`; const st=r.queue_state; if(!st) return `<span class="pill critical">${esc(r.open_exceptions?t('acc_k_exceptions'):t('acc_state_pending'))}</span>`; const cls=st==='confirmed'?'ok':(st==='abandoned'?'critical':'warn'); return `<span class="pill ${cls}">${esc(t('acc_state_'+st))}${r.autocount_no?' '+esc(r.autocount_no):''}</span>`; };
   S.acc.receiving.forEach(r=>{
     w.appendChild(el(`<div class="list-row" style="cursor:default;"><div class="lr-main"><div class="lr-title">${esc(r.ref_no)} · ${esc(r.branch_code)} · ${esc(r.supplier_name||r.supplier_code||'?')}</div>
       <div class="lr-sub">${esc(r.doc_kind)} ${esc(r.supplier_doc_no||'')} · ${esc(localStamp(r.received_at))} · ${r.lines}${esc(t('recv_lines_suffix'))}${r.received_by_name?' · '+esc(r.received_by_name):''}${r.last_error?' · '+esc(r.last_error):''}${r.open_exceptions?' · '+esc(r.open_exceptions):''}</div></div>${pillFor(r)}</div>`));
@@ -6983,6 +7078,7 @@ function recvUpdate(id, fn){
 }
 function recvErrMsg(err){
   const m = String((err && (err.message || err.code)) || '');
+  if(/line_gone/.test(m)) return t('err_line_gone');
   if(/online_order_taken/.test(m)) return t('ol_err_taken');
   if(/online_order_missing|online_order_other_store/.test(m)) return t('ol_err_gone');
   if(/changed_by_other/.test(m)) return t('ol_err_changed');
@@ -7182,6 +7278,7 @@ function receiveView(){
     const sendBtn = el(`<button class="btn primary block" style="margin-top:8px;">${esc(t('recv_btn_send'))}${lines.length?' ('+lines.length+')':''}</button>`);
     sendBtn.onclick = async ()=>{
       if(sendBtn.disabled) return;
+      if(S.photoUploading > 0){ toast(t('so_wait_photo')); return; }
       sendBtn.disabled = true;
       try{
         await flushEdits();
@@ -7263,7 +7360,7 @@ function openReceiptDetail(r){
     ${r.status==='submitted'?`<div style="margin-top:6px;">${receiptPill(r)}${r.accRef?` <span class="lr-sub">${esc(r.accRef)}</span>`:''}</div>`:''}
     ${r.accStatus==='exception'&&r.accError?`<div class="lr-sub" style="color:var(--danger,#b00); margin-top:4px;">${esc(r.accError)}</div>`:''}</div>`));
   body.appendChild(photoSlot('receipts', r, 'photos', ps=> receiptPhotos({photos:ps}).map(p=>{
-    if(!isStoredPhoto(p)) return el(`<img class="photow" src="${p}" style="margin-top:6px;">`);
+    if(!isStoredPhoto(p)) return el(`<img class="photow" src="${safeSrc(p)}" style="margin-top:6px;">`);
     const img = el(`<img class="photow" style="margin-top:6px;">`); photoSrc(p).then(u=>{ if(u) img.src=u; }); return img;
   })));
   if(receiptLines(r).length){
@@ -7419,8 +7516,8 @@ function openAiLineSheet(branch, draftId, l){
     if(decision === 'ok'){
       if(!sku){ toast(t('recv_ai_pick_item')); return; }
       const q = Number(qty.querySelector('input').value), a = amt.querySelector('input').value.trim();
-      if(!(q >= 0) || qty.querySelector('input').value === ''){ toast(t('err_valid_qty')); return; }
-      if(a === '' || !(Number(a) >= 0)){ toast(t('recv_ai_need_amount')); return; }
+      if(isNaN(q) || qty.querySelector('input').value === ''){ toast(t('err_valid_qty')); return; }
+      if(a === '' || isNaN(Number(a))){ toast(t('recv_ai_need_amount')); return; }
       const printed = (Number(l.qty)||0) + (Number(l.foc)||0);
       const sameU = !l.uom || sameUnit(l.uom, sku.unit);
       // what the paper says arrived, in our unit (the reader's conversion, a keg in mugs, or the printed count)
@@ -7429,7 +7526,7 @@ function openAiLineSheet(branch, draftId, l){
       // when it divides evenly (47 counted for 2 cartons is a short delivery, not a carton of 23.5)
       const per = printed > 0 && !sameU ? (expected != null ? expected/printed : (q > 0 && Number.isInteger(q/printed) ? q/printed : null)) : null;
       line = {lineId:'l'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), skuId:sku.id, code:sku.code||'', name:sku.name, unit:sku.unit||'',
-        qty:q, short: expected != null && q < expected ? Math.round((expected - q)*100)/100 : 0, damaged:0, amount:Number(a),
+        qty:Math.max(0, q), returned: q < 0 ? -q : 0, short: q >= 0 && expected != null && q < expected ? Math.round((expected - q)*100)/100 : 0, damaged:0, amount:Number(a),
         ai:{n:l.n, readAt:rd2.readAt, key:l.key, memKey:l.memKey || null, desc:l.description, qty:l.qty, uom:l.uom, foc:l.foc||0, price:l.unitPrice, readAmount:l.amount, how:l.how,
             itemChanged: sku.id !== l.skuId, pack: per != null ? Math.round(per*1000)/1000 : null,
             confirmedBy: currentEmployee().id, confirmedAt: new Date().toISOString()}};
@@ -7645,7 +7742,8 @@ function openReceiptQtySheet(branch, sku, existing, draftId){
     const ev = (exp.querySelector('input').value||'').trim(); if(/^\d{4}-\d{2}-\d{2}$/.test(ev)) line.expiry = ev; else delete line.expiry;
     try{
       await recvUpdate(id, d=>{ const ls = receiptLines(d);
-        return {lines: existing && ls.some(l => l.lineId === existing.lineId) ? ls.map(l => l.lineId === existing.lineId ? line : l) : ls.concat([line])}; });
+        if(existing && !ls.some(l => l.lineId === existing.lineId)) throw {code:'line_gone', message:'line_gone'};
+        return {lines: existing ? ls.map(l => l.lineId === existing.lineId ? line : l) : ls.concat([line])}; });
       closeSheet();
     }
     catch(err){ toast(recvErrMsg(err)); btn.disabled = false; }
@@ -7748,7 +7846,10 @@ async function onlineOrderForm(o, st){
       try{ const ref = await storeReceiptPhoto(st.branch, st.id, url); if(ref){ const ps = (st.photos || []).slice(0, 3); ps[idx] = ref; st.photos = ps.filter(Boolean); } }
       catch(err){ toast(dbErrMsg(err)); }
       finally{ S.photoUploading = Math.max(0, (S.photoUploading || 1) - 1); }
-      if(!body.isConnected){ toast(t('ol_photo_kept')); return; }   // the sheet was closed meanwhile: kept in the draft, not reopened
+      if(!body.isConnected){                                          // the sheet was closed meanwhile
+        if(!st.isNew) S.db.doc('onlineOrders/' + st.id).updateWith(d=>((d.status || 'ordered') !== 'ordered') ? null : {photos: st.photos}).then(()=>toast(t('toast_saved'))).catch(err=>toast(recvErrMsg(err)));
+        else toast(t('ol_photo_kept'));
+        return; }
       keep();                                                          // what was typed during the upload
       onlineOrderForm(null, st);
     };
@@ -8348,7 +8449,7 @@ function soQtySheet(branch, kind, draftId, sku, existing){
       const line = {lineId, skuId: sku.id, code: sku.code || '', name: sku.name, unit: sku.unit || '',
         qty: Math.round(q * 1000) / 1000, reason, expiry: exp.querySelector('input').value || null,
         note: note.querySelector('input').value.trim() || null, unitCost: cost > 0 ? cost : (existing && existing.unitCost) || null};
-      await soUpdate(id, d=>{ const ls = soLines(d).slice(); const i = ls.findIndex(l => l.lineId === line.lineId); if(i >= 0) ls[i] = line; else ls.push(line); return {lines: ls}; });
+      await soUpdate(id, d=>{ const ls = soLines(d).slice(); const i = ls.findIndex(l => l.lineId === line.lineId); if(existing && i < 0) throw {code:'line_gone', message:'line_gone'}; if(i >= 0) ls[i] = line; else ls.push(line); return {lines: ls}; });
       closeSheet();
     }catch(err){ toast(soErrMsg(err)); btn.disabled = false; }
   };
@@ -8575,7 +8676,7 @@ function openRequestSheet(r, editable){
 /* ---------- HQ: thirteen stores added up ---------- */
 function orderSummaryView(){
   const c = el('<div></div>');
-  const src = S.stockRequests.filter(r => r.status === 'submitted' || r.status === 'approved');
+  const src = S.stockRequests.filter(r => r.status === 'submitted');      // approved rounds are bought already: not counted again
   const agg = new Map();
   src.forEach(r=>requestLines(r).forEach(l=>{
     const k = l.skuId || l.code || l.name;
@@ -8622,11 +8723,18 @@ function orderSummaryView(){
 function orderCatalogView(){
   const c = el('<div></div>');
   c.appendChild(el(`<p class="hint">${esc(t('order_catalog_hint'))}</p>`));
-  c.appendChild(adminBlock(t('order_tab_catalog'), ()=>openSkuForm(), S.skus.slice(0,300).map(s=>({
+  // search all 10,000 items (only 300 are listed at a time)
+  const q=el(`<label class="field"><span class="fl">${esc(t('order_search'))}</span><input type="text" placeholder="${esc(t('order_search_ph'))} / ${esc(t('recv_barcode'))}" value="${esc(S.catQ||'')}"></label>`);
+  q.querySelector('input').onchange=ev=>{ S.catQ=ev.target.value.trim(); renderApp(); };
+  c.appendChild(q);
+  const cq=(S.catQ||'').toLowerCase();
+  const catRows=S.skus.filter(x=>!cq || (x.name||'').toLowerCase().includes(cq) || (x.code||'').toLowerCase().includes(cq) || skuBarcodes(x).some(b=>b.toLowerCase().includes(cq)));
+  c.appendChild(el(`<p class="hint" style="margin:0 0 6px;">${Math.min(300,catRows.length)} / ${catRows.length}</p>`));
+  c.appendChild(adminBlock(t('order_tab_catalog'), ()=>openSkuForm(), catRows.slice(0,300).map(s=>({
     title: s.name + (s.active === false ? ' · ' + t('order_sku_off') : ''),
     sub: [s.code, s.unit, s.category, s.supplier, (s.branches||'').trim() ? t('order_sku_limited')+(s.branches||'') : ''].filter(Boolean).join(' · '),
     onClick: ()=>openSkuForm(s),
-    onDelete: async ()=>{ try{ await S.db.doc('skus/'+s.id).delete(); toast(t('toast_deleted')); }catch(e){ toast(dbErrMsg(e)); } },
+    onDelete: async ()=>{ if(!confirm(t('order_sku_delete_confirm'))) return; try{ await S.db.doc('skus/'+s.id).update({active:false}); toast(t('toast_saved')); }catch(e){ toast(dbErrMsg(e)); } },   // switched off, not erased: receipts and memory still point at it
   })), {label:t('order_btn_paste'), onClick:()=>openSkuBulkForm()}));
   return c;
 }
@@ -8918,7 +9026,7 @@ function openAssetActions(q){
   openSheet(q.name, body);
 }
 /* ---- avatars ---- */
-function avatarHTML(e){ return (e && e.photo) ? `<img class="avimg" src="${e.photo}" alt="">` : esc(((e&&e.name)||'?').slice(0,1)); }
+function avatarHTML(e){ return (e && e.photo) ? `<img class="avimg" src="${safeSrc(e.photo)}" alt="">` : esc(((e&&e.name)||'?').slice(0,1)); }
 function shrinkDataUrl(dataUrl, max){ return new Promise((res,rej)=>{ const img=new Image(); img.onload=()=>{ const s=Math.min(1, max/Math.max(img.width,img.height)); const w=Math.round(img.width*s), h=Math.round(img.height*s); const cv=document.createElement('canvas'); cv.width=w; cv.height=h; cv.getContext('2d').drawImage(img,0,0,w,h); res(cv.toDataURL('image/jpeg',0.82)); }; img.onerror=rej; img.src=dataUrl; }); }
 function openAvatarSheet(){
   const e=currentEmployee(); const body=el('<div></div>');
@@ -8959,6 +9067,7 @@ function computeAudit(tpl, scores){
 }
 function openAuditForm(branch){
   const tpl=auditTemplates()[0]; if(!tpl){ toast(t('audit_no_template')); return; }
+  const auditId=newReceiptId();                              // fixed for this form: a retry writes the same audit
   const e=currentEmployee(); const scores={}; const notes={}; const rows=[];
   const body=el('<div></div>');
   body.appendChild(el(`<div class="hint" style="margin-top:0;">${esc(branch)} · ${esc(tpl.name)} · ${todayStr()} · ${esc(e.name)}</div>`));
@@ -8988,9 +9097,9 @@ function openAuditForm(branch){
     const now=new Date().toISOString();
     const rec={branch, templateId:tpl.id, templateName:tpl.name, auditorId:e.id, auditorName:e.name, date:todayStr(), scores, notes, photos, sections:r.sections, total:r.total, max:r.max, pct:r.pct, grade:r.grade, failed:r.failed, status:'done', createdAt:now};
     try{
-      const ref=await S.db.collection('audits').add(rec);
-      const auditId = ref && ref.id ? ref.id : '';
-      for(const f of r.failed){ await S.db.collection('rectifications').add({auditId, branch, item:f.text, section:f.section, score:f.score, note:notes[f.key]||'', photo:photos[f.key]||'', dueDate:todayStr(addDays(new Date(), f.score===0?7:14)), status:'open', createdAt:now, createdBy:e.name}); }
+      const had=await S.db.doc('audits/'+auditId).get();
+      if(!had.exists) await S.db.doc('audits/'+auditId).set(rec);
+      for(const f of r.failed){ await S.db.doc('rectifications/'+auditId+'_'+f.key).set({auditId, branch, item:f.text, section:f.section, score:f.score, note:notes[f.key]||'', photo:photos[f.key]||'', dueDate:todayStr(addDays(new Date(), f.score===0?7:14)), status:'open', createdAt:now, createdBy:e.name}); }
       toast(t('toast_audit_saved')); closeSheet();
       setTimeout(()=>openAuditDetail(Object.assign({id:auditId}, rec)), 250);
     }catch(err){ toast(dbErrMsg(err)); btn.disabled=false; btn.textContent=t('btn_submit_audit'); }
@@ -9007,7 +9116,7 @@ function openAuditDetail(a){
   body.appendChild(el(`<h2 class="sec" style="margin-top:6px;">${esc(t('audit_failed_items'))} (${(a.failed||[]).length})</h2>`));
   const fl=el('<div class="list"></div>');
   if(!(a.failed||[]).length) fl.appendChild(el(`<div class="hint">${esc(t('audit_all_pass'))}</div>`));
-  (a.failed||[]).forEach(f=>{ const n=(a.notes||{})[f.key]; const p=(a.photos||{})[f.key]; fl.appendChild(el(`<div class="list-row" style="cursor:default; flex-wrap:wrap;">${ib('alert', f.score===0?'c-red':'c-amber')}<div class="lr-main"><div class="lr-title">${esc(f.text)}</div><div class="lr-sub">${esc(f.section)}${n?' · '+esc(n):''}</div></div><span class="pill ${f.score===0?'critical':'warn'}">${esc(f.score===0?t('audit_fail'):t('audit_partial'))}</span>${p?`<img class="photow" src="${p}" style="flex-basis:100%; margin-top:6px;">`:''}</div>`)); });
+  (a.failed||[]).forEach(f=>{ const n=(a.notes||{})[f.key]; const p=(a.photos||{})[f.key]; fl.appendChild(el(`<div class="list-row" style="cursor:default; flex-wrap:wrap;">${ib('alert', f.score===0?'c-red':'c-amber')}<div class="lr-main"><div class="lr-title">${esc(f.text)}</div><div class="lr-sub">${esc(f.section)}${n?' · '+esc(n):''}</div></div><span class="pill ${f.score===0?'critical':'warn'}">${esc(f.score===0?t('audit_fail'):t('audit_partial'))}</span>${p?`<img class="photow" src="${safeSrc(p)}" style="flex-basis:100%; margin-top:6px;">`:''}</div>`)); });
   body.appendChild(fl);
   openSheet(t('sheet_audit_result'), body);
 }
@@ -9060,8 +9169,8 @@ function rectificationsBlock(branch){
 function openRectification(r){
   const body=el('<div></div>');
   body.appendChild(el(`<div style="font-weight:800; margin-bottom:4px;">${esc(r.item)}</div><div class="hint" style="margin-top:0;">${esc(r.branch)} · ${esc(r.section||'')} · ${esc(t('audit_due'))} ${esc(r.dueDate||'')}${r.note?' · '+esc(r.note):''}</div>`));
-  if(r.photo) body.appendChild(el(`<img class="photow" src="${r.photo}">`));
-  if(r.status==='done'){ body.appendChild(el(`<div class="hint">${esc(t('inc_resolved'))} · ${esc(r.doneBy||'')} · ${r.doneAt?fmtDateTime(r.doneAt):''}${r.doneNote?' · '+esc(r.doneNote):''}</div>`)); if(r.donePhoto) body.appendChild(el(`<img class="photow" src="${r.donePhoto}">`)); }
+  if(r.photo) body.appendChild(el(`<img class="photow" src="${safeSrc(r.photo)}">`));
+  if(r.status==='done'){ body.appendChild(el(`<div class="hint">${esc(t('inc_resolved'))} · ${esc(r.doneBy||'')} · ${r.doneAt?fmtDateTime(r.doneAt):''}${r.doneNote?' · '+esc(r.doneNote):''}</div>`)); if(r.donePhoto) body.appendChild(el(`<img class="photow" src="${safeSrc(r.donePhoto)}">`)); }
   else {
     const note=el(`<textarea placeholder="${esc(t('audit_done_note_ph'))}" style="margin-top:10px;"></textarea>`); body.appendChild(note);
     const pw=photoPicker(null,false); body.appendChild(pw);
@@ -9096,7 +9205,7 @@ function pushSupported(){ return location.protocol==='https:' && 'serviceWorker'
 function isStandalone(){ return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone===true; }
 function isIOS(){ return /iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1); }
 async function swReg(){ if(!('serviceWorker' in navigator) || location.protocol!=='https:') return null; try{ return await navigator.serviceWorker.register('./sw.js', {scope:'./'}); }catch(e){ console.warn('sw', e); return null; } }
-async function refreshPushState(){ try{ const reg=await swReg(); if(!reg){ S.pushOn=false; return; } const sub=await reg.pushManager.getSubscription(); S.pushOn=!!sub; }catch(e){ S.pushOn=false; } }
+async function refreshPushState(){ try{ const reg=await swReg(); if(!reg){ S.pushOn=false; return; } const sub=await reg.pushManager.getSubscription(); S.pushOn=!!sub; S.pushRowSaved=false; }catch(e){ S.pushOn=false; } }
 function b64ToU8(b64){ const pad='='.repeat((4-b64.length%4)%4); const raw=atob((b64+pad).replace(/-/g,'+').replace(/_/g,'/')); return Uint8Array.from([...raw].map(c=>c.charCodeAt(0))); }
 async function subIdFor(endpoint){ const buf=await crypto.subtle.digest('SHA-256', new TextEncoder().encode(endpoint)); return Array.from(new Uint8Array(buf)).slice(0,8).map(b=>b.toString(16).padStart(2,'0')).join(''); }
 async function enablePush(){
@@ -9390,7 +9499,7 @@ function openVisitDetail(v){
   const body=el('<div></div>');
   body.innerHTML=`<div style="font-weight:800;">${esc(v.branch)} · ${fmtDateTime(v.createdAt)}</div><div class="hint" style="margin-top:2px;">${esc(v.employeeName||'')}${v.distanceM!=null?' · '+Math.round(v.distanceM)+'m':''}${v.geo?` · <a href="https://maps.google.com/?q=${v.geo.lat},${v.geo.lng}" target="_blank" rel="noopener">map</a>`:''}</div>
     <div class="card card-tight" style="font-size:13.5px; margin-top:8px;"><div>${esc(t('field_docs'))}: ${esc(v.docs==='yes'?t('opt_yes'):t('opt_no'))}</div><div>${esc(t('field_supplies'))}: ${esc(v.supplies||'—')}</div><div>${esc(t('field_cash_collected'))}: RM ${Number(v.cash||0).toFixed(2)}</div>${v.note?`<div>${esc(v.note)}</div>`:''}</div>`;
-  body.appendChild(photoSlot('runnerVisits', v, 'photo', p=> p ? [el(`<img class="photow" src="${p}">`)] : []));
+  body.appendChild(photoSlot('runnerVisits', v, 'photo', p=> p ? [el(`<img class="photow" src="${safeSrc(p)}">`)] : []));
   openSheet(t('sheet_visit'), body);
 }
 function openBankInForm(){
