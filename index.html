@@ -506,7 +506,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-09-29.25';
+const APP_BUILD = '2026-09-29.26';
 async function checkNewBuild(){
   try{
     const r = await fetch(location.pathname + '?b=' + Date.now(), {cache:'no-store'});
@@ -6839,17 +6839,24 @@ const FNB_BRANCHES = ['BR24','BR26'];
 function branchEntity(branch){ return FNB_BRANCHES.includes(branch) ? 'FNB' : 'RETAIL'; }
 function supplierList(branch){ const ent = branchEntity(branch); return S.suppliers.filter(s => s.active !== false && (s.entity||'RETAIL') === ent).sort((a,b)=>(a.name||'').localeCompare(b.name||'')); }
 
+let draftCreating = null;          // the receipt being created right now: a second tap waits for it instead of making another
 async function ensureReceiptDraft(branch, patch){
+  if(draftCreating) await draftCreating.catch(()=>{});
   const draft = draftReceiptFor(branch);
   if(draft){ await S.db.doc('receipts/'+draft.id).update(patch); return draft.id; }
   const me = currentEmployee();
   // the paper the driver hands over IS the invoice for almost every supplier (owner, 2026-09-24), so
   // a new receipt starts as 'invoice'; staff switch to DO only when the paper carries no prices
-  const ref = await S.db.collection('receipts').add(Object.assign({
+  const data = Object.assign({
     branch, status:'draft', docKind:'invoice', docNo:'', amount:'', note:'', photos:[], lines:[],
-    eventAt: new Date().toISOString(), createdBy: me.id, createdByName: me.name, createdAt: new Date().toISOString()}, patch));
-  S.receiveDraft = Object.assign({}, S.receiveDraft, {[branch]: ref.id});      // this phone keeps working on the one it started
-  return ref.id;
+    eventAt: new Date().toISOString(), createdBy: me.id, createdByName: me.name, createdAt: new Date().toISOString()}, patch);
+  draftCreating = S.db.collection('receipts').add(data);
+  try{
+    const ref = await draftCreating;
+    S.receiveDraft = Object.assign({}, S.receiveDraft, {[branch]: ref.id});    // this phone keeps working on the one it started
+    if(!S.receipts.some(r => r.id === ref.id)) S.receipts.push(Object.assign({id: ref.id}, data));   // known at once, before the refresh
+    return ref.id;
+  } finally { draftCreating = null; }
 }
 
 function receiveView(){
@@ -7231,9 +7238,11 @@ function openSupplierPicker(branch){
   body.appendChild(listWrap);
   const all = supplierList(branch);
   if(!all.length) body.insertBefore(el(`<div class="hint">${esc(t('recv_no_suppliers'))}</div>`), listWrap);
+  let choosing = false;
   const choose = async (code, name)=>{
+    if(choosing) return; choosing = true;
     try{ await ensureReceiptDraft(branch, {supplierCode: code||'', supplierName: name}); closeSheet(); }
-    catch(err){ toast(dbErrMsg(err)); }
+    catch(err){ toast(dbErrMsg(err)); choosing = false; }
   };
   const render = ()=>{
     const q = (search.querySelector('input').value||'').trim().toLowerCase();
