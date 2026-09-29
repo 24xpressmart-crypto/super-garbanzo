@@ -506,7 +506,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-09-29.29';
+const APP_BUILD = '2026-09-29.30';
 async function checkNewBuild(){
   try{
     const r = await fetch(location.pathname + '?b=' + Date.now(), {cache:'no-store'});
@@ -1818,7 +1818,9 @@ function renderFromData(){
 // back from the camera: the photo (if any) has been handed over by now
 function pickerClosed(){ const at = S.pickerOpenAt; if(at) setTimeout(()=>{ if(S.pickerOpenAt === at) S.pickerOpenAt = 0; }, 1500); }
 window.addEventListener('focus', pickerClosed);
-document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState === 'visible') pickerClosed(); });
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState === 'visible'){ pickerClosed(); freshLook(); } });
+function freshLook(){ if(S.db && S.db.refresh && S.token){ ['receipts','receiptReads'].forEach(c=>S.db.refresh(c)); } }
+setInterval(()=>{ if(document.visibilityState === 'visible' && location.hash === '#receive') freshLook(); }, 30000);
 function sub(colPath, key, opts){
   opts = opts||{};
   let q = (subDb||S.db).collection(colPath);
@@ -2285,7 +2287,8 @@ async function refreshToken(){
   if(!S.token) return;
   try{
     const tok = await rpc('refresh_token');
-    if(tok){ S.token=tok; LS.set('bgc_token', tok); allClients.forEach(c=>{ try{ c.realtime && c.realtime.setAuth && c.realtime.setAuth(tok); }catch(e){} }); S.sb=makeClient(tok); S.db=makeSupabaseDb(S.sb); }
+    // the same connection stays: the lists listen on it, and a new one left them deaf to this phone's own saves
+    if(tok){ S.token=tok; LS.set('bgc_token', tok); allClients.forEach(c=>{ try{ c.realtime && c.realtime.setAuth && c.realtime.setAuth(tok); }catch(e){} }); }
   }catch(err){
     if(missingFn(err)) return;                 // database patch 4 not applied yet
     if(!tokenValid(S.token)){ toast(t('session_expired')); logout(); }
@@ -6937,6 +6940,11 @@ function recvUpdate(id, fn){
   return S.db.doc('receipts/'+id).updateWith(d=>{
     if(!d || (d.status || 'draft') !== 'draft') throw {code:'already_sent', message:'already_sent'};
     return fn(d);
+  }).then(merged=>{
+    const i = S.receipts.findIndex(r => r.id === id);
+    if(i >= 0 && merged) S.receipts[i] = Object.assign({id}, merged);
+    renderFromData();
+    return merged;
   });
 }
 function recvErrMsg(err){
@@ -7274,7 +7282,7 @@ function receiptReadCard(branch, draft){
     const waited = Math.round((Date.now() - new Date(rd.requestedAt)) / 1000);
     box.appendChild(el(`<div style="font-weight:800;">🤖 ${esc(t('recv_ai_reading'))}</div><p class="hint" style="margin:4px 0 0;">${esc(t('recv_ai_wait'))} · ${waited}s</p>`));
     if(waited > 180){ const b = el(`<button class="btn block" style="margin-top:8px;">${esc(t('recv_ai_again'))}</button>`); b.onclick = ()=>ask(b); box.appendChild(b); }
-    if(!S.aiTick) S.aiTick = setTimeout(()=>{ S.aiTick = null; if(location.hash === '#receive') renderFromData(); }, 5000);   // the seconds counter
+    if(!S.aiTick) S.aiTick = setTimeout(()=>{ S.aiTick = null; if(location.hash === '#receive'){ if(S.db && S.db.refresh) S.db.refresh('receiptReads'); renderFromData(); } }, 5000);   // the seconds counter, and a fresh look
     return box;
   }
   // done: the proposed lines
