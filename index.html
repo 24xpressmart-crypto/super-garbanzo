@@ -506,7 +506,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-09-30.38';
+const APP_BUILD = '2026-09-30.39';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -1437,7 +1437,7 @@ function randomSalt(){
   return (self.crypto&&crypto.randomUUID) ? crypto.randomUUID() : uidLocal();
 }
 // a refusal by the database (row-level security) is not a network problem: say so
-function dbErr(e){ const m=String((e&&(e.message||e.details||e.hint))||''); return Object.assign(e||{}, {code: ((e&&e.code)==='42501' || /row-level security|permission denied|not_saved/i.test(m)) ? 'forbidden' : 'unavailable'}); }
+function dbErr(e){ const m=String((e&&(e.message||e.details||e.hint))||''); return Object.assign(e||{}, {pgCode:(e&&e.code)||'', code: ((e&&e.code)==='42501' || /row-level security|permission denied|not_saved/i.test(m)) ? 'forbidden' : 'unavailable'}); }
 function dbErrMsg(e){
   if(e && e.code === 'forbidden') return t('err_forbidden');
   const m={invalid_argument:t('err_invalid_argument'), resource_exhausted:t('err_resource_exhausted'),
@@ -5344,7 +5344,7 @@ function openTaskRun(tp, branch, date){
         refresh(); sendItem(idx, it.done, it.done && it.photo ? (it.photoUrl || null) : null);
       };
       if(it.photo && run.status!=='done'){
-        const pw=photoPicker(async (url)=>{ if(!url){ if(it.done){ it.done=false; it.by=''; it.at=''; refresh(); sendItem(idx, false, null); } it.photoUrl=''; return; }
+        const pw=photoPicker(async (url)=>{ if(!url){ it.photoUrl=''; if(it.done){ it.done=false; it.by=''; it.at=''; sendItem(idx, false, null); } refresh(); return; }
           S.photoUploading=(S.photoUploading||0)+1;
           try{ const st=await storeOrKeep('receipts', branch+'/tasks/'+run.id, url, 30000);         // to storage, not inside the record
             it.photoUrl=st.ref; it.done=true; it.by=me.name; it.at=new Date().toISOString(); refresh(); await sendItem(idx, true, st.ref); }
@@ -6202,7 +6202,7 @@ function openQtySheet(branch, sku){
           createdBy: me.id, createdByName: me.name, createdAt: new Date().toISOString()});
         }catch(e0){
           // a colleague opened the store's request this instant (one open request per store): add to theirs
-          if(!/duplicate key|23505|unique/i.test(String((e0&&e0.message)||''))) throw e0;
+          if(!(e0 && (e0.pgCode==='23505' || e0.code==='23505' || /duplicate key|unique/i.test(String(e0.message||''))))) throw e0;
           const rows2 = await S.db.rawFetch('stockRequests', [{field:'branch', op:'==', value:branch}, {field:'status', op:'==', value:'draft'}]);
           if(!(rows2 && rows2.length)) throw e0;
           await S.db.doc('stockRequests/'+rows2[0].id).updateWith(mergeLine);
@@ -7267,7 +7267,7 @@ function receiveView(){
     const docNo = el(`<label class="field"><span class="fl">${esc(t(draft.docKind==='online'?'recv_online_no':'recv_doc_no'))}</span><input type="text" value="${esc(draft.docNo||'')}"></label>`);
     docNo.querySelector('input').onchange = (ev)=>saveField('docNo', ev.target.value.trim());
     card.appendChild(docNo);
-    const amt = el(`<label class="field"><span class="fl">${esc(t('recv_amount'))}</span><input type="number" inputmode="decimal" step="0.01" min="0" value="${esc(draft.amount||'')}"></label>`);
+    const amt = el(`<label class="field"><span class="fl">${esc(t('recv_amount'))}</span><input type="text" value="${esc(draft.amount||'')}"></label>`);
     money0(amt.querySelector('input'), 'amount');
     if(draft.docKind !== 'online') card.appendChild(amt);
     // COD: cash handed to the driver from the till, right now. Accounting settles it from the outlet cash
