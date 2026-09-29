@@ -506,7 +506,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-09-29.27';
+const APP_BUILD = '2026-09-29.28';
 async function checkNewBuild(){
   try{
     const r = await fetch(location.pathname + '?b=' + Date.now(), {cache:'no-store'});
@@ -580,7 +580,9 @@ function alAvailable(emp, endDate, skipId){
   const e=alEarned(emp, endDate); if(e==null) return null;
   return Math.max(0, Math.round((e - alTaken(emp, (endDate||todayStr()).slice(0,4), skipId))*10)/10);
 }
-function leaveNoticeDays(){ const v=Number(S.settings.leaveAlNoticeDays); return v>0 ? v : 7; }
+function leaveNoticeDays(){ const v=S.settings.leaveAlNoticeDays; return v!=null && v!=='' && !isNaN(Number(v)) && Number(v)>=0 ? Number(v) : 7; }
+// leave running into next year counts against this year, up to December (as the database does)
+function alEndInYear(start, end){ return String(end||start).slice(0,4) > String(start).slice(0,4) ? String(start).slice(0,4)+'-12-31' : (end||start); }
 function leaveSickBackDays(){ const v=S.settings.leaveSickBackDays; return v!=null && v!=='' && !isNaN(Number(v)) ? Number(v) : 3; }
 function dayPlus(n){ const d=new Date(todayStr()+'T00:00:00'); d.setDate(d.getDate()+n); return todayStr(d); }
 function leaveErrMsg(err){
@@ -589,13 +591,13 @@ function leaveErrMsg(err){
   if(/LEAVE_BACKDATE/.test(m)) return t('err_leave_backdate');
   if(/LEAVE_SICK_BACKDATE/.test(m)) return t('err_sick_backdate').split('{s}').join(leaveSickBackDays());
   if(/LEAVE_AL_NOT_SET/.test(m)) return t('err_al_not_set');
-  if(/LEAVE_DATE/.test(m)) return t('err_leave_end_before');
+  if(/LEAVE_DATE/.test(m)) return /before start/.test(m) ? t('err_leave_end_before') : t('err_leave_date');
   return dbErrMsg(err);
 }
 function leaveBalanceSuffix(l){
   const emp=byId(S.employees,l.employeeId); if(!emp || !(l.kind==='annual'||l.kind==='sick')) return '';
   const b=leaveBalance(emp,l.kind); if(!b) return '';
-  const pr = l.kind==='annual' ? alAvailable(emp, l.endDate||l.startDate, l.id) : null;
+  const pr = l.kind==='annual' ? alAvailable(emp, alEndInYear(l.startDate, l.endDate||l.startDate), l.id) : null;
   return ' · '+t('balance_prefix')+b.left+'/'+b.allow+t('leave_this_request_prefix')+leaveDays(l)+t('leave_days_suffix')+(pr!=null?' · '+t('balance_prorated')+pr:'');
 }
 
@@ -729,7 +731,7 @@ const I18N = {
     geo_err_unsupported:'⚠ 此浏览器不支持定位功能。',
     geo_err_insecure:'⚠ 当前页面不是安全连接（https），无法获取定位。',
     empty_no_records:'暂无记录', flag_out_of_range:'超出范围', flag_in_range:'范围内', no_photo_taken:'打卡时未拍照',
-    seg_snacks:'售货机', balance_annual_prorated:'年假可用（按比例）', balance_full_year:'全年', balance_prorated:'按比例剩 ', leave_rules_hint:'年假要提前 {n} 天申请，不到 {n} 天会改成无薪假（UPL）。年假按比例累积，每个月多一点。不能申请已经过去的日子；病假最多可以补 {s} 天内的。', leave_al_short_notice:'年假要提前 {n} 天申请。这次不到 {n} 天，会改成无薪假（UPL）提交。确定吗？', err_leave_backdate:'不能申请已经过去的日子。看病请选「病假」。', err_sick_backdate:'病假最多只能补 {s} 天内的，更早的请找 HR。', err_leave_end_before:'结束日期不能早于开始日期', err_al_not_set:'HR 还没设定你的年假天数，请先找 HR。', err_al_over:'年假不够：按比例到那个月你只有 {n} 天可用（待批的也算在内）。多出的日子请另外申请无薪假。', toast_leave_as_upl:'已提交为无薪假（UPL）', app_update:'有新版本，点这里更新', recv_open_title:'这间店正在收的货', recv_no_supplier_yet:'还没选供应商', recv_open_current:'我正在做', recv_open_switch:'点开接手', recv_open_new:'另一家供应商也到了：开始另一张收货', recv_open_hint:'上面是同事正在收的货，不要动别人的。你收的是另一家，就直接在下面选供应商开始。', recv_keg_note:'一桶 {l}L = {m} 杯（每杯 {ml}ml，每桶扣 {w} 杯损耗）。数一下收到几桶、几公升，再看数字对不对。', recv_keg_mugs:'杯数', recv_keg_helper:'按桶算杯数', recv_keg_fill:'填入杯数', recv_keg_rule:'每杯 {ml}ml，每桶扣 {w} 杯损耗：10L = {m10} 杯，20L = {m20} 杯。', field_keg_mug_ml:'鲜啤一杯几 ml（收货换算用）', field_keg_waste:'鲜啤每桶扣几杯损耗', recv_admin_inbox:'所有门市', recv_admin_receive:'我来收货', recv_ai_title:'AI 读单（试行）', recv_ai_hint:'按下后大约 15 秒，AI 会把单据上的商品、数量、金额列出来。每一行都要你自己数过、核对后按确认。', recv_ai_btn:'AI 读单，自动列出商品', recv_ai_failed:'读不到。请重新拍清楚一点再试，或照旧手动加商品。', recv_ai_asked:'已送出，大约 15 秒', recv_ai_limit:'这张单已经读过 3 次，请手动加商品。', recv_ai_cap:'今天 AI 读单的次数已用完，请手动加商品。', recv_ai_reading:'AI 正在读单…', recv_ai_wait:'大约 15 秒，可以先开始点货', recv_ai_again:'重新读', recv_ai_done:'AI 读到', recv_ai_check_each:'每一行都要点开：看商品对不对、数实收数量、看金额，然后按确认。没收到的按「这行没收到」。', recv_ai_all_checked:'每一行都核对好了。最后确认单据总额。', recv_ai_confirmed:'已确认', recv_ai_skipped:'没收到', recv_ai_to_check:'待核对', recv_ai_no_match:'没对上我们的商品，请选', recv_ai_paper:'单据上', recv_ai_how_name:'按名字配对，请看清楚', recv_ai_how_learned:'以前确认过的配对', recv_ai_how_barcode:'按条码配对', recv_ai_how_code:'按货号配对', recv_ai_lines_sum:'已确认各行合计', recv_ai_discount:'折扣', recv_ai_tax:'税', recv_ai_total:'单据总额 RM（看纸上的）', recv_ai_total_confirm:'总额和纸上一样，确认', recv_ai_total_ok:'总额已确认', recv_ai_docno_diff:'AI 读到的单号不一样，请对照纸上', recv_ai_our_item:'我们的商品', recv_ai_change_item:'换商品', recv_ai_pick_item:'选商品', recv_ai_counted:'实际收到（自己数）', recv_ai_unit_note:'单据写的是 {u}，请数实际收到多少个（用我们的单位）。', recv_ai_amount:'这一行金额 RM（看纸上的）', recv_ai_confirm_hint:'按确认，就表示你数过数量、看过金额，都和纸上一样。数量比单据少，会自动记成短少。', recv_ai_confirm:'数量和金额都对，确认', recv_ai_not_received:'这行没收到', recv_ai_need_amount:'请填这一行的金额', recv_ai_line_title:'核对第 {n} 行', recv_ai_block_lines:'还有 {n} 行 AI 读到的商品没核对', recv_ai_block_total:'请先确认单据总额', recv_ai_block_reading:'AI 还在读，请等一下（超过 3 分钟可以直接送出）', vm_tab_today:'今天', vm_tab_report:'报告', vm_sum_machines:'台要去', vm_sum_due:'个过期要拿出', vm_sum_soon:'个快过期', vm_today_hint:'最急的排最上面。数量是上次巡机时数到的；XY 接通后会自动更新。', vm_lvl_critical:'马上处理', vm_lvl_warn:'今天去', vm_lvl_ok:'正常', vm_lvl_n:'停运', vm_chip_due:'过期', vm_chip_soon:'快过期', vm_chip_empty:'空道', vm_chip_unset:'未设商品', vm_last:'上次：', vm_never:'还没有巡机记录', vm_days_ago:' 天前', vm_today_word:'今天', vm_draft_pill:'未提交', vm_back:'全部机器', vm_visit_hint:'逐个货道做：点货道 → 数剩几个 → 拿出过期 → 补货 → 填到期日。全部做完按「提交巡机」。没动的货道不用点。', vm_legend:'红＝有过期　橙＝快过期　虚线＝未设商品　✓＝这次已做', vm_row:'层', vm_done_n:'已做', vm_btn_submit:'提交巡机', vm_btn_discard:'放弃这次的草稿', vm_confirm_discard:'这次记的货道会全部清掉，确定放弃？', vm_slot:'货道', vm_set_product:'设置商品', vm_change_product:'换商品', vm_pick_product_first:'先选这个货道卖什么。', vm_field_product:'商品', vm_field_par:'满道数量', vm_only_manager:'已设商品的货道只有经理能换。', vm_plan_hint:'空货道谁都可以设；已经有商品的货道只有经理能换。', vm_last_record:'上次记录', vm_exp_unknown:'到期日不明', vm_f_left:'剩几个（补货前数一数）', vm_q_empty:'空的', vm_q_full:'满的', vm_q_same:'跟上次一样', vm_f_expired:'过期拿出', vm_f_damaged:'坏的 / 其他拿出', vm_f_added:'补进', vm_f_exp:'新货到期日', vm_day_short:'天', vm_after:'做完后', vm_over_par:'超过满道数量', vm_first_exp:'最早到期', vm_err_left:'先数一数剩几个', vm_err_more_out:'拿出的比剩的还多', vm_err_exp:'补了货要填到期日', vm_btn_save_slot:'保存这个货道', vm_btn_undo_slot:'撤销这个货道', vm_submit_title:'提交巡机', vm_tot_added:'补进', vm_tot_out:'拿出', vm_tot_sold:'卖出（估计）', vm_tot_waste:'损耗金额', vm_no_cost:'未设进价', vm_untouched:'没动的货道保持原样：', vm_still_due:'这些货道还有过期货没拿出：', vm_note:'备注（可不填）', vm_toast_sent:'巡机已提交', vm_only_team:'只有售货机组可以提交巡机', vm_err_offline:'没有网络。草稿还在手机里，有网后再按提交。', vm_left_short:'剩', vm_damaged_short:'坏', vm_range_7:'近 7 天', vm_range_30:'近 30 天', vm_rep_visits:'巡机次数', vm_rep_by_product:'按商品', vm_rep_by_machine:'按机器', vm_rep_recent:'最近巡机', vm_rep_hint:'卖出是估计：上次补完的数量减这次数到的剩余。XY 接通后改用真实销售。', vm_col_product:'商品', vm_col_machine:'机器', vm_col_last:'上次', vm_pcs:'个', vm_visit_title:'巡机记录', field_ac_code:'AutoCount 货号', field_tray_qty:'每盘几个', vm_tray:'每盘', field_shelf_days:'保质期（天）', field_pull_days:'到期前几天拿出（0＝过了到期日才拿）', notif_vm_expired:'售货机有过期货', seg_beer:'鲜啤酒', beer_title:'鲜啤酒库存', empty_add_beer_product:'请先在「我的」中添加啤酒品项',
+    seg_snacks:'售货机', balance_annual_prorated:'年假可用（按比例）', balance_full_year:'全年', balance_prorated:'按比例剩 ', leave_rules_hint:'年假要提前 {n} 天申请，不到 {n} 天会改成无薪假（UPL）。年假按比例累积，每个月多一点。不能申请已经过去的日子；病假最多可以补 {s} 天内的。', leave_al_short_notice:'年假要提前 {n} 天申请。这次不到 {n} 天，会改成无薪假（UPL）提交。确定吗？', err_leave_backdate:'不能申请已经过去的日子。看病请选「病假」。', err_sick_backdate:'病假最多只能补 {s} 天内的，更早的请找 HR。', err_leave_end_before:'结束日期不能早于开始日期', err_al_not_set:'HR 还没设定你的年假天数，请先找 HR。', err_al_over:'年假不够：按比例到那个月你只有 {n} 天可用（待批的也算在内）。多出的日子请另外申请无薪假。', toast_leave_as_upl:'已提交为无薪假（UPL）', app_update:'有新版本，点这里更新', recv_open_title:'这间店正在收的货', recv_no_supplier_yet:'还没选供应商', recv_open_current:'我正在做', recv_open_switch:'点开接手', recv_open_new:'另一家供应商也到了：开始另一张收货', recv_open_hint:'上面是同事正在收的货，不要动别人的。你收的是另一家，就直接在下面选供应商开始。', recv_keg_note:'一桶 {l}L = {m} 杯（每杯 {ml}ml，每桶扣 {w} 杯损耗）。数一下收到几桶、几公升，再看数字对不对。', recv_keg_mugs:'杯数', recv_keg_helper:'按桶算杯数', recv_keg_fill:'填入杯数', recv_keg_rule:'每杯 {ml}ml，每桶扣 {w} 杯损耗：10L = {m10} 杯，20L = {m20} 杯。', field_keg_mug_ml:'鲜啤一杯几 ml（收货换算用）', field_keg_waste:'鲜啤每桶扣几杯损耗', recv_err_sent:'这张单已经送出（可能是同事送的），这次的修改没有存。', recv_err_gone:'这张单已经不在了（被放弃或送出）。', recv_err_busy:'同事正在改同一张单，请再按一次。', recv_err_no_photo:'要先拍单据才能送出。', recv_err_no_supplier:'要先选供应商。', recv_err_not_pilot:'这间店还没开放收货。', recv_err_ai_lines:'还有 AI 读到的行没核对。', recv_err_read_used:'这张单已经开始核对，不能重新读。', recv_err_forbidden:'你没有权限改这张单。', recv_err_amount:'金额不能是负数。', recv_discard_confirm:'放弃这张单？开单人：{who}，已有 {n} 项。放弃后不能恢复。', recv_discard_not_mine:'这张单是 {who} 开的，只有开单人或经理能放弃。', recv_ai_dup_manual:'这个商品你已经手动加了 {n} 个。要用 AI 这一行取代手动那一行吗？（按取消就不改）', err_leave_date:'日期不对，请重新选。', vm_err_slot_changed:'这些货道刚被别人更新过，已从这次记录里拿掉，请重新数：{s}', vm_stale_dropped:'这些货道在你上次记录后被更新过，已拿掉，请重新数：{s}', photo_from_gallery:'从相册选', recv_photo_gallery_hint:'拍照后 App 重新打开、照片不见了？先用手机自己的相机拍单据，再按「从相册选」。', recv_admin_inbox:'所有门市', recv_admin_receive:'我来收货', recv_ai_title:'AI 读单（试行）', recv_ai_hint:'按下后大约 15 秒，AI 会把单据上的商品、数量、金额列出来。每一行都要你自己数过、核对后按确认。', recv_ai_btn:'AI 读单，自动列出商品', recv_ai_failed:'读不到。请重新拍清楚一点再试，或照旧手动加商品。', recv_ai_asked:'已送出，大约 15 秒', recv_ai_limit:'这张单已经读过 3 次，请手动加商品。', recv_ai_cap:'今天 AI 读单的次数已用完，请手动加商品。', recv_ai_reading:'AI 正在读单…', recv_ai_wait:'大约 15 秒，可以先开始点货', recv_ai_again:'重新读', recv_ai_done:'AI 读到', recv_ai_check_each:'每一行都要点开：看商品对不对、数实收数量、看金额，然后按确认。没收到的按「这行没收到」。', recv_ai_all_checked:'每一行都核对好了。最后确认单据总额。', recv_ai_confirmed:'已确认', recv_ai_skipped:'没收到', recv_ai_to_check:'待核对', recv_ai_no_match:'没对上我们的商品，请选', recv_ai_paper:'单据上', recv_ai_how_name:'按名字配对，请看清楚', recv_ai_how_learned:'以前确认过的配对', recv_ai_how_barcode:'按条码配对', recv_ai_how_code:'按货号配对', recv_ai_lines_sum:'已确认各行合计', recv_ai_discount:'折扣', recv_ai_tax:'税', recv_ai_total:'单据总额 RM（看纸上的）', recv_ai_total_confirm:'总额和纸上一样，确认', recv_ai_total_ok:'总额已确认', recv_ai_docno_diff:'AI 读到的单号不一样，请对照纸上', recv_ai_our_item:'我们的商品', recv_ai_change_item:'换商品', recv_ai_pick_item:'选商品', recv_ai_counted:'实际收到（自己数）', recv_ai_unit_note:'单据写的是 {u}，请数实际收到多少个（用我们的单位）。', recv_ai_amount:'这一行金额 RM（看纸上的）', recv_ai_confirm_hint:'按确认，就表示你数过数量、看过金额，都和纸上一样。数量比单据少，会自动记成短少。', recv_ai_confirm:'数量和金额都对，确认', recv_ai_not_received:'这行没收到', recv_ai_need_amount:'请填这一行的金额', recv_ai_line_title:'核对第 {n} 行', recv_ai_block_lines:'还有 {n} 行 AI 读到的商品没核对', recv_ai_block_total:'请先确认单据总额', recv_ai_block_reading:'AI 还在读，请等一下（超过 3 分钟可以直接送出）', vm_tab_today:'今天', vm_tab_report:'报告', vm_sum_machines:'台要去', vm_sum_due:'个过期要拿出', vm_sum_soon:'个快过期', vm_today_hint:'最急的排最上面。数量是上次巡机时数到的；XY 接通后会自动更新。', vm_lvl_critical:'马上处理', vm_lvl_warn:'今天去', vm_lvl_ok:'正常', vm_lvl_n:'停运', vm_chip_due:'过期', vm_chip_soon:'快过期', vm_chip_empty:'空道', vm_chip_unset:'未设商品', vm_last:'上次：', vm_never:'还没有巡机记录', vm_days_ago:' 天前', vm_today_word:'今天', vm_draft_pill:'未提交', vm_back:'全部机器', vm_visit_hint:'逐个货道做：点货道 → 数剩几个 → 拿出过期 → 补货 → 填到期日。全部做完按「提交巡机」。没动的货道不用点。', vm_legend:'红＝有过期　橙＝快过期　虚线＝未设商品　✓＝这次已做', vm_row:'层', vm_done_n:'已做', vm_btn_submit:'提交巡机', vm_btn_discard:'放弃这次的草稿', vm_confirm_discard:'这次记的货道会全部清掉，确定放弃？', vm_slot:'货道', vm_set_product:'设置商品', vm_change_product:'换商品', vm_pick_product_first:'先选这个货道卖什么。', vm_field_product:'商品', vm_field_par:'满道数量', vm_only_manager:'已设商品的货道只有经理能换。', vm_plan_hint:'空货道谁都可以设；已经有商品的货道只有经理能换。', vm_last_record:'上次记录', vm_exp_unknown:'到期日不明', vm_f_left:'剩几个（补货前数一数）', vm_q_empty:'空的', vm_q_full:'满的', vm_q_same:'跟上次一样', vm_f_expired:'过期拿出', vm_f_damaged:'坏的 / 其他拿出', vm_f_added:'补进', vm_f_exp:'新货到期日', vm_day_short:'天', vm_after:'做完后', vm_over_par:'超过满道数量', vm_first_exp:'最早到期', vm_err_left:'先数一数剩几个', vm_err_more_out:'拿出的比剩的还多', vm_err_exp:'补了货要填到期日', vm_btn_save_slot:'保存这个货道', vm_btn_undo_slot:'撤销这个货道', vm_submit_title:'提交巡机', vm_tot_added:'补进', vm_tot_out:'拿出', vm_tot_sold:'卖出（估计）', vm_tot_waste:'损耗金额', vm_no_cost:'未设进价', vm_untouched:'没动的货道保持原样：', vm_still_due:'这些货道还有过期货没拿出：', vm_note:'备注（可不填）', vm_toast_sent:'巡机已提交', vm_only_team:'只有售货机组可以提交巡机', vm_err_offline:'没有网络。草稿还在手机里，有网后再按提交。', vm_left_short:'剩', vm_damaged_short:'坏', vm_range_7:'近 7 天', vm_range_30:'近 30 天', vm_rep_visits:'巡机次数', vm_rep_by_product:'按商品', vm_rep_by_machine:'按机器', vm_rep_recent:'最近巡机', vm_rep_hint:'卖出是估计：上次补完的数量减这次数到的剩余。XY 接通后改用真实销售。', vm_col_product:'商品', vm_col_machine:'机器', vm_col_last:'上次', vm_pcs:'个', vm_visit_title:'巡机记录', field_ac_code:'AutoCount 货号', field_tray_qty:'每盘几个', vm_tray:'每盘', field_shelf_days:'保质期（天）', field_pull_days:'到期前几天拿出（0＝过了到期日才拿）', notif_vm_expired:'售货机有过期货', seg_beer:'鲜啤酒', beer_title:'鲜啤酒库存', empty_add_beer_product:'请先在「我的」中添加啤酒品项',
     btn_receive_kegs:'登记到货', btn_tap_keg:'开桶上线', beer_on_tap:'使用中的酒桶', beer_no_kegs_on_tap:'目前没有开桶使用中',
     beer_remaining:'剩余', beer_expired:'已过保鲜期', beer_expiring_soon:'即将到期', beer_fresh:'新鲜',
     beer_in_stock:'未开桶库存', beer_no_stock:'暂无库存', beer_kegs_unit:'桶',
@@ -968,7 +970,7 @@ const I18N = {
     geo_err_unsupported:'⚠ This browser doesn\'t support location services.',
     geo_err_insecure:'⚠ This page isn\'t a secure (https) connection, so location can\'t be accessed.',
     empty_no_records:'No records yet', flag_out_of_range:'Out of Range', flag_in_range:'In Range', no_photo_taken:'No photo taken at clock-in',
-    seg_snacks:'Vending machines', balance_annual_prorated:'AL available (prorated)', balance_full_year:'full year', balance_prorated:'prorated left ', leave_rules_hint:'Annual leave must be applied {n} days ahead; with less notice it becomes unpaid leave (UPL). Annual leave builds up month by month. No leave for days already past; sick leave can go back at most {s} days.', leave_al_short_notice:'Annual leave needs {n} days notice. This is less, so it will be sent as unpaid leave (UPL). Continue?', err_leave_backdate:'You cannot apply for days already past. For a doctor visit choose Sick leave.', err_sick_backdate:'Sick leave can go back at most {s} days; for older dates see HR.', err_leave_end_before:'End date cannot be before start date', err_al_not_set:'HR has not set your annual leave yet. Please see HR first.', err_al_over:'Not enough annual leave: by that month you have only {n} day(s) available (pending requests included). Apply unpaid leave for the extra days.', toast_leave_as_upl:'Sent as unpaid leave (UPL)', app_update:'New version available. Tap to update.', recv_open_title:'Deliveries being received in this store', recv_no_supplier_yet:'No supplier yet', recv_open_current:'Mine now', recv_open_switch:'Open to take over', recv_open_new:'Another supplier arrived: start another receipt', recv_open_hint:'Above are receipts colleagues are working on; leave them alone. For a different supplier, just choose it below to start yours.', recv_keg_note:'One {l} L keg = {m} mugs ({ml} ml a mug, less {w} mugs lost per keg). Count the kegs and check their size, then check the number.', recv_keg_mugs:'mugs', recv_keg_helper:'Kegs to mugs', recv_keg_fill:'fill in mugs', recv_keg_rule:'{ml} ml a mug, less {w} mugs lost per keg: 10 L = {m10} mugs, 20 L = {m20} mugs.', field_keg_mug_ml:'Draught beer: ml per mug (receiving)', field_keg_waste:'Draught beer: mugs lost per keg', recv_admin_inbox:'All stores', recv_admin_receive:'Receive goods', recv_ai_title:'AI paper reading (pilot)', recv_ai_hint:'About 15 seconds after you tap, the AI lists the items, quantities and amounts on the paper. You count and check every line yourself and confirm it.', recv_ai_btn:'Read the paper with AI', recv_ai_failed:'Could not read it. Take a clearer photo and try again, or add the items by hand as before.', recv_ai_asked:'Sent, about 15 seconds', recv_ai_limit:'This paper was read 3 times already; please add the items by hand.', recv_ai_cap:'Today\'s AI readings are used up; please add the items by hand.', recv_ai_reading:'AI is reading the paper…', recv_ai_wait:'About 15 seconds; you can start counting', recv_ai_again:'Read again', recv_ai_done:'AI read', recv_ai_check_each:'Open every line: check the product, count what arrived, check the amount, then confirm. Tap Not received for a line that did not come.', recv_ai_all_checked:'Every line is checked. Finally confirm the total.', recv_ai_confirmed:'Confirmed', recv_ai_skipped:'Not received', recv_ai_to_check:'To check', recv_ai_no_match:'Not matched to our product; please choose', recv_ai_paper:'On the paper', recv_ai_how_name:'Matched by name; check it', recv_ai_how_learned:'Matched as confirmed before', recv_ai_how_barcode:'Matched by barcode', recv_ai_how_code:'Matched by item code', recv_ai_lines_sum:'Confirmed lines add up to', recv_ai_discount:'discount', recv_ai_tax:'tax', recv_ai_total:'Paper total RM (read it from the paper)', recv_ai_total_confirm:'Total matches the paper, confirm', recv_ai_total_ok:'Total confirmed', recv_ai_docno_diff:'The AI read a different number; check the paper', recv_ai_our_item:'Our product', recv_ai_change_item:'Change product', recv_ai_pick_item:'Choose product', recv_ai_counted:'Actually received (count it)', recv_ai_unit_note:'The paper says {u}; count how many arrived in our unit.', recv_ai_amount:'Line amount RM (from the paper)', recv_ai_confirm_hint:'Confirming means you counted the quantity and checked the amount, and both match the paper. Fewer than the paper is recorded as short.', recv_ai_confirm:'Quantity and amount are right, confirm', recv_ai_not_received:'This line was not received', recv_ai_need_amount:'Enter this line\'s amount', recv_ai_line_title:'Check line {n}', recv_ai_block_lines:'{n} line(s) read by the AI are not checked yet', recv_ai_block_total:'Confirm the paper total first', recv_ai_block_reading:'The AI is still reading; please wait (after 3 minutes you can send without it)', vm_tab_today:'Today', vm_tab_report:'Report', vm_sum_machines:'machines to visit', vm_sum_due:'expired to take out', vm_sum_soon:'expiring soon', vm_today_hint:'Most urgent at the top. Quantities are what was counted at the last visit; they update by themselves once XY is connected.', vm_lvl_critical:'Act now', vm_lvl_warn:'Visit today', vm_lvl_ok:'OK', vm_lvl_n:'Stopped', vm_chip_due:'Expired', vm_chip_soon:'Soon', vm_chip_empty:'Empty', vm_chip_unset:'No product', vm_last:'Last: ', vm_never:'No visit recorded yet', vm_days_ago:' d ago', vm_today_word:'today', vm_draft_pill:'Not sent', vm_back:'All machines', vm_visit_hint:'Slot by slot: tap a slot → count what is left → take out expired → refill → enter the expiry date. When done, tap Submit visit. Slots you did not touch need no tap.', vm_legend:'Red = expired   Orange = expiring soon   Dashed = no product   ✓ = done this visit', vm_row:'Row', vm_done_n:'Done', vm_btn_submit:'Submit visit', vm_btn_discard:'Discard this draft', vm_confirm_discard:'Every slot recorded on this visit will be cleared. Discard?', vm_slot:'Slot', vm_set_product:'Set product', vm_change_product:'Change product', vm_pick_product_first:'First choose what this slot sells.', vm_field_product:'Product', vm_field_par:'Full quantity', vm_only_manager:'Only a manager can change the product of a slot that has one.', vm_plan_hint:'Anyone can set an empty slot; only a manager can change a slot that already has a product.', vm_last_record:'Last record', vm_exp_unknown:'expiry unknown', vm_f_left:'Left in the slot (count before refilling)', vm_q_empty:'Empty', vm_q_full:'Full', vm_q_same:'Same as last', vm_f_expired:'Expired taken out', vm_f_damaged:'Damaged / other taken out', vm_f_added:'Added', vm_f_exp:'Expiry of the new stock', vm_day_short:'d', vm_after:'After', vm_over_par:'more than the slot holds', vm_first_exp:'earliest expiry', vm_err_left:'Count what is left first', vm_err_more_out:'More taken out than was left', vm_err_exp:'Stock added needs an expiry date', vm_btn_save_slot:'Save this slot', vm_btn_undo_slot:'Undo this slot', vm_submit_title:'Submit visit', vm_tot_added:'Added', vm_tot_out:'Taken out', vm_tot_sold:'Sold (estimate)', vm_tot_waste:'Waste value', vm_no_cost:'no cost set', vm_untouched:'Slots not touched stay as they were:', vm_still_due:'These slots still hold expired stock:', vm_note:'Note (optional)', vm_toast_sent:'Visit saved', vm_only_team:'Only the vending team can submit a visit', vm_err_offline:'No connection. The draft stays on this phone; submit again when you are online.', vm_left_short:'Left', vm_damaged_short:'Damaged', vm_range_7:'Last 7 days', vm_range_30:'Last 30 days', vm_rep_visits:'Visits', vm_rep_by_product:'By product', vm_rep_by_machine:'By machine', vm_rep_recent:'Recent visits', vm_rep_hint:'Sold is an estimate: what was in the slot after the last visit minus what is counted now. Real sales replace it once XY is connected.', vm_col_product:'Product', vm_col_machine:'Machine', vm_col_last:'Last visit', vm_pcs:'pcs', vm_visit_title:'Visit', field_ac_code:'AutoCount item code', field_tray_qty:'Pieces per tray', vm_tray:'per tray', field_shelf_days:'Shelf life (days)', field_pull_days:'Take out how many days before expiry (0 = the day after it expires)', notif_vm_expired:'Expired stock in a machine', seg_beer:'Draft Beer', beer_title:'Draft Beer Stock', empty_add_beer_product:'Add a beer product under "Me" first',
+    seg_snacks:'Vending machines', balance_annual_prorated:'AL available (prorated)', balance_full_year:'full year', balance_prorated:'prorated left ', leave_rules_hint:'Annual leave must be applied {n} days ahead; with less notice it becomes unpaid leave (UPL). Annual leave builds up month by month. No leave for days already past; sick leave can go back at most {s} days.', leave_al_short_notice:'Annual leave needs {n} days notice. This is less, so it will be sent as unpaid leave (UPL). Continue?', err_leave_backdate:'You cannot apply for days already past. For a doctor visit choose Sick leave.', err_sick_backdate:'Sick leave can go back at most {s} days; for older dates see HR.', err_leave_end_before:'End date cannot be before start date', err_al_not_set:'HR has not set your annual leave yet. Please see HR first.', err_al_over:'Not enough annual leave: by that month you have only {n} day(s) available (pending requests included). Apply unpaid leave for the extra days.', toast_leave_as_upl:'Sent as unpaid leave (UPL)', app_update:'New version available. Tap to update.', recv_open_title:'Deliveries being received in this store', recv_no_supplier_yet:'No supplier yet', recv_open_current:'Mine now', recv_open_switch:'Open to take over', recv_open_new:'Another supplier arrived: start another receipt', recv_open_hint:'Above are receipts colleagues are working on; leave them alone. For a different supplier, just choose it below to start yours.', recv_keg_note:'One {l} L keg = {m} mugs ({ml} ml a mug, less {w} mugs lost per keg). Count the kegs and check their size, then check the number.', recv_keg_mugs:'mugs', recv_keg_helper:'Kegs to mugs', recv_keg_fill:'fill in mugs', recv_keg_rule:'{ml} ml a mug, less {w} mugs lost per keg: 10 L = {m10} mugs, 20 L = {m20} mugs.', field_keg_mug_ml:'Draught beer: ml per mug (receiving)', field_keg_waste:'Draught beer: mugs lost per keg', recv_err_sent:'This receipt was already sent (maybe by a colleague); this change was not saved.', recv_err_gone:'This receipt no longer exists (discarded or sent).', recv_err_busy:'A colleague is changing the same receipt; tap again.', recv_err_no_photo:'Photograph the paper before sending.', recv_err_no_supplier:'Choose the supplier first.', recv_err_not_pilot:'Receiving is not open for this store yet.', recv_err_ai_lines:'Some lines read by the AI are not checked yet.', recv_err_read_used:'Checking has started on this reading; it cannot be read again.', recv_err_forbidden:'You are not allowed to change this receipt.', recv_err_amount:'The amount cannot be negative.', recv_discard_confirm:'Discard this receipt? Started by {who}, {n} item(s). This cannot be undone.', recv_discard_not_mine:'{who} started this receipt; only they or a manager can discard it.', recv_ai_dup_manual:'You already added {n} of this product by hand. Replace that line with the AI line? (Cancel keeps both unchanged)', err_leave_date:'The date is not valid; choose it again.', vm_err_slot_changed:'These slots were just updated by someone else and were taken out of this visit; count them again: {s}', vm_stale_dropped:'These slots were updated after you counted them and were taken out; count them again: {s}', photo_from_gallery:'From gallery', recv_photo_gallery_hint:'Photo lost because the App reopened after the camera? Take the picture with the phone\'s own camera, then tap From gallery.', recv_admin_inbox:'All stores', recv_admin_receive:'Receive goods', recv_ai_title:'AI paper reading (pilot)', recv_ai_hint:'About 15 seconds after you tap, the AI lists the items, quantities and amounts on the paper. You count and check every line yourself and confirm it.', recv_ai_btn:'Read the paper with AI', recv_ai_failed:'Could not read it. Take a clearer photo and try again, or add the items by hand as before.', recv_ai_asked:'Sent, about 15 seconds', recv_ai_limit:'This paper was read 3 times already; please add the items by hand.', recv_ai_cap:'Today\'s AI readings are used up; please add the items by hand.', recv_ai_reading:'AI is reading the paper…', recv_ai_wait:'About 15 seconds; you can start counting', recv_ai_again:'Read again', recv_ai_done:'AI read', recv_ai_check_each:'Open every line: check the product, count what arrived, check the amount, then confirm. Tap Not received for a line that did not come.', recv_ai_all_checked:'Every line is checked. Finally confirm the total.', recv_ai_confirmed:'Confirmed', recv_ai_skipped:'Not received', recv_ai_to_check:'To check', recv_ai_no_match:'Not matched to our product; please choose', recv_ai_paper:'On the paper', recv_ai_how_name:'Matched by name; check it', recv_ai_how_learned:'Matched as confirmed before', recv_ai_how_barcode:'Matched by barcode', recv_ai_how_code:'Matched by item code', recv_ai_lines_sum:'Confirmed lines add up to', recv_ai_discount:'discount', recv_ai_tax:'tax', recv_ai_total:'Paper total RM (read it from the paper)', recv_ai_total_confirm:'Total matches the paper, confirm', recv_ai_total_ok:'Total confirmed', recv_ai_docno_diff:'The AI read a different number; check the paper', recv_ai_our_item:'Our product', recv_ai_change_item:'Change product', recv_ai_pick_item:'Choose product', recv_ai_counted:'Actually received (count it)', recv_ai_unit_note:'The paper says {u}; count how many arrived in our unit.', recv_ai_amount:'Line amount RM (from the paper)', recv_ai_confirm_hint:'Confirming means you counted the quantity and checked the amount, and both match the paper. Fewer than the paper is recorded as short.', recv_ai_confirm:'Quantity and amount are right, confirm', recv_ai_not_received:'This line was not received', recv_ai_need_amount:'Enter this line\'s amount', recv_ai_line_title:'Check line {n}', recv_ai_block_lines:'{n} line(s) read by the AI are not checked yet', recv_ai_block_total:'Confirm the paper total first', recv_ai_block_reading:'The AI is still reading; please wait (after 3 minutes you can send without it)', vm_tab_today:'Today', vm_tab_report:'Report', vm_sum_machines:'machines to visit', vm_sum_due:'expired to take out', vm_sum_soon:'expiring soon', vm_today_hint:'Most urgent at the top. Quantities are what was counted at the last visit; they update by themselves once XY is connected.', vm_lvl_critical:'Act now', vm_lvl_warn:'Visit today', vm_lvl_ok:'OK', vm_lvl_n:'Stopped', vm_chip_due:'Expired', vm_chip_soon:'Soon', vm_chip_empty:'Empty', vm_chip_unset:'No product', vm_last:'Last: ', vm_never:'No visit recorded yet', vm_days_ago:' d ago', vm_today_word:'today', vm_draft_pill:'Not sent', vm_back:'All machines', vm_visit_hint:'Slot by slot: tap a slot → count what is left → take out expired → refill → enter the expiry date. When done, tap Submit visit. Slots you did not touch need no tap.', vm_legend:'Red = expired   Orange = expiring soon   Dashed = no product   ✓ = done this visit', vm_row:'Row', vm_done_n:'Done', vm_btn_submit:'Submit visit', vm_btn_discard:'Discard this draft', vm_confirm_discard:'Every slot recorded on this visit will be cleared. Discard?', vm_slot:'Slot', vm_set_product:'Set product', vm_change_product:'Change product', vm_pick_product_first:'First choose what this slot sells.', vm_field_product:'Product', vm_field_par:'Full quantity', vm_only_manager:'Only a manager can change the product of a slot that has one.', vm_plan_hint:'Anyone can set an empty slot; only a manager can change a slot that already has a product.', vm_last_record:'Last record', vm_exp_unknown:'expiry unknown', vm_f_left:'Left in the slot (count before refilling)', vm_q_empty:'Empty', vm_q_full:'Full', vm_q_same:'Same as last', vm_f_expired:'Expired taken out', vm_f_damaged:'Damaged / other taken out', vm_f_added:'Added', vm_f_exp:'Expiry of the new stock', vm_day_short:'d', vm_after:'After', vm_over_par:'more than the slot holds', vm_first_exp:'earliest expiry', vm_err_left:'Count what is left first', vm_err_more_out:'More taken out than was left', vm_err_exp:'Stock added needs an expiry date', vm_btn_save_slot:'Save this slot', vm_btn_undo_slot:'Undo this slot', vm_submit_title:'Submit visit', vm_tot_added:'Added', vm_tot_out:'Taken out', vm_tot_sold:'Sold (estimate)', vm_tot_waste:'Waste value', vm_no_cost:'no cost set', vm_untouched:'Slots not touched stay as they were:', vm_still_due:'These slots still hold expired stock:', vm_note:'Note (optional)', vm_toast_sent:'Visit saved', vm_only_team:'Only the vending team can submit a visit', vm_err_offline:'No connection. The draft stays on this phone; submit again when you are online.', vm_left_short:'Left', vm_damaged_short:'Damaged', vm_range_7:'Last 7 days', vm_range_30:'Last 30 days', vm_rep_visits:'Visits', vm_rep_by_product:'By product', vm_rep_by_machine:'By machine', vm_rep_recent:'Recent visits', vm_rep_hint:'Sold is an estimate: what was in the slot after the last visit minus what is counted now. Real sales replace it once XY is connected.', vm_col_product:'Product', vm_col_machine:'Machine', vm_col_last:'Last visit', vm_pcs:'pcs', vm_visit_title:'Visit', field_ac_code:'AutoCount item code', field_tray_qty:'Pieces per tray', vm_tray:'per tray', field_shelf_days:'Shelf life (days)', field_pull_days:'Take out how many days before expiry (0 = the day after it expires)', notif_vm_expired:'Expired stock in a machine', seg_beer:'Draft Beer', beer_title:'Draft Beer Stock', empty_add_beer_product:'Add a beer product under "Me" first',
     btn_receive_kegs:'Receive Kegs', btn_tap_keg:'Tap a Keg', beer_on_tap:'On Tap', beer_no_kegs_on_tap:'Nothing on tap right now',
     beer_remaining:'remaining', beer_expired:'Past Freshness', beer_expiring_soon:'Expiring Soon', beer_fresh:'Fresh',
     beer_in_stock:'Unopened Stock', beer_no_stock:'No stock yet', beer_kegs_unit:'kegs',
@@ -1207,7 +1209,7 @@ const I18N = {
     geo_err_unsupported:'⚠ Pelayar ini tidak menyokong perkhidmatan lokasi.',
     geo_err_insecure:'⚠ Halaman ini bukan sambungan selamat (https), jadi lokasi tidak boleh diakses.',
     empty_no_records:'Belum ada rekod', flag_out_of_range:'Luar julat', flag_in_range:'Dalam julat', no_photo_taken:'Tiada gambar semasa daftar masuk',
-    seg_snacks:'Mesin layan diri', balance_annual_prorated:'Cuti tahunan tersedia (prorata)', balance_full_year:'setahun', balance_prorated:'baki prorata ', leave_rules_hint:'Cuti tahunan mesti dipohon {n} hari lebih awal; kurang daripada itu menjadi cuti tanpa gaji (UPL). Cuti tahunan terkumpul setiap bulan. Tiada cuti untuk hari yang sudah lepas; cuti sakit boleh ke belakang paling lama {s} hari.', leave_al_short_notice:'Cuti tahunan perlu notis {n} hari. Ini kurang, jadi ia akan dihantar sebagai cuti tanpa gaji (UPL). Teruskan?', err_leave_backdate:'Tidak boleh memohon untuk hari yang sudah lepas. Untuk ke klinik pilih Cuti sakit.', err_sick_backdate:'Cuti sakit boleh ke belakang paling lama {s} hari; tarikh lebih awal sila jumpa HR.', err_leave_end_before:'Tarikh tamat tidak boleh sebelum tarikh mula', err_al_not_set:'HR belum menetapkan cuti tahunan anda. Sila jumpa HR dahulu.', err_al_over:'Cuti tahunan tidak cukup: sehingga bulan itu anda hanya ada {n} hari (termasuk permohonan menunggu). Mohon cuti tanpa gaji untuk hari lebihan.', toast_leave_as_upl:'Dihantar sebagai cuti tanpa gaji (UPL)', app_update:'Versi baharu tersedia. Tekan untuk kemas kini.', recv_open_title:'Penghantaran yang sedang diterima di kedai ini', recv_no_supplier_yet:'Belum pilih pembekal', recv_open_current:'Saya sedang buat', recv_open_switch:'Buka untuk ambil alih', recv_open_new:'Pembekal lain juga sampai: mula resit lain', recv_open_hint:'Di atas ialah resit yang rakan sedang buat; jangan ubah. Untuk pembekal lain, pilih sahaja di bawah untuk mula.', recv_keg_note:'Satu tong {l} L = {m} gelas ({ml} ml segelas, tolak {w} gelas pembaziran setiap tong). Kira tong dan semak saiznya, kemudian semak nombor.', recv_keg_mugs:'gelas', recv_keg_helper:'Tong ke gelas', recv_keg_fill:'isi gelas', recv_keg_rule:'{ml} ml segelas, tolak {w} gelas setiap tong: 10 L = {m10} gelas, 20 L = {m20} gelas.', field_keg_mug_ml:'Bir draf: ml segelas (terima barang)', field_keg_waste:'Bir draf: gelas dibazir setiap tong', recv_admin_inbox:'Semua kedai', recv_admin_receive:'Terima barang', recv_ai_title:'Bacaan kertas AI (percubaan)', recv_ai_hint:'Kira-kira 15 saat selepas ditekan, AI menyenaraikan barang, kuantiti dan amaun pada kertas. Anda sendiri kira dan semak setiap baris, kemudian sahkan.', recv_ai_btn:'Baca kertas dengan AI', recv_ai_failed:'Tidak dapat dibaca. Ambil gambar lebih jelas dan cuba lagi, atau tambah barang secara manual.', recv_ai_asked:'Dihantar, kira-kira 15 saat', recv_ai_limit:'Kertas ini sudah dibaca 3 kali; sila tambah barang secara manual.', recv_ai_cap:'Bacaan AI hari ini sudah habis; sila tambah barang secara manual.', recv_ai_reading:'AI sedang membaca kertas…', recv_ai_wait:'Kira-kira 15 saat; boleh mula mengira', recv_ai_again:'Baca semula', recv_ai_done:'AI membaca', recv_ai_check_each:'Buka setiap baris: semak produk, kira yang diterima, semak amaun, kemudian sahkan. Tekan Tidak diterima jika baris itu tidak sampai.', recv_ai_all_checked:'Semua baris sudah disemak. Akhir sekali sahkan jumlah.', recv_ai_confirmed:'Disahkan', recv_ai_skipped:'Tidak diterima', recv_ai_to_check:'Untuk disemak', recv_ai_no_match:'Tidak dipadankan dengan produk kita; sila pilih', recv_ai_paper:'Pada kertas', recv_ai_how_name:'Dipadankan ikut nama; semak', recv_ai_how_learned:'Padanan yang pernah disahkan', recv_ai_how_barcode:'Dipadankan ikut kod bar', recv_ai_how_code:'Dipadankan ikut kod item', recv_ai_lines_sum:'Jumlah baris yang disahkan', recv_ai_discount:'diskaun', recv_ai_tax:'cukai', recv_ai_total:'Jumlah kertas RM (baca pada kertas)', recv_ai_total_confirm:'Jumlah sama dengan kertas, sahkan', recv_ai_total_ok:'Jumlah disahkan', recv_ai_docno_diff:'AI membaca nombor lain; semak kertas', recv_ai_our_item:'Produk kita', recv_ai_change_item:'Tukar produk', recv_ai_pick_item:'Pilih produk', recv_ai_counted:'Sebenarnya diterima (kira)', recv_ai_unit_note:'Kertas menulis {u}; kira berapa yang diterima dalam unit kita.', recv_ai_amount:'Amaun baris RM (pada kertas)', recv_ai_confirm_hint:'Mengesahkan bermaksud anda sudah kira kuantiti dan semak amaun, dan kedua-duanya sama dengan kertas. Kurang daripada kertas direkod sebagai kurang.', recv_ai_confirm:'Kuantiti dan amaun betul, sahkan', recv_ai_not_received:'Baris ini tidak diterima', recv_ai_need_amount:'Masukkan amaun baris ini', recv_ai_line_title:'Semak baris {n}', recv_ai_block_lines:'{n} baris yang dibaca AI belum disemak', recv_ai_block_total:'Sahkan jumlah kertas dahulu', recv_ai_block_reading:'AI masih membaca; sila tunggu (selepas 3 minit boleh hantar tanpanya)', vm_tab_today:'Hari ini', vm_tab_report:'Laporan', vm_sum_machines:'mesin perlu dilawati', vm_sum_due:'tamat tempoh perlu dikeluarkan', vm_sum_soon:'hampir tamat tempoh', vm_today_hint:'Paling mendesak di atas. Kuantiti ialah kiraan pada lawatan terakhir; ia dikemas kini sendiri selepas XY disambung.', vm_lvl_critical:'Segera', vm_lvl_warn:'Lawat hari ini', vm_lvl_ok:'OK', vm_lvl_n:'Berhenti', vm_chip_due:'Tamat', vm_chip_soon:'Hampir', vm_chip_empty:'Kosong', vm_chip_unset:'Tiada produk', vm_last:'Terakhir: ', vm_never:'Belum ada lawatan direkod', vm_days_ago:' hari lalu', vm_today_word:'hari ini', vm_draft_pill:'Belum dihantar', vm_back:'Semua mesin', vm_visit_hint:'Slot demi slot: tekan slot → kira baki → keluarkan yang tamat tempoh → isi semula → masukkan tarikh tamat. Selesai, tekan Hantar lawatan. Slot yang tidak disentuh tidak perlu ditekan.', vm_legend:'Merah = tamat tempoh   Oren = hampir tamat   Putus-putus = tiada produk   ✓ = siap lawatan ini', vm_row:'Baris', vm_done_n:'Siap', vm_btn_submit:'Hantar lawatan', vm_btn_discard:'Buang draf ini', vm_confirm_discard:'Semua slot yang direkod dalam lawatan ini akan dipadam. Buang?', vm_slot:'Slot', vm_set_product:'Tetapkan produk', vm_change_product:'Tukar produk', vm_pick_product_first:'Pilih dahulu produk untuk slot ini.', vm_field_product:'Produk', vm_field_par:'Kuantiti penuh', vm_only_manager:'Hanya pengurus boleh menukar produk slot yang sudah ada produk.', vm_plan_hint:'Sesiapa boleh menetapkan slot kosong; hanya pengurus boleh menukar slot yang sudah ada produk.', vm_last_record:'Rekod terakhir', vm_exp_unknown:'tarikh tamat tidak diketahui', vm_f_left:'Baki dalam slot (kira sebelum isi)', vm_q_empty:'Kosong', vm_q_full:'Penuh', vm_q_same:'Sama seperti lepas', vm_f_expired:'Tamat tempoh dikeluarkan', vm_f_damaged:'Rosak / lain dikeluarkan', vm_f_added:'Ditambah', vm_f_exp:'Tarikh tamat stok baharu', vm_day_short:'h', vm_after:'Selepas', vm_over_par:'melebihi kapasiti slot', vm_first_exp:'tamat terawal', vm_err_left:'Kira baki dahulu', vm_err_more_out:'Lebih dikeluarkan daripada baki', vm_err_exp:'Stok ditambah perlu tarikh tamat', vm_btn_save_slot:'Simpan slot ini', vm_btn_undo_slot:'Batal slot ini', vm_submit_title:'Hantar lawatan', vm_tot_added:'Ditambah', vm_tot_out:'Dikeluarkan', vm_tot_sold:'Terjual (anggaran)', vm_tot_waste:'Nilai pembaziran', vm_no_cost:'tiada kos', vm_untouched:'Slot yang tidak disentuh kekal:', vm_still_due:'Slot ini masih ada stok tamat tempoh:', vm_note:'Nota (pilihan)', vm_toast_sent:'Lawatan disimpan', vm_only_team:'Hanya pasukan mesin boleh menghantar lawatan', vm_err_offline:'Tiada sambungan. Draf kekal dalam telefon; hantar semula bila ada talian.', vm_left_short:'Baki', vm_damaged_short:'Rosak', vm_range_7:'7 hari lepas', vm_range_30:'30 hari lepas', vm_rep_visits:'Lawatan', vm_rep_by_product:'Ikut produk', vm_rep_by_machine:'Ikut mesin', vm_rep_recent:'Lawatan terkini', vm_rep_hint:'Terjual ialah anggaran: isi slot selepas lawatan lepas tolak baki yang dikira sekarang. Jualan sebenar menggantikannya selepas XY disambung.', vm_col_product:'Produk', vm_col_machine:'Mesin', vm_col_last:'Lawatan terakhir', vm_pcs:'unit', vm_visit_title:'Lawatan', field_ac_code:'Kod item AutoCount', field_tray_qty:'Unit setiap dulang', vm_tray:'setiap dulang', field_shelf_days:'Jangka hayat (hari)', field_pull_days:'Keluarkan berapa hari sebelum tamat (0 = sehari selepas tamat)', notif_vm_expired:'Stok tamat tempoh dalam mesin', seg_beer:'Bir draf', beer_title:'Stok bir draf', empty_add_beer_product:'Tambah produk bir di "Saya" dahulu',
+    seg_snacks:'Mesin layan diri', balance_annual_prorated:'Cuti tahunan tersedia (prorata)', balance_full_year:'setahun', balance_prorated:'baki prorata ', leave_rules_hint:'Cuti tahunan mesti dipohon {n} hari lebih awal; kurang daripada itu menjadi cuti tanpa gaji (UPL). Cuti tahunan terkumpul setiap bulan. Tiada cuti untuk hari yang sudah lepas; cuti sakit boleh ke belakang paling lama {s} hari.', leave_al_short_notice:'Cuti tahunan perlu notis {n} hari. Ini kurang, jadi ia akan dihantar sebagai cuti tanpa gaji (UPL). Teruskan?', err_leave_backdate:'Tidak boleh memohon untuk hari yang sudah lepas. Untuk ke klinik pilih Cuti sakit.', err_sick_backdate:'Cuti sakit boleh ke belakang paling lama {s} hari; tarikh lebih awal sila jumpa HR.', err_leave_end_before:'Tarikh tamat tidak boleh sebelum tarikh mula', err_al_not_set:'HR belum menetapkan cuti tahunan anda. Sila jumpa HR dahulu.', err_al_over:'Cuti tahunan tidak cukup: sehingga bulan itu anda hanya ada {n} hari (termasuk permohonan menunggu). Mohon cuti tanpa gaji untuk hari lebihan.', toast_leave_as_upl:'Dihantar sebagai cuti tanpa gaji (UPL)', app_update:'Versi baharu tersedia. Tekan untuk kemas kini.', recv_open_title:'Penghantaran yang sedang diterima di kedai ini', recv_no_supplier_yet:'Belum pilih pembekal', recv_open_current:'Saya sedang buat', recv_open_switch:'Buka untuk ambil alih', recv_open_new:'Pembekal lain juga sampai: mula resit lain', recv_open_hint:'Di atas ialah resit yang rakan sedang buat; jangan ubah. Untuk pembekal lain, pilih sahaja di bawah untuk mula.', recv_keg_note:'Satu tong {l} L = {m} gelas ({ml} ml segelas, tolak {w} gelas pembaziran setiap tong). Kira tong dan semak saiznya, kemudian semak nombor.', recv_keg_mugs:'gelas', recv_keg_helper:'Tong ke gelas', recv_keg_fill:'isi gelas', recv_keg_rule:'{ml} ml segelas, tolak {w} gelas setiap tong: 10 L = {m10} gelas, 20 L = {m20} gelas.', field_keg_mug_ml:'Bir draf: ml segelas (terima barang)', field_keg_waste:'Bir draf: gelas dibazir setiap tong', recv_err_sent:'Resit ini sudah dihantar (mungkin oleh rakan); perubahan ini tidak disimpan.', recv_err_gone:'Resit ini tiada lagi (dibuang atau dihantar).', recv_err_busy:'Rakan sedang mengubah resit yang sama; tekan sekali lagi.', recv_err_no_photo:'Ambil gambar kertas sebelum menghantar.', recv_err_no_supplier:'Pilih pembekal dahulu.', recv_err_not_pilot:'Terima barang belum dibuka untuk kedai ini.', recv_err_ai_lines:'Ada baris bacaan AI yang belum disemak.', recv_err_read_used:'Semakan sudah bermula untuk bacaan ini; tidak boleh dibaca semula.', recv_err_forbidden:'Anda tidak dibenarkan mengubah resit ini.', recv_err_amount:'Amaun tidak boleh negatif.', recv_discard_confirm:'Buang resit ini? Dimulakan oleh {who}, {n} item. Tidak boleh dibatalkan.', recv_discard_not_mine:'{who} memulakan resit ini; hanya dia atau pengurus boleh membuangnya.', recv_ai_dup_manual:'Anda sudah menambah {n} produk ini secara manual. Ganti baris itu dengan baris AI? (Batal: tiada perubahan)', err_leave_date:'Tarikh tidak sah; pilih semula.', vm_err_slot_changed:'Slot ini baru dikemas kini oleh orang lain dan dikeluarkan daripada lawatan ini; kira semula: {s}', vm_stale_dropped:'Slot ini dikemas kini selepas anda mengira dan dikeluarkan; kira semula: {s}', photo_from_gallery:'Dari galeri', recv_photo_gallery_hint:'Gambar hilang kerana App dibuka semula selepas kamera? Ambil gambar dengan kamera telefon, kemudian tekan Dari galeri.', recv_admin_inbox:'Semua kedai', recv_admin_receive:'Terima barang', recv_ai_title:'Bacaan kertas AI (percubaan)', recv_ai_hint:'Kira-kira 15 saat selepas ditekan, AI menyenaraikan barang, kuantiti dan amaun pada kertas. Anda sendiri kira dan semak setiap baris, kemudian sahkan.', recv_ai_btn:'Baca kertas dengan AI', recv_ai_failed:'Tidak dapat dibaca. Ambil gambar lebih jelas dan cuba lagi, atau tambah barang secara manual.', recv_ai_asked:'Dihantar, kira-kira 15 saat', recv_ai_limit:'Kertas ini sudah dibaca 3 kali; sila tambah barang secara manual.', recv_ai_cap:'Bacaan AI hari ini sudah habis; sila tambah barang secara manual.', recv_ai_reading:'AI sedang membaca kertas…', recv_ai_wait:'Kira-kira 15 saat; boleh mula mengira', recv_ai_again:'Baca semula', recv_ai_done:'AI membaca', recv_ai_check_each:'Buka setiap baris: semak produk, kira yang diterima, semak amaun, kemudian sahkan. Tekan Tidak diterima jika baris itu tidak sampai.', recv_ai_all_checked:'Semua baris sudah disemak. Akhir sekali sahkan jumlah.', recv_ai_confirmed:'Disahkan', recv_ai_skipped:'Tidak diterima', recv_ai_to_check:'Untuk disemak', recv_ai_no_match:'Tidak dipadankan dengan produk kita; sila pilih', recv_ai_paper:'Pada kertas', recv_ai_how_name:'Dipadankan ikut nama; semak', recv_ai_how_learned:'Padanan yang pernah disahkan', recv_ai_how_barcode:'Dipadankan ikut kod bar', recv_ai_how_code:'Dipadankan ikut kod item', recv_ai_lines_sum:'Jumlah baris yang disahkan', recv_ai_discount:'diskaun', recv_ai_tax:'cukai', recv_ai_total:'Jumlah kertas RM (baca pada kertas)', recv_ai_total_confirm:'Jumlah sama dengan kertas, sahkan', recv_ai_total_ok:'Jumlah disahkan', recv_ai_docno_diff:'AI membaca nombor lain; semak kertas', recv_ai_our_item:'Produk kita', recv_ai_change_item:'Tukar produk', recv_ai_pick_item:'Pilih produk', recv_ai_counted:'Sebenarnya diterima (kira)', recv_ai_unit_note:'Kertas menulis {u}; kira berapa yang diterima dalam unit kita.', recv_ai_amount:'Amaun baris RM (pada kertas)', recv_ai_confirm_hint:'Mengesahkan bermaksud anda sudah kira kuantiti dan semak amaun, dan kedua-duanya sama dengan kertas. Kurang daripada kertas direkod sebagai kurang.', recv_ai_confirm:'Kuantiti dan amaun betul, sahkan', recv_ai_not_received:'Baris ini tidak diterima', recv_ai_need_amount:'Masukkan amaun baris ini', recv_ai_line_title:'Semak baris {n}', recv_ai_block_lines:'{n} baris yang dibaca AI belum disemak', recv_ai_block_total:'Sahkan jumlah kertas dahulu', recv_ai_block_reading:'AI masih membaca; sila tunggu (selepas 3 minit boleh hantar tanpanya)', vm_tab_today:'Hari ini', vm_tab_report:'Laporan', vm_sum_machines:'mesin perlu dilawati', vm_sum_due:'tamat tempoh perlu dikeluarkan', vm_sum_soon:'hampir tamat tempoh', vm_today_hint:'Paling mendesak di atas. Kuantiti ialah kiraan pada lawatan terakhir; ia dikemas kini sendiri selepas XY disambung.', vm_lvl_critical:'Segera', vm_lvl_warn:'Lawat hari ini', vm_lvl_ok:'OK', vm_lvl_n:'Berhenti', vm_chip_due:'Tamat', vm_chip_soon:'Hampir', vm_chip_empty:'Kosong', vm_chip_unset:'Tiada produk', vm_last:'Terakhir: ', vm_never:'Belum ada lawatan direkod', vm_days_ago:' hari lalu', vm_today_word:'hari ini', vm_draft_pill:'Belum dihantar', vm_back:'Semua mesin', vm_visit_hint:'Slot demi slot: tekan slot → kira baki → keluarkan yang tamat tempoh → isi semula → masukkan tarikh tamat. Selesai, tekan Hantar lawatan. Slot yang tidak disentuh tidak perlu ditekan.', vm_legend:'Merah = tamat tempoh   Oren = hampir tamat   Putus-putus = tiada produk   ✓ = siap lawatan ini', vm_row:'Baris', vm_done_n:'Siap', vm_btn_submit:'Hantar lawatan', vm_btn_discard:'Buang draf ini', vm_confirm_discard:'Semua slot yang direkod dalam lawatan ini akan dipadam. Buang?', vm_slot:'Slot', vm_set_product:'Tetapkan produk', vm_change_product:'Tukar produk', vm_pick_product_first:'Pilih dahulu produk untuk slot ini.', vm_field_product:'Produk', vm_field_par:'Kuantiti penuh', vm_only_manager:'Hanya pengurus boleh menukar produk slot yang sudah ada produk.', vm_plan_hint:'Sesiapa boleh menetapkan slot kosong; hanya pengurus boleh menukar slot yang sudah ada produk.', vm_last_record:'Rekod terakhir', vm_exp_unknown:'tarikh tamat tidak diketahui', vm_f_left:'Baki dalam slot (kira sebelum isi)', vm_q_empty:'Kosong', vm_q_full:'Penuh', vm_q_same:'Sama seperti lepas', vm_f_expired:'Tamat tempoh dikeluarkan', vm_f_damaged:'Rosak / lain dikeluarkan', vm_f_added:'Ditambah', vm_f_exp:'Tarikh tamat stok baharu', vm_day_short:'h', vm_after:'Selepas', vm_over_par:'melebihi kapasiti slot', vm_first_exp:'tamat terawal', vm_err_left:'Kira baki dahulu', vm_err_more_out:'Lebih dikeluarkan daripada baki', vm_err_exp:'Stok ditambah perlu tarikh tamat', vm_btn_save_slot:'Simpan slot ini', vm_btn_undo_slot:'Batal slot ini', vm_submit_title:'Hantar lawatan', vm_tot_added:'Ditambah', vm_tot_out:'Dikeluarkan', vm_tot_sold:'Terjual (anggaran)', vm_tot_waste:'Nilai pembaziran', vm_no_cost:'tiada kos', vm_untouched:'Slot yang tidak disentuh kekal:', vm_still_due:'Slot ini masih ada stok tamat tempoh:', vm_note:'Nota (pilihan)', vm_toast_sent:'Lawatan disimpan', vm_only_team:'Hanya pasukan mesin boleh menghantar lawatan', vm_err_offline:'Tiada sambungan. Draf kekal dalam telefon; hantar semula bila ada talian.', vm_left_short:'Baki', vm_damaged_short:'Rosak', vm_range_7:'7 hari lepas', vm_range_30:'30 hari lepas', vm_rep_visits:'Lawatan', vm_rep_by_product:'Ikut produk', vm_rep_by_machine:'Ikut mesin', vm_rep_recent:'Lawatan terkini', vm_rep_hint:'Terjual ialah anggaran: isi slot selepas lawatan lepas tolak baki yang dikira sekarang. Jualan sebenar menggantikannya selepas XY disambung.', vm_col_product:'Produk', vm_col_machine:'Mesin', vm_col_last:'Lawatan terakhir', vm_pcs:'unit', vm_visit_title:'Lawatan', field_ac_code:'Kod item AutoCount', field_tray_qty:'Unit setiap dulang', vm_tray:'setiap dulang', field_shelf_days:'Jangka hayat (hari)', field_pull_days:'Keluarkan berapa hari sebelum tamat (0 = sehari selepas tamat)', notif_vm_expired:'Stok tamat tempoh dalam mesin', seg_beer:'Bir draf', beer_title:'Stok bir draf', empty_add_beer_product:'Tambah produk bir di "Saya" dahulu',
     btn_receive_kegs:'Terima tong', btn_tap_keg:'Pasang tong', beer_on_tap:'Sedang digunakan', beer_no_kegs_on_tap:'Tiada tong dipasang sekarang',
     beer_remaining:'berbaki', beer_expired:'Lepas kesegaran', beer_expiring_soon:'Hampir tamat', beer_fresh:'Segar',
     beer_in_stock:'Stok belum dibuka', beer_no_stock:'Belum ada stok', beer_kegs_unit:'tong',
@@ -1655,6 +1657,25 @@ function makeSupabaseDb(sb){
         if(error) throw Object.assign(error, {code:'unavailable'});
         refreshCollection(collection);
       },
+      // Read, change, write -- but only if nobody wrote the record in between (else read again and redo the change).
+      // For records several phones edit at once (a store's open receipt). fn gets the server's data and answers the
+      // fields to change (or null for nothing, or throws to refuse).
+      async updateWith(fn){
+        for(let i = 0; i < 6; i++){
+          const {data:cur, error:e1} = await sb.from('store').select('data,updated_at').eq('collection',collection).eq('id',id).maybeSingle();
+          if(e1) throw Object.assign(e1, {code:'unavailable'});
+          if(!cur) throw {code:'not_found', message:'not_found'};
+          const patch = fn(cur.data);
+          if(!patch) return cur.data;
+          const merged = Object.assign({}, cur.data, patch);
+          const {data:rows, error} = await sb.from('store').update({data:merged, updated_at:new Date().toISOString()})
+            .eq('collection',collection).eq('id',id).eq('updated_at',cur.updated_at).select('id');
+          if(error) throw Object.assign(error, {code:'unavailable'});
+          if(rows && rows.length){ refreshCollection(collection); return merged; }
+          await new Promise(r=>setTimeout(r, 150 + Math.random()*350));    // someone else wrote first: read again
+        }
+        throw {code:'conflict', message:'conflict'};
+      },
       async update(data){
         const {data:cur, error:e1} = await sb.from('store').select('data').eq('collection',collection).eq('id',id).maybeSingle();
         if(e1) throw Object.assign(e1, {code:'unavailable'});
@@ -1771,6 +1792,8 @@ function isoDaysAgo(n){ const d=new Date(); d.setDate(d.getDate()-n); return d.t
 function uiBusy(){
   if(S.pickerOpenAt && Date.now() - S.pickerOpenAt < 60000) return true;           // camera / gallery open (1 min at most)
   if(S.photoUploading > 0) return true;                                              // a photo still on its way up
+  const un = $('view') && $('view').querySelector('[data-unsaved]');
+  if(un && Date.now() - Number(un.dataset.unsaved) < 300000) return true;           // a photo taken, the form not sent yet
   const a = document.activeElement, v = $('view');
   const inBox = a && v && v.contains(a) && (a.tagName === 'TEXTAREA' || a.tagName === 'SELECT' || (a.tagName === 'INPUT' && !/^(button|submit|file|checkbox|radio)$/.test(a.type)));
   // only while actually typing: a cursor left in a box (iPhone keeps it there after a tap) must not freeze the page
@@ -1805,7 +1828,13 @@ function sub(colPath, key, opts){
   q.onSnapshot(snap=>{
     const rows = snap.docs.map(d=>Object.assign({id:d.id}, d.data()));
     if(key==='employees'){ empFull=rows; mergeEmployees(); S.employeesLoaded=true; loadEmployeeDirectory(false); }
-    else S[key] = rows;
+    else {
+      // a receipt this phone just created stays listed until the server's list includes it (an older refresh may land later)
+      if(key === 'receipts' && S.localReceipts){ const now = Date.now();
+        Object.keys(S.localReceipts).forEach(id=>{ if(rows.some(r=>r.id===id) || now - S.localReceipts[id] > 120000){ delete S.localReceipts[id]; return; }
+          const loc = (S.receipts || []).find(r=>r.id===id); if(loc) rows.push(loc); }); }
+      S[key] = rows;
+    }
     if(key==='skus') S.skusLoaded=true;
     if(key==='memoReads') S.memoReadsLoaded=true;
     renderFromData();
@@ -1884,7 +1913,7 @@ function subscribeAll(){
   sub('notifSeen','notifSeen',{limit:500});
   sub('stockRequests','stockRequests',{order:'createdAt',limit:400,sinceDays:120});
   sub('receipts','receipts',{order:'createdAt',limit:400,sinceDays:120});
-  sub('receiptReads','receiptReads',{limit:200});      // AI readings of draft receipts (patch 19): own branch only
+  sub('receiptReads','receiptReads',{order:'requestedAt', limit:400, sinceDays:14, sinceField:'requestedAt'});      // AI readings of draft receipts (patch 19): own branch only
   sub('beerProducts','beerProducts',{limit:200});
   sub('taps','taps',{limit:100});
   sub('kegs','kegs',{order:'createdAt',dir:'desc',limit:500});
@@ -2000,7 +2029,7 @@ function photoPicker(onReady, cameraOnly, existingUrl, opts){
         preview.src=dataUrl; preview.style.display='block';
         btn.querySelector('span').textContent=retakeLabel;
         removeBtn.style.display='inline-flex';
-        onReady && onReady(dataUrl);
+        if(onReady) onReady(dataUrl); else wrap.dataset.unsaved = String(Date.now());   // held only in this form until it is sent
       } else {
         preview.style.display='none';
         btn.querySelector('span').textContent=pickLabel;
@@ -2008,7 +2037,19 @@ function photoPicker(onReady, cameraOnly, existingUrl, opts){
       }
     }catch(e){ toast(t('toast_photo_failed')); btn.querySelector('span').textContent=pickLabel; }
   };
-  btnRow.appendChild(btn); btnRow.appendChild(removeBtn);
+  btnRow.appendChild(btn);
+  if(cameraOnly && opts.allowGallery){
+    // a photo already taken with the phone's own camera, picked from the gallery: the App stays open while it is taken
+    const gal = el('<input type="file" accept="image/*" style="display:none">');
+    const galBtn = el(`<button type="button" class="btn">${esc(t('photo_from_gallery'))}</button>`);
+    galBtn.onclick = ()=>{ S.pickerOpenAt = Date.now(); gal.click(); };
+    gal.addEventListener('cancel', ()=>{ S.pickerOpenAt = 0; });
+    gal.onchange = ()=>{ const f = gal.files[0]; if(!f){ S.pickerOpenAt = 0; return; }
+      try{ const dt = new DataTransfer(); dt.items.add(f); input.files = dt.files; }catch(e){ S.pickerOpenAt = 0; toast(t('toast_photo_failed')); return; }
+      input.onchange(); };
+    btnRow.appendChild(galBtn); wrap.appendChild(gal);
+  }
+  btnRow.appendChild(removeBtn);
   wrap.appendChild(btnRow); wrap.appendChild(input); wrap.appendChild(preview);
   wrap.getPhoto=()=>dataUrl;
   return wrap;
@@ -2202,12 +2243,18 @@ function selectIdentity(e){
   S.employeeId=e.id; LS.set('bgc_employee_id', e.id); closeSheet(); renderApp();
 }
 /* ============================ LOGIN / TOKEN ============================ */
+const allClients = [];            // every client made, so a renewed login reaches their realtime connections too
 function makeClient(token){
   const opts={ realtime:{params:{eventsPerSecond:10}},
-    global:{ fetch:(url,o)=>fetch(url, Object.assign({}, o, {cache:'no-store'})).then(r=>{ if(r.status===401 && S.token){ toast(t('session_expired')); logout(); } return r; }) } };
+    // every request carries the CURRENT login: the live lists keep the client they started with, while the login is
+    // renewed every 30 minutes -- the old one expired after 12 h and logged staff out in the middle of a shift
+    global:{ fetch:(url,o)=>{ o = Object.assign({}, o, {cache:'no-store'});
+      if(S.token){ const h = new Headers(o.headers || {}); if(h.has('Authorization')) h.set('Authorization', 'Bearer '+S.token); o.headers = h; }
+      return fetch(url, o).then(r=>{ if(r.status===401 && S.token){ toast(t('session_expired')); logout(); } return r; }); } } };
   if(token) opts.global.headers={Authorization:'Bearer '+token};
   const sb=window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, opts);
   if(token && sb.realtime && sb.realtime.setAuth){ try{ sb.realtime.setAuth(token); }catch(e){} }
+  allClients.push(sb); if(allClients.length > 12) allClients.shift();
   return sb;
 }
 async function rpc(name, args){
@@ -2238,7 +2285,7 @@ async function refreshToken(){
   if(!S.token) return;
   try{
     const tok = await rpc('refresh_token');
-    if(tok){ S.token=tok; LS.set('bgc_token', tok); S.sb=makeClient(tok); S.db=makeSupabaseDb(S.sb); }
+    if(tok){ S.token=tok; LS.set('bgc_token', tok); allClients.forEach(c=>{ try{ c.realtime && c.realtime.setAuth && c.realtime.setAuth(tok); }catch(e){} }); S.sb=makeClient(tok); S.db=makeSupabaseDb(S.sb); }
   }catch(err){
     if(missingFn(err)) return;                 // database patch 4 not applied yet
     if(!tokenValid(S.token)){ toast(t('session_expired')); logout(); }
@@ -2843,7 +2890,17 @@ function stockReport(){
    signal or a closed App loses nothing. Sales are taken from the oldest lot first (the spiral sells the front). */
 const VM_SOON_DAYS = 2;       // "expiring soon": has to come out within this many days
 const VM_VISIT_DUE_DAYS = 2;  // a machine not visited for this many days is flagged
-function vmSlotsOf(devId){ return S.vmSlots.filter(s=>s.deviceId===devId).sort((a,b)=>String(a.slot).localeCompare(String(b.slot))); }
+// one pass over slots, visits and products whenever one of those lists is refreshed (they are replaced, not edited)
+let vmIdx = null;
+function vmIndex(){
+  if(vmIdx && vmIdx.slots === S.vmSlots && vmIdx.visits === S.vmVisits && vmIdx.products === S.products) return vmIdx;
+  const byDev = new Map(), last = new Map(), prod = new Map(S.products.map(p=>[p.id, p]));
+  S.vmSlots.forEach(s=>{ if(!byDev.has(s.deviceId)) byDev.set(s.deviceId, []); byDev.get(s.deviceId).push(s); });
+  byDev.forEach(a=>a.sort((x,y)=>String(x.slot).localeCompare(String(y.slot))));
+  S.vmVisits.forEach(v=>{ const c = last.get(v.deviceId); if(!c || v.createdAt > c.createdAt) last.set(v.deviceId, v); });
+  return vmIdx = {slots:S.vmSlots, visits:S.vmVisits, products:S.products, byDev, last, prod};
+}
+function vmSlotsOf(devId){ return vmIndex().byDev.get(devId) || []; }
 function vmDaysTo(date){ if(!date) return null; return Math.round((new Date(date+'T00:00:00') - new Date(todayStr()+'T00:00:00'))/86400000); }
 function vmPull(p){ return p && p.pullDays!=null && p.pullDays!=='' ? (Number(p.pullDays)||0) : 0; }
 // days left before a lot has to come out; below 0 = take it out now
@@ -2853,7 +2910,7 @@ function vmLotsSorted(lots){
     .sort((a,b)=> a.exp===b.exp ? 0 : a.exp==null ? -1 : b.exp==null ? 1 : (a.exp<b.exp ? -1 : 1));
 }
 function vmSlotInfo(s){
-  const p = s.productId ? byId(S.products, s.productId) : null;
+  const p = s.productId ? (vmIndex().prod.get(s.productId) || null) : null;
   const lots = vmLotsSorted(s.lots);
   let qty=0, due=0, soon=0, unknown=0, first=null;
   lots.forEach(l=>{ qty+=l.qty; const o=vmOutIn(l,p);
@@ -2861,13 +2918,13 @@ function vmSlotInfo(s){
     if(l.exp && (!first || l.exp<first)) first=l.exp; });
   return {p, lots, qty, due, soon, unknown, first, par:Number(s.par)||0};
 }
-function vmLastVisit(devId){ return S.vmVisits.filter(v=>v.deviceId===devId).sort((a,b)=>a.createdAt<b.createdAt?1:-1)[0]||null; }
+function vmLastVisit(devId){ return vmIndex().last.get(devId) || null; }
 function vmDeviceInfo(d){
   const slots=vmSlotsOf(d.id);
   const r={slots:slots.length, unset:0, empty:0, due:0, soon:0, qty:0, par:0, last:vmLastVisit(d.id), stopped:d.status==='stopped'};
   slots.forEach(s=>{ const i=vmSlotInfo(s); if(!i.p){ r.unset++; return; } r.qty+=i.qty; r.par+=i.par; if(i.qty===0) r.empty++; r.due+=i.due; r.soon+=i.soon; });
   r.fill = r.par ? Math.round(r.qty/r.par*100) : null;
-  r.daysSince = r.last ? Math.floor((Date.now()-new Date(r.last.createdAt))/86400000) : null;
+  r.daysSince = r.last ? 0 - vmDaysTo(todayStr(new Date(r.last.createdAt))) : null;    // calendar days: last night is "1 day ago"
   r.level = r.stopped ? 'n' : (r.due>0 || r.empty>0) ? 'critical'
           : (r.soon>0 || (r.fill!=null && r.fill<50) || r.daysSince==null || r.daysSince>=VM_VISIT_DUE_DAYS) ? 'warn' : 'ok';
   return r;
@@ -2876,9 +2933,20 @@ function vmShort(p){ return p ? String(p.name||'').replace(/\s+\d+\s*ML$/i,'') :
 function vmMD(date){ return date ? date.slice(5) : ''; }
 
 /* the draft of a visit lives on this phone only, one per machine and person */
-function vmDraftKey(devId){ return 'vm_draft_'+devId; }
+function vmDraftKey(devId){ return 'vm_draft_'+devId+'_'+(S.employeeId||''); }   // one per machine and person on a shared phone
 function vmDraft(devId){ try{ const d=JSON.parse(localStorage.getItem(vmDraftKey(devId))||'null'); if(d && d.employeeId===S.employeeId) return d; }catch(e){} return null; }
 function vmSaveDraft(devId, d){ try{ if(d && Object.keys(d.lines||{}).length) localStorage.setItem(vmDraftKey(devId), JSON.stringify(d)); else localStorage.removeItem(vmDraftKey(devId)); }catch(e){} }
+// lines counted against a slot that was visited or re-assigned since: their numbers are no longer true, drop them
+function vmDropStale(devId, alsoSlot){
+  const d = vmDraft(devId); if(!d) return [];
+  const gone = [];
+  Object.values(d.lines || {}).forEach(l=>{
+    const s = byId(S.vmSlots, l.slotId);
+    if(l.slot === alsoSlot || (s && l.baseVisitId != null && ((s.lastVisitId || '') !== l.baseVisitId || (s.productId || null) !== (l.productId || null)))){ gone.push(l.slot); delete d.lines[l.slot]; }
+  });
+  if(gone.length) vmSaveDraft(devId, d);
+  return gone;
+}
 function vmNewDraft(devId){ return {deviceId:devId, employeeId:S.employeeId, clientId:'v'+Date.now().toString(36)+Math.random().toString(36).slice(2,8), startedAt:new Date().toISOString(), lines:{}}; }
 
 // what a slot holds after the visit: sales come off the oldest lot, then expired stock is taken from the lots that
@@ -2957,6 +3025,8 @@ function vmTodayView(){
 
 function vmVisitView(d){
   const c=el('<div></div>');
+  const staleGone = vmDropStale(d.id);
+  if(staleGone.length) c.appendChild(el(`<div class="card" style="border-color:var(--warn); background:var(--warn-soft); padding:10px 12px; margin-bottom:8px;">${esc(t('vm_stale_dropped').split('{s}').join(staleGone.join(', ')))}</div>`));
   const draft=vmDraft(d.id);
   const lines=draft ? draft.lines : {};
   const nDone=Object.keys(lines).length;
@@ -3076,7 +3146,8 @@ function openVmSlotSheet(d, s){
     const r=vmApply(s.lots, p, L, E, D, A, X);
     const after=r.lots.reduce((a,l)=>a+l.qty,0);
     const first=r.lots.find(l=>l.exp);
-    draft.lines[s.slot]={slot:s.slot, slotId:s.id, productId:p.id, productName:p.name, cost:p.cost!=null&&p.cost!==''?Number(p.cost):null,
+    if(draft.submitTried){ draft.clientId='v'+Date.now().toString(36)+Math.random().toString(36).slice(2,8); draft.submitTried=false; }   // edited after a send that may have landed: a new visit
+    draft.lines[s.slot]={baseVisitId:s.lastVisitId||'', slot:s.slot, slotId:s.id, productId:p.id, productName:p.name, cost:p.cost!=null&&p.cost!==''?Number(p.cost):null,
       par:si.par, before:si.qty, left:L, expired:E, damaged:D, added:A, exp:A>0?X:null, soldEst:r.soldEst,
       qtyAfter:after, firstExp:first?first.exp:null, lotsAfter:r.lots};
     vmSaveDraft(d.id, draft); closeSheet(); renderApp();
@@ -3110,7 +3181,7 @@ function openVmPlanForm(d, s){
       Object.assign(s, cur||{productId:pid, par:n});
       if(S.db.refresh) S.db.refresh('vmSlots');
       toast(t('toast_saved')); closeSheet(); openVmSlotSheet(d, s);
-    }catch(err){ toast(err.code==='42501' ? t('vm_only_manager') : dbErrMsg(err)); btn.disabled=false; }
+    }catch(err){ toast(/team only/.test(String(err.message||'')) ? t('vm_only_team') : err.code==='42501' ? t('vm_only_manager') : dbErrMsg(err)); btn.disabled=false; }
   };
   foot.appendChild(btn); body.appendChild(foot);
   openSheet(t('vm_slot')+' '+s.slot+' · '+t('vm_set_product'), body);
@@ -3142,21 +3213,28 @@ function openVmSubmitSheet(d){
   const foot=el('<div class="sheet-foot"></div>');
   const btn=el(`<button class="btn primary block">${esc(t('vm_btn_submit'))}</button>`);
   btn.onclick=async ()=>{
+    if(S.vmSubmitting) return; S.vmSubmitting = true;
     btn.disabled=true; btn.textContent=t('toast_submitting');
     const visit={deviceId:d.id, deviceName:d.name, machineId:d.machineId||'', clientId:draft.clientId, startedAt:draft.startedAt, createdAt:new Date().toISOString(),
       lines:lines.map(l=>{ const x=Object.assign({}, l); delete x.lotsAfter; delete x.slotId; return x; }),
       totals:{added:tot.added, expired:tot.expired, damaged:tot.damaged, soldEst:tot.sold, wasteValue:Math.round(tot.waste*100)/100},
       note:note.querySelector('textarea').value||''};
     try{
-      await rpc('vm_visit_submit', {p_visit:visit, p_slots:lines.map(l=>({id:l.slotId, lots:l.lotsAfter}))});
+      await rpc('vm_visit_submit', {p_visit:visit, p_slots:lines.map(l=>Object.assign({id:l.slotId, lots:l.lotsAfter, productId:l.productId}, l.baseVisitId != null ? {baseVisitId:l.baseVisitId} : {}))});
       lines.forEach(l=>{ const s=byId(S.vmSlots, l.slotId); if(s){ s.lots=l.lotsAfter; s.qty=l.qtyAfter; } });
       vmSaveDraft(d.id, null);
       if(S.db.refresh) ['vmSlots','vmVisits','inventory'].forEach(c=>S.db.refresh(c));
       toast(t('vm_toast_sent')); closeSheet(); S.vmDev=null; renderApp();
     }catch(err){
-      toast(err.code==='42501' ? t('vm_only_team') : (navigator.onLine===false ? t('vm_err_offline') : dbErrMsg(err)));
+      const m = String((err && err.message) || '');
+      const dd = vmDraft(d.id); if(dd){ dd.submitTried = true; vmSaveDraft(d.id, dd); }    // it may have landed; a later edit makes a new visit
+      if(/slot_changed/.test(m)){
+        if(S.db.refresh) S.db.refresh('vmSlots');
+        const dropped = vmDropStale(d.id, (m.split('slot_changed:')[1] || '').trim());
+        toast(t('vm_err_slot_changed').split('{s}').join(dropped.join(', '))); closeSheet(); renderApp();
+      } else toast(err.code==='42501' ? t('vm_only_team') : (navigator.onLine===false ? t('vm_err_offline') : dbErrMsg(err)));
       btn.disabled=false; btn.textContent=t('vm_btn_submit');
-    }
+    } finally { S.vmSubmitting = false; }
   };
   foot.appendChild(btn); body.appendChild(foot);
   openSheet(t('vm_submit_title')+' · '+d.name, body);
@@ -3171,13 +3249,14 @@ function vmReportView(){
   const since=new Date(Date.now()-days*86400000).toISOString();
   const vs=S.vmVisits.filter(v=>v.createdAt>=since).sort((a,b)=>a.createdAt<b.createdAt?1:-1);
   const byP={}, byM={};
-  let added=0, sold=0, out=0, waste=0;
+  let added=0, sold=0, out=0, waste=0, noCost=0;
   vs.forEach(v=>{
     const m=byM[v.deviceId]=byM[v.deviceId]||{visits:0, waste:0, out:0, last:v.createdAt};
     m.visits++;
     (v.lines||[]).forEach(l=>{
       const k=l.productId||'?'; const r=byP[k]=byP[k]||{name:l.productName||prodName(k), sold:0, added:0, out:0, waste:0};
       const o=(l.expired||0)+(l.damaged||0), w=l.cost!=null ? o*l.cost : 0;
+      if(o && l.cost==null) noCost++;
       r.sold+=l.soldEst||0; r.added+=l.added||0; r.out+=o; r.waste+=w;
       m.out+=o; m.waste+=w; added+=l.added||0; sold+=l.soldEst||0; out+=o; waste+=w;
     });
@@ -3187,7 +3266,7 @@ function vmReportView(){
     <div><div class="v num">${sold}</div><div class="l">${esc(t('vm_tot_sold'))}</div></div>
     <div><div class="v num">+${added}</div><div class="l">${esc(t('vm_tot_added'))}</div></div>
     <div><div class="v num" style="${out?'color:var(--critical);':''}">${out} · ${vmMoney(waste)}</div><div class="l">${esc(t('vm_tot_out'))} · ${esc(t('vm_tot_waste'))}</div></div></div>`));
-  c.appendChild(el(`<p class="hint">${esc(t('vm_rep_hint'))}</p>`));
+  c.appendChild(el(`<p class="hint">${esc(t('vm_rep_hint'))}${noCost ? ' · '+esc(t('vm_no_cost'))+' ×'+noCost : ''}</p>`));
   c.appendChild(el(`<h2 class="sec">${esc(t('vm_rep_by_product'))}</h2>`));
   const pRows=Object.values(byP).sort((a,b)=>b.waste-a.waste || b.sold-a.sold);
   c.appendChild(el(`<div class="card" style="overflow-x:auto; padding:8px 10px;"><table class="vm-table"><tr><th>${esc(t('vm_col_product'))}</th><th>${esc(t('vm_tot_sold'))}</th><th>${esc(t('vm_tot_added'))}</th><th>${esc(t('vm_tot_out'))}</th><th>%</th><th>RM</th></tr>
@@ -3780,7 +3859,7 @@ function buildNotifications(){
     });
   }
   if(S.vmSlots.length && (isAdmin() || (isManager() && ['VM','HQ'].includes(myBranch())))){
-    S.devices.forEach(d=>{ const i=vmDeviceInfo(d); if(i.due>0 && !i.stopped){ const ts=todayStr()+'T00:00:00.000Z';
+    S.devices.forEach(d=>{ const i=vmDeviceInfo(d); if(i.due>0 && !i.stopped){ const ts=new Date(todayStr()+'T00:00:00').toISOString();
       out.push({id:'vmdue:'+d.id+':'+todayStr(), ts, title:t('notif_vm_expired')+'：'+d.name, sub:i.due+' '+t('vm_pcs'), unread:ts>seen,
         onClick:()=>{ S.stockSection='snacks'; S.vmDev=d.id; location.hash='#stock'; }}); } });
   }
@@ -4160,7 +4239,7 @@ function openLeaveForm(){
       kind='unpaid'; extra.convertedFrom='annual';
     }
     if(kind==='annual'){
-      const av=alAvailable(me, v.endDate);
+      const av=alAvailable(me, alEndInYear(v.startDate, v.endDate));
       if(av==null){ toast(t('err_al_not_set')); return; }
       if(leaveDays({startDate:v.startDate, endDate:v.endDate})>av){ toast(t('err_al_over').split('{n}').join(av)); return; }
     }
@@ -6622,7 +6701,7 @@ function receiptPhotos(r){ return Array.isArray(r && r.photos) ? r.photos : []; 
    'sb:receipts/<branch>/<receipt>/<sha256>.jpg'. The name is the SHA-256 of the bytes, which is how the ledger
    spots the same paper sent twice. Taken at 1400 px so the invoice reader can read small print. If the upload
    fails (no bucket yet, offline), the photo is shrunk to the old size and kept in the row, as before. */
-const RECEIPT_PHOTO = {maxW:1400, quality:0.72, maxLen:1400000};
+const RECEIPT_PHOTO = {maxW:1400, quality:0.72, maxLen:1400000, allowGallery:true};
 const photoUrlCache = new Map();
 function isStoredPhoto(p){ return typeof p === 'string' && p.startsWith('sb:'); }
 async function photoSrc(p){
@@ -6851,24 +6930,63 @@ const FNB_BRANCHES = ['BR24','BR26'];
 function branchEntity(branch){ return FNB_BRANCHES.includes(branch) ? 'FNB' : 'RETAIL'; }
 function supplierList(branch){ const ent = branchEntity(branch); return S.suppliers.filter(s => s.active !== false && (s.entity||'RETAIL') === ent).sort((a,b)=>(a.name||'').localeCompare(b.name||'')); }
 
+/* Writing to a receipt. Several phones may edit the same open receipt (two cashiers, a take-over), so every change is
+   computed from the receipt as the server has it at that moment and written only if nobody wrote in between
+   (updateWith retries otherwise). A receipt that was sent or discarded meanwhile is not written at all, and says so. */
+function recvUpdate(id, fn){
+  return S.db.doc('receipts/'+id).updateWith(d=>{
+    if(!d || (d.status || 'draft') !== 'draft') throw {code:'already_sent', message:'already_sent'};
+    return fn(d);
+  });
+}
+function recvErrMsg(err){
+  const m = String((err && (err.message || err.code)) || '');
+  if(/already_sent/.test(m)) return t('recv_err_sent');
+  if(/not_found/.test(m)) return t('recv_err_gone');
+  if(/conflict/.test(m)) return t('recv_err_busy');
+  if(/no_photo/.test(m)) return t('recv_err_no_photo');
+  if(/no_supplier/.test(m)) return t('recv_err_no_supplier');
+  if(/receiving_not_enabled/.test(m)) return t('recv_err_not_pilot');
+  if(/ai_lines_pending/.test(m)) return t('recv_err_ai_lines');
+  if(/total_not_confirmed/.test(m)) return t('recv_ai_block_total');
+  if(/read_in_use/.test(m)) return t('recv_err_read_used');
+  if(/read_limit/.test(m)) return t('recv_ai_limit');
+  if(/read_daily_cap/.test(m)) return t('recv_ai_cap');
+  if(/forbidden|42501|row-level|permission/i.test(m)) return t('recv_err_forbidden');
+  return dbErrMsg(err);
+}
 let draftCreating = null;          // the receipt being created right now: a second tap waits for it instead of making another
+function newReceiptId(){ try{ if(window.crypto && crypto.randomUUID) return crypto.randomUUID(); }catch(e){} return 'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,10); }
 async function ensureReceiptDraft(branch, patch){
   if(draftCreating) await draftCreating.catch(()=>{});
   const draft = draftReceiptFor(branch);
-  if(draft){ await S.db.doc('receipts/'+draft.id).update(patch); return draft.id; }
+  if(draft){
+    try{ await recvUpdate(draft.id, ()=>patch); return draft.id; }
+    catch(err){
+      // made on this phone but the write never reached the server (weak signal): write it again under the same id
+      const pend = S.pendingReceipts && S.pendingReceipts[draft.id];
+      if(!(err && err.code === 'not_found' && pend)) throw err;
+      await S.db.doc('receipts/'+draft.id).set(Object.assign({}, pend, patch));
+      delete S.pendingReceipts[draft.id];
+      return draft.id;
+    }
+  }
   const me = currentEmployee();
   // the paper the driver hands over IS the invoice for almost every supplier (owner, 2026-09-24), so
   // a new receipt starts as 'invoice'; staff switch to DO only when the paper carries no prices
   const data = Object.assign({
     branch, status:'draft', docKind:'invoice', docNo:'', amount:'', note:'', photos:[], lines:[],
     eventAt: new Date().toISOString(), createdBy: me.id, createdByName: me.name, createdAt: new Date().toISOString()}, patch);
-  draftCreating = S.db.collection('receipts').add(data);
-  try{
-    const ref = await draftCreating;
-    S.receiveDraft = Object.assign({}, S.receiveDraft, {[branch]: ref.id});    // this phone keeps working on the one it started
-    if(!S.receipts.some(r => r.id === ref.id)) S.receipts.push(Object.assign({id: ref.id}, data));   // known at once, before the refresh
-    return ref.id;
-  } finally { draftCreating = null; }
+  // the id is fixed before the write, so a retry writes the same receipt instead of a second one; the phone lists it at
+  // once and keeps it listed until the server's list includes it (a refresh that started earlier may land after it)
+  const id = newReceiptId();
+  S.pendingReceipts = Object.assign({}, S.pendingReceipts, {[id]: data});
+  S.localReceipts = Object.assign({}, S.localReceipts, {[id]: Date.now()});
+  S.receiveDraft = Object.assign({}, S.receiveDraft, {[branch]: id});
+  if(!S.receipts.some(r => r.id === id)) S.receipts.push(Object.assign({id}, data));
+  draftCreating = S.db.doc('receipts/'+id).set(data);
+  try{ await draftCreating; delete S.pendingReceipts[id]; return id; }
+  finally{ draftCreating = null; }
 }
 
 function receiveView(){
@@ -6931,44 +7049,49 @@ function receiveView(){
   if(draft && draft.supplierName){
     card.appendChild(el(`<div class="lr-sub" style="font-weight:800; margin:14px 0 6px;">${esc(t('recv_step_photo'))}</div>`));
     const photos = receiptPhotos(draft);
-    const pw = photoPicker(async (url)=>{
-      const ref = await storeReceiptPhoto(branch, draft.id, url);
-      if(url && !ref){ toast(t('toast_photo_too_large')); return; }
-      const next = ref ? [ref].concat(photos.slice(1)) : photos.slice(1);
-      try{ await S.db.doc('receipts/'+draft.id).update({photos: next}); }catch(err){ toast(dbErrMsg(err)); }
-    }, true, photos[0] || null, RECEIPT_PHOTO);
+    // the photo goes up first, then into the receipt as the server has it now; the page waits for it (uiBusy)
+    const setPhoto = async (idx, url)=>{
+      if(!url){ try{ await recvUpdate(draft.id, d=>({photos: receiptPhotos(d).filter((p, i)=>i !== idx)})); }catch(err){ toast(recvErrMsg(err)); } return; }
+      S.photoUploading = (S.photoUploading || 0) + 1;
+      try{
+        const ref = await storeReceiptPhoto(branch, draft.id, url);
+        if(!ref){ toast(t('toast_photo_too_large')); return; }
+        await recvUpdate(draft.id, d=>{ const ps = receiptPhotos(d).slice(0, 2); if(idx === 0 || !ps.length) ps[0] = ref; else ps[1] = ref; return {photos: ps.filter(Boolean)}; });
+      }catch(err){ toast(recvErrMsg(err)); }
+      finally{ S.photoUploading = Math.max(0, (S.photoUploading || 1) - 1); renderFromData(); }
+    };
+    const pw = photoPicker(url=>setPhoto(0, url), true, photos[0] || null, RECEIPT_PHOTO);
     card.appendChild(pw);
     if(photos[0]){
-      const pw2 = photoPicker(async (url)=>{
-        const ref = await storeReceiptPhoto(branch, draft.id, url);
-        if(url && !ref){ toast(t('toast_photo_too_large')); return; }
-        const next = ref ? [photos[0], ref] : [photos[0]];
-        try{ await S.db.doc('receipts/'+draft.id).update({photos: next}); }catch(err){ toast(dbErrMsg(err)); }
-      }, true, photos[1] || null, RECEIPT_PHOTO);
+      const pw2 = photoPicker(url=>setPhoto(1, url), true, photos[1] || null, RECEIPT_PHOTO);
       pw2.style.marginTop = '6px';
       if(!photos[1]) pw2.querySelector('button span').textContent = t('recv_photo2');
       card.appendChild(pw2);
     } else {
-      card.appendChild(el(`<div class="hint" style="margin-top:4px;">${esc(t('recv_photo_hint'))}</div>`));
+      card.appendChild(el(`<div class="hint" style="margin-top:4px;">${esc(t('recv_photo_hint'))} ${esc(t('recv_photo_gallery_hint'))}</div>`));
     }
+    const saveField = (k, v)=> recvUpdate(draft.id, ()=>({[k]: v})).catch(err=>toast(recvErrMsg(err)));
+    const money0 = (input, key)=>{ input.onchange = (ev)=>{ const v = ev.target.value.trim();
+      if(v !== '' && !(Number(v) >= 0)){ toast(t('recv_err_amount')); ev.target.value = draft[key] || ''; return; }
+      saveField(key, v); }; };
     const kind = el(`<div class="seg" style="margin:10px 0 8px;">
       <button data-v="do" class="${draft.docKind!=='invoice'?'on':''}">${esc(t('recv_doc_do'))}</button>
       <button data-v="invoice" class="${draft.docKind==='invoice'?'on':''}">${esc(t('recv_doc_invoice'))}</button></div>`);
-    [...kind.querySelectorAll('button')].forEach(b=>{ b.onclick=async ()=>{ try{ await S.db.doc('receipts/'+draft.id).update({docKind:b.dataset.v}); }catch(err){ toast(dbErrMsg(err)); } }; });
+    [...kind.querySelectorAll('button')].forEach(b=>{ b.onclick=()=>saveField('docKind', b.dataset.v); });
     card.appendChild(kind);
     const docNo = el(`<label class="field"><span class="fl">${esc(t('recv_doc_no'))}</span><input type="text" value="${esc(draft.docNo||'')}"></label>`);
-    docNo.querySelector('input').onchange = async (ev)=>{ try{ await S.db.doc('receipts/'+draft.id).update({docNo: ev.target.value.trim()}); }catch(err){ toast(dbErrMsg(err)); } };
+    docNo.querySelector('input').onchange = (ev)=>saveField('docNo', ev.target.value.trim());
     card.appendChild(docNo);
-    const amt = el(`<label class="field"><span class="fl">${esc(t('recv_amount'))}</span><input type="number" inputmode="decimal" step="0.01" value="${esc(draft.amount||'')}"></label>`);
-    amt.querySelector('input').onchange = async (ev)=>{ try{ await S.db.doc('receipts/'+draft.id).update({amount: ev.target.value.trim()}); }catch(err){ toast(dbErrMsg(err)); } };
+    const amt = el(`<label class="field"><span class="fl">${esc(t('recv_amount'))}</span><input type="number" inputmode="decimal" step="0.01" min="0" value="${esc(draft.amount||'')}"></label>`);
+    money0(amt.querySelector('input'), 'amount');
     card.appendChild(amt);
     // COD: cash handed to the driver from the till, right now. Accounting settles it from the outlet cash
     // account and checks it against that day's POS cash-out; it never enters a bank payment run.
     const cod = el(`<label class="field"><span class="fl">${esc(t('recv_paid_cash'))}</span><input type="number" inputmode="decimal" step="0.01" min="0" value="${esc(draft.paidCash||'')}"></label>`);
-    cod.querySelector('input').onchange = async (ev)=>{ try{ await S.db.doc('receipts/'+draft.id).update({paidCash: ev.target.value.trim()}); }catch(err){ toast(dbErrMsg(err)); } };
+    money0(cod.querySelector('input'), 'paidCash');
     card.appendChild(cod);
     const note = el(`<label class="field"><span class="fl">${esc(t('recv_note'))}</span><input type="text" value="${esc(draft.note||'')}"></label>`);
-    note.querySelector('input').onchange = async (ev)=>{ try{ await S.db.doc('receipts/'+draft.id).update({note: ev.target.value.trim()}); }catch(err){ toast(dbErrMsg(err)); } };
+    note.querySelector('input').onchange = (ev)=>saveField('note', ev.target.value.trim());
     card.appendChild(note);
   }
 
@@ -6985,12 +7108,16 @@ function receiveView(){
           <div class="lr-main"><div class="lr-title">${esc(line.name)}</div>
           <div class="lr-sub">${esc(line.code||'')}${line.code?' · ':''}${esc(line.unit||'')}${extra?' · '+esc(extra):''}</div></div>
           <span class="num" style="font-weight:900; font-size:16px; margin-right:10px;${!(Number(line.qty)>0) && line.returned ? ' color:var(--bad, #b3261e);' : ''}">${Number(line.qty)>0 ? Number(line.qty) : (line.returned ? '−' + line.returned : 0)}</span></div>`);
-        row.querySelector('.lr-main').onclick = ()=>openReceiptQtySheet(branch, {id:line.skuId, code:line.code, name:line.name, unit:line.unit}, line);
+        row.querySelector('.lr-main').onclick = ()=>openReceiptQtySheet(branch, {id:line.skuId, code:line.code, name:line.name, unit:line.unit}, line, draft.id);
         const del = el(`<button class="btn sm">${ICONS.x}</button>`);
+        // a removed AI line goes back to "to check"
         del.onclick = async ()=>{
-          const patch = {lines: lines.filter(l => l.lineId !== line.lineId)};
-          if(line.ai && draft.aiDecisions){ const dd = Object.assign({}, draft.aiDecisions); delete dd[line.ai.n]; patch.aiDecisions = dd; }
-          try{ await S.db.doc('receipts/'+draft.id).update(patch); }catch(err){ toast(dbErrMsg(err)); } };
+          try{ await recvUpdate(draft.id, d=>{
+            const ls = receiptLines(d), gone = ls.find(l => l.lineId === line.lineId);
+            const patch = {lines: ls.filter(l => l.lineId !== line.lineId)};
+            if(gone && gone.ai && d.aiDecisions){ const dd = Object.assign({}, d.aiDecisions); delete dd[gone.ai.n]; patch.aiDecisions = dd; }
+            return patch; }); }
+          catch(err){ toast(recvErrMsg(err)); } };
         row.appendChild(del);
         list.appendChild(row);
       });
@@ -7002,6 +7129,7 @@ function receiveView(){
 
     const sendBtn = el(`<button class="btn primary block" style="margin-top:8px;">${esc(t('recv_btn_send'))}${lines.length?' ('+lines.length+')':''}</button>`);
     sendBtn.onclick = async ()=>{
+      if(sendBtn.disabled) return;
       const rd = receiptReadFor(draft);
       if(rd && rd.status === 'done'){
         const n = aiPending(draft, rd);
@@ -7013,15 +7141,25 @@ function receiveView(){
       sendBtn.disabled = true;
       try{
         await rpc('submit_receipt', {rec_id: draft.id});     // server time, server identity, then frozen
+        S.receiveDraft = Object.assign({}, S.receiveDraft, {[branch]: 'new'});    // next delivery starts a new receipt
         toast(t('recv_toast_sent'));
-      }catch(err){ toast(dbErrMsg(err)); sendBtn.disabled = false; }
+        renderFromData();
+      }catch(err){ toast(recvErrMsg(err)); sendBtn.disabled = false; }
     };
     card.appendChild(sendBtn);
   }
   if(draft){
-    const discard = el(`<button class="btn danger sm" style="margin-top:10px;">${esc(t('recv_discard'))}</button>`);
-    discard.onclick = async ()=>{ if(!confirm(t('recv_discard')+'?')) return; try{ await S.db.doc('receipts/'+draft.id).delete(); }catch(err){ toast(dbErrMsg(err)); } };
-    card.appendChild(discard);
+    // only the cashier who started it (or a manager) may throw a receipt away -- a colleague may still be counting it
+    const mine = draft.createdBy === (e && e.id);
+    if(mine || isAdmin() || isManager()){
+      const discard = el(`<button class="btn danger sm" style="margin-top:10px;">${esc(t('recv_discard'))}</button>`);
+      discard.onclick = async ()=>{
+        const msg = t('recv_discard_confirm').split('{who}').join(draft.createdByName || '').split('{n}').join(receiptLines(draft).length);
+        if(!confirm(msg)) return;
+        try{ await S.db.doc('receipts/'+draft.id).delete(); S.receiveDraft = Object.assign({}, S.receiveDraft, {[branch]: 'new'}); }
+        catch(err){ toast(recvErrMsg(err)); } };
+      card.appendChild(discard);
+    } else card.appendChild(el(`<p class="hint" style="margin-top:10px;">${esc(t('recv_discard_not_mine').split('{who}').join(draft.createdByName || ''))}</p>`));
   }
   c.appendChild(card);
 
@@ -7118,7 +7256,7 @@ function receiptReadCard(branch, draft){
     btn.disabled = true;
     try{ await rpc('request_receipt_read', {p_receipt: draft.id}); toast(t('recv_ai_asked')); }
     catch(err){ const m = String((err && err.message) || '');
-      toast(/read_limit/.test(m) ? t('recv_ai_limit') : /read_daily_cap/.test(m) ? t('recv_ai_cap') : dbErrMsg(err)); btn.disabled = false; }
+      toast(recvErrMsg(err)); btn.disabled = false; }
   };
   if(!rd || rd.status === 'failed' || (rd.status !== 'done' && !rd.status)){
     box.appendChild(el(`<div style="font-weight:800;">🤖 ${esc(t('recv_ai_title'))}</div><p class="hint" style="margin:4px 0 8px;">${esc(t('recv_ai_hint'))}</p>`));
@@ -7164,9 +7302,8 @@ function receiptReadCard(branch, draft){
     const v = (tot.querySelector('input').value||'').trim();
     if(!(Number(v) >= 0) || v === ''){ toast(t('err_valid_qty')); return; }
     const patch = {amount: v, amountConfirmed: v, amountConfirmedBy: currentEmployee().id, amountConfirmedAt: new Date().toISOString()};
-    if(!draft.docNo && R.docNo) patch.docNo = R.docNo;
     if(R.docKind === 'do' || R.docKind === 'invoice') patch.docKind = R.docKind;
-    try{ await S.db.doc('receipts/'+draft.id).update(patch); toast(t('toast_saved')); }catch(err){ toast(dbErrMsg(err)); }
+    try{ await recvUpdate(draft.id, d=>Object.assign({}, patch, !d.docNo && R.docNo ? {docNo: R.docNo} : {})); toast(t('toast_saved')); }catch(err){ toast(recvErrMsg(err)); }
   };
   tot.appendChild(tb); box.appendChild(tot);
   if(R.docNo && draft.docNo && R.docNo !== draft.docNo) box.appendChild(el(`<p class="hint" style="color:var(--warn-ink, #7A4B0E);">⚠ ${esc(t('recv_ai_docno_diff'))}: ${esc(R.docNo)}</p>`));
@@ -7208,10 +7345,9 @@ function openAiLineSheet(branch, draftId, l){
   body.appendChild(amt);
   body.appendChild(el(`<p class="hint" style="margin:6px 0 0;">${esc(t('recv_ai_confirm_hint'))}</p>`));
   const save = async (decision)=>{
-    const d = S.receipts.find(r => r.id === draftId); if(!d){ toast(t('recv_need_supplier')); return; }
-    const rd2 = receiptReadFor(d); if(!rd2 || rd2.status !== 'done'){ toast(t('recv_ai_failed')); return; }
-    const decs = Object.assign({}, aiDecisions(d, rd2));
-    let lines = receiptLines(d).filter(x => !(x.ai && x.ai.n === l.n && x.ai.readAt === rd2.readAt));   // re-deciding replaces the earlier line
+    const d0 = S.receipts.find(r => r.id === draftId); if(!d0){ toast(t('recv_err_gone')); return; }
+    const rd2 = receiptReadFor(d0); if(!rd2 || rd2.status !== 'done'){ toast(t('recv_ai_failed')); return; }
+    let line = null, dec = {d:'skip'}, replaceManual = false;
     if(decision === 'ok'){
       if(!sku){ toast(t('recv_ai_pick_item')); return; }
       const q = Number(qty.querySelector('input').value), a = amt.querySelector('input').value.trim();
@@ -7219,18 +7355,36 @@ function openAiLineSheet(branch, draftId, l){
       if(a === '' || !(Number(a) >= 0)){ toast(t('recv_ai_need_amount')); return; }
       const printed = (Number(l.qty)||0) + (Number(l.foc)||0);
       const sameU = !l.uom || sameUnit(l.uom, sku.unit);
-      // what the paper says arrived, in our unit: the reader's conversion when the product is its match, else the printed count if the unit is ours
+      // what the paper says arrived, in our unit (the reader's conversion, a keg in mugs, or the printed count)
       const expected = aiExpected(l, sku);
-      const line = {lineId:'l'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), skuId:sku.id, code:sku.code||'', name:sku.name, unit:sku.unit||'',
+      // pieces per printed unit, remembered for this supplier's line: from a known conversion, or from the count only
+      // when it divides evenly (47 counted for 2 cartons is a short delivery, not a carton of 23.5)
+      const per = printed > 0 && !sameU ? (expected != null ? expected/printed : (q > 0 && Number.isInteger(q/printed) ? q/printed : null)) : null;
+      line = {lineId:'l'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), skuId:sku.id, code:sku.code||'', name:sku.name, unit:sku.unit||'',
         qty:q, short: expected != null && q < expected ? Math.round((expected - q)*100)/100 : 0, damaged:0, amount:Number(a),
         ai:{n:l.n, readAt:rd2.readAt, key:l.key, desc:l.description, qty:l.qty, uom:l.uom, foc:l.foc||0, price:l.unitPrice, readAmount:l.amount, how:l.how,
-            itemChanged: sku.id !== l.skuId, pack: printed > 0 && !sameU ? (expected != null ? Math.round(expected/printed*1000)/1000 : (q > 0 ? Math.round(q/printed*1000)/1000 : null)) : null,
+            itemChanged: sku.id !== l.skuId, pack: per != null ? Math.round(per*1000)/1000 : null,
             confirmedBy: currentEmployee().id, confirmedAt: new Date().toISOString()}};
-      lines = lines.concat([line]);
-      decs[l.n] = {d:'ok', qty:q, amount:Number(a), skuId:sku.id, code:sku.code||'', name:sku.name, unit:sku.unit||''};
-    } else decs[l.n] = {d:'skip'};
-    try{ await S.db.doc('receipts/'+draftId).update({lines, aiDecisions:decs, aiReadAt:rd2.readAt}); closeSheet(); }
-    catch(err){ toast(dbErrMsg(err)); }
+      dec = {d:'ok', qty:q, amount:Number(a), skuId:sku.id, code:sku.code||'', name:sku.name, unit:sku.unit||''};
+      // the same product already counted by hand: counting it twice would double the stock
+      const manual = receiptLines(d0).filter(x => x.skuId === sku.id && !x.ai);
+      if(manual.length){
+        if(!confirm(t('recv_ai_dup_manual').split('{n}').join(manual.reduce((s2, x)=>s2 + (Number(x.qty)||0), 0)))) return;
+        replaceManual = true;
+      }
+    }
+    try{
+      await recvUpdate(draftId, d=>{
+        const decs = Object.assign({}, d.aiReadAt === rd2.readAt ? (d.aiDecisions || {}) : {});
+        let lines = receiptLines(d).filter(x => !(x.ai && x.ai.n === l.n && x.ai.readAt === rd2.readAt));   // re-deciding replaces the earlier line
+        if(replaceManual) lines = lines.filter(x => !(x.skuId === sku.id && !x.ai));
+        if(line) lines = lines.concat([line]);
+        decs[l.n] = dec;
+        return {lines, aiDecisions: decs, aiReadAt: rd2.readAt};
+      });
+      closeSheet();
+    }
+    catch(err){ toast(recvErrMsg(err)); }
   };
   const foot = el('<div class="sheet-foot"></div>');
   const ok = el(`<button class="btn primary block">✓ ${esc(t('recv_ai_confirm'))}</button>`); ok.onclick = ()=>save('ok');
@@ -7299,7 +7453,7 @@ function openReceiptSkuPicker(branch, onPick){
   const row = x => {
     const tags = (skuPending(x) ? ` <span class="pill warn">${esc(t('recv_pending_code'))}</span>` : '') + (onReceipt[x.id] ? ` <span class="pill ok">${esc(t('recv_on_receipt'))} ${onReceipt[x.id]}</span>` : '');
     const r = el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(x.name)}${tags}</div><div class="lr-sub">${esc(x.unit||'')}${x.code?' · '+esc(x.code):''}</div>${skuBarcodes(x).length?'<div class="lr-sub num" style="font-size:12px;">▮▯▮ '+esc(skuBarcodeText(x,2))+'</div>':''}</div>${ib('plus','c-grey','sm')}</div>`);
-    r.onclick = ()=> onPick ? (closeSheet(), onPick(x)) : openReceiptQtySheet(branch, x, null);
+    r.onclick = ()=> onPick ? (closeSheet(), onPick(x)) : openReceiptQtySheet(branch, x, null, draft && draft.id);
     return r;
   };
   const render = ()=>{
@@ -7362,7 +7516,7 @@ function openNewItemForm(branch, typed){
       if(!S.skus.some(x => x.id === sku.id)) S.skus.push(sku);
       toast(r.existed ? t('recv_new_exists') : t('recv_new_created'));
       closeSheet();
-      openReceiptQtySheet(branch, sku, null);
+      openReceiptQtySheet(branch, sku, null, draft.id);
     }catch(err){ toast(dbErrMsg(err)); btn.disabled = false; }
   };
   body.appendChild(btn);
@@ -7370,7 +7524,7 @@ function openNewItemForm(branch, typed){
   setTimeout(()=>{ const i = form.querySelector('input'); if(i){ i.focus(); } }, 60);
 }
 
-function openReceiptQtySheet(branch, sku, existing){
+function openReceiptQtySheet(branch, sku, existing, draftId){
   const body = el('<div></div>');
   const bcs = skuBarcodes(S.skus.find(x=>x.id===sku.id) || sku);
   body.appendChild(el(`<div class="card" style="text-align:center;"><div style="font-weight:900; font-size:16px;">${esc(sku.name)}</div>
@@ -7402,22 +7556,27 @@ function openReceiptQtySheet(branch, sku, existing){
   const foot = el('<div class="row" style="margin-top:12px;"></div>');
   const btn = el(`<button class="btn primary" style="flex:1;">${esc(t('btn_save'))}</button>`);
   btn.onclick = async ()=>{
-    const draft = draftReceiptFor(branch);
-    if(!draft){ toast(t('recv_need_supplier')); return; }
+    // the receipt this sheet was opened for, not whichever one is selected when Save is tapped
+    const id = draftId || ((draftReceiptFor(branch) || {}).id);
+    if(!id){ toast(t('recv_need_supplier')); return; }
     btn.disabled = true;
     const n = v => Math.max(0, Number(v.querySelector('input').value)||0);
     // a minus number in Received is stock handed back to the driver, as the supplier's paper shows it
     const raw = Number(String(qty.querySelector('input').value).replace(/[−–]/g, '-')) || 0;
     const returned = n(ret) + (raw < 0 ? -raw : 0);
     if(raw < 0) toast(t('recv_neg_as_return') + (-raw));
-    const line = {lineId: existing ? existing.lineId : ('l'+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),
-                  skuId: sku.id, code: sku.code||'', name: sku.name, unit: sku.unit||'', qty: Math.max(0, raw), short: n(short), damaged: n(dmg)};
-    if(returned > 0) line.returned = returned;
+    // an edited line keeps what it had (the AI record and the confirmed amount); only the counts change
+    const line = Object.assign({}, existing || {}, {lineId: existing ? existing.lineId : ('l'+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),
+                  skuId: sku.id, code: sku.code||'', name: sku.name, unit: sku.unit||'', qty: Math.max(0, raw), short: n(short), damaged: n(dmg)});
+    if(returned > 0) line.returned = returned; else delete line.returned;
     if(!line.qty && !line.returned && !line.short && !line.damaged){ toast(t('err_valid_qty')); btn.disabled = false; return; }
-    const ev = (exp.querySelector('input').value||'').trim(); if(/^\d{4}-\d{2}-\d{2}$/.test(ev)) line.expiry = ev;
-    const lines = existing ? receiptLines(draft).map(l => l.lineId === existing.lineId ? line : l) : receiptLines(draft).concat([line]);
-    try{ await S.db.doc('receipts/'+draft.id).update({lines}); closeSheet(); }
-    catch(err){ toast(dbErrMsg(err)); btn.disabled = false; }
+    const ev = (exp.querySelector('input').value||'').trim(); if(/^\d{4}-\d{2}-\d{2}$/.test(ev)) line.expiry = ev; else delete line.expiry;
+    try{
+      await recvUpdate(id, d=>{ const ls = receiptLines(d);
+        return {lines: existing && ls.some(l => l.lineId === existing.lineId) ? ls.map(l => l.lineId === existing.lineId ? line : l) : ls.concat([line])}; });
+      closeSheet();
+    }
+    catch(err){ toast(recvErrMsg(err)); btn.disabled = false; }
   };
   foot.appendChild(btn); body.appendChild(foot);
   openSheet(t('recv_step_lines'), body);
