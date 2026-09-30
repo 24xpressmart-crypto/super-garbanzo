@@ -506,7 +506,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-09-30.56';
+const APP_BUILD = '2026-09-30.57';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -841,7 +841,7 @@ const I18N = {
     btn_save_schedule:'保存排班', err_need_employee:'请先添加员工', err_fill_all:'请完整填写', toast_added:'已添加',
     sheet_add_schedule:'添加排班',
     photo_pick:'拍照 / 选择图片（可选）', photo_compressing:'压缩中…', photo_retake:'重新拍照 / 选择',
-    photo_take:'拍照（可选）', photo_retake_cam:'重新拍照', btn_remove_photo:'移除',
+    photo_take_opt:'拍照（可选）', photo_pick_req:'拍照 / 选择图片（必须）', photo_retake_cam:'重新拍照', btn_remove_photo:'移除',
     field_product_image:'商品图片（可选）',
     toast_photo_too_large:'图片体积过大，已跳过，请换一张试试', toast_photo_pending:'照片暂未上传，已先存在记录里，稍后自动重试', photo_pending_note:'⏳ 照片待移到私有存储', photo_store_title:'照片存储', photo_store_hint:'打卡自拍、银行存款凭证、收货单分别放在私有存储，各有查看权限。上传失败的照片先留在记录里，显示为「待上传」。不会自动删除任何照片。', photo_kind_selfie:'打卡自拍', photo_kind_slip:'银行存款凭证', photo_kind_receipt:'收货单', photo_stored:'已存', photo_pending:'待上传', btn_move_photos:'把待上传照片移到私有存储', confirm_move_photos:'每张照片会先核对内容完全一致、原件留在备份里，才替换记录。继续？', photo_moving:'移动中', photo_move_busy:'另一轮搬移正在进行，请稍后再试', resigned_title:'已离职', resigned_hint:'已关闭的员工：不能登录、不会出现在排班和打卡里，资料保留。复职时打开开关即可。', resigned_on:'离职', resigned_no_date:'离职日期未填', resigned_duplicate:'重复资料，正本是', confirm_rehire_prefix:'要让 ', confirm_rehire_suffix:' 复职吗？他会重新出现在员工名单、排班和打卡里。', err_invite_inactive:'这位员工已关闭（离职），不能发邀请码；复职请先打开开关', field_nicknames:'昵称（排班表上的叫法，多个用逗号分开）', btn_upload_schedule:'上传排班', sheet_upload_schedule:'上传排班', sched_up_step1:'① 下载本周模板（已列出本店员工和 App 里现有的班次），用 Excel 或 Google Sheets 填写', btn_sched_template:'下载本周模板', sched_up_step2:'② 选择填好的文件（.xlsx 或 .csv），或把表格复制后贴在下面', ph_sched_paste:'或在这里贴上表格…', sched_up_rules:'格子写法：09:00-18:00；两段班写 09:00-13:00 / 17:00-22:00；也可写班次名（早班）；OFF 或 休 = 当天不上班；空白 = 不改。只会改今天及以后的日子。', btn_sched_check:'检查', sched_add:'新增', sched_remove:'删除', sched_same:'不变', sched_nothing:'没有需要改的班次', sched_unmatched:'本店名单里找不到（请用模板里的名字或工号）：', sched_bad_cells:'看不懂的格子（没有导入）：', sched_past_skipped:'已过去的日子不会改：', btn_sched_save:'保存排班', sched_saved:'已保存并逐项核对：', sched_verify_bad:'以下没有生效，请截图给 HQ：', sched_col_staff:'员工 Staff', sched_col_code:'工号 Code', err_file_read:'读不到这个文件，请另存为 .xlsx 或 .csv 再试', err_past_shift:'已过去的班次不能删除，请找 HQ', photo_last_run:'上一批', photo_out_moved:'已迁移', photo_out_already:'原已在存储', photo_out_skipped:'无需迁移', photo_out_failed:'失败', photo_out_unknown:'结果未知', photo_stopped:'已停止', btn_stop_moving:'停止（做完当前这张）', photo_stopping:'正在停止…', photo_report_title:'数据库对账', photo_chk_record:'记录', photo_chk_file:'文件', photo_chk_backup:'备份', photo_report_none:'这一批没有迁移任何照片', photo_chk_grn:'收货单(GRN)数', photo_report_ok:'✅ 对账一致，可以做下一批', photo_report_check:'⚠️ 对账不一致或有失败，先别继续，请查看', btn_preview_photos:'预览接下来要迁移的照片', btn_move_one:'先迁移第 1 张', btn_move_listed:'迁移列出的这些', photo_moved_prefix:'已移动 ', photo_failed_prefix:'失败 ', toast_photo_failed:'图片处理失败',
     toast_deleted:'已删除',
@@ -1080,7 +1080,7 @@ const I18N = {
     btn_save_schedule:'Save Shift', err_need_employee:'Please add staff first', err_fill_all:'Please fill in all fields', toast_added:'Added',
     sheet_add_schedule:'Add Shift',
     photo_pick:'Take Photo / Choose Image (optional)', photo_compressing:'Compressing…', photo_retake:'Retake / Choose Again',
-    photo_take:'Take Photo (optional)', photo_retake_cam:'Retake Photo', btn_remove_photo:'Remove',
+    photo_take_opt:'Take Photo (optional)', photo_pick_req:'Take Photo / Choose Image (required)', photo_retake_cam:'Retake Photo', btn_remove_photo:'Remove',
     field_product_image:'Product Photo (optional)',
     toast_photo_too_large:'Image too large, skipped — please try another one', toast_photo_pending:'Photo not uploaded yet — kept with the record, will retry automatically', photo_pending_note:'⏳ Photo waiting to move to private storage', photo_store_title:'Photo storage', photo_store_hint:'Clock-in selfies, bank-in slips and delivery papers are kept in separate private storage, each with its own viewing rights. A photo that failed to upload stays in its record and shows as pending. No photo is deleted automatically.', photo_kind_selfie:'Clock-in selfies', photo_kind_slip:'Bank-in slips', photo_kind_receipt:'Delivery papers', photo_stored:'stored', photo_pending:'pending', btn_move_photos:'Move pending photos to private storage', confirm_move_photos:'Each photo is checked byte for byte and the original is kept in a backup before the record is switched. Continue?', photo_moving:'Moving', photo_move_busy:'Another move is already running — try again in a few minutes', resigned_title:'Resigned', resigned_hint:'Switched-off staff cannot log in and do not appear in schedules or clock-in; their record is kept. Switch one on again if rehired.', resigned_on:'resigned', resigned_no_date:'resign date not recorded', resigned_duplicate:'duplicate record of', confirm_rehire_prefix:'Rehire ', confirm_rehire_suffix:'? They will be back in the staff list, schedules and clock-in.', err_invite_inactive:'This staff member is switched off (resigned); no invite code. Switch them on first if rehired', field_nicknames:'Nicknames (as written on rosters, comma separated)', btn_upload_schedule:'Upload schedule', sheet_upload_schedule:'Upload schedule', sched_up_step1:'① Download this week\'s template (your staff and the shifts already in the App) and fill it in Excel or Google Sheets', btn_sched_template:'Download this week\'s template', sched_up_step2:'② Choose the filled file (.xlsx or .csv), or copy the table and paste it below', ph_sched_paste:'Or paste the table here…', sched_up_rules:'In a cell: 09:00-18:00; two shifts as 09:00-13:00 / 17:00-22:00; or a shift name (Morning); OFF = no shift that day; empty = leave as it is. Only today and later days change.', btn_sched_check:'Check', sched_add:'Add', sched_remove:'Remove', sched_same:'Unchanged', sched_nothing:'Nothing to change', sched_unmatched:'Not in this store (use the name or code from the template): ', sched_bad_cells:'Cells not understood (not imported): ', sched_past_skipped:'Past days are not changed: ', btn_sched_save:'Save schedule', sched_saved:'Saved and checked: ', sched_verify_bad:'Not applied — send a screenshot to HQ: ', sched_col_staff:'Staff', sched_col_code:'Code', err_file_read:'Can\'t read this file — save it as .xlsx or .csv and try again', err_past_shift:'A past shift cannot be removed — ask HQ', photo_last_run:'Last batch', photo_out_moved:'moved', photo_out_already:'already stored', photo_out_skipped:'nothing to move', photo_out_failed:'failed', photo_out_unknown:'outcome unknown', photo_stopped:'stopped', btn_stop_moving:'Stop (after the current photo)', photo_stopping:'Stopping…', photo_report_title:'Database reconciliation', photo_chk_record:'record', photo_chk_file:'file', photo_chk_backup:'backup', photo_report_none:'No photo was moved in this batch', photo_chk_grn:'GRN count', photo_report_ok:'✅ Reconciled — the next batch can go', photo_report_check:'⚠️ Mismatch or failures — stop and check before the next batch', btn_preview_photos:'Preview the next photos to move', btn_move_one:'Move the first one only', btn_move_listed:'Move the listed ones', photo_moved_prefix:'Moved ', photo_failed_prefix:'failed ', toast_photo_failed:'Failed to process image',
     toast_deleted:'Deleted',
@@ -1319,7 +1319,7 @@ const I18N = {
     btn_save_schedule:'Simpan syif', err_need_employee:'Sila tambah staf dahulu', err_fill_all:'Sila isi semua ruangan', toast_added:'Ditambah',
     sheet_add_schedule:'Tambah syif',
     photo_pick:'Ambil gambar / pilih imej (pilihan)', photo_compressing:'Memampatkan…', photo_retake:'Ambil semula / pilih lagi',
-    photo_take:'Ambil gambar (pilihan)', photo_retake_cam:'Ambil gambar semula', btn_remove_photo:'Buang',
+    photo_take_opt:'Ambil gambar (pilihan)', photo_pick_req:'Ambil gambar / pilih imej (wajib)', photo_retake_cam:'Ambil gambar semula', btn_remove_photo:'Buang',
     field_product_image:'Gambar produk (pilihan)',
     toast_photo_too_large:'Imej terlalu besar, dilangkau — cuba yang lain', toast_photo_pending:'Foto belum dimuat naik — disimpan bersama rekod, akan dicuba semula', photo_pending_note:'⏳ Foto menunggu dipindah ke storan peribadi', photo_store_title:'Storan foto', photo_store_hint:'Swafoto daftar masuk, slip bank dan kertas penghantaran disimpan dalam storan peribadi berasingan, masing-masing dengan hak lihat sendiri. Foto yang gagal dimuat naik kekal dalam rekod dan ditanda belum selesai. Tiada foto dipadam secara automatik.', photo_kind_selfie:'Swafoto daftar masuk', photo_kind_slip:'Slip bank', photo_kind_receipt:'Kertas penghantaran', photo_stored:'disimpan', photo_pending:'belum', btn_move_photos:'Pindahkan foto ke storan peribadi', confirm_move_photos:'Setiap foto disemak sama sepenuhnya dan asalnya disimpan sebagai sandaran sebelum rekod ditukar. Teruskan?', photo_moving:'Memindah', photo_move_busy:'Pemindahan lain sedang berjalan — cuba lagi sebentar lagi', resigned_title:'Berhenti kerja', resigned_hint:'Staf yang dimatikan tidak boleh log masuk dan tiada dalam jadual atau daftar masuk; rekod disimpan. Hidupkan semula jika diambil bekerja semula.', resigned_on:'berhenti', resigned_no_date:'tarikh berhenti belum direkod', resigned_duplicate:'rekod pendua bagi', confirm_rehire_prefix:'Ambil semula ', confirm_rehire_suffix:'? Dia akan kembali dalam senarai staf, jadual dan daftar masuk.', err_invite_inactive:'Staf ini telah dimatikan (berhenti); tiada kod jemputan. Hidupkan dahulu jika diambil semula', field_nicknames:'Nama panggilan (seperti dalam jadual, pisahkan dengan koma)', btn_upload_schedule:'Muat naik jadual', sheet_upload_schedule:'Muat naik jadual', sched_up_step1:'① Muat turun templat minggu ini (staf kedai dan syif sedia ada dalam App), isi dalam Excel atau Google Sheets', btn_sched_template:'Muat turun templat minggu ini', sched_up_step2:'② Pilih fail yang diisi (.xlsx atau .csv), atau salin jadual dan tampal di bawah', ph_sched_paste:'Atau tampal jadual di sini…', sched_up_rules:'Dalam sel: 09:00-18:00; dua syif 09:00-13:00 / 17:00-22:00; atau nama syif; OFF = tiada syif hari itu; kosong = tidak diubah. Hanya hari ini dan seterusnya berubah.', btn_sched_check:'Semak', sched_add:'Tambah', sched_remove:'Buang', sched_same:'Tiada ubah', sched_nothing:'Tiada perubahan', sched_unmatched:'Tiada dalam kedai ini (guna nama atau kod dalam templat): ', sched_bad_cells:'Sel tidak difahami (tidak diimport): ', sched_past_skipped:'Hari lepas tidak diubah: ', btn_sched_save:'Simpan jadual', sched_saved:'Disimpan dan disemak: ', sched_verify_bad:'Tidak berjaya — hantar tangkapan skrin kepada HQ: ', sched_col_staff:'Staf', sched_col_code:'Kod', err_file_read:'Fail tidak dapat dibaca — simpan sebagai .xlsx atau .csv', err_past_shift:'Syif lepas tidak boleh dipadam — hubungi HQ', photo_last_run:'Kelompok lepas', photo_out_moved:'dipindah', photo_out_already:'sudah disimpan', photo_out_skipped:'tiada untuk dipindah', photo_out_failed:'gagal', photo_out_unknown:'hasil tidak pasti', photo_stopped:'dihentikan', btn_stop_moving:'Henti (selepas foto semasa)', photo_stopping:'Menghentikan…', photo_report_title:'Semakan pangkalan data', photo_chk_record:'rekod', photo_chk_file:'fail', photo_chk_backup:'sandaran', photo_report_none:'Tiada foto dipindah dalam kelompok ini', photo_chk_grn:'Bilangan GRN', photo_report_ok:'✅ Sepadan — kelompok seterusnya boleh diteruskan', photo_report_check:'⚠️ Tidak sepadan atau gagal — berhenti dan semak dahulu', btn_preview_photos:'Pratonton foto seterusnya', btn_move_one:'Pindah yang pertama sahaja', btn_move_listed:'Pindah yang disenaraikan', photo_moved_prefix:'Dipindah ', photo_failed_prefix:'gagal ', toast_photo_failed:'Gagal memproses imej',
     toast_deleted:'Dipadam',
@@ -2047,7 +2047,8 @@ function closeSheet(){ $('modalWrap').classList.remove('show'); $('sheet').inner
 /* ============================ PHOTO HELPER ============================ */
 function photoPicker(onReady, cameraOnly, existingUrl, opts){
   opts = opts || {};
-  const pickLabel = cameraOnly ? t('photo_take') : t('photo_pick');
+  // say plainly whether the photo is needed: camera-only photos are required unless opts.optional; gallery ones optional unless opts.required
+  const pickLabel = cameraOnly ? t(opts.optional ? 'photo_take_opt' : 'photo_take') : t(opts.required ? 'photo_pick_req' : 'photo_pick');
   const retakeLabel = cameraOnly ? t('photo_retake_cam') : t('photo_retake');
   const wrap=el('<div></div>');
   const input=el(`<input type="file" accept="image/*" ${cameraOnly?(opts.front?'capture="user"':'capture="environment"'):''} style="display:none">`);
@@ -5563,7 +5564,7 @@ function openHandoverForm(branch){
     {key:'issues', label:t('field_issues'), type:'textarea'},
   ];
   const body=el('<div>'+fieldsHTML(f, {shift: hr<12?'open':(hr<18?'mid':'close')})+'</div>');
-  const pw=photoPicker(null, true); body.appendChild(pw);
+  const pw=photoPicker(null, true, null, {optional:true}); body.appendChild(pw);
   const foot=el('<div class="sheet-foot"></div>');
   const btn=el(`<button class="btn primary block">${esc(t('btn_save'))}</button>`);
   btn.onclick=async ()=>{
@@ -7723,7 +7724,7 @@ function receiveView(){
     const pw = photoPicker(url=>setPhoto(0, url), true, photos[0] || null, RECEIPT_PHOTO);
     card.appendChild(pw);
     if(photos[0]){
-      const pw2 = photoPicker(url=>setPhoto(1, url), true, photos[1] || null, RECEIPT_PHOTO);
+      const pw2 = photoPicker(url=>setPhoto(1, url), true, photos[1] || null, Object.assign({}, RECEIPT_PHOTO, {optional:true}));
       pw2.style.marginTop = '6px';
       if(!photos[1]) pw2.querySelector('button span').textContent = t('recv_photo2');
       card.appendChild(pw2);
@@ -9114,7 +9115,7 @@ function soDraftCard(branch, kind){
   if(!photos[0]){ const sp = pw1.querySelector('button span'); if(sp) sp.textContent = t('so_photo_take'); }
   card.appendChild(pw1);
   if(photos[0]){
-    const pw2 = photoPicker(url=>setPhoto(1, url), true, photos[1] || null, RECEIPT_PHOTO);
+    const pw2 = photoPicker(url=>setPhoto(1, url), true, photos[1] || null, Object.assign({}, RECEIPT_PHOTO, {optional:true}));
     pw2.style.marginTop = '6px';
     if(!photos[1]) pw2.querySelector('button span').textContent = t('so_photo2');
     card.appendChild(pw2);
@@ -9881,7 +9882,7 @@ function shrinkDataUrl(dataUrl, max){ return new Promise((res,rej)=>{ const img=
 function openAvatarSheet(){
   const e=currentEmployee(); const body=el('<div></div>');
   body.appendChild(el(`<p class="hint" style="margin-top:0;">${esc(t('avatar_hint'))}</p>`));
-  const pw=photoPicker(null,false,e.photo||null); body.appendChild(pw);
+  const pw=photoPicker(null,false,e.photo||null,{required:true}); body.appendChild(pw);
   const btn=el(`<button class="btn primary block" style="margin-top:10px;">${esc(t('btn_save'))}</button>`);
   btn.onclick=async()=>{ const p=pw.getPhoto(); if(!p){ toast(t('avatar_need_photo')); return; } btn.disabled=true; try{ const small=await shrinkDataUrl(p, 200); await rpc('set_my_photo',{p:small}); toast(t('toast_saved')); closeSheet(); }catch(err){ toast(dbErrMsg(err)); btn.disabled=false; } };
   body.appendChild(btn);
@@ -10023,7 +10024,7 @@ function openRectification(r){
   if(r.status==='done'){ body.appendChild(el(`<div class="hint">${esc(t('inc_resolved'))} · ${esc(r.doneBy||'')} · ${r.doneAt?fmtDateTime(r.doneAt):''}${r.doneNote?' · '+esc(r.doneNote):''}</div>`)); if(r.donePhoto) body.appendChild(el(`<img class="photow" src="${safeSrc(r.donePhoto)}">`)); }
   else {
     const note=el(`<textarea placeholder="${esc(t('audit_done_note_ph'))}" style="margin-top:10px;"></textarea>`); body.appendChild(note);
-    const pw=photoPicker(null,false); body.appendChild(pw);
+    const pw=photoPicker(null,false,null,{required:true}); body.appendChild(pw);
     const b=el(`<button class="btn ok block" style="margin-top:10px;">${esc(t('btn_mark_rectified'))}</button>`);
     b.onclick=async()=>{ const p=pw.getPhoto(); if(!p){ toast(t('audit_need_photo')); return; } b.disabled=true; try{ await S.db.doc('rectifications/'+r.id).update({status:'done', doneBy:currentEmployee().name, doneAt:new Date().toISOString(), doneNote:note.value||'', donePhoto:p}); toast(t('toast_saved')); closeSheet(); }catch(err){ toast(dbErrMsg(err)); b.disabled=false; } };
     body.appendChild(b);
@@ -10551,7 +10552,7 @@ function openVisitForm(){
     {key:'note', label:t('field_note_opt'), type:'textarea'},
   ];
   const body=el('<div>'+fieldsHTML(f,{docs:'yes'})+'</div>');
-  const pw=photoPicker(null,false); body.appendChild(pw);
+  const pw=photoPicker(null,false,null,{required:true}); body.appendChild(pw);
   const foot=el('<div class="sheet-foot"></div>'); const btn=el(`<button class="btn primary block">${esc(t('btn_visit'))}</button>`);
   btn.onclick=async()=>{ const v=readFields(body,f); if(!v.branch){ toast(t('err_fill_all')); return; } btn.disabled=true; btn.textContent=t('clock_geo_getting');
     const rec=Object.assign({employeeId:e.id, employeeName:e.name, branch:v.branch, docs:v.docs, supplies:(v.supplies||'').trim(), cash:v.cash?Number(v.cash):0, note:(v.note||'').trim(), createdAt:new Date().toISOString()}, await visitGeo(v.branch));
@@ -10577,7 +10578,7 @@ function openBankInForm(){
   ];
   const body=el('<div>'+fieldsHTML(f)+'</div>');
   body.appendChild(el(`<div class="hint">${esc(t('runner_slip_hint'))}</div>`));
-  const pw=photoPicker(null,false); body.appendChild(pw);
+  const pw=photoPicker(null,false,null,{required:true}); body.appendChild(pw);
   const foot=el('<div class="sheet-foot"></div>'); const btn=el(`<button class="btn ok block">${esc(t('btn_bankin'))}</button>`);
   btn.onclick=async()=>{ const v=readFields(body,f); const p=pw.getPhoto(); if(!v.amount||Number(v.amount)<=0){ toast(t('err_valid_qty')); return; } if(!p){ toast(t('runner_need_slip')); return; } btn.disabled=true;
     try{ const st=await storeOrKeep('bankslips', e.id, p, 30000); await S.db.collection('bankIns').add({employeeId:e.id, employeeName:e.name, amount:Number(v.amount), bank:(v.bank||'').trim(), ref:(v.ref||'').trim(), note:(v.note||'').trim(), slip:st.ref, createdAt:new Date().toISOString()}); toast(t('toast_bankin_saved') + (st.pending ? ' · ' + t('toast_photo_pending') : '')); closeSheet(); }catch(err){ toast(dbErrMsg(err)); btn.disabled=false; } };
