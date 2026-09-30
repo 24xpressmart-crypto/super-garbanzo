@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src https://smpazgmbmmeqighyhbon.supabase.co; img-src 'self' data:">
+<title>24 Xpress · Feedback</title>
+<link rel="icon" href="icon-192.png?v=2">
+<style>
+  :root{ --paper:#F1F1EC; --surface:#FFFFFF; --ink:#1B2024; --soft:#5B6067; --line:#DAD9D2; --accent:#2E6F91; --accent-soft:#DCEAF1; --red:#C1392B; --star:#E0A12B; }
+  @media (prefers-color-scheme: dark){ :root{ --paper:#14171A; --surface:#1D2226; --ink:#E8EAEC; --soft:#A9AFB5; --line:#333940; --accent:#5DA3C7; --accent-soft:#1F3440; } }
+  *{box-sizing:border-box}
+  [hidden]{display:none !important}
+  body{margin:0; background:var(--paper); color:var(--ink); font:16px/1.55 "Noto Sans SC",system-ui,-apple-system,"Segoe UI",sans-serif; padding:20px 16px 40px;}
+  main{max-width:520px; margin:0 auto; display:grid; gap:14px;}
+  header{display:flex; align-items:center; gap:12px;}
+  header img{width:48px; height:48px; border-radius:12px; background:#fff; border:1px solid var(--line);}
+  h1{font-size:21px; margin:0; line-height:1.25;}
+  .sub{color:var(--soft); font-size:13px; margin:0;}
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px; display:grid; gap:10px;}
+  .langs{display:flex; gap:6px; justify-content:flex-end;}
+  .langs button, .chip{font:inherit; font-size:14px; border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:999px; padding:6px 12px; cursor:pointer;}
+  .langs button.on, .chip.on{background:var(--accent); border-color:var(--accent); color:#fff;}
+  .stars{display:flex; gap:6px;}
+  .stars button{font-size:38px; line-height:1; background:none; border:0; padding:0 2px; cursor:pointer; color:var(--line);}
+  .stars button.on{color:var(--star);}
+  .chips{display:flex; flex-wrap:wrap; gap:8px;}
+  label{font-weight:700; font-size:14px;}
+  textarea, input{font:inherit; width:100%; border:1px solid var(--line); border-radius:10px; padding:10px; background:var(--paper); color:var(--ink);}
+  textarea{min-height:96px; resize:vertical;}
+  .hp{position:absolute; left:-5000px; width:1px; height:1px; overflow:hidden;}
+  .send{font:inherit; font-weight:800; font-size:17px; background:var(--accent); color:#fff; border:0; border-radius:12px; padding:13px; cursor:pointer;}
+  .send:disabled{opacity:.5;}
+  .note{font-size:12.5px; color:var(--soft);}
+  .err{color:var(--red); font-weight:700; min-height:1em;}
+  .done{text-align:center; padding:28px 16px;}
+  .done .big{font-size:52px;}
+</style>
+</head>
+<body>
+<main>
+  <div class="langs"><button data-l="zh">中文</button><button data-l="en">English</button><button data-l="ms">BM</button></div>
+  <header><img src="icon-192.png?v=2" alt=""><div><h1 data-t="title"></h1><p class="sub" id="store"></p></div></header>
+
+  <div class="card" id="form">
+    <label data-t="rate"></label>
+    <div class="stars" id="stars"></div>
+    <label data-t="topic"></label>
+    <div class="chips" id="topics"></div>
+    <label for="text" data-t="tell"></label>
+    <textarea id="text" maxlength="500"></textarea>
+    <label for="contact" data-t="contact"></label>
+    <input id="contact" maxlength="80" autocomplete="off">
+    <div class="note" data-t="privacy"></div>
+    <div class="hp" aria-hidden="true"><input id="website" tabindex="-1" autocomplete="off"></div>
+    <div class="err" id="err"></div>
+    <button class="send" id="send" disabled data-t="send"></button>
+  </div>
+
+  <div class="card done" id="thanks" hidden><div class="big">🙏</div><h1 data-t="thanks"></h1><p class="sub" data-t="thanks2"></p></div>
+</main>
+<script>
+(function(){
+  var SB = 'https://smpazgmbmmeqighyhbon.supabase.co', KEY = 'sb_publishable_Tgk8ma2TGmtUpT1MT4AEPg_4U7thozC';
+  var T = {
+    zh:{title:'告诉我们你的意见', rate:'这次来店的感觉', topic:'关于什么', tell:'想说的话（可不写）', contact:'想要我们回复？留电话或电邮（可不写）',
+        privacy:'你的意见只给这间店和 24 Xpress 总部看，用来改进服务，保存 12 个月。留了联络方式，我们只会为了这件事联系你，处理完就删除。想查看或更正你留下的资料，请到任何一间 24 Xpress 门店询问。',
+        send:'送出', thanks:'谢谢你！', thanks2:'店长和总部会看到你的意见。', store:'门店 ', err_star:'请先选星星', err_off:'暂时不接收意见，谢谢。', err_busy:'现在太多人送了，请过一会再试。', err:'送不出去，请再试一次。',
+        topics:{clean:'干净', service:'服务', stock:'缺货', price:'价钱', food:'食物', other:'其他'}},
+    en:{title:'Tell us how we did', rate:'How was your visit?', topic:'What is it about?', tell:'Your comments (optional)', contact:'Want a reply? Phone or email (optional)',
+        privacy:'Only this store and 24 Xpress head office see your feedback, to improve our service; it is kept for 12 months. Contact details are used only to reply about this and are deleted once it is handled. To see or correct what you left, ask at any 24 Xpress store.',
+        send:'Send', thanks:'Thank you!', thanks2:'The store manager and head office will see your feedback.', store:'Store ', err_star:'Please tap the stars first', err_off:'Feedback is not open right now. Thank you.', err_busy:'Too many at the moment, please try again later.', err:'Could not send, please try again.',
+        topics:{clean:'Cleanliness', service:'Service', stock:'Out of stock', price:'Price', food:'Food', other:'Other'}},
+    ms:{title:'Beri pendapat anda', rate:'Bagaimana lawatan anda?', topic:'Tentang apa?', tell:'Komen anda (pilihan)', contact:'Mahu balasan? Telefon atau emel (pilihan)',
+        privacy:'Hanya kedai ini dan ibu pejabat 24 Xpress melihat maklum balas anda, untuk memperbaiki perkhidmatan; disimpan 12 bulan. Maklumat hubungan hanya digunakan untuk membalas perkara ini dan dipadam selepas diurus. Untuk melihat atau membetulkan maklumat anda, tanya di mana-mana kedai 24 Xpress.',
+        send:'Hantar', thanks:'Terima kasih!', thanks2:'Pengurus kedai dan ibu pejabat akan melihat maklum balas anda.', store:'Kedai ', err_star:'Sila tekan bintang dahulu', err_off:'Maklum balas tidak dibuka buat masa ini. Terima kasih.', err_busy:'Terlalu ramai sekarang, sila cuba sebentar lagi.', err:'Gagal dihantar, sila cuba lagi.',
+        topics:{clean:'Kebersihan', service:'Layanan', stock:'Kehabisan stok', price:'Harga', food:'Makanan', other:'Lain-lain'}}
+  };
+  var store = (new URLSearchParams(location.search).get('s') || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
+  var lang = /^zh/i.test(navigator.language) ? 'zh' : (/^(ms|id)/i.test(navigator.language) ? 'ms' : 'en');
+  var rating = 0, topic = 'other';
+  var $ = function(id){ return document.getElementById(id); };
+  function draw(){
+    var L = T[lang]; document.documentElement.lang = lang;
+    document.querySelectorAll('[data-t]').forEach(function(n){ n.textContent = L[n.getAttribute('data-t')]; });
+    document.querySelectorAll('.langs button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-l') === lang); });
+    $('store').textContent = store ? L.store + store : '';
+    var st = $('stars'); st.innerHTML = '';
+    [1,2,3,4,5].forEach(function(i){ var b = document.createElement('button'); b.type = 'button'; b.textContent = '★'; b.setAttribute('aria-label', i + ' / 5');
+      if(i <= rating) b.className = 'on'; b.onclick = function(){ rating = i; $('send').disabled = false; draw(); }; st.appendChild(b); });
+    var tp = $('topics'); tp.innerHTML = '';
+    Object.keys(L.topics).forEach(function(k){ var b = document.createElement('button'); b.type = 'button'; b.className = 'chip' + (k === topic ? ' on' : ''); b.textContent = L.topics[k];
+      b.onclick = function(){ topic = k; draw(); }; tp.appendChild(b); });
+  }
+  document.querySelectorAll('.langs button').forEach(function(b){ b.onclick = function(){ lang = b.getAttribute('data-l'); draw(); }; });
+  $('send').onclick = function(){
+    var L = T[lang]; $('err').textContent = '';
+    if(!rating){ $('err').textContent = L.err_star; return; }
+    $('send').disabled = true;
+    fetch(SB + '/rest/v1/rpc/submit_feedback', {method:'POST', headers:{'Content-Type':'application/json', apikey:KEY, Authorization:'Bearer ' + KEY},
+      body:JSON.stringify({p_store:store, p_rating:rating, p_topic:topic, p_text:$('text').value.slice(0, 500), p_contact:$('contact').value.slice(0, 80), p_hp:$('website').value})})
+      .then(function(r){ return r.text().then(function(t){ if(!r.ok) throw new Error(t); }); })
+      .then(function(){ $('form').hidden = true; $('thanks').hidden = false; })
+      .catch(function(e){ var m = String(e && e.message || ''); $('err').textContent = /feedback_off/.test(m) ? L.err_off : (/busy/.test(m) ? L.err_busy : L.err); $('send').disabled = false; });
+  };
+  draw();
+})();
+</script>
+</body>
+</html>
