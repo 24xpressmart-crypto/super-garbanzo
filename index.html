@@ -15,6 +15,31 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://smpazgmbmmeqighyhbon.supabase.co; connect-src 'self' https://smpazgmbmmeqighyhbon.supabase.co wss://smpazgmbmmeqighyhbon.supabase.co https://cdn.jsdelivr.net; manifest-src 'self'; worker-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
+<script>
+/* App error log, early part (patch 63): catches problems before the App's own script runs -- including a script that
+   fails to load or to start -- and sends them itself if the App never takes over. */
+(function(){
+  var q = []; window.__errEarly = q;
+  function add(kind, msg, detail){ try{ if(q.length < 10) q.push({kind:kind, message:String(msg || '').slice(0, 300), detail:String(detail || '').slice(0, 600)}); }catch(e){} }
+  window.addEventListener('error', function(ev){
+    if(window.__errMain || !ev) return;
+    var t = ev.target;
+    if(t && t !== window && t.tagName === 'SCRIPT') add('js_error', 'script did not load', String(t.src || '').split('?')[0]);
+    else if(ev.message) add('js_error', ev.message, String(ev.filename || '').split('/').pop() + ':' + (ev.lineno || 0) + ':' + (ev.colno || 0));
+  }, true);
+  window.addEventListener('load', function(){ setTimeout(function(){
+    if(window.__errMain || !q.length) return;
+    try{
+      var dev = ''; try{ dev = localStorage.getItem('bgc_dev') || ''; }catch(e){}
+      var items = []; for(var i = 0; i < q.length; i++){ var x = q[i]; items.push({kind:x.kind, message:x.message, detail:x.detail, build:'early', device:String(navigator.userAgent || '').slice(0, 80), dev:dev, screen:'start'}); }
+      var r = new XMLHttpRequest();
+      r.open('POST', 'https://smpazgmbmmeqighyhbon.supabase.co/rest/v1/rpc/client_error_log');
+      r.setRequestHeader('Content-Type', 'application/json'); r.setRequestHeader('apikey', 'sb_publishable_Tgk8ma2TGmtUpT1MT4AEPg_4U7thozC');
+      r.send(JSON.stringify({p:items}));
+    }catch(e){}
+  }, 10000); });
+})();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <style>
   :root{
@@ -506,7 +531,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-01.75';
+const APP_BUILD = '2026-10-01.76';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -1449,6 +1474,7 @@ function dbErrMsg(e){
   const m={invalid_argument:t('err_invalid_argument'), resource_exhausted:t('err_resource_exhausted'),
     quota_exceeded:t('err_quota_exceeded'), unavailable:t('err_unavailable'),
     revoked:t('err_revoked'), not_granted:t('err_not_granted')};
+  if(!S.errQuiet) logClientError('shown_error', String((e && (e.message || e.code)) || e || 'unknown'), '');
   return (e&&m[e.code]) || t('err_generic');
 }
 function currentEmployee(){return byId(S.employees, S.employeeId);}
@@ -1785,11 +1811,12 @@ async function boot(){
   tickClock();
   setInterval(tickClock, 30000);
   renderApp();
-  if(!window.supabase || !window.supabase.createClient){ S.dbState='unavailable'; renderApp(); return; }
+  if(!window.supabase || !window.supabase.createClient){ S.dbState='unavailable'; renderApp(); logClientError('js_error', 'database library not loaded', navigator.userAgent); setTimeout(flushClientErrors, 2000); return; }
   const tok=LS.get('bgc_token');
   if(tok && tokenValid(tok)){ S.token=tok; } else { LS.remove('bgc_token'); S.token=null; }
   S.sb = makeClient(S.token);
   S.db = makeSupabaseDb(S.sb);
+  setTimeout(flushClientErrors, 5000);
   S.downloads = makeBrowserDownloads();
   if(S.token){
     S.dbState='ready';
@@ -2336,6 +2363,54 @@ async function rpc(name, args){
   if(error) throw {code:error.code||'rpc', message:error.message||String(error)};
   return data;
 }
+/* App error log (patch 63): problems on a phone reach HQ without anyone having to complain. */
+function errDevId(){
+  try{ let d = localStorage.getItem('bgc_dev'); if(!d){ d = Math.random().toString(36).slice(2, 12) + Date.now().toString(36); localStorage.setItem('bgc_dev', d); } return d; }
+  catch(e){ return ''; }
+}
+let errFlushTimer = null, errFlushing = false; const errSeen = {};
+function logClientError(kind, message, detail){
+  try{
+    const msg = String(message || '').slice(0, 300);
+    if(!msg || /ResizeObserver loop/i.test(msg)) return;
+    const key = kind + '|' + msg;   // screens that redraw re-run a failing call: once per 10 min is enough
+    if(errSeen[key] && Date.now() - errSeen[key] < 600000) return;
+    errSeen[key] = Date.now();
+    let q = []; try{ q = JSON.parse(localStorage.getItem('bgc_errq') || '[]'); }catch(e){ q = []; }
+    if(!Array.isArray(q)) q = [];
+    q.push({kind, message:msg, detail:String(detail || '').slice(0, 1500), build:APP_BUILD, device:deviceLabel(), dev:errDevId(),
+            screen:String(S.tab || '').slice(0, 40), at:new Date().toISOString()});
+    try{ localStorage.setItem('bgc_errq', JSON.stringify(q.slice(-20))); }catch(e){}
+    clearTimeout(errFlushTimer); errFlushTimer = setTimeout(flushClientErrors, 3000);
+  }catch(e){}
+}
+async function flushClientErrors(){
+  if(errFlushing) return;
+  let q = []; try{ q = JSON.parse(localStorage.getItem('bgc_errq') || '[]'); }catch(e){ q = []; }
+  if(!Array.isArray(q) || !q.length) return;
+  errFlushing = true;
+  try{
+    // a plain request: works even when the database library did not load; the login only when it is still valid
+    const h = {'Content-Type':'application/json', apikey:SUPABASE_KEY};
+    if(S.token && tokenValid(S.token)) h.Authorization = 'Bearer ' + S.token;
+    const ac = window.AbortController ? new AbortController() : null;
+    const tm = setTimeout(() => { try{ ac && ac.abort(); }catch(e){} }, 15000);
+    const r = await fetch(SUPABASE_URL + '/rest/v1/rpc/client_error_log', {method:'POST', headers:h, body:JSON.stringify({p:q}), signal:ac ? ac.signal : undefined, cache:'no-store'});
+    clearTimeout(tm);
+    if(r.ok){   // only what was sent leaves the queue; anything logged meanwhile stays
+      let now = []; try{ now = JSON.parse(localStorage.getItem('bgc_errq') || '[]'); }catch(e){ now = []; }
+      const sent = new Set(q.map(x => x.at + '|' + x.message));
+      try{ localStorage.setItem('bgc_errq', JSON.stringify((Array.isArray(now) ? now : []).filter(x => !sent.has(x.at + '|' + x.message)))); }catch(e){}
+    }
+  }catch(e){}
+  errFlushing = false;
+}
+window.__errMain = true;
+try{ (window.__errEarly || []).forEach(x => logClientError(x.kind, x.message, x.detail)); }catch(e){}
+window.addEventListener('error', ev => { if(!ev || !ev.message) return;
+  logClientError('js_error', ev.message, (ev.filename || '').split('?')[0].split('/').pop() + ':' + (ev.lineno || 0) + ':' + (ev.colno || 0) + ' ' + String((ev.error && ev.error.stack) || '').slice(0, 1200)); });
+window.addEventListener('unhandledrejection', ev => { const r = ev && ev.reason;
+  logClientError('promise', (r && (r.message || r.code)) || String(r), String((r && r.stack) || '').slice(0, 1200)); });
 /* Patch 4 added a second generation of login and clock-in functions. The phone
    works against either generation, so the database patch and this build can be
    rolled out in whichever order suits the day. FEAT is filled in on first use. */
@@ -2381,6 +2456,7 @@ function finishLogin(token, e){
   subscribeAll(); renderApp();
   refreshPushState().then(()=>renderApp());   // after a PIN login too, or the push card shows to people who already have push
   setTimeout(()=>retryPendingPhotos(false), 15000);
+  setTimeout(flushClientErrors, 4000);
   S.tokenAt = Date.now();
   if(!S.tokenTimer) S.tokenTimer = setInterval(refreshToken, 30*60*1000);   // an in-App login is topped up too
 }
@@ -2481,9 +2557,10 @@ function openVerifyPinForm(e){
       // a remembered account that was switched off (e.g. merged into a new record): forget it, back to the staff-code login
       if(/\bgone\b/.test(String((err && err.message) || ''))){ const k = knownUser(); if(k && k.id === e.id) LS.remove('bgc_known'); closeSheet(); toast(t('err_account_gone')); renderApp(); return; }
       const raw=String((err && (err.message || err.code)) || err || '');
+      if(!/wrong_pin|locked/.test(raw)) logClientError('login_fail', raw, 'emp=' + e.id);
       // anything but a plain wrong PIN also shows the technical reason and the build, for HQ to read off a screenshot
       errMsg.textContent = /no_answer/.test(raw) ? t('err_login_no_answer') + ' [' + APP_BUILD + ']'
-        : pinErrMsg(err) + (/wrong_pin|locked/.test(raw) ? '' : ' [' + raw.slice(0, 120) + ' · ' + APP_BUILD + ']');
+        : (() => { S.errQuiet = true; try{ return pinErrMsg(err); } finally { S.errQuiet = false; } })() + (/wrong_pin|locked/.test(raw) ? '' : ' [' + raw.slice(0, 120) + ' · ' + APP_BUILD + ']');
       btn.disabled=false; btn.textContent=t('btn_login');
     }
   };
