@@ -531,7 +531,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-01.81';
+const APP_BUILD = '2026-10-01.82';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -686,7 +686,7 @@ const I18N = {
     temp_no_equipment:'该门店尚未设定温控设备（店经理或管理员可在「我的」→ 温控设备 添加）',
     field_passport_expiry:'护照到期日', field_permit_expiry:'工作准证到期日', field_contract_expiry:'合同到期日', admin_doc_expiry:'证件到期提醒（60 天内）',
     doc_expired:'已过期', doc_days_ago:'天', doc_today:'今天到期', doc_days_prefix:'还有', doc_days_suffix:'天到期', notif_doc_expiry:'证件即将到期', doc_none:'60 天内没有到期的证件', doc_passport:'护照', doc_permit:'工作准证', doc_contract:'合同',
-    nav_tasks:'任务', tasks_title:'今日任务', shift_open:'开店', shift_mid:'交班', shift_close:'闭店', task_not_started:'未开始', task_in_progress:'进行中', task_done:'已完成',
+    nav_tasks:'任务', tasks_title:'今日任务', shift_open:'开店', shift_mid:'交班', shift_close:'闭店', shift_night:'夜班', task_not_started:'未开始', task_in_progress:'进行中', task_done:'已完成',
     btn_complete_checklist:'完成清单', task_photo_required:'需拍照', task_need_photo:'此项需要先拍照', toast_checklist_done:'清单已完成',
     btn_handover:'写交接班记录', sheet_handover:'交接班记录', field_shift:'班次', field_cash:'现金交接 (RM)', field_pending_items:'待办事项', field_issues:'异常情况',
     handover_last:'上一班交接', handover_none:'过去 24 小时没有交接记录', handover_recent:'最近交接',
@@ -925,7 +925,7 @@ const I18N = {
     temp_no_equipment:'No equipment set for this store yet (manager or admin adds it under Me → Temperature equipment)',
     field_passport_expiry:'Passport expiry', field_permit_expiry:'Work permit expiry', field_contract_expiry:'Contract expiry', admin_doc_expiry:'Document expiry (next 60 days)',
     doc_expired:'Expired', doc_days_ago:' days ago', doc_today:'Expires today', doc_days_prefix:'in ', doc_days_suffix:' days', notif_doc_expiry:'Document expiring', doc_none:'Nothing expiring within 60 days', doc_passport:'Passport', doc_permit:'Work permit', doc_contract:'Contract',
-    nav_tasks:'Tasks', tasks_title:'Tasks today', shift_open:'Opening', shift_mid:'Mid-shift', shift_close:'Closing', task_not_started:'Not started', task_in_progress:'In progress', task_done:'Done',
+    nav_tasks:'Tasks', tasks_title:'Tasks today', shift_open:'Opening', shift_mid:'Mid-shift', shift_close:'Closing', shift_night:'Night shift', task_not_started:'Not started', task_in_progress:'In progress', task_done:'Done',
     btn_complete_checklist:'Complete checklist', task_photo_required:'Photo required', task_need_photo:'Take a photo for this item first', toast_checklist_done:'Checklist completed',
     btn_handover:'Write handover note', sheet_handover:'Shift handover', field_shift:'Shift', field_cash:'Cash handed over (RM)', field_pending_items:'Pending items', field_issues:'Issues',
     handover_last:'Last handover', handover_none:'No handover note in the last 24 hours', handover_recent:'Recent handovers',
@@ -1164,7 +1164,7 @@ const I18N = {
     temp_no_equipment:'Belum ada peralatan ditetapkan untuk kedai ini (pengurus atau admin tambah di Saya → Peralatan suhu)',
     field_passport_expiry:'Tarikh luput pasport', field_permit_expiry:'Tarikh luput permit kerja', field_contract_expiry:'Tarikh luput kontrak', admin_doc_expiry:'Dokumen akan luput (60 hari akan datang)',
     doc_expired:'Luput', doc_days_ago:' hari lepas', doc_today:'Luput hari ini', doc_days_prefix:'dalam ', doc_days_suffix:' hari', notif_doc_expiry:'Dokumen hampir luput', doc_none:'Tiada dokumen luput dalam 60 hari', doc_passport:'Pasport', doc_permit:'Permit kerja', doc_contract:'Kontrak',
-    nav_tasks:'Tugas', tasks_title:'Tugas hari ini', shift_open:'Buka kedai', shift_mid:'Pertukaran syif', shift_close:'Tutup kedai', task_not_started:'Belum mula', task_in_progress:'Sedang dibuat', task_done:'Selesai',
+    nav_tasks:'Tugas', tasks_title:'Tugas hari ini', shift_open:'Buka kedai', shift_mid:'Pertukaran syif', shift_close:'Tutup kedai', shift_night:'Syif malam', task_not_started:'Belum mula', task_in_progress:'Sedang dibuat', task_done:'Selesai',
     btn_complete_checklist:'Selesaikan senarai semak', task_photo_required:'Perlu gambar', task_need_photo:'Ambil gambar untuk item ini dahulu', toast_checklist_done:'Senarai semak selesai',
     btn_handover:'Tulis nota serah tugas', sheet_handover:'Serah tugas syif', field_shift:'Syif', field_cash:'Tunai diserahkan (RM)', field_pending_items:'Perkara tertunggak', field_issues:'Masalah',
     handover_last:'Serah tugas terakhir', handover_none:'Tiada nota serah tugas dalam 24 jam lepas', handover_recent:'Serah tugas terkini',
@@ -5496,7 +5496,7 @@ function computePayroll(){
 }
 
 /* ============================ PHASE 1B: TASK CHECKLISTS / SHIFT HANDOVER ============================ */
-const SHIFT_KINDS=['open','mid','close'];
+const SHIFT_KINDS=['open','mid','close','night'];   // patch 96: night = 24-hour stores
 function shiftKindLabel(k){ return t('shift_'+(SHIFT_KINDS.includes(k)?k:'open')); }
 function taskBranch(){ if(S.taskBranch!=null) return S.taskBranch; return defaultClockBranch() || ''; }
 function templatesForBranch(branch){
