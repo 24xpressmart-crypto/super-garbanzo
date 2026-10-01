@@ -553,7 +553,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-01.101';
+const APP_BUILD = '2026-10-02.102';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -11657,7 +11657,7 @@ function prepMyBranch(){ const bs = prepBranches(); const mine = [myBranch()].co
 // packaged goods (no prep): sizes like 310ML / 55GM / 400g / 40Gx2'S, boxes, cans, bottles, whole fruit; prepCategories wins when the server sends a category
 const PREP_PACKAGED = /\d+(\.\d+)?\s?(ML|L|G|GM|GR|KG)(?![A-Z])|\(BOX\)|\bX\s?\d|\bCAN\b|\bBTL\b|BOTTLE|\bPET\b|\bTB\b|\b1PCS\b(?!.*BOWL)|\d'S\b/i;
 function prepIsFood(it){
-  const cats = String((S.settings && S.settings.prepCategories) || '').split(/[,\s;]+/).filter(Boolean);
+  const cats = String((S.settings && S.settings.prepCategories != null) ? S.settings.prepCategories : '32,19,27').split(/[,\s;]+/).filter(Boolean);   // accounting RUN_45 sends item.category
   if(cats.length && it && it.category != null) return cats.some(c => String(it.category).startsWith(c));
   return !PREP_PACKAGED.test(String((it && it.name) || ''));
 }
