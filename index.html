@@ -506,7 +506,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-01.73';
+const APP_BUILD = '2026-10-01.74';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -1520,6 +1520,15 @@ function makeSupabaseDb(sb){
     stockOuts: {heavy:['photos'], full:{field:'status', value:'draft'}, keys:['branch','kind','status','supplierCode','supplierName',
       'docNo','refInvoice','outcome','note','lines','createdAt','createdBy','createdByName','submittedAt','submittedBy','submittedByName',
       'decidedAt','decidedBy','decidedByName','decisionNote','accTaskId','accError']},
+    // patch 86: case records, photo fetched on open
+    faults: {heavy:['photo'], keys:['branch','category','deviceId','equipmentId','equipmentName','severity','status','auto','employeeId','employeeName',
+      'description','createdAt','clientCreatedAt','dueAt','resolvedAt','resolvedBy','resolvedNote','vendor','cost']},
+    incidents: {heavy:['photo'], keys:['branch','kind','severity','description','employeeId','employeeName','status','createdAt','clientCreatedAt',
+      'resolvedAt','resolvedBy']},
+    handovers: {heavy:['photo'], keys:['branch','shift','employeeId','employeeName','cash','pending','issues','createdAt','clientCreatedAt']},
+    inspections: {heavy:['photo'], keys:['deviceId','employeeId','employeeName','createdAt','clientCreatedAt','checklist','issuesFound','note']},
+    rectifications: {heavy:['photo','donePhoto'], keys:['auditId','branch','item','section','score','note','dueDate','status','createdAt','createdBy',
+      'doneBy','doneAt','doneNote']},
     onlineOrders: {heavy:['photos'], keys:['platform','supplierCode','supplierName','orderNo','trackingNo','seller','branch','card','paidAt',
       'amount','lines','note','status','createdBy','createdByName','createdAt','receiptId','receivedAt','receivedByName','cancelledAt','rev']},
   };
@@ -4223,7 +4232,7 @@ function openFaultDetail(f){
   body.innerHTML=`<div class="row" style="margin-bottom:10px;"><span class="pill ${SEVERITY[f.severity].c}">${esc(t(SEVERITY[f.severity].t))}</span><span class="pill ${FAULT_STATUS[f.status].c}">${esc(t(FAULT_STATUS[f.status].t))}</span></div>
     <div style="font-size:14px; margin-bottom:6px;">${esc(f.description||'')}</div>
     <div class="hint">${esc(t('fault_device_label'))}${esc(faultTitle(f))} · ${esc(t('fault_by_label'))}${esc(f.employeeName)} · ${fmtDateTime(f.createdAt)}${f.dueAt?' · '+esc(t('fault_due_label'))+fmtDateTime(f.dueAt):''}${f.vendor?' · '+esc(f.vendor):''}${f.cost?' · RM '+esc(String(f.cost)):''}</div>`;
-  if(f.photo) body.appendChild(el(`<img class="photow" src="${safeSrc(f.photo)}">`));
+  if(f.photo) body.appendChild(photoSlot('faults', f, 'photo', p=> p ? [el(`<img class="photow" src="${safeSrc(p)}">`)] : []));
   if(f.resolvedNote){ body.appendChild(el(`<div class="divider"></div>`)); body.appendChild(el(`<div class="hint"><b style="color:var(--ink);">${esc(t('fault_resolve_note_label'))}</b>${esc(f.resolvedNote)}</div>`)); }
   if(canManageStaff() && f.status!=='resolved'){
     const vendorWrap=el(`<label class="field" style="margin-top:14px;"><span class="fl">${esc(t('field_vendor'))}</span><input type="text" value="${esc(f.vendor||'')}"></label>`); const vendorInput=vendorWrap.querySelector('input'); body.appendChild(vendorWrap);
@@ -5718,7 +5727,7 @@ function openHandoverDetail(h){
   const body=el('<div></div>');
   body.innerHTML=`<div class="hint">${esc(h.branch)} · ${esc(shiftKindLabel(h.shift))} · ${fmtDateTime(h.createdAt)} · ${esc(h.employeeName)}</div>
     <div class="card card-tight" style="margin-top:8px;"><div class="lr-sub" style="white-space:normal;">${esc(t('field_cash'))}: ${esc(h.cash||'—')}</div><div class="lr-sub" style="white-space:normal;">${esc(t('field_pending_items'))}: ${esc(h.pending||'—')}</div><div class="lr-sub" style="white-space:normal;">${esc(t('field_issues'))}: ${esc(h.issues||'—')}</div></div>`;
-  if(h.photo) body.appendChild(el(`<img class="photow" src="${safeSrc(h.photo)}">`));
+  if(h.photo) body.appendChild(photoSlot('handovers', h, 'photo', p=> p ? [el(`<img class="photow" src="${safeSrc(p)}">`)] : []));
   openSheet(t('sheet_handover'), body);
 }
 function openTaskTemplateForm(tp){
@@ -6277,7 +6286,7 @@ function openIncidentDetail(i){
   const sv=SEVERITY[i.severity]||SEVERITY.medium;
   const body=el('<div></div>');
   body.innerHTML=`<div class="row" style="margin-bottom:8px;"><span class="pill ${sv.c}">${esc(t(sv.t))}</span><span class="pill ${i.status==='open'?'critical':'ok'}">${esc(i.status==='open'?t('inc_open'):t('inc_resolved'))}</span></div><div class="hint">${esc(incidentKindLabel(i.kind))} · ${esc(i.branch||'')} · ${esc(i.employeeName||'')} · ${fmtDateTime(i.createdAt)}</div><p style="white-space:pre-wrap;">${esc(i.description||'')}</p>${i.resolvedBy?`<div class="hint">${esc(t('inc_resolved'))} · ${esc(i.resolvedBy)} · ${fmtDateTime(i.resolvedAt)}</div>`:''}`;
-  if(i.photo) body.appendChild(el(`<img class="photow" src="${safeSrc(i.photo)}">`));
+  if(i.photo) body.appendChild(photoSlot('incidents', i, 'photo', p=> p ? [el(`<img class="photow" src="${safeSrc(p)}">`)] : []));
   if(canManageStaff() && i.status==='open'){ const b=el(`<button class="btn ok block" style="margin-top:10px;">${esc(t('btn_mark_resolved'))}</button>`); b.onclick=async()=>{ try{ await S.db.doc('incidents/'+i.id).update({status:'resolved', resolvedBy:currentEmployee().name, resolvedAt:new Date().toISOString()}); toast(t('toast_saved')); closeSheet(); }catch(e){ toast(dbErrMsg(e)); } }; body.appendChild(b); }
   openSheet(t('sheet_incident'), body);
 }
@@ -10436,8 +10445,8 @@ function rectificationsBlock(branch){
 function openRectification(r){
   const body=el('<div></div>');
   body.appendChild(el(`<div style="font-weight:800; margin-bottom:4px;">${esc(r.item)}</div><div class="hint" style="margin-top:0;">${esc(r.branch)} · ${esc(r.section||'')} · ${esc(t('audit_due'))} ${esc(r.dueDate||'')}${r.note?' · '+esc(r.note):''}</div>`));
-  if(r.photo) body.appendChild(el(`<img class="photow" src="${safeSrc(r.photo)}">`));
-  if(r.status==='done'){ body.appendChild(el(`<div class="hint">${esc(t('inc_resolved'))} · ${esc(r.doneBy||'')} · ${r.doneAt?fmtDateTime(r.doneAt):''}${r.doneNote?' · '+esc(r.doneNote):''}</div>`)); if(r.donePhoto) body.appendChild(el(`<img class="photow" src="${safeSrc(r.donePhoto)}">`)); }
+  if(r.photo) body.appendChild(photoSlot('rectifications', r, 'photo', p=> p ? [el(`<img class="photow" src="${safeSrc(p)}">`)] : []));
+  if(r.status==='done'){ body.appendChild(el(`<div class="hint">${esc(t('inc_resolved'))} · ${esc(r.doneBy||'')} · ${r.doneAt?fmtDateTime(r.doneAt):''}${r.doneNote?' · '+esc(r.doneNote):''}</div>`)); if(r.donePhoto) body.appendChild(photoSlot('rectifications', r, 'donePhoto', p=> p ? [el(`<img class="photow" src="${safeSrc(p)}">`)] : [])); }
   else {
     const note=el(`<textarea placeholder="${esc(t('audit_done_note_ph'))}" style="margin-top:10px;"></textarea>`); body.appendChild(note);
     const pw=photoPicker(null,false,null,{required:true}); body.appendChild(pw);
