@@ -531,7 +531,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-01.77';
+const APP_BUILD = '2026-10-01.78';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -8222,7 +8222,9 @@ function aiPending(draft, rd){
 }
 function aiTotalOk(draft){ return draft.amountConfirmed != null && String(draft.amountConfirmed) === String(draft.amount || ''); }
 const AI_HOW = {learned:'recv_ai_how_learned', xref:'recv_ai_how_learned', barcode:'recv_ai_how_barcode', code:'recv_ai_how_code', name:'recv_ai_how_name'};
-function money(v){ return v == null || v === '' || isNaN(Number(v)) ? '—' : Number(v).toFixed(2); }
+// the AI card's amounts: a bare number (the text already says RM), "—" when the paper had none. Own name because the
+// runner-cash money() below ("RM 1.00") shadowed it, so the card said "RM RM 1.00".
+function aiMoney(v){ return v == null || v === '' || isNaN(Number(v)) ? '—' : Number(v).toFixed(2); }
 
 /* Draught beer arrives in kegs (10 L, 20 L) but the item is the mug: a keg counts as its litres in mugs (settings
    kegMugMl, 330 ml), rounded down, less the mugs lost per keg (settings kegWasteMugs, 2): 10 L = 28, 20 L = 58. */
@@ -8258,14 +8260,14 @@ function receiptReadCard(branch, draft){
       toast(recvErrMsg(err)); btn.disabled = false; }
   };
   if(!rd || rd.status === 'failed' || (rd.status !== 'done' && !rd.status)){
-    box.appendChild(el(`<div style="font-weight:800;">🤖 ${esc(t('recv_ai_title'))}</div><p class="hint" style="margin:4px 0 8px;">${esc(t('recv_ai_hint'))}</p>`));
+    box.appendChild(el(`<div><div style="font-weight:800;">🤖 ${esc(t('recv_ai_title'))}</div><p class="hint" style="margin:4px 0 8px;">${esc(t('recv_ai_hint'))}</p></div>`));   // el() keeps one element
     if(rd && rd.status === 'failed') box.appendChild(el(`<p class="hint" style="color:var(--critical); margin:0 0 8px;">${esc(t('recv_ai_failed'))}</p>`));
     const b = el(`<button class="btn primary block">📷 ${esc(t('recv_ai_btn'))}</button>`); b.onclick = ()=>ask(b);
     box.appendChild(b); return box;
   }
   if(rd.status === 'queued' || rd.status === 'reading'){
     const waited = Math.round((Date.now() - new Date(rd.requestedAt)) / 1000);
-    box.appendChild(el(`<div style="font-weight:800;">🤖 ${esc(t('recv_ai_reading'))}</div><p class="hint" style="margin:4px 0 0;">${esc(t('recv_ai_wait'))} · ${waited}s</p>`));
+    box.appendChild(el(`<div><div style="font-weight:800;">🤖 ${esc(t('recv_ai_reading'))}</div><p class="hint" style="margin:4px 0 0;">${esc(t('recv_ai_wait'))} · ${waited}s</p></div>`));
     if(waited > 180){ const b = el(`<button class="btn block" style="margin-top:8px;">${esc(t('recv_ai_again'))}</button>`); b.onclick = ()=>ask(b); box.appendChild(b); }
     if(!S.aiTick) S.aiTick = setTimeout(()=>{ S.aiTick = null; if(location.hash === '#receive'){ if(S.db && S.db.refresh) S.db.refresh('receiptReads'); renderFromData(); } }, 5000);   // the seconds counter, and a fresh look
     return box;
@@ -8274,8 +8276,8 @@ function receiptReadCard(branch, draft){
   const R = rd.result || {lines:[]};
   const dec = aiDecisions(draft, rd);
   const left = aiPending(draft, rd);
-  box.appendChild(el(`<div style="font-weight:800;">🤖 ${esc(t('recv_ai_done'))} ${(R.lines||[]).length} ${esc(t('recv_lines_suffix'))} · RM ${money(R.total)}${R.docNo?' · '+esc(R.docNo):''}</div>
-    <p class="hint" style="margin:4px 0 8px;">${esc(left ? t('recv_ai_check_each') : t('recv_ai_all_checked'))}</p>`));
+  box.appendChild(el(`<div><div style="font-weight:800;">🤖 ${esc(t('recv_ai_done'))} ${(R.lines||[]).length} ${esc(t('recv_lines_suffix'))} · RM ${aiMoney(R.total)}${R.docNo?' · '+esc(R.docNo):''}</div>
+    <p class="hint" style="margin:4px 0 8px;">${esc(left ? t('recv_ai_check_each') : t('recv_ai_all_checked'))}</p></div>`));
   if(R.billToOk === false) box.appendChild(billToBanner(draft, R));
   const otherChecks = R.billToOk === false ? (R.checks || []).slice(1) : (R.checks || []);
   if((R.concerns || otherChecks.length) && !(blindReceiving(branch) && left > 0)) box.appendChild(el(`<p class="hint" style="margin:0 0 8px; color:var(--warn-ink, #7A4B0E);">⚠ ${esc([].concat(otherChecks,[], R.concerns?[R.concerns]:[]).join(' · '))}</p>`));
@@ -8287,7 +8289,7 @@ function receiptReadCard(branch, draft){
     const prod = l.skuId ? esc(l.name) + (l.how === 'name' ? ` <span class="pill warn">${esc(t('recv_ai_how_name'))}</span>` : '')
                          : `<span style="color:var(--critical);">⚠ ${esc(t('recv_ai_no_match'))}</span>`;
     const row = el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${prod}</div>
-      <div class="lr-sub">${esc(t('recv_ai_paper'))}: ${esc(l.description)} · ${!d && blindReceiving(branch) ? '<b>' + esc(t('recv_blind_count_first')) + '</b>' : `${l.qty}${l.uom?' '+esc(l.uom):''}${l.foc?' + FOC '+l.foc:''} · RM ${money(l.amount)}`}</div></div>${state}</div>`);
+      <div class="lr-sub">${esc(t('recv_ai_paper'))}: ${esc(l.description)} · ${!d && blindReceiving(branch) ? '<b>' + esc(t('recv_blind_count_first')) + '</b>' : `${l.qty}${l.uom?' '+esc(l.uom):''}${l.foc?' + FOC '+l.foc:''} · RM ${aiMoney(l.amount)}`}</div></div>${state}</div>`);
     row.onclick = ()=>openAiLineSheet(branch, draft.id, l);
     list.appendChild(row);
   });
@@ -8295,7 +8297,7 @@ function receiptReadCard(branch, draft){
   // the total on the paper, confirmed by the outlet
   const confirmed = dec && aiTotalOk(draft);
   const sumOk = (R.lines||[]).reduce((a,l)=>{ const x = dec[l.n]; return a + (x && x.d === 'ok' ? Number(x.amount)||0 : 0); }, 0);
-  const tot = el(`<div style="margin-top:10px;"><div class="lr-sub">${esc(t('recv_ai_lines_sum'))}: RM ${money(sumOk)}${R.discount?' · '+esc(t('recv_ai_discount'))+' '+money(R.discount):''}${R.tax?' · '+esc(t('recv_ai_tax'))+' '+money(R.tax):''}${aiRounding(R)?' · '+esc(t('recv_ai_rounding'))+' '+(aiRounding(R)>0?'+':'')+aiRounding(R).toFixed(2):''}</div>
+  const tot = el(`<div style="margin-top:10px;"><div class="lr-sub">${esc(t('recv_ai_lines_sum'))}: RM ${aiMoney(sumOk)}${R.discount?' · '+esc(t('recv_ai_discount'))+' '+money(R.discount):''}${R.tax?' · '+esc(t('recv_ai_tax'))+' '+money(R.tax):''}${aiRounding(R)?' · '+esc(t('recv_ai_rounding'))+' '+(aiRounding(R)>0?'+':'')+aiRounding(R).toFixed(2):''}</div>
     <label class="row" style="align-items:center; gap:8px; margin-top:6px;"><span class="lr-sub" style="flex:1; font-weight:800;">${esc(t('recv_ai_total'))}</span>
     <input type="text" value="${esc(draft.amount || (R.total!=null?R.total:''))}" style="width:120px; text-align:right; font-weight:900;"></label></div>`);
   const tb = el(`<button class="btn ${confirmed?'':'primary'} block" style="margin-top:6px;">${confirmed ? '✓ '+esc(t('recv_ai_total_ok')) : esc(t('recv_ai_total_confirm'))}</button>`);
@@ -8324,7 +8326,7 @@ function openAiLineSheet(branch, draftId, l){
   const body = el('<div></div>');
   body.appendChild(el(`<div class="card" style="padding:10px 12px;"><div class="lr-sub" style="font-weight:800;">${esc(t('recv_ai_paper'))}</div>
     <div style="font-weight:900;">${esc(l.description)}</div>
-    <div class="lr-sub">${l.qty}${l.uom?' '+esc(l.uom):''}${l.foc?' + FOC '+l.foc:''} × ${money(l.unitPrice)} = RM ${money(l.amount)}${l.printedItem?' · '+esc(l.printedItem):''}</div></div>`));
+    <div class="lr-sub">${l.qty}${l.uom?' '+esc(l.uom):''}${l.foc?' + FOC '+l.foc:''} × ${money(l.unitPrice)} = RM ${aiMoney(l.amount)}${l.printedItem?' · '+esc(l.printedItem):''}</div></div>`));
   const prodBox = el('<div style="margin-top:10px;"></div>');
   const paintProd = ()=>{
     prodBox.innerHTML = `<div class="lr-sub" style="font-weight:800;">${esc(t('recv_ai_our_item'))}</div>`
@@ -10571,7 +10573,7 @@ function rectificationsBlock(branch){
 }
 function openRectification(r){
   const body=el('<div></div>');
-  body.appendChild(el(`<div style="font-weight:800; margin-bottom:4px;">${esc(r.item)}</div><div class="hint" style="margin-top:0;">${esc(r.branch)} · ${esc(r.section||'')} · ${esc(t('audit_due'))} ${esc(r.dueDate||'')}${r.note?' · '+esc(r.note):''}</div>`));
+  body.appendChild(el(`<div><div style="font-weight:800; margin-bottom:4px;">${esc(r.item)}</div><div class="hint" style="margin-top:0;">${esc(r.branch)} · ${esc(r.section||'')} · ${esc(t('audit_due'))} ${esc(r.dueDate||'')}${r.note?' · '+esc(r.note):''}</div></div>`));
   if(r.photo) body.appendChild(photoSlot('rectifications', r, 'photo', casePhotoEls));
   if(r.status==='done'){ body.appendChild(el(`<div class="hint">${esc(t('inc_resolved'))} · ${esc(r.doneBy||'')} · ${r.doneAt?fmtDateTime(r.doneAt):''}${r.doneNote?' · '+esc(r.doneNote):''}</div>`)); if(r.donePhoto) body.appendChild(photoSlot('rectifications', r, 'donePhoto', casePhotoEls)); }
   else {
@@ -10854,12 +10856,12 @@ function openPosIntegrityDetail(r){
   body.appendChild(back);
   body.appendChild(el(`<p class="hint" style="margin:0 0 8px;">${esc(r.outlet || '')} · ${Number(r.receipts) || 0} ${esc(t('posi_receipts'))} · RM ${(Number(r.sales) || 0).toFixed(2)} · ${Number(r.days) || 0} ${esc(t('sug_days'))}</p>`));
   const flagged = new Set(r.flags.map(f => f.k));
-  body.appendChild(el(`<div style="overflow-x:auto;"><table class="num" style="width:100%; border-collapse:collapse; font-size:13px;"><thead><tr>
+  body.appendChild(el(`<div><div style="overflow-x:auto;"><table class="num" style="width:100%; border-collapse:collapse; font-size:13px;"><thead><tr>
     <th style="text-align:left;">${esc(t('posi_what'))}</th><th>${esc(t('posi_count'))}</th><th>${esc(t('posi_rate'))}</th><th>${esc(t('posi_store_med'))}</th><th>${esc(t('posi_median'))}</th></tr></thead><tbody>${
     POSI_METRICS.map(m => `<tr style="border-top:1px solid var(--line,#ddd);${flagged.has(m.k) ? ' color:var(--bad,#C1392B); font-weight:800;' : ''}"><td>${esc(t('posi_m_' + m.k))}</td>
       <td style="text-align:center;">${m.per === 'pct' ? 'RM ' + (Number(r[m.k]) || 0).toFixed(2) : Number(r[m.k]) || 0}</td>
       <td style="text-align:center;">${esc(posiFmt(m, r.rates[m.k]))}</td><td style="text-align:center;">${m.k in (r.storeMed || {}) ? esc(posiFmt(m, r.storeMed[m.k])) : '–'}</td><td style="text-align:center;">${m.k in (r.entMed || {}) ? esc(posiFmt(m, r.entMed[m.k])) : '–'}</td></tr>`).join('')
-  }</tbody></table></div><p class="hint" style="margin-top:6px;">${esc(t('posi_units'))}</p>`));
+  }</tbody></table></div><p class="hint" style="margin-top:6px;">${esc(t('posi_units'))}</p></div>`));
   openSheet('POS ' + r.pos_user + ' @ ' + (r.outlet || '') + (r.employee_name ? ' · ' + r.employee_name + (r.confirmed ? '' : ' (' + t('posu_suggested') + ')') : ''), body);
 }
 
