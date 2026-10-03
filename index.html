@@ -553,7 +553,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-03.124';
+const APP_BUILD = '2026-10-03.125';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -2770,6 +2770,9 @@ function homeView(){
   const pendingLeave = S.leaveRequests.filter(l=>l.status==='pending').concat(S.punchRequests.filter(r=>r.status==='pending'), S.swapRequests.filter(r=>r.status==='pending'));
 
   c.appendChild(helloCard(e, clockedIn, last));
+  // patch 135 (owner 2026-10-03: "dashboard should put at main pages"): sales first, right under the greeting
+  if(isManager() && /^BR/i.test(myBranch() || '')){ const dc = dayRepCard(String(myBranch()).toUpperCase()); if(dc) c.appendChild(dc); }
+  else if(isAdmin()){ const hs = hqSalesCard(); if(hs) c.appendChild(hs); }
   { const nq = (S.db && S.db.outboxCount) ? S.db.outboxCount() : 0;   // patch 107: reports waiting for signal
     if(nq > 0){ const ob = el(`<div class="card" style="border:2px solid var(--warn,#B5731A); cursor:pointer; margin-bottom:10px;"><div style="font-weight:900;">📤 ${esc(t('ob_waiting').split('{n}').join(String(nq)))}</div><div class="hint" style="margin:2px 0 0;">${esc(t('ob_retry'))}</div></div>`);
       ob.onclick = () => { if(S.db && S.db.outboxFlush) S.db.outboxFlush(true); }; c.appendChild(ob); } }
@@ -2799,8 +2802,8 @@ function homeView(){
       const b=el(`<div class="card" style="border:2px solid var(--bad,#C1392B); background:var(--bad-soft,#F6DCD8); cursor:pointer; margin-bottom:10px;"><div style="font-weight:900;">🆘 ${esc(t('notif_sos'))} · ${esc(x.branch||'')} · ${esc(x.employeeName||'')}</div><div class="lr-sub">${fmtDateTime(x.createdAt)} · ${esc(t('sos_tap_ack'))}</div></div>`);
       b.onclick=()=>openSosDetail(x); c.appendChild(b); });
   }
-  if(isManager() && /^BR/i.test(myBranch() || '')){ c.appendChild(storeTodayCard(String(myBranch()).toUpperCase())); const dc = dayRepCard(String(myBranch()).toUpperCase()); if(dc) c.appendChild(dc); }   // patch 116
-  else if(isAdmin()){ const hs = hqSalesCard(); if(hs) c.appendChild(hs); const sc = storesTodayCard(); if(sc) c.appendChild(sc); }   // patch 134: sales first
+  if(isManager() && /^BR/i.test(myBranch() || '')){ c.appendChild(storeTodayCard(String(myBranch()).toUpperCase())); }   // patch 116; sales card moved to the top (patch 135)
+  else if(isAdmin()){ const sc = storesTodayCard(); if(sc) c.appendChild(sc); }   // patch 134/135: the sales card is at the top
   openShiftCards().forEach(x => c.appendChild(x));
   { const fc = feedbackCard(); if(fc) c.appendChild(fc); }
   // an important memo you have not opened stays on top until you open it (few people scroll down to the memo list)
