@@ -553,7 +553,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-03.137';
+const APP_BUILD = '2026-10-04.138';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -706,7 +706,7 @@ const I18N = {
     notif_sos:'紧急求助', notif_incident:'新客诉 / 事故', notif_safety_missed:'夜班未确认安全', btn_help:'使用手册 / User Guide',
     session_expired:'登录已过期，请重新登录', err_pin_locked:'尝试次数过多，请 15 分钟后再试', err_pin_exists:'PIN 已设置，请直接登录', err_pin_inactive:'此账号已停用，请联系管理员', confirm_logout:'确定退出登录？',
     temp_title:'温度记录', admin_equipment:'门店设备', sheet_equipment:'温控设备', field_equipment_name:'设备名称', field_kind:'类型',
-    kind_chiller:'冷柜', kind_freezer:'冰柜', kind_hot:'热柜', kind_beer:'鲜啤', kind_coffee:'咖啡机', kind_other:'其他', field_min:'最低 (°C)', field_max:'最高 (°C)', field_branch:'门店',
+    kind_chiller:'冷柜', kind_freezer:'冰柜', kind_hot:'热柜', kind_beer:'鲜啤', kind_coffee:'咖啡机', kind_other:'其他', kind_fixture:'货架／柜台', eqc_card:'会计资料里这间店有 {n} 样设备要确认', eqc_card_hint:'一样一样看：还在就按「还在」（多件的写还剩几件），不在了才按「不在了」。已确认 {d} 样。', eqc_card_staff:'店长会一样一样确认。已确认 {d} 样。', eqc_start:'开始确认', eqc_title:'确认设备', eqc_hint:'这是会计资料里登记在这间店的设备。还在的按「还在」；只有真的不在这间店了才按「不在了」，并说明原因。', eqc_all_done:'全部确认好了，谢谢！', eqc_from_acc:'会计资料：', eqc_how_many:'还剩几件', eqc_here:'还在', eqc_gone:'不在了', eqc_err_qty:'数量不对', eqc_gone_ask:'为什么不在了？', eqc_r_thrown:'坏了／已丢掉', eqc_r_moved:'搬去别的门店', eqc_r_never:'这间店从来没有这样东西', eqc_r_other:'其他（请写明）', eqc_pick_outlet:'搬去哪一间门店？', eqc_note_ph:'备注（选「其他」要写）', eqc_err_reason:'请选原因', eqc_err_note:'请写明原因', eqc_gone_btn:'确定不在了', eqc_removed_title:'门店拿掉的设备', eqc_removed_hint:'门店说已经不在的设备（没有删除）。搬去别店的可以按「搬去」让那间店确认；按错了可以放回去。会计要跟进的资产处理也看这里。', eqc_put_back:'放回去', eqc_move_to:'搬去 {b}', eqc_already:'这一样刚被 {a} 处理了，画面已更新', eqc_more_than:'会计只有 {n} 件，你写 {k} 件。确定吗？（多出的请另外「添加设备」）', eqc_short:'只找到 {k} 件，会计有 {n} 件', eqc_back:'回到清单', field_min:'最低 (°C)', field_max:'最高 (°C)', field_branch:'门店',
     btn_log_temp:'记录', temp_none:'尚无记录', temp_out_of_range:'超出范围', temp_ok:'正常', toast_temp_saved:'已记录', toast_temp_alert:'温度超出范围，请检查设备并通知店经理', notif_temp_alert:'温度超标',
     temp_no_equipment:'该门店尚未设定温控设备（店经理或管理员可在「我的」→ 温控设备 添加）',
     field_passport_expiry:'护照到期日', field_permit_expiry:'工作准证到期日', field_contract_expiry:'合同到期日', admin_doc_expiry:'证件到期提醒（60 天内）',
@@ -948,7 +948,7 @@ const I18N = {
     notif_sos:'Emergency SOS', notif_incident:'New complaint / incident', notif_safety_missed:'Night safety check missed', btn_help:'User guide / 使用手册',
     session_expired:'Session expired, please log in again', err_pin_locked:'Too many attempts, try again in 15 minutes', err_pin_exists:'PIN already set, please log in', err_pin_inactive:'This account is inactive, contact an admin', confirm_logout:'Log out?',
     temp_title:'Temperature log', admin_equipment:'Store equipment', sheet_equipment:'Equipment', field_equipment_name:'Equipment name', field_kind:'Type',
-    kind_chiller:'Chiller', kind_freezer:'Freezer', kind_hot:'Hot cabinet', kind_beer:'Draft beer', kind_coffee:'Coffee machine', kind_other:'Other', field_min:'Min (°C)', field_max:'Max (°C)', field_branch:'Store',
+    kind_chiller:'Chiller', kind_freezer:'Freezer', kind_hot:'Hot cabinet', kind_beer:'Draft beer', kind_coffee:'Coffee machine', kind_other:'Other', kind_fixture:'Racks / counters', eqc_card:'The accounts list {n} items for this store to confirm', eqc_card_hint:'Go one by one: tap "Still here" for what is here (for several, enter how many are left); tap "Not here" only for what is really gone. {d} confirmed so far.', eqc_card_staff:'Your manager confirms these one by one. {d} confirmed so far.', eqc_start:'Start confirming', eqc_title:'Confirm equipment', eqc_hint:'This is the equipment the accounts list for this store. Tap "Still here" for what is here; tap "Not here" only when it is really no longer in this store, and say why.', eqc_all_done:'All confirmed, thank you!', eqc_from_acc:'Accounts:', eqc_how_many:'How many left', eqc_here:'Still here', eqc_gone:'Not here', eqc_err_qty:'Check the number', eqc_gone_ask:'Why is it not here?', eqc_r_thrown:'Broken / thrown away', eqc_r_moved:'Moved to another store', eqc_r_never:'This store never had it', eqc_r_other:'Other (write it)', eqc_pick_outlet:'Moved to which store?', eqc_note_ph:'Note (needed for "Other")', eqc_err_reason:'Pick a reason', eqc_err_note:'Write the reason', eqc_gone_btn:'Yes, not here', eqc_removed_title:'Equipment taken off by stores', eqc_removed_hint:'Items stores said are gone (nothing is deleted). For moved items tap "Move to" so that store confirms it; put back anything tapped by mistake. The accounts follow up asset disposals from here.', eqc_put_back:'Put back', eqc_move_to:'Move to {b}', eqc_already:'{a} just handled this item; the screen is updated', eqc_more_than:'The accounts list {n}, you entered {k}. Sure? (Add any extra ones with "Add equipment")', eqc_short:'Only {k} found, the accounts list {n}', eqc_back:'Back to the list', field_min:'Min (°C)', field_max:'Max (°C)', field_branch:'Store',
     btn_log_temp:'Log', temp_none:'No reading yet', temp_out_of_range:'Out of range', temp_ok:'OK', toast_temp_saved:'Logged', toast_temp_alert:'Out of range: check the unit and tell the store manager', notif_temp_alert:'Temperature alert',
     temp_no_equipment:'No equipment set for this store yet (manager or admin adds it under Me → Temperature equipment)',
     field_passport_expiry:'Passport expiry', field_permit_expiry:'Work permit expiry', field_contract_expiry:'Contract expiry', admin_doc_expiry:'Document expiry (next 60 days)',
@@ -1190,7 +1190,7 @@ const I18N = {
     notif_sos:'Kecemasan SOS', notif_incident:'Aduan / insiden baharu', notif_safety_missed:'Semakan keselamatan malam terlepas', btn_help:'Panduan pengguna / User guide',
     session_expired:'Sesi tamat, sila log masuk semula', err_pin_locked:'Terlalu banyak percubaan, cuba lagi dalam 15 minit', err_pin_exists:'PIN sudah ditetapkan, sila log masuk', err_pin_inactive:'Akaun ini tidak aktif, hubungi admin', confirm_logout:'Log keluar?',
     temp_title:'Rekod suhu', admin_equipment:'Peralatan kedai', sheet_equipment:'Peralatan', field_equipment_name:'Nama peralatan', field_kind:'Jenis',
-    kind_chiller:'Peti sejuk (chiller)', kind_freezer:'Peti beku', kind_hot:'Kabinet panas', kind_beer:'Bir draf', kind_coffee:'Mesin kopi', kind_other:'Lain-lain', field_min:'Min (°C)', field_max:'Maks (°C)', field_branch:'Kedai',
+    kind_chiller:'Peti sejuk (chiller)', kind_freezer:'Peti beku', kind_hot:'Kabinet panas', kind_beer:'Bir draf', kind_coffee:'Mesin kopi', kind_other:'Lain-lain', kind_fixture:'Rak / kaunter', eqc_card:'Akaun menyenaraikan {n} peralatan untuk kedai ini disahkan', eqc_card_hint:'Satu demi satu: tekan "Masih ada" untuk yang ada (jika banyak, isi berapa yang tinggal); tekan "Tiada" hanya untuk yang benar-benar sudah tiada. {d} sudah disahkan.', eqc_card_staff:'Pengurus akan mengesahkan satu demi satu. {d} sudah disahkan.', eqc_start:'Mula sahkan', eqc_title:'Sahkan peralatan', eqc_hint:'Ini peralatan yang akaun senaraikan untuk kedai ini. Tekan "Masih ada" untuk yang ada; tekan "Tiada" hanya jika ia benar-benar sudah tiada di kedai ini, dan nyatakan sebabnya.', eqc_all_done:'Semua sudah disahkan, terima kasih!', eqc_from_acc:'Akaun:', eqc_how_many:'Berapa tinggal', eqc_here:'Masih ada', eqc_gone:'Tiada', eqc_err_qty:'Semak bilangan', eqc_gone_ask:'Kenapa tiada?', eqc_r_thrown:'Rosak / dibuang', eqc_r_moved:'Dipindah ke kedai lain', eqc_r_never:'Kedai ini tidak pernah ada', eqc_r_other:'Lain-lain (tulis)', eqc_pick_outlet:'Dipindah ke kedai mana?', eqc_note_ph:'Nota (perlu untuk "Lain-lain")', eqc_err_reason:'Pilih sebab', eqc_err_note:'Tulis sebabnya', eqc_gone_btn:'Ya, tiada', eqc_removed_title:'Peralatan dikeluarkan oleh kedai', eqc_removed_hint:'Barang yang kedai kata sudah tiada (tiada yang dipadam). Untuk yang dipindah tekan "Pindah ke" supaya kedai itu sahkan; letak semula jika tersalah tekan. Akaun susuli pelupusan aset dari sini.', eqc_put_back:'Letak semula', eqc_move_to:'Pindah ke {b}', eqc_already:'{a} baru sahaja mengurus barang ini; skrin dikemas kini', eqc_more_than:'Akaun senaraikan {n}, anda isi {k}. Pasti? (Tambah yang lebih dengan "Tambah peralatan")', eqc_short:'Hanya {k} dijumpai, akaun senaraikan {n}', eqc_back:'Kembali ke senarai', field_min:'Min (°C)', field_max:'Maks (°C)', field_branch:'Kedai',
     btn_log_temp:'Rekod', temp_none:'Belum ada bacaan', temp_out_of_range:'Luar julat', temp_ok:'OK', toast_temp_saved:'Direkod', toast_temp_alert:'Luar julat: periksa unit dan maklumkan pengurus kedai', notif_temp_alert:'Amaran suhu',
     temp_no_equipment:'Belum ada peralatan ditetapkan untuk kedai ini (pengurus atau admin tambah di Saya → Peralatan suhu)',
     field_passport_expiry:'Tarikh luput pasport', field_permit_expiry:'Tarikh luput permit kerja', field_contract_expiry:'Tarikh luput kontrak', admin_doc_expiry:'Dokumen akan luput (60 hari akan datang)',
@@ -4308,7 +4308,7 @@ function buildNotifications(){
     const mineB = b => isAdmin() || b===myBranch();
     S.safetyChecks.filter(s=>s.status==='sos' && mineB(s.branch)).forEach(s=>{ out.push({id:'sos:'+s.id, ts:s.createdAt, title:'🆘 '+t('notif_sos')+'：'+s.employeeName+(s.ackAt?' ✓ '+(s.ackByName||''):''), openSos:s, sub:(s.branch||'')+' · '+fmtDateTime(s.createdAt)+(s.geo?' · '+s.geo.lat.toFixed(5)+','+s.geo.lng.toFixed(5):''), unread:s.createdAt>seen, onClick:()=>openSosDetail(s)}); });
     S.incidents.filter(i=>i.status==='open' && mineB(i.branch)).forEach(i=>{ out.push({id:'inc:'+i.id, ts:i.createdAt, title:t('notif_incident')+'：'+incidentKindLabel(i.kind)+' · '+(i.branch||''), sub:(i.employeeName||'')+' · '+(i.description||'').slice(0,60), unread:i.createdAt>seen, onClick:()=>openIncidentDetail(i)}); });
-    S.equipment.filter(q=>q.active!==false && mineB(q.branch)).forEach(q=>{ const w=daysUntil(q.warrantyExpiry); const s=serviceDueDays(q); const ts=todayStr()+'T00:00:00.000Z'; if(w!=null && w<=30) out.push({id:'equip:w:'+q.id+':'+q.warrantyExpiry, ts, title:t('notif_warranty')+'：'+q.name, sub:(q.branch||'')+' · '+q.warrantyExpiry+' · '+docDaysLabel(w), unread:false, onClick:()=>openAssetActions(q)}); if(s!=null && s<=7) out.push({id:'equip:s:'+q.id+':'+(q.lastServiceAt||''), ts, title:t('notif_service_due')+'：'+q.name, sub:(q.branch||'')+' · '+(s<0?t('equip_overdue'):docDaysLabel(s)), unread:false, onClick:()=>openAssetActions(q)}); });
+    S.equipment.filter(q=>q.active!==false && !equipPending(q) && mineB(q.branch)).forEach(q=>{ const w=daysUntil(q.warrantyExpiry); const s=serviceDueDays(q); const ts=todayStr()+'T00:00:00.000Z'; if(w!=null && w<=30) out.push({id:'equip:w:'+q.id+':'+q.warrantyExpiry, ts, title:t('notif_warranty')+'：'+q.name, sub:(q.branch||'')+' · '+q.warrantyExpiry+' · '+docDaysLabel(w), unread:false, onClick:()=>openAssetActions(q)}); if(s!=null && s<=7) out.push({id:'equip:s:'+q.id+':'+(q.lastServiceAt||''), ts, title:t('notif_service_due')+'：'+q.name, sub:(q.branch||'')+' · '+(s<0?t('equip_overdue'):docDaysLabel(s)), unread:false, onClick:()=>openAssetActions(q)}); });
     S.faults.filter(f=>faultOverdue(f) && (f.deviceId ? isAdmin() : mineB(f.branch))).forEach(f=>{ out.push({id:'fault:od:'+f.id, ts:f.dueAt, title:t('notif_fault_overdue')+'：'+faultTitle(f), sub:(f.description||'').slice(0,60), unread:f.dueAt>seen, onClick:()=>openFaultDetail(f)}); });
     S.audits.filter(a=>mineB(a.branch)).slice(0,5).forEach(a=>{ out.push({id:'audit:'+a.id, ts:a.createdAt, title:t('notif_audit')+'：'+a.branch+' '+a.pct+'% '+a.grade, sub:(a.auditorName||'')+' · '+t('audit_failed_count')+' '+(a.failed||[]).length, unread:a.createdAt>seen, onClick:()=>openAuditDetail(a)}); });
     S.rectifications.filter(r=>r.status==='open' && r.dueDate && r.dueDate<todayStr() && mineB(r.branch)).forEach(r=>{ out.push({id:'rect:'+r.id, ts:r.dueDate+'T00:00:00.000Z', title:t('notif_rect_overdue')+'：'+String(r.item||'').slice(0,40), sub:r.branch+' · '+r.dueDate, unread:false, onClick:()=>openRectification(r)}); });
@@ -6162,10 +6162,131 @@ function homeTasksBlock(){
 }
 
 /* ============================ PHASE 1C: TEMPERATURE LOG / DOCUMENT EXPIRY ============================ */
-const EQUIP_KINDS=['chiller','freezer','hot','beer','coffee','pos','aircon','cctv','lighting','signage','shutter','icemaker','microwave','oven','waterheater','generator','fireext','other'];
+const EQUIP_KINDS=['chiller','freezer','hot','beer','coffee','pos','aircon','cctv','lighting','signage','shutter','icemaker','microwave','oven','waterheater','generator','fireext','fixture','other'];
 const EQUIP_DEFAULTS={chiller:{min:0,max:5}, freezer:{min:-25,max:-15}, hot:{min:60,max:80}, beer:{min:0,max:4}};
 function equipKindLabel(k){ return t('kind_'+(EQUIP_KINDS.includes(k)?k:'other')); }
-function equipmentFor(branch){ return S.equipment.filter(e=>e.active!==false && e.branch===branch).sort((a,b)=>(a.name||'').localeCompare(b.name||'','zh')); }
+// patch 144: rows imported from the accounts wait for the outlet to confirm them (confirm.status 'pending'); until then they
+// stay out of temperature checks, fault forms and missions, and show only in the outlet's equipment list to be confirmed
+function equipPending(q){ return !!(q && q.confirm && q.confirm.status === 'pending'); }
+function equipmentFor(branch){ return S.equipment.filter(e=>e.active!==false && e.branch===branch && !equipPending(e)).sort((a,b)=>(a.name||'').localeCompare(b.name||'','zh')); }
+function equipmentPendingFor(branch){ return S.equipment.filter(e=>e.active!==false && e.branch===branch && equipPending(e)).sort((a,b)=>(a.kind||'').localeCompare(b.kind||'') || (a.name||'').localeCompare(b.name||'','zh')); }
+function equipQty(q){ const n = Number(q && q.qty); return n > 1 ? n : 1; }
+/* patch 144 (owner 2026-10-04): the outlet confirms each item the accounts list for it. Here = keep (with how many are
+   still here); not here = taken off the list (active false, never deleted) with the reason, so HQ can follow up the asset
+   in the accounts or move it to the outlet that has it. Store managers do this for their own outlet; HQ for any. */
+function openEquipConfirmSheet(branch){
+  const body = el(`<div><p class="hint" style="margin-top:0;">${esc(t('eqc_hint'))}</p></div>`);
+  const list = el('<div class="list"></div>'); body.appendChild(list);
+  const draw = () => {
+    list.innerHTML = '';
+    const items = equipmentPendingFor(branch);
+    if(!items.length){ list.appendChild(el(`<div class="hint">✅ ${esc(t('eqc_all_done'))}</div>`)); return; }
+    items.forEach(q => {
+      const n = equipQty(q), src = q.accRef ? [q.accRef.doc, q.accRef.date].filter(Boolean).join(' · ') : '';
+      const row = el(`<div class="list-row" style="flex-wrap:wrap; align-items:flex-start; cursor:default;">${ib(equipIconFor(q.kind), TEMP_KINDS.includes(q.kind)?'c-teal':'c-grey')}<div class="lr-main" style="min-width:0;">
+        <div class="lr-title">${esc(q.name)}${n > 1 ? ' <b>× ' + n + '</b>' : ''} <span class="pill n" style="font-size:10px;">${esc(equipKindLabel(q.kind))}</span></div>
+        ${src ? `<div class="lr-sub">${esc(t('eqc_from_acc'))} ${esc(src)}</div>` : ''}
+        <div class="row" style="gap:6px; margin-top:6px; flex-wrap:wrap; align-items:center;">
+          ${n > 1 ? `<label style="font-size:12.5px;">${esc(t('eqc_how_many'))} <input type="number" min="0" max="${n * 5}" value="${n}" style="width:64px;" data-q></label>` : ''}
+          <button class="btn sm ok" data-a="here">✅ ${esc(t('eqc_here'))}</button><button class="btn sm danger" data-a="gone">❌ ${esc(t('eqc_gone'))}</button></div></div></div>`);
+      row.querySelector('[data-a="here"]').onclick = async (ev) => {
+        const inp = row.querySelector('[data-q]'), raw = inp ? String(inp.value).trim() : '1', k = Math.round(Number(raw));
+        if(raw === '' || !(k >= 0) || !isFinite(k)){ toast(t('eqc_err_qty')); return; }   // 144b: an empty box is not 0
+        if(k === 0){ equipAskGone(q, branch); return; }
+        if(k > n && !confirm(t('eqc_more_than').split('{k}').join(k).split('{n}').join(n))) return;
+        ev.target.disabled = true;
+        try{ await equipConfirmWrite(q, {status: 'here', qty: k, listedQty: n}); draw(); }catch(err){ ev.target.disabled = false; equipConfirmErr(err); draw(); }
+      };
+      row.querySelector('[data-a="gone"]').onclick = () => equipAskGone(q, branch);
+      list.appendChild(row);
+    });
+  };
+  draw();
+  openSheet(t('eqc_title') + ' · ' + branch, body);
+}
+async function equipConfirmWrite(q, res){
+  const me = currentEmployee(), at = new Date().toISOString();
+  const conf = Object.assign({listedQty: equipQty(q)}, res, {by: me.id, byName: me.name, at});
+  const patch = res.status === 'gone' ? {active: false, confirm: conf} : {confirm: conf, qty: res.qty};
+  // only a row still waiting at this same store is changed; otherwise say who did it (144b: never a silent skip)
+  await S.db.doc('equipment/' + q.id).updateWith(d => {
+    if(!(d.confirm && d.confirm.status === 'pending' && d.branch === q.branch && d.active !== false)) throw {code: 'eq_already', by: (d.confirm && d.confirm.byName) || ''};
+    return patch;
+  });
+  Object.assign(q, patch);
+  renderApp();
+}
+function equipConfirmErr(err){
+  if(err && err.code === 'eq_already'){ toast(t('eqc_already').split('{a}').join(err.by || '?')); if(S.db.refresh) S.db.refresh('equipment'); return; }
+  toast(dbErrMsg(err));
+}
+function equipAskGone(q, branch){
+  const body = el(`<div><p style="margin-top:0;"><b>${esc(q.name)}</b>${equipQty(q) > 1 ? ' × ' + equipQty(q) : ''}</p><p class="hint">${esc(t('eqc_gone_ask'))}</p></div>`);
+  const others = allBranchIds().filter(b => b !== branch && (/^BR\d+$/i.test(b) || b === 'HQ')).sort();   // 144b: stores and HQ only
+  const sel = el(`<select style="margin:6px 0;" hidden><option value="">${esc(t('eqc_pick_outlet'))}</option>${others.map(b => `<option>${esc(b)}</option>`).join('')}</select>`);
+  const note = el(`<textarea placeholder="${esc(t('eqc_note_ph'))}" style="margin-top:6px;"></textarea>`);
+  let reason = '';
+  const seg = el('<div class="list"></div>');
+  ['thrown', 'moved', 'never', 'other'].forEach(r => {
+    const it = el(`<div class="list-row">${esc(t('eqc_r_' + r))}</div>`);
+    it.onclick = () => { reason = r; seg.querySelectorAll('.list-row').forEach(x => x.style.fontWeight = x === it ? '800' : ''); sel.hidden = r !== 'moved'; };
+    seg.appendChild(it);
+  });
+  body.appendChild(seg); body.appendChild(sel); body.appendChild(note);
+  const foot = el('<div class="sheet-foot"></div>');
+  const ok = el(`<button class="btn danger block">❌ ${esc(t('eqc_gone_btn'))}</button>`);
+  ok.onclick = async () => {
+    if(!reason){ toast(t('eqc_err_reason')); return; }
+    if(reason === 'moved' && !sel.value){ toast(t('eqc_pick_outlet')); return; }
+    if(reason === 'other' && !note.value.trim()){ toast(t('eqc_err_note')); return; }
+    ok.disabled = true;
+    try{
+      await equipConfirmWrite(q, {status: 'gone', reason, movedTo: reason === 'moved' ? sel.value : '', note: note.value.trim().slice(0, 300)});
+      closeSheet(); setTimeout(() => openEquipConfirmSheet(branch), 200);
+    }catch(err){ ok.disabled = false; equipConfirmErr(err); if(err && err.code === 'eq_already'){ closeSheet(); setTimeout(() => openEquipConfirmSheet(branch), 200); } }
+  };
+  const back = el(`<button class="btn block" style="margin-top:8px;">← ${esc(t('eqc_back'))}</button>`);
+  back.onclick = () => { closeSheet(); setTimeout(() => openEquipConfirmSheet(branch), 200); };
+  foot.appendChild(ok); foot.appendChild(back); body.appendChild(foot);
+  closeSheet(); setTimeout(() => openSheet(t('eqc_gone'), body), 200);
+}
+// HQ: what the outlets took off the list; put it back, or move it to the outlet that has it (that outlet confirms it again)
+function equipRemovedCard(branches){
+  const gone = S.equipment.filter(q => q.active === false && q.confirm && q.confirm.status === 'gone' && (!branches || branches.includes(q.branch)));
+  // 144b: fewer found than the accounts list -> the missing units are for the accounts too
+  const short = S.equipment.filter(q => q.active !== false && q.confirm && q.confirm.status === 'here' && Number(q.confirm.listedQty) > Number(q.qty || 1) && (!branches || branches.includes(q.branch)));
+  if(!gone.length && !short.length) return null;
+  const c = el(`<details class="card card-tight" style="margin-top:12px;" ${S.eqRemovedOpen ? 'open' : ''}><summary style="font-weight:800; cursor:pointer;">🗂 ${esc(t('eqc_removed_title'))} (${gone.length + short.length})</summary><p class="hint">${esc(t('eqc_removed_hint'))}</p></details>`);
+  c.addEventListener('toggle', () => { S.eqRemovedOpen = c.open; });
+  const list = el('<div class="list"></div>');
+  short.forEach(q => {
+    const cf = q.confirm;
+    list.appendChild(el(`<div class="list-row" style="cursor:default;"><div class="lr-main" style="min-width:0;"><div class="lr-title">${esc(q.branch)} · ${esc(q.name)}</div>
+      <div class="lr-sub">${esc(t('eqc_short').split('{k}').join(Number(q.qty || 1)).split('{n}').join(Number(cf.listedQty)))}</div><div class="lr-sub">${esc((cf.byName || '') + ' · ' + localStamp(cf.at))}${q.accRef ? ' · ' + esc(q.accRef.doc || '') : ''}</div></div></div>`));
+  });
+  gone.sort((a, b) => String(b.confirm.at || '').localeCompare(String(a.confirm.at || ''))).forEach(q => {
+    const cf = q.confirm, why = t('eqc_r_' + (cf.reason || 'other')) + (cf.movedTo ? ' → ' + cf.movedTo : '') + (cf.note ? ' · ' + cf.note : '');
+    const row = el(`<div class="list-row" style="flex-wrap:wrap; cursor:default;"><div class="lr-main" style="min-width:0;"><div class="lr-title">${esc(q.branch)} · ${esc(q.name)}${equipQty(q) > 1 ? ' × ' + equipQty(q) : ''}</div>
+      <div class="lr-sub">${esc(why)}</div><div class="lr-sub">${esc((cf.byName || '') + ' · ' + localStamp(cf.at))}${q.accRef ? ' · ' + esc(q.accRef.doc || '') : ''}</div>
+      <div class="row" style="gap:6px; margin-top:6px; flex-wrap:wrap;"><button class="btn sm" data-a="back">↩ ${esc(t('eqc_put_back'))}</button>${cf.movedTo ? `<button class="btn sm primary" data-a="move">➡ ${esc(t('eqc_move_to').split('{b}').join(cf.movedTo))}</button>` : ''}</div></div></div>`);
+    // 144b: the change is built from the row as the server has it now, and only if it is still the answer shown here
+    const act = (mk) => async (ev) => {
+      ev.target.disabled = true; let patch = null;
+      try{
+        await S.db.doc('equipment/' + q.id).updateWith(d => {
+          if(!(d.active === false && d.confirm && d.confirm.status === 'gone' && d.confirm.at === cf.at)) throw {code: 'eq_already', by: (d.confirm && (d.confirm.byName || d.confirm.movedBy || d.confirm.returnedBy)) || ''};
+          return (patch = mk(d));
+        });
+        Object.assign(q, patch); renderApp();
+      }catch(err){ ev.target.disabled = false; equipConfirmErr(err); }
+    };
+    row.querySelector('[data-a="back"]').onclick = act(d => ({active: true, confirm: {status: 'pending', returnedBy: currentEmployee().name, returnedAt: new Date().toISOString(), was: d.confirm}}));
+    if(cf.movedTo) row.querySelector('[data-a="move"]').onclick = act(d => ({active: true, branch: d.confirm.movedTo, confirm: {status: 'pending', movedFrom: d.branch, movedBy: currentEmployee().name, movedAt: new Date().toISOString(), was: d.confirm}}));
+    list.appendChild(row);
+  });
+  c.appendChild(list);
+  return c;
+}
 const TEMP_ACTIONS = ['adjusted','moved_stock','door_closed','called_tech','discarded','other'];
 // an out-of-range reading whose re-check time has passed without a newer reading
 function tempRecheckOverdue(eqId){ const l = lastTempFor(eqId); return !!(l && l.ok === false && l.recheckBy && Date.now() > new Date(l.recheckBy).getTime()); }
@@ -6287,10 +6408,11 @@ function openEquipmentForm(eq, lockBranch){
   openSheet(t('sheet_equipment'), body);
 }
 function equipmentAdminBlock(lockBranch){
-  const items = lockBranch ? S.equipment.filter(e=>e.branch===lockBranch) : S.equipment.slice();
+  // 144b: rows waiting for the outlet's confirmation are handled in the equipment tab, never switched off here
+  const items = (lockBranch ? S.equipment.filter(e=>e.branch===lockBranch) : S.equipment.slice()).filter(e=>!equipPending(e) || isAdmin());
   items.sort((a,b)=>(a.branch||'').localeCompare(b.branch||'')||(a.name||'').localeCompare(b.name||'','zh'));
   return adminBlock(t('admin_equipment'), ()=>openEquipmentForm(null, lockBranch), items.map(eq=>({
-    title:eq.name+' · '+equipKindLabel(eq.kind)+(lockBranch?'':' · '+(eq.branch||'')), sub:equipSub(eq),
+    title:(equipPending(eq)?'⏳ ':'')+eq.name+' · '+equipKindLabel(eq.kind)+(lockBranch?'':' · '+(eq.branch||'')), sub:equipSub(eq),
     right: toggleSwitch(eq.active!==false, async(v)=>{ try{ await S.db.doc('equipment/'+eq.id).update({active:v}); }catch(e){toast(dbErrMsg(e));} }),
     onClick: ()=>openEquipmentForm(eq, lockBranch),
     onDelete: async()=>{ try{ await S.db.doc('equipment/'+eq.id).delete(); toast(t('toast_deleted')); }catch(e){toast(dbErrMsg(e));} }
@@ -12360,7 +12482,7 @@ function storeToday(b){
     listsDone:runs.filter(([, r]) => r && r.status === 'done').length, lists:tpls.length, listsLate:runs.filter(([tp, r]) => checklistLate(tp, r)).length,
     hq:hqOpenFor(b).length, exc:S.exceptions.filter(x => String(x.branch || '').toUpperCase() === b && x.status === 'open').length,
     drafts:S.receipts.filter(r => String(r.branch || '').toUpperCase() === b && r.status === 'draft').length,
-    tempLate:(S.equipment || []).filter(q => String(q.branch || '').toUpperCase() === b && q.active !== false && tempRecheckOverdue(q.id)).length};
+    tempLate:(S.equipment || []).filter(q => String(q.branch || '').toUpperCase() === b && q.active !== false && !equipPending(q) && tempRecheckOverdue(q.id)).length};
 }
 /* ---------- customer feedback (patch 52): read and closed through feedback_list / feedback_close ---------- */
 const FB_TOPICS = ['clean','service','stock','price','food','other'];
@@ -13397,7 +13519,7 @@ function notifIcon(id){
 const TEMP_KINDS=['chiller','freezer','hot','beer'];
 const FAULT_CATS=['electrical','refrigeration','aircon','plumbing','pos_it','building','furniture','other'];
 function faultCatLabel(k){ return t('fcat_'+(FAULT_CATS.includes(k)?k:'other')); }
-function equipIconFor(kind){ const m={chiller:'thermo',freezer:'thermo',hot:'thermo',beer:'beer',coffee:'thermo',pos:'machine',aircon:'gear',cctv:'pin',lighting:'gear',signage:'megaphone',shutter:'box',icemaker:'thermo',microwave:'gear',oven:'gear',waterheater:'thermo',generator:'gear',fireext:'alert',other:'wrench'}; return m[kind]||'wrench'; }
+function equipIconFor(kind){ const m={chiller:'thermo',freezer:'thermo',hot:'thermo',beer:'beer',coffee:'thermo',pos:'machine',aircon:'gear',cctv:'pin',lighting:'gear',signage:'megaphone',shutter:'box',icemaker:'thermo',microwave:'gear',oven:'gear',waterheater:'thermo',generator:'gear',fireext:'alert',fixture:'box',other:'wrench'}; return m[kind]||'wrench'; }
 function daysUntil(d){ if(!d) return null; const n=Math.round((new Date(String(d).slice(0,10)+'T00:00:00')-new Date(todayStr()+'T00:00:00'))/86400000); return isNaN(n)?null:n; }
 function serviceDueDays(eq){ if(!eq.serviceIntervalDays) return null; const base=eq.lastServiceAt||(eq.createdAt?localDay(eq.createdAt):null); if(!base) return null; const due=addDays(new Date(String(base).slice(0,10)+'T00:00:00'), Number(eq.serviceIntervalDays)); return Math.round((due-new Date(todayStr()+'T00:00:00'))/86400000); }
 function equipStatusPills(eq){
@@ -13406,7 +13528,7 @@ function equipStatusPills(eq){
   if(s!=null && s<=7) out.push(`<span class="pill ${s<0?'critical':'warn'}">${esc(t('equip_service'))} ${s<0?esc(t('equip_overdue')):docDaysLabel(s)}</span>`);
   return out.join('');
 }
-function equipSub(eq){ const parts=[]; if(TEMP_KINDS.includes(eq.kind)) parts.push(rangeLabel(eq)); if(eq.brand) parts.push(eq.brand); if(eq.vendor) parts.push(eq.vendor); if(eq.warrantyExpiry) parts.push(t('equip_warranty')+' '+eq.warrantyExpiry); return parts.join(' · '); }
+function equipSub(eq){ const parts=[]; if(equipQty(eq)>1) parts.push('× '+equipQty(eq)); if(TEMP_KINDS.includes(eq.kind)) parts.push(rangeLabel(eq)); if(eq.brand) parts.push(eq.brand); if(eq.vendor) parts.push(eq.vendor); if(eq.warrantyExpiry) parts.push(t('equip_warranty')+' '+eq.warrantyExpiry); return parts.join(' · '); }
 function faultTitle(f){ if(f.deviceId) return devName(f.deviceId); return (f.branch||'')+' · '+(f.equipmentName||faultCatLabel(f.category)); }
 function slaHours(sev){ const s=S.settings; return Number(sev==='high'?(s.slaHighHours||4):sev==='low'?(s.slaLowHours||72):(s.slaMediumHours||24)); }
 function faultOverdue(f){ return f.status!=='resolved' && !!f.dueAt && new Date(f.dueAt)<new Date(); }
@@ -13465,19 +13587,28 @@ function equipStoreAssets(){
   const c=el('<div></div>'); const e=currentEmployee();
   const branches = isAdmin() ? allBranchIds() : [e.homeBranch].filter(Boolean);
   const branch = isAdmin() ? (S.assetBranch || branches[0] || '') : (e.homeBranch||'');
-  if(isAdmin() && branches.length){ const chips=el('<div class="chiprow" style="margin-bottom:10px;"></div>'); branches.forEach(b=>{ const ch=el(`<button class="chip ${branch===b?'on':''}">${esc(b)}</button>`); ch.onclick=()=>{ S.assetBranch=b; renderApp(); }; chips.appendChild(ch); }); c.appendChild(chips); }
+  if(isAdmin() && branches.length){ const chips=el('<div class="chiprow" style="margin-bottom:10px;"></div>'); branches.forEach(b=>{ const np=equipmentPendingFor(b).length; const ch=el(`<button class="chip ${branch===b?'on':''}">${esc(b)}${np?' · '+np+'⏳':''}</button>`); ch.onclick=()=>{ S.assetBranch=b; renderApp(); }; chips.appendChild(ch); }); c.appendChild(chips); }
   if(!branch){ c.appendChild(el(`<div class="hint">${esc(t('asset_no_branch'))}</div>`)); return c; }
   if(canManageStaff()){ const add=el(`<button class="btn block" style="margin-bottom:10px;">${ICONS.plus}<span>${esc(t('btn_add_asset'))}</span></button>`); add.onclick=()=>openEquipmentForm(null, isAdmin()?null:branch); c.appendChild(add); }
+  const pend=equipmentPendingFor(branch);   // patch 144
+  if(pend.length){
+    const done=S.equipment.filter(q=>q.branch===branch && q.confirm && q.confirm.status && q.confirm.status!=='pending').length;
+    const pc=el(`<div class="card card-tight" style="margin-bottom:10px; border-left:4px solid var(--warn,#B54708);"><div style="font-weight:800;">🔎 ${esc(t('eqc_card').split('{n}').join(pend.length))}</div><div class="hint" style="margin:4px 0 8px;">${esc(t(canManageStaff()?'eqc_card_hint':'eqc_card_staff').split('{d}').join(done))}</div></div>`);
+    if(canManageStaff()){ const b=el(`<button class="btn primary block">✅ ${esc(t('eqc_start'))}</button>`); b.onclick=()=>openEquipConfirmSheet(branch); pc.appendChild(b); }
+    c.appendChild(pc);
+  }
   const eqs=equipmentFor(branch);
   const list=el('<div class="list"></div>');
-  if(eqs.length===0) list.appendChild(el(`<div class="empty">${ICONS.wrench}<div>${esc(t('asset_none'))}</div></div>`));
+  if(eqs.length===0 && !pend.length) list.appendChild(el(`<div class="empty">${ICONS.wrench}<div>${esc(t('asset_none'))}</div></div>`));
   eqs.forEach(q=>{
     const openF=S.faults.filter(f=>f.equipmentId===q.id && f.status!=='resolved').length;
     const pills=equipStatusPills(q);
     const row=el(`<div class="list-row">${ib(equipIconFor(q.kind), TEMP_KINDS.includes(q.kind)?'c-teal':'c-grey')}<div class="lr-main"><div class="lr-title">${esc(q.name)} <span class="pill n" style="font-size:10px;">${esc(equipKindLabel(q.kind))}</span></div><div class="lr-sub">${esc(equipSub(q))||'—'}</div>${pills?`<div class="row" style="gap:4px; flex-wrap:wrap; margin-top:3px;">${pills}</div>`:''}</div>${openF?`<span class="pill critical">${openF}${esc(t('device_fault_count'))}</span>`:`<span class="pill ok">${esc(t('device_ok'))}</span>`}</div>`);
     row.onclick=()=>openAssetActions(q); list.appendChild(row);
   });
-  c.appendChild(list); return c;
+  c.appendChild(list);
+  if(isAdmin()){ const rc=equipRemovedCard(null); if(rc) c.appendChild(rc); }   // patch 144
+  return c;
 }
 function openAssetActions(q){
   const body=el('<div></div>');
