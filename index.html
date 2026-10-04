@@ -553,7 +553,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-04.140';
+const APP_BUILD = '2026-10-04.141';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -6894,6 +6894,29 @@ function skuSoldAt(sku, branch){
 /* forReceiving: consignment and other receive-only goods can be counted in at the door but are
    never on a stock request. Ordering hides them; goods-in shows them. */
 function skuBarcodes(x){ const a = Array.isArray(x && x.barcodes) && x.barcodes.length ? x.barcodes.map(String) : (x && x.barcode ? [String(x.barcode)] : []); return a; }
+/* patch 146 (Sze 2026-10-04: "can't find inside apps"): goods search that forgives how the name is written. Every word typed
+   must appear somewhere in the name / code / barcode, in any order; spaces and punctuation are ignored ("winter melon" finds
+   WINTERMELON); a few Malay / English spellings used in AutoCount names count as the same (OREN = orange, EPAL = apple ...). */
+const SKU_ALIAS = {orange:'oren', apple:'epal', juice:'jus', lychee:'laici', grape:'anggur', mango:'mangga', coconut:'kelapa', cake:'kek', bread:'roti', milk:'susu', biscuit:'biskut', chocolate:'coklat', choco:'coklat', banana:'pisang', bun:'roti', water:'air', tea:'teh', coffee:'kopi', egg:'telur', chicken:'ayam', fish:'ikan', rice:'beras', sugar:'gula', salt:'garam'};
+const SKU_ALIAS_BACK = Object.fromEntries(Object.entries(SKU_ALIAS).map(([a, b]) => [b, a]));
+const skuHayCache = new WeakMap();
+function skuHay(x){
+  let h = skuHayCache.get(x);
+  if(!h){ const raw = [x.name, x.code, x.supplierItemName].concat(skuBarcodes(x)).filter(Boolean).join(' ').toLowerCase();
+    h = {raw, flat: raw.replace(/[^a-z0-9\u4e00-\u9fff]+/g, '')}; skuHayCache.set(x, h); }
+  return h;
+}
+function skuMatch(x, q){
+  q = String(q || '').toLowerCase().trim(); if(!q) return true;
+  const h = skuHay(x);
+  if(h.raw.includes(q)) return true;   // the old rule still matches first
+  return q.split(/[\s,/]+/).filter(Boolean).every(w => {
+    const f = w.replace(/[^a-z0-9\u4e00-\u9fff]+/g, ''); if(!f) return true;
+    if(h.flat.includes(f)) return true;
+    const alt = SKU_ALIAS[f] || SKU_ALIAS_BACK[f];
+    return !!alt && h.flat.includes(alt);
+  });
+}
 function skuBarcodeText(x, max){ const a = skuBarcodes(x); if(!a.length) return ''; const shown = a.slice(0, max||2).join(' · '); return a.length > (max||2) ? shown + ' +' + (a.length-(max||2)) : shown; }
 function lineExtra(l){ return [l.ai && l.ai.blind && Number(l.ai.blind.first) !== (Number(l.qty) || -(Number(l.returned) || 0)) ? t('recv_blind_first') + ' ' + l.ai.blind.first : '', l.amount!=null&&l.amount!==''?'RM '+Number(l.amount).toFixed(2):'', l.ai?'AI ✓':'', l.returned?`${t('recv_qty_returned')} ${l.returned}`:'', l.short?`${t('recv_qty_short')} ${l.short}`:'', l.damaged?`${t('recv_qty_damaged')} ${l.damaged}`:'', l.expiry?`${t('recv_exp')} ${l.expiry}`:''].filter(Boolean).join(' · '); }
 function skuPending(s){ return !!(s && s.pendingCode && !s.code); }
@@ -7100,7 +7123,7 @@ function openSkuPicker(branch){
 
   const render = ()=>{
     const q = (search.querySelector('input').value || '').trim().toLowerCase();
-    const shown = all.filter(s => !q || (s.name||'').toLowerCase().includes(q) || (s.code||'').toLowerCase().includes(q)).slice(0, 120);
+    const shown = all.filter(s => skuMatch(s, q)).slice(0, 120);   // patch 146
     listWrap.innerHTML = '';
     if(shown.length === 0){ listWrap.appendChild(el(`<div class="hint">${esc(t('order_search_none'))}</div>`)); return; }
     let lastCat = null;
@@ -9901,7 +9924,7 @@ function openSupplierPicker(branch){
   const render = ()=>{
     const q = (search.querySelector('input').value||'').trim().toLowerCase();
     listWrap.innerHTML = '';
-    all.filter(s => !q || (s.name||'').toLowerCase().includes(q) || (s.code||'').toLowerCase().includes(q)).slice(0, 60).forEach(s=>{
+    all.filter(s => skuMatch(s, q)).slice(0, 60).forEach(s=>{   // patch 146
       const row = el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(s.name)}</div><div class="lr-sub">${esc(s.code||'')}</div></div>${ib('check','c-green','sm')}</div>`);
       row.onclick = ()=>choose(s.code, s.name);
       listWrap.appendChild(row);
@@ -9937,7 +9960,7 @@ function openReceiptSkuPicker(branch, onPick){
   const newBtn = el(`<button class="btn block" style="margin-top:10px;">${ICONS.plus}<span>${esc(t('recv_new_item'))}</span></button>`);
   newBtn.onclick = ()=> openNewItemForm(branch, (search.querySelector('input').value||'').trim());
   if(!onPick) body.appendChild(newBtn);
-  const match = (x, q) => !q || (x.name||'').toLowerCase().includes(q) || (x.code||'').toLowerCase().includes(q) || skuBarcodes(x).some(b => b.toLowerCase().includes(q));
+  const match = (x, q) => skuMatch(x, q);   // patch 146
   const row = x => {
     const tags = (skuPending(x) ? ` <span class="pill warn">${esc(t('recv_pending_code'))}</span>` : '') + (onReceipt[x.id] ? ` <span class="pill ok">${esc(t('recv_on_receipt'))} ${onReceipt[x.id]}</span>` : '');
     const r = el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(x.name)}${tags}</div><div class="lr-sub">${esc(x.unit||'')}${x.code?' · '+esc(x.code):''}</div>${skuBarcodes(x).length?'<div class="lr-sub num" style="font-size:12px;">▮▯▮ '+esc(skuBarcodeText(x,2))+'</div>':''}</div>${ib('plus','c-grey','sm')}</div>`);
@@ -10655,7 +10678,7 @@ function olSkuPicker(branch, onPick, onBack){
     const q = (search.querySelector('input').value || '').trim().toLowerCase();
     list.innerHTML = '';
     if(q.length < 2){ list.appendChild(el(`<div class="hint">${esc(t('ol_type_2'))}</div>`)); return; }
-    skus.filter(x => (x.name||'').toLowerCase().includes(q) || (x.code||'').toLowerCase().includes(q) || skuBarcodes(x).some(b => b.toLowerCase().includes(q))).slice(0, 60).forEach(x=>{
+    skus.filter(x => skuMatch(x, q)).slice(0, 60).forEach(x=>{   // patch 146
       const r = el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(x.name)}</div><div class="lr-sub">${esc(x.unit||'')}${x.code?' · '+esc(x.code):''}</div></div>${ib('plus','c-grey','sm')}</div>`);
       r.onclick = ()=>onPick(x);
       list.appendChild(r);
@@ -11194,7 +11217,7 @@ function soSupplierPicker(branch, kind){
   const render = ()=>{
     const q = (search.querySelector('input').value || '').trim().toLowerCase();
     listWrap.innerHTML = '';
-    all.filter(s => !q || (s.name||'').toLowerCase().includes(q) || (s.code||'').toLowerCase().includes(q)).slice(0, 60).forEach(s=>{
+    all.filter(s => skuMatch(s, q)).slice(0, 60).forEach(s=>{   // patch 146
       const row = el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(s.name)}</div><div class="lr-sub">${esc(s.code||'')}</div></div>${ib('check','c-green','sm')}</div>`);
       row.onclick = ()=>choose(s.code, s.name);
       listWrap.appendChild(row);
@@ -11224,7 +11247,7 @@ function soSkuPicker(branch, kind, draft, opts){   // opts (patch 127): a line t
   const search = el(`<label class="field"><span class="fl">${esc(t('order_search'))}</span><input type="text" placeholder="${esc(t('order_search_ph'))} / ${esc(t('recv_barcode'))}"></label>`);
   body.appendChild(search);
   const listWrap = el('<div></div>'); body.appendChild(listWrap);
-  const match = (x, q) => !q || (x.name||'').toLowerCase().includes(q) || (x.code||'').toLowerCase().includes(q) || skuBarcodes(x).some(b => b.toLowerCase().includes(q));
+  const match = (x, q) => skuMatch(x, q);   // patch 146
   const row = x => {
     const r = el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(x.name)}</div><div class="lr-sub">${esc(x.unit||'')}${x.code?' · '+esc(x.code):''}</div></div>${ib('plus','c-grey','sm')}</div>`);
     r.onclick = ()=>{ closeSheet(); soQtySheet(branch, kind, draft && draft.id, x, null, opts); };
