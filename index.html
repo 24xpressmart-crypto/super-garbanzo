@@ -14,7 +14,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://smpazgmbmmeqighyhbon.supabase.co; connect-src 'self' https://smpazgmbmmeqighyhbon.supabase.co wss://smpazgmbmmeqighyhbon.supabase.co https://cdn.jsdelivr.net; manifest-src 'self'; worker-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://smpazgmbmmeqighyhbon.supabase.co; connect-src 'self' https://smpazgmbmmeqighyhbon.supabase.co wss://smpazgmbmmeqighyhbon.supabase.co; manifest-src 'self'; worker-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
+<meta name="robots" content="noindex, nofollow">
+<script>if (window.top !== window.self) { try { window.top.location = window.self.location; } catch (e) { document.documentElement.style.display = "none"; } }</script>
 <script>
 /* App error log, early part (patch 63): catches problems before the App's own script runs -- including a script that
    fails to load or to start -- and sends them itself if the App never takes over. */
@@ -557,7 +559,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-05.150';
+const APP_BUILD = '2026-10-05.151';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -1517,6 +1519,8 @@ function dbErrMsg(e){
   if(!S.errQuiet) logClientError('shown_error', String((e && (e.message || e.code)) || e || 'unknown'), '');
   return (e&&m[e.code]) || t('err_generic');
 }
+// patch 155: a map link from stored coordinates - numbers only, never raw text
+function mapsHref(g){ const la = Number(g && g.lat), ln = Number(g && g.lng); return (Number.isFinite(la) && Number.isFinite(ln) && Math.abs(la) <= 90 && Math.abs(ln) <= 180) ? 'https://maps.google.com/?q=' + la.toFixed(6) + ',' + ln.toFixed(6) : ''; }
 function currentEmployee(){return byId(S.employees, S.employeeId);}
 function isAdmin(){const e=currentEmployee(); return !!(e && e.role==='admin');}
 function isManager(){const e=currentEmployee(); return !!(e && e.role==='manager');}
@@ -4647,7 +4651,7 @@ function meView(){
   const myLeaves=S.leaveRequests.filter(l=>l.employeeId===e.id).slice(0,8);
   const leaveList=el('<div class="list"></div>');
   if(myLeaves.length===0) leaveList.appendChild(el(`<div class="hint">${esc(t('empty_no_requests'))}</div>`));
-  myLeaves.forEach(l=>leaveList.appendChild(el(`<div class="list-row" style="cursor:default;"><div class="lr-main"><div class="lr-title">${esc(leaveKindLabel(l))} · ${l.startDate}${l.endDate&&l.endDate!==l.startDate?' ~ '+l.endDate:''}</div><div class="lr-sub">${esc(l.reason||'')}</div></div><span class="pill ${LEAVE_STATUS[l.status].c}">${esc(t(LEAVE_STATUS[l.status].t))}</span></div>`)));
+  myLeaves.forEach(l=>leaveList.appendChild(el(`<div class="list-row" style="cursor:default;"><div class="lr-main"><div class="lr-title">${esc(leaveKindLabel(l))} · ${esc(l.startDate)}${l.endDate&&l.endDate!==l.startDate?' ~ '+esc(l.endDate):''}</div><div class="lr-sub">${esc(l.reason||'')}</div></div><span class="pill ${LEAVE_STATUS[l.status].c}">${esc(t(LEAVE_STATUS[l.status].t))}</span></div>`)));
   c.appendChild(leaveList);
   c.appendChild(myOtherRequestsList());
 
@@ -4677,7 +4681,7 @@ function managerSection(){
   const list=el('<div class="list"></div>');
   if(pending.length===0) list.appendChild(el(`<div class="hint">${esc(t('empty_no_pending'))}</div>`));
   pending.forEach(l=>{
-    const row=el(`<div class="card card-tight"><div class="lr-title">${esc(l.employeeName)} · ${esc(leaveKindLabel(l))}</div><div class="lr-sub">${l.startDate}${l.endDate&&l.endDate!==l.startDate?' ~ '+l.endDate:''} · ${esc(l.reason||'')}${esc(leaveBalanceSuffix(l))}</div></div>`);
+    const row=el(`<div class="card card-tight"><div class="lr-title">${esc(l.employeeName)} · ${esc(leaveKindLabel(l))}</div><div class="lr-sub">${esc(l.startDate)}${l.endDate&&l.endDate!==l.startDate?' ~ '+esc(l.endDate):''} · ${esc(l.reason||'')}${esc(leaveBalanceSuffix(l))}</div></div>`);
     const btns=el('<div class="row" style="margin-top:-6px; margin-bottom:10px;"></div>');
     const ok=el(`<button class="btn ok sm">${esc(t('btn_approve'))}</button>`), no=el(`<button class="btn danger sm">${esc(t('btn_reject'))}</button>`);
     ok.onclick=async ()=>{ try{ await S.db.doc('leaveRequests/'+l.id).update({status:'approved', reviewedAt:new Date().toISOString(), reviewedBy:currentEmployee().name}); toast(t('toast_saved')); }catch(e){toast(dbErrMsg(e));} };
@@ -4767,7 +4771,7 @@ function adminSection(){
   const list=el('<div class="list"></div>');
   if(pending.length===0) list.appendChild(el(`<div class="hint">${esc(t('empty_no_pending'))}</div>`));
   pending.forEach(l=>{
-    const row=el(`<div class="card card-tight"><div class="lr-title">${esc(l.employeeName)} · ${esc(leaveKindLabel(l))}</div><div class="lr-sub">${l.startDate}${l.endDate&&l.endDate!==l.startDate?' ~ '+l.endDate:''} · ${esc(l.reason||'')}${esc(leaveBalanceSuffix(l))}</div></div>`);
+    const row=el(`<div class="card card-tight"><div class="lr-title">${esc(l.employeeName)} · ${esc(leaveKindLabel(l))}</div><div class="lr-sub">${esc(l.startDate)}${l.endDate&&l.endDate!==l.startDate?' ~ '+esc(l.endDate):''} · ${esc(l.reason||'')}${esc(leaveBalanceSuffix(l))}</div></div>`);
     const btns=el('<div class="row" style="margin-top:-6px; margin-bottom:10px;"></div>');
     const ok=el(`<button class="btn ok sm">${esc(t('btn_approve'))}</button>`), no=el(`<button class="btn danger sm">${esc(t('btn_reject'))}</button>`);
     ok.onclick=async ()=>{ try{ await S.db.doc('leaveRequests/'+l.id).update({status:'approved', reviewedAt:new Date().toISOString(), reviewedBy:currentEmployee().name}); toast(t('leave_approved')); }catch(e){toast(dbErrMsg(e));} };
@@ -6831,7 +6835,7 @@ function openSosDetail(s){
   body.appendChild(el(`<div class="card card-tight"><div style="font-weight:900;">🆘 ${esc(s.employeeName||'')} · ${esc(s.branch||'')}</div><div class="lr-sub">${fmtDateTime(s.createdAt)}</div>
     ${s.geo?`<div class="lr-sub">${s.geo.lat.toFixed(5)}, ${s.geo.lng.toFixed(5)}</div>`:''}
     ${s.ackAt?`<div class="lr-sub" style="color:var(--ok,#3F9463);">✓ ${esc(t('sos_acked_by'))} ${esc(s.ackByName||'')} · ${fmtDateTime(s.ackAt)}</div>`:''}</div>`));
-  if(s.geo) body.appendChild(el(`<a class="btn block" style="margin-top:8px; text-decoration:none;" target="_blank" rel="noopener" href="https://maps.google.com/?q=${s.geo.lat},${s.geo.lng}">📍 ${esc(t('sos_open_map'))}</a>`));
+  if(s.geo && mapsHref(s.geo)) body.appendChild(el(`<a class="btn block" style="margin-top:8px; text-decoration:none;" target="_blank" rel="noopener" href="${mapsHref(s.geo)}">📍 ${esc(t('sos_open_map'))}</a>`));
   if(!s.ackAt && canManageStaff()){
     const b=el(`<button class="btn danger block" style="margin-top:8px;">${esc(t('sos_ack'))}</button>`);
     b.onclick=async()=>{ b.disabled=true; try{ const d=await rpc('sos_ack', {p_id:s.id}); Object.assign(s, d||{}); toast(t('toast_saved')); closeSheet(); if(S.db.refresh) S.db.refresh('safetyChecks'); renderFromData(); }catch(err){ toast(dbErrMsg(err)); b.disabled=false; } };
@@ -15179,7 +15183,7 @@ function openVisitForm(){
 }
 function openVisitDetail(v){
   const body=el('<div></div>');
-  body.innerHTML=`<div style="font-weight:800;">${esc(v.branch)} · ${fmtDateTime(v.createdAt)}</div><div class="hint" style="margin-top:2px;">${esc(v.employeeName||'')}${v.distanceM!=null?' · '+Math.round(v.distanceM)+'m':''}${v.geo?` · <a href="https://maps.google.com/?q=${v.geo.lat},${v.geo.lng}" target="_blank" rel="noopener">map</a>`:''}</div>
+  body.innerHTML=`<div style="font-weight:800;">${esc(v.branch)} · ${fmtDateTime(v.createdAt)}</div><div class="hint" style="margin-top:2px;">${esc(v.employeeName||'')}${v.distanceM!=null?' · '+Math.round(v.distanceM)+'m':''}${v.geo?` · <a href="${mapsHref(v.geo) || '#'}" target="_blank" rel="noopener">map</a>`:''}</div>
     <div class="card card-tight" style="font-size:13.5px; margin-top:8px;"><div>${esc(t('field_docs'))}: ${esc(v.docs==='yes'?t('opt_yes'):t('opt_no'))}</div><div>${esc(t('field_supplies'))}: ${esc(v.supplies||'—')}</div><div>${esc(t('field_cash_collected'))}: ${money(effAmt('runnerVisits', v))}</div>${v.note?`<div>${esc(v.note)}</div>`:''}</div>`;
   cashFixBlock(body, 'runnerVisits', v);
   body.appendChild(photoSlot('runnerVisits', v, 'photo', casePhotoEls));
