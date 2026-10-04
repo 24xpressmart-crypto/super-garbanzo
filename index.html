@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://smpazgmbmmeqighyhbon.supabase.co; connect-src 'self' https://smpazgmbmmeqighyhbon.supabase.co wss://smpazgmbmmeqighyhbon.supabase.co; manifest-src 'self'; worker-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://smpazgmbmmeqighyhbon.supabase.co; connect-src 'self' https://smpazgmbmmeqighyhbon.supabase.co wss://smpazgmbmmeqighyhbon.supabase.co; manifest-src 'self'; worker-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
 <meta name="robots" content="noindex, nofollow">
 <script>if (window.top !== window.self) { try { window.top.location = window.self.location; } catch (e) { document.documentElement.style.display = "none"; } }</script>
 <script>
@@ -559,7 +559,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-05.151';
+const APP_BUILD = '2026-10-05.152';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
