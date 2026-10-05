@@ -559,7 +559,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-05.154';
+const APP_BUILD = '2026-10-05.155';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -855,7 +855,7 @@ const I18N = {
     field_start_date:'开始日期', field_end_date:'结束日期', field_reason:'事由', btn_submit_request:'提交申请',
     err_pick_date:'请选择日期', toast_leave_submitted:'已提交，等待审批', sheet_leave:'请假 / 调班申请',
     admin_pending_prefix:'待审批（', admin_pending_suffix:'）', empty_no_pending:'暂无待审批申请',
-    btn_approve:'批准', btn_reject:'驳回', reject_reason_q:"驳回原因（员工会看到）：", reject_reason_need:"请写驳回原因，至少 2 个字。", reject_why:"驳回原因",
+    btn_approve:'批准', btn_reject:'驳回', sheet_discard_q:"还没送出。关掉的话，填的内容会不见，确定吗？", reject_reason_q:"驳回原因（员工会看到）：", reject_reason_need:"请写驳回原因，至少 2 个字。", reject_why:"驳回原因",
     admin_schedule_mgmt:'排班管理', admin_staff_mgmt:'人员管理', admin_device_mgmt:'点位管理',
     admin_product_mgmt:'商品管理', admin_settings:'业务设置', admin_export:'数据导出',
     label_device_id:'机号 ', label_has_coords:' · 已设坐标', btn_bulk_import:'批量导入',
@@ -1099,7 +1099,7 @@ const I18N = {
     field_start_date:'Start Date', field_end_date:'End Date', field_reason:'Reason', btn_submit_request:'Submit Request',
     err_pick_date:'Please select dates', toast_leave_submitted:'Submitted, awaiting approval', sheet_leave:'Leave / Shift Swap Request',
     admin_pending_prefix:'Pending Approval (', admin_pending_suffix:')', empty_no_pending:'No pending requests',
-    btn_approve:'Approve', btn_reject:'Reject', reject_reason_q:"Reason for rejecting (the staff member will see it):", reject_reason_need:"Please write a reason, at least 2 characters.", reject_why:"Reason",
+    btn_approve:'Approve', btn_reject:'Reject', sheet_discard_q:"Not sent yet. Close it and lose what you typed?", reject_reason_q:"Reason for rejecting (the staff member will see it):", reject_reason_need:"Please write a reason, at least 2 characters.", reject_why:"Reason",
     admin_schedule_mgmt:'Schedule Management', admin_staff_mgmt:'Staff Management', admin_device_mgmt:'Machine Management',
     admin_product_mgmt:'Product Management', admin_settings:'Business Settings', admin_export:'Data Export',
     label_device_id:'Machine ID ', label_has_coords:' · Coordinates set', btn_bulk_import:'Bulk Import',
@@ -1343,7 +1343,7 @@ const I18N = {
     field_start_date:'Tarikh mula', field_end_date:'Tarikh tamat', field_reason:'Sebab', btn_submit_request:'Hantar permohonan',
     err_pick_date:'Sila pilih tarikh', toast_leave_submitted:'Dihantar, menunggu kelulusan', sheet_leave:'Permohonan cuti / tukar syif',
     admin_pending_prefix:'Menunggu kelulusan (', admin_pending_suffix:')', empty_no_pending:'Tiada permohonan menunggu',
-    btn_approve:'Lulus', btn_reject:'Tolak', reject_reason_q:"Sebab ditolak (staf akan nampak):", reject_reason_need:"Sila tulis sebab, sekurang-kurangnya 2 aksara.", reject_why:"Sebab",
+    btn_approve:'Lulus', btn_reject:'Tolak', sheet_discard_q:"Belum dihantar. Tutup dan buang apa yang ditaip?", reject_reason_q:"Sebab ditolak (staf akan nampak):", reject_reason_need:"Sila tulis sebab, sekurang-kurangnya 2 aksara.", reject_why:"Sebab",
     admin_schedule_mgmt:'Pengurusan jadual', admin_staff_mgmt:'Pengurusan staf', admin_device_mgmt:'Pengurusan mesin',
     admin_product_mgmt:'Pengurusan produk', admin_settings:'Tetapan perniagaan', admin_export:'Eksport data',
     label_device_id:'ID mesin ', label_has_coords:' · Koordinat ditetapkan', btn_bulk_import:'Import pukal',
@@ -2131,6 +2131,17 @@ function subscribeAll(){
 /* ============================ ROUTER / SHELL RENDER ============================ */
 document.addEventListener('keydown', ev=>{ if((ev.key==='Enter'||ev.key===' ') && ev.target && ev.target.matches && ev.target.matches('.list-row, .id-pick-row, .ftile')){ ev.preventDefault(); ev.target.click(); } });
 window.addEventListener('hashchange', ()=>{ S.tab=(location.hash||'#home').slice(1); S.showReport=false; renderApp(); });
+// patch 157: Android Back while a sheet is open closes the sheet (asking first if something was typed)
+try{ if(history.state && history.state.sheet) history.replaceState(null, ''); }catch(e){}   // a reload with a sheet step left over
+['input','change'].forEach(ev => document.addEventListener(ev, e => { const tg=e.target; if(tg && tg.closest && tg.closest('#sheet') && sheetDirtyField(tg)) S.sheetDirty=true; }, true));
+window.addEventListener('popstate', ()=>{
+  if(S.sheetPopSkip){ S.sheetPopSkip=false; return; }                 // our own clean-up step
+  if(document.querySelector('[data-livecam]')) return;                 // the App camera handles its own Back
+  if(history.state && history.state.sheet) return;                     // back on the sheet's step (e.g. the camera just closed)
+  if(!sheetIsOpen()) return;
+  if(sheetCanLeave()){ $('modalWrap').classList.remove('show'); $('sheet').innerHTML=''; S.sheetDirty=false; }
+  else { try{ history.pushState({sheet:1}, ''); }catch(e){} }           // stay: put the step back
+});
 
 function renderApp(){
   tickClock();
@@ -2179,12 +2190,19 @@ function renderTopbar(){
   $('whoRole').textContent = e.role==='admin' ? t('role_admin') : e.role==='manager' ? t('role_manager') : t('role_staff');
   who.onclick = ()=>{ if(confirm(t('confirm_logout'))) logout(); };
 }
+// patch 157: store staff get the five things they use every day; HQ, VM, runners and admins keep the full bar
+function navTabs(){
+  const e=currentEmployee(); const br=String((e && e.homeBranch)||'').toUpperCase();
+  if(!e || isAdmin() || isRunner(e) || !br || br==='HQ' || br==='VM') return TABS;
+  const recv = receivingBranches().some(b => b===br || coversBranch(e, b));
+  return TABS.filter(tb => tb.id!=='stock' && (!recv || tb.id!=='equip')).map(tb => tb.id==='me' && recv ? [{id:'receive', label:'tile_receive', icon:ICONS.inbox}, tb] : [tb]).flat();
+}
 function renderNav(){
   const nav=$('nav'); nav.innerHTML='';
   const shell=$('shell');
   if(S.dbState!=='ready' || !S.token || !currentEmployee()){ nav.style.display='none'; if(shell) shell.classList.add('nonav'); return; }
   nav.style.display='flex'; if(shell) shell.classList.remove('nonav');
-  TABS.forEach(tb=>{
+  navTabs().forEach(tb=>{
     const b=el(`<button class="${S.tab===tb.id?'on':''}">${tb.icon}<span class="lb">${esc(t(tb.label))}</span></button>`);
     b.onclick=()=>{ location.hash='#'+tb.id; };
     nav.appendChild(b);
@@ -2198,10 +2216,25 @@ function openSheet(title, bodyHTML, footNode){
   $('sheetBody').appendChild(typeof bodyHTML==='string' ? el('<div>'+bodyHTML+'</div>') : bodyHTML);
   if(footNode) $('sheetBody').appendChild(footNode);
   wrap.classList.add('show');
+  S.sheetDirty=false; clearTimeout(S.sheetPopT);
+  if(!(history.state && history.state.sheet)){ try{ history.pushState({sheet:1}, ''); }catch(e){} }   // patch 157: one history step per open sheet, so Android Back closes it
   $('sheetClose').onclick=closeSheet;
-  wrap.querySelector('.backdrop').onclick=closeSheet;
+  wrap.querySelector('.backdrop').onclick=()=>{ if(sheetCanLeave()) closeSheet(); };   // 157: a stray tap outside does not throw a typed form away
 }
-function closeSheet(){ $('modalWrap').classList.remove('show'); $('sheet').innerHTML=''; }
+function closeSheet(){ $('modalWrap').classList.remove('show'); $('sheet').innerHTML=''; S.sheetDirty=false;
+  // 157: drop the sheet's history step, unless another sheet opens straight after (it then reuses the step)
+  clearTimeout(S.sheetPopT); S.sheetPopT=setTimeout(()=>{ if(!sheetIsOpen() && history.state && history.state.sheet){ S.sheetPopSkip=true; try{ history.back(); }catch(e){ S.sheetPopSkip=false; } } }, 250); }
+function sheetIsOpen(){ const w=$('modalWrap'); return !!(w && w.classList.contains('show')); }
+function sheetCanLeave(){ return !S.sheetDirty || confirm(t('sheet_discard_q')); }
+// a field counts as typed when it holds text (search boxes, ticks and picked options do not count) or a photo/file was chosen
+function sheetDirtyField(tg){
+  if(!tg || !tg.tagName) return false;
+  if(tg.tagName==='INPUT' && tg.type==='file') return !!(tg.files && tg.files.length);
+  if(!/^(TEXTAREA|INPUT)$/.test(tg.tagName) || tg.hasAttribute('data-nodirty')) return false;
+  if(tg.tagName==='INPUT' && /^(search|checkbox|radio|range|button|submit|hidden)$/.test(tg.type)) return false;
+  if(/search|搜|cari|find|查找|filter|筛选/i.test(String(tg.placeholder||'')+' '+String(tg.getAttribute('aria-label')||''))) return false;
+  return String(tg.value||'').trim().length>0;
+}
 
 /* ============================ PHOTO HELPER ============================ */
 /* patch 119: the App's own live camera. Some phones' camera apps never hand the photo back to the browser (Suja BR19,
