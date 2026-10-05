@@ -559,7 +559,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-05.163';
+const APP_BUILD = '2026-10-05.164';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -857,7 +857,7 @@ const I18N = {
     field_start_date:'开始日期', field_end_date:'结束日期', field_reason:'事由', btn_submit_request:'提交申请',
     err_pick_date:'请选择日期', toast_leave_submitted:'已提交，等待审批', sheet_leave:'请假 / 调班申请',
     admin_pending_prefix:'待审批（', admin_pending_suffix:'）', empty_no_pending:'暂无待审批申请',
-    btn_approve:'批准', btn_reject:'驳回', pts_rule_store_rank:"门店周排名前 3 名（每位上班同事：第 1 名 300、第 2 名 200、第 3 名 100，分数 40 以上）", sc_points:"每个星期一结算上星期（一到日）：前 3 名的店，每位在那间店打过上班卡的同事得 300／200／100 分（店的分数要 40 以上）。", sc_title:"门店排名（近 7 天）", sc_hint:"分数 = 清单完成率、冷柜温度记录率、出勤（每个迟到／缺勤／漏打卡扣 10%）、钱（每个收银差额／现金支出没发票／CSPU 没存款扣 10%）的平均。没有登记冷柜的店不算温度分。全体员工看得到排名和分数；明细只有本店和 HQ 看得到。", sc_hint_staff:"近 7 天各店排名。分数 = 清单完成、冷柜温度记录、出勤、收银与现金单据的平均。你的店用蓝色标出，下面有你店的明细。", sc_h_money:"钱", sc_no_fridge:"没登记冷柜", sc_h_rank:"#", sc_h_store:"门店", sc_h_score:"分数", sc_h_check:"清单", sc_h_temp:"温度", sc_h_att:"出勤问题", sc_h_fb:"顾客", sched_other_store:"这是在别间门店的班，要改请到那间门店的班表。", clock_selfie_now:"先拍一张自拍，拍好就自动打卡。", err_fill_one:"请填写：{x}", temp_waiting_signal:"等讯号送出", temp_too_old:"这个读数超过 12 小时，不能再送，请重新量一次。", temp_sent_late:"没讯号，迟送", nav_receive:"收货", sheet_discard_q:"还没送出。关掉的话，填的内容会不见，确定吗？", reject_reason_q:"驳回原因（员工会看到）：", reject_reason_need:"请写驳回原因，至少 2 个字。", reject_why:"驳回原因",
+    btn_approve:'批准', btn_reject:'驳回', rc_title:"每日烟酒盘点", rc_home:"烟酒盘点：{n} 项", rc_home_sub:"每天开店时数一数货架和仓库的烟、酒。照实数，看不到系统数字。", rc_hint:"烟和酒最容易不见。把货架上和仓库里的全部数一遍，打上一共几个。最好早上开店时数（那时还没开始卖）。", cc_pick_risk:"烟酒", shr_title:"损耗（近 30 天）", shr_hint:"按盘点算：数到的比「系统数减当天卖出」还少，就是短少；按 28 天平均售价算金额。只列有盘点的店。还没有定损耗目标，先看数据。", shr_none:"还没有盘点资料。", shr_lines:"盘点项", shr_missing:"短少 RM", shr_risk:"其中烟酒", shr_extra:"多出 RM", shr_worst:"短少最多的货", shr_sold:"当天卖出", pts_rule_store_rank:"门店周排名前 3 名（每位上班同事：第 1 名 300、第 2 名 200、第 3 名 100，分数 40 以上）", sc_points:"每个星期一结算上星期（一到日）：前 3 名的店，每位在那间店打过上班卡的同事得 300／200／100 分（店的分数要 40 以上）。", sc_title:"门店排名（近 7 天）", sc_hint:"分数 = 清单完成率、冷柜温度记录率、出勤（每个迟到／缺勤／漏打卡扣 10%）、钱（每个收银差额／现金支出没发票／CSPU 没存款扣 10%）的平均。没有登记冷柜的店不算温度分。全体员工看得到排名和分数；明细只有本店和 HQ 看得到。", sc_hint_staff:"近 7 天各店排名。分数 = 清单完成、冷柜温度记录、出勤、收银与现金单据的平均。你的店用蓝色标出，下面有你店的明细。", sc_h_money:"钱", sc_no_fridge:"没登记冷柜", sc_h_rank:"#", sc_h_store:"门店", sc_h_score:"分数", sc_h_check:"清单", sc_h_temp:"温度", sc_h_att:"出勤问题", sc_h_fb:"顾客", sched_other_store:"这是在别间门店的班，要改请到那间门店的班表。", clock_selfie_now:"先拍一张自拍，拍好就自动打卡。", err_fill_one:"请填写：{x}", temp_waiting_signal:"等讯号送出", temp_too_old:"这个读数超过 12 小时，不能再送，请重新量一次。", temp_sent_late:"没讯号，迟送", nav_receive:"收货", sheet_discard_q:"还没送出。关掉的话，填的内容会不见，确定吗？", reject_reason_q:"驳回原因（员工会看到）：", reject_reason_need:"请写驳回原因，至少 2 个字。", reject_why:"驳回原因",
     admin_schedule_mgmt:'排班管理', admin_staff_mgmt:'人员管理', admin_device_mgmt:'点位管理',
     admin_product_mgmt:'商品管理', admin_settings:'业务设置', admin_export:'数据导出',
     label_device_id:'机号 ', label_has_coords:' · 已设坐标', btn_bulk_import:'批量导入',
@@ -1103,7 +1103,7 @@ const I18N = {
     field_start_date:'Start Date', field_end_date:'End Date', field_reason:'Reason', btn_submit_request:'Submit Request',
     err_pick_date:'Please select dates', toast_leave_submitted:'Submitted, awaiting approval', sheet_leave:'Leave / Shift Swap Request',
     admin_pending_prefix:'Pending Approval (', admin_pending_suffix:')', empty_no_pending:'No pending requests',
-    btn_approve:'Approve', btn_reject:'Reject', pts_rule_store_rank:"Store in the weekly top 3 (each staff member who worked there: 1st 300, 2nd 200, 3rd 100; store score 40+)", sc_points:"Every Monday for the week before (Mon-Sun): every staff member who clocked in at a top-3 store earns 300 / 200 / 100 points (the store needs a score of 40 or more).", sc_title:"Store ranking (last 7 days)", sc_hint:"Score = average of checklists done, fridge readings logged, attendance (each late / absent / missed punch takes 10% off) and money (each till variance / cash spent without an invoice / CSPU not banked takes 10% off). Stores with no fridge listed get no temperature score. Everyone sees the ranking and scores; the details only for their own store and HQ.", sc_hint_staff:"Every store ranked over the last 7 days. Score = average of checklists, fridge readings, attendance, and till and cash paperwork. Your store is shaded blue, with its details.", sc_h_money:"Money", sc_no_fridge:"no fridge listed", sc_h_rank:"#", sc_h_store:"Store", sc_h_score:"Score", sc_h_check:"Checklists", sc_h_temp:"Fridge", sc_h_att:"Attendance issues", sc_h_fb:"Customers", sched_other_store:"This shift is at another store; change it in that store's roster.", clock_selfie_now:"Take a selfie first; the punch goes through as soon as it is taken.", err_fill_one:"Please fill in: {x}", temp_waiting_signal:"waiting for signal", temp_too_old:"This reading is more than 12 hours old and cannot be sent. Please take a new reading.", temp_sent_late:"sent late (no signal)", nav_receive:"Receive", sheet_discard_q:"Not sent yet. Close it and lose what you typed?", reject_reason_q:"Reason for rejecting (the staff member will see it):", reject_reason_need:"Please write a reason, at least 2 characters.", reject_why:"Reason",
+    btn_approve:'Approve', btn_reject:'Reject', rc_title:"Daily tobacco & liquor count", rc_home:"Tobacco & liquor count: {n} items", rc_home_sub:"Count the tobacco and liquor on the shelf and in the back every day at opening. Count what is there; the system figure is hidden.", rc_hint:"Tobacco and liquor go missing most. Count everything on the shelf and in the back room and type the total. Best done at opening, before any sales.", cc_pick_risk:"Tobacco / liquor", shr_title:"Shrink (last 30 days)", shr_hint:"From the counts: a count below \"system minus that day's sales\" is missing stock, valued at the 28-day average selling price. Only stores with counts are listed. No shrink target yet: the data comes first.", shr_none:"No counts yet.", shr_lines:"Lines counted", shr_missing:"Missing RM", shr_risk:"of which tobacco / liquor", shr_extra:"Extra RM", shr_worst:"Biggest shortfalls", shr_sold:"sold that day", pts_rule_store_rank:"Store in the weekly top 3 (each staff member who worked there: 1st 300, 2nd 200, 3rd 100; store score 40+)", sc_points:"Every Monday for the week before (Mon-Sun): every staff member who clocked in at a top-3 store earns 300 / 200 / 100 points (the store needs a score of 40 or more).", sc_title:"Store ranking (last 7 days)", sc_hint:"Score = average of checklists done, fridge readings logged, attendance (each late / absent / missed punch takes 10% off) and money (each till variance / cash spent without an invoice / CSPU not banked takes 10% off). Stores with no fridge listed get no temperature score. Everyone sees the ranking and scores; the details only for their own store and HQ.", sc_hint_staff:"Every store ranked over the last 7 days. Score = average of checklists, fridge readings, attendance, and till and cash paperwork. Your store is shaded blue, with its details.", sc_h_money:"Money", sc_no_fridge:"no fridge listed", sc_h_rank:"#", sc_h_store:"Store", sc_h_score:"Score", sc_h_check:"Checklists", sc_h_temp:"Fridge", sc_h_att:"Attendance issues", sc_h_fb:"Customers", sched_other_store:"This shift is at another store; change it in that store's roster.", clock_selfie_now:"Take a selfie first; the punch goes through as soon as it is taken.", err_fill_one:"Please fill in: {x}", temp_waiting_signal:"waiting for signal", temp_too_old:"This reading is more than 12 hours old and cannot be sent. Please take a new reading.", temp_sent_late:"sent late (no signal)", nav_receive:"Receive", sheet_discard_q:"Not sent yet. Close it and lose what you typed?", reject_reason_q:"Reason for rejecting (the staff member will see it):", reject_reason_need:"Please write a reason, at least 2 characters.", reject_why:"Reason",
     admin_schedule_mgmt:'Schedule Management', admin_staff_mgmt:'Staff Management', admin_device_mgmt:'Machine Management',
     admin_product_mgmt:'Product Management', admin_settings:'Business Settings', admin_export:'Data Export',
     label_device_id:'Machine ID ', label_has_coords:' · Coordinates set', btn_bulk_import:'Bulk Import',
@@ -1349,7 +1349,7 @@ const I18N = {
     field_start_date:'Tarikh mula', field_end_date:'Tarikh tamat', field_reason:'Sebab', btn_submit_request:'Hantar permohonan',
     err_pick_date:'Sila pilih tarikh', toast_leave_submitted:'Dihantar, menunggu kelulusan', sheet_leave:'Permohonan cuti / tukar syif',
     admin_pending_prefix:'Menunggu kelulusan (', admin_pending_suffix:')', empty_no_pending:'Tiada permohonan menunggu',
-    btn_approve:'Lulus', btn_reject:'Tolak', pts_rule_store_rank:"Kedai 3 teratas mingguan (setiap staf yang bekerja di situ: pertama 300, kedua 200, ketiga 100; skor kedai 40+)", sc_points:"Setiap Isnin untuk minggu lepas (Isnin-Ahad): setiap staf yang punch masuk di kedai 3 teratas dapat 300 / 200 / 100 mata (skor kedai mesti 40 ke atas).", sc_title:"Kedudukan kedai (7 hari lepas)", sc_hint:"Skor = purata senarai semak, bacaan suhu peti sejuk, kehadiran (setiap lewat / tidak hadir / tertinggal punch tolak 10%) dan wang (setiap beza tunai / tunai tanpa invois / CSPU tidak dibank tolak 10%). Kedai tanpa peti sejuk tiada skor suhu. Semua nampak kedudukan dan skor; butiran hanya untuk kedai sendiri dan HQ.", sc_hint_staff:"Kedudukan semua kedai 7 hari lepas. Skor = purata senarai semak, suhu, kehadiran, dan dokumen tunai. Kedai anda berwarna biru, dengan butirannya.", sc_h_money:"Wang", sc_no_fridge:"tiada peti sejuk", sc_h_rank:"#", sc_h_store:"Kedai", sc_h_score:"Skor", sc_h_check:"Senarai", sc_h_temp:"Suhu", sc_h_att:"Isu kehadiran", sc_h_fb:"Pelanggan", sched_other_store:"Syif ini di kedai lain; ubah dalam jadual kedai itu.", clock_selfie_now:"Ambil swafoto dahulu; punch akan dihantar sebaik sahaja gambar diambil.", err_fill_one:"Sila isi: {x}", temp_waiting_signal:"menunggu isyarat", temp_too_old:"Bacaan ini lebih 12 jam dan tidak boleh dihantar. Sila ambil bacaan baharu.", temp_sent_late:"dihantar lewat (tiada isyarat)", nav_receive:"Terima", sheet_discard_q:"Belum dihantar. Tutup dan buang apa yang ditaip?", reject_reason_q:"Sebab ditolak (staf akan nampak):", reject_reason_need:"Sila tulis sebab, sekurang-kurangnya 2 aksara.", reject_why:"Sebab",
+    btn_approve:'Lulus', btn_reject:'Tolak', rc_title:"Kiraan harian rokok & arak", rc_home:"Kiraan rokok & arak: {n} item", rc_home_sub:"Kira rokok dan arak di rak dan stor setiap hari ketika kedai dibuka. Kira apa yang ada; angka sistem tersembunyi.", rc_hint:"Rokok dan arak paling mudah hilang. Kira semua di rak dan di stor, taip jumlahnya. Paling baik ketika buka kedai, sebelum jualan.", cc_pick_risk:"Rokok / arak", shr_title:"Kehilangan (30 hari lepas)", shr_hint:"Dari kiraan: kiraan di bawah \"sistem tolak jualan hari itu\" ialah stok hilang, dinilai pada harga jualan purata 28 hari. Hanya kedai yang ada kiraan. Belum ada sasaran: data dahulu.", shr_none:"Belum ada kiraan.", shr_lines:"Item dikira", shr_missing:"Hilang RM", shr_risk:"daripadanya rokok / arak", shr_extra:"Lebih RM", shr_worst:"Kekurangan terbesar", shr_sold:"dijual hari itu", pts_rule_store_rank:"Kedai 3 teratas mingguan (setiap staf yang bekerja di situ: pertama 300, kedua 200, ketiga 100; skor kedai 40+)", sc_points:"Setiap Isnin untuk minggu lepas (Isnin-Ahad): setiap staf yang punch masuk di kedai 3 teratas dapat 300 / 200 / 100 mata (skor kedai mesti 40 ke atas).", sc_title:"Kedudukan kedai (7 hari lepas)", sc_hint:"Skor = purata senarai semak, bacaan suhu peti sejuk, kehadiran (setiap lewat / tidak hadir / tertinggal punch tolak 10%) dan wang (setiap beza tunai / tunai tanpa invois / CSPU tidak dibank tolak 10%). Kedai tanpa peti sejuk tiada skor suhu. Semua nampak kedudukan dan skor; butiran hanya untuk kedai sendiri dan HQ.", sc_hint_staff:"Kedudukan semua kedai 7 hari lepas. Skor = purata senarai semak, suhu, kehadiran, dan dokumen tunai. Kedai anda berwarna biru, dengan butirannya.", sc_h_money:"Wang", sc_no_fridge:"tiada peti sejuk", sc_h_rank:"#", sc_h_store:"Kedai", sc_h_score:"Skor", sc_h_check:"Senarai", sc_h_temp:"Suhu", sc_h_att:"Isu kehadiran", sc_h_fb:"Pelanggan", sched_other_store:"Syif ini di kedai lain; ubah dalam jadual kedai itu.", clock_selfie_now:"Ambil swafoto dahulu; punch akan dihantar sebaik sahaja gambar diambil.", err_fill_one:"Sila isi: {x}", temp_waiting_signal:"menunggu isyarat", temp_too_old:"Bacaan ini lebih 12 jam dan tidak boleh dihantar. Sila ambil bacaan baharu.", temp_sent_late:"dihantar lewat (tiada isyarat)", nav_receive:"Terima", sheet_discard_q:"Belum dihantar. Tutup dan buang apa yang ditaip?", reject_reason_q:"Sebab ditolak (staf akan nampak):", reject_reason_need:"Sila tulis sebab, sekurang-kurangnya 2 aksara.", reject_why:"Sebab",
     admin_schedule_mgmt:'Pengurusan jadual', admin_staff_mgmt:'Pengurusan staf', admin_device_mgmt:'Pengurusan mesin',
     admin_product_mgmt:'Pengurusan produk', admin_settings:'Tetapan perniagaan', admin_export:'Eksport data',
     label_device_id:'ID mesin ', label_has_coords:' · Koordinat ditetapkan', btn_bulk_import:'Import pukal',
@@ -2887,6 +2887,9 @@ function homeView(){
     fb.forEach(b => { const cn = ccRows(b).length; if(!cn) return;
       const cc = el(`<div class="card" data-cc-card style="border:2px solid var(--accent,#2E6F91); cursor:pointer; margin-bottom:10px;"><div style="font-weight:900;">🧮 ${esc(t('cc_home').split('{n}').join(cn))}${fb.length > 1 ? ' · ' + esc(b) : ''}</div><div class="lr-sub">${esc(t('cc_home_sub'))}</div></div>`);
       cc.onclick = () => openCountSheet(b); c.appendChild(cc); });
+    fb.forEach(b => { const rn = ccRows(b, 'risk').length; if(!rn) return;   // patch 166: tobacco and liquor, every store, every day
+      const rc = el(`<div class="card" data-rc-card style="border:2px solid var(--warn,#B5731A); cursor:pointer; margin-bottom:10px;"><div style="font-weight:900;">🚬 ${esc(t('rc_home').split('{n}').join(rn))}${fb.length > 1 ? ' · ' + esc(b) : ''}</div><div class="lr-sub">${esc(t('rc_home_sub'))}</div></div>`);
+      rc.onclick = () => openCountSheet(b, 'risk'); c.appendChild(rc); });
     // patch 145: the manager is reminded on Home to confirm the equipment the accounts list for the store (patch 144)
     if(isManager() && myBranch()){ const b = myBranch(), np = equipmentPendingFor(b).length;
       if(np){ const qc = el(`<div class="card" style="border:2px solid var(--warn,#B5731A); cursor:pointer; margin-bottom:10px;"><div style="font-weight:900;">🔎 ${esc(t('eqc_card').split('{n}').join(np))}</div><div class="lr-sub">${esc(t('eqc_home_sub'))}</div></div>`);
@@ -10660,23 +10663,25 @@ function openZeroSheet(branch, given){   // patch 117: given = items from the da
    then the best sellers not counted in 30 days). public.cycle_count_save: the count; the server keeps the system figure
    and the difference, and only HQ reads them (Stock request -> Counts). */
 function ccBranches(){ const v = S.settings.cycleCountBranches; return String(v == null ? 'BR01,BR19' : v).toUpperCase().split(/[\s,;]+/).filter(Boolean); }
-function ccRows(branch){
+function ccRows(branch, kind){   // patch 166: kind 'risk' = the daily tobacco / liquor count
   S.ccCache = S.ccCache || {};
-  const c = S.ccCache[branch];
+  const key = (kind === 'risk' ? 'risk|' : '') + branch;
+  const c = S.ccCache[key];
   if(!c || (!c.loading && Date.now() - c.at > 15 * 60000)){
-    S.ccCache[branch] = {at: Date.now(), rows: c ? c.rows : [], loading: true};
-    rpc('cycle_count_list', {p_branch: branch})
-      .then(rows => { S.ccCache[branch] = {at: Date.now(), rows: Array.isArray(rows) ? rows : [], loading: false}; renderFromData(); })
-      .catch(() => { S.ccCache[branch] = {at: Date.now(), rows: c ? c.rows : [], loading: false}; });
+    S.ccCache[key] = {at: Date.now(), rows: c ? c.rows : [], loading: true};
+    rpc(kind === 'risk' ? 'risk_count_list' : 'cycle_count_list', {p_branch: branch})
+      .then(rows => { S.ccCache[key] = {at: Date.now(), rows: Array.isArray(rows) ? rows : [], loading: false}; renderFromData(); })
+      .catch(() => { S.ccCache[key] = {at: Date.now(), rows: c ? c.rows : [], loading: false}; });
   }
-  return S.ccCache[branch].rows || [];
+  return S.ccCache[key].rows || [];
 }
-function openCountSheet(branch){
+function openCountSheet(branch, kind){
+  const risk = kind === 'risk', key = (risk ? 'risk|' : '') + branch;   // patch 166
   const body = el('<div></div>');
   const draw = () => {
     body.innerHTML = '';
-    body.appendChild(el(`<p class="hint" style="margin:0 0 8px;">${esc(t('cc_hint'))}</p>`));
-    const rows = ccRows(branch);
+    body.appendChild(el(`<p class="hint" style="margin:0 0 8px;">${esc(t(risk ? 'rc_hint' : 'cc_hint'))}</p>`));
+    const rows = ccRows(branch, kind);
     if(!rows.length){ body.appendChild(el(`<div class="empty">${ICONS.check}<div>${esc(t('cc_none'))}</div></div>`)); return; }
     rows.forEach(r => {
       const card = el(`<div class="card card-tight" data-cc-item="${esc(r.item_code)}" style="margin-bottom:8px;"><div class="lr-title" style="white-space:normal;">${esc(r.name || r.item_code)}</div>
@@ -10689,15 +10694,15 @@ function openCountSheet(branch){
         if(!confirm(t('cc_confirm').split('{n}').join(v).split('{item}').join(r.name || r.item_code))) return;   // a count cannot be changed afterwards
         btn.disabled = true; inp.disabled = true;
         try{
-          await rpc('cycle_count_save', {p: {branch, code: r.item_code, uom: r.uom || 'PC', qty: q}});
+          await rpc(risk ? 'risk_count_save' : 'cycle_count_save', {p: {branch, code: r.item_code, uom: r.uom || 'PC', qty: q}});
           toast(t('cc_saved'));
         }catch(err){
           const m = String((err && err.message) || '');
-          if(/day_done|stale|not_pilot/.test(m)){ toast(t(/stale/.test(m) ? 'cc_stale' : 'cc_none')); if(S.ccCache) delete S.ccCache[branch]; closeSheet(); renderFromData(); return; }
+          if(/day_done|stale|not_pilot|not_on_list/.test(m)){ toast(t(/stale/.test(m) ? 'cc_stale' : 'cc_none')); if(S.ccCache) delete S.ccCache[key]; closeSheet(); renderFromData(); return; }
           if(!/already_counted/.test(m)){ toast(/bad_qty/.test(m) ? t('err_valid_qty') : dbErrMsg(err)); btn.disabled = false; inp.disabled = false; return; }
           toast(t('cc_already'));
         }
-        const cc = S.ccCache && S.ccCache[branch]; if(cc) cc.rows = (cc.rows || []).filter(x => x && !(x.item_code === r.item_code && (x.uom || 'PC') === (r.uom || 'PC')));
+        const cc = S.ccCache && S.ccCache[key]; if(cc) cc.rows = (cc.rows || []).filter(x => x && !(x.item_code === r.item_code && (x.uom || 'PC') === (r.uom || 'PC')));
         card.style.opacity = '.55'; card.querySelector('.row').innerHTML = `<p class="hint" style="margin:0; font-weight:800;">✓ ${esc(t('cc_saved'))}</p>`;
         renderFromData();
       };
@@ -10705,10 +10710,36 @@ function openCountSheet(branch){
     });
   };
   draw();
-  openSheet(t('cc_title') + ' · ' + branch, body);
+  openSheet(t(risk ? 'rc_title' : 'cc_title') + ' · ' + branch, body);
+}
+// patch 166: money missing per store over 30 days (a count below "system minus that day's sales"), worst items
+function shrinkBlock(){
+  const box = el('<div style="margin-bottom:14px;"></div>');
+  const sh = S.shrink;
+  if(!sh || (!sh.loading && Date.now() - sh.at > 10 * 60000)){
+    S.shrink = {at: Date.now(), data: sh ? sh.data : null, loading: true};
+    rpc('shrink_summary', {p_days: 30}).then(d => { S.shrink = {at: Date.now(), data: d || null, loading: false}; renderFromData(); })
+      .catch(() => { S.shrink = {at: Date.now(), data: sh ? sh.data : null, loading: false}; });
+  }
+  const d = S.shrink.data;
+  box.appendChild(el(`<h3 class="sec" style="margin:0 0 4px;">📉 ${esc(t('shr_title'))}</h3>`));
+  box.appendChild(el(`<p class="hint" style="margin:0 0 8px;">${esc(t('shr_hint'))}</p>`));
+  const st = (d && Array.isArray(d.stores)) ? d.stores : [];
+  if(!st.length){ box.appendChild(el(`<div class="hint">${esc(S.shrink.loading ? t('acc_loading') : t('shr_none'))}</div>`)); return box; }
+  const td = (h, x) => `<td style="padding:4px 6px; border-top:1px solid var(--line,#DAD9D2); white-space:nowrap; ${x || ''}">${h}</td>`;
+  box.appendChild(el(`<div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; font-size:13px; font-variant-numeric:tabular-nums;"><thead><tr>${['field_branch', 'shr_lines', 'shr_missing', 'shr_risk', 'shr_extra'].map(k => `<th style="text-align:left; padding:4px 6px; font-size:11px; color:var(--ink-faint,#8A8F94);">${esc(t(k))}</th>`).join('')}</tr></thead><tbody>${
+    st.map(r => '<tr>' + td('<b>' + esc(r.branch) + '</b>') + td(Number(r.lines) + (Number(r.riskLines) ? ' <span class="hint">(' + Number(r.riskLines) + ' 🚬)</span>' : ''))
+      + td(money(Number(r.missingValue) || 0), Number(r.missingValue) > 0 ? 'color:var(--bad,#C1392B); font-weight:800;' : '') + td(money(Number(r.riskMissingValue) || 0)) + td(money(Number(r.extraValue) || 0)) + '</tr>').join('')}</tbody></table></div>`));
+  const w = (d && Array.isArray(d.worst)) ? d.worst.slice(0, 15) : [];
+  if(w.length){ box.appendChild(el(`<div class="lr-sub" style="margin:8px 0 4px; font-weight:800;">${esc(t('shr_worst'))}</div>`));
+    const l = el('<div class="list"></div>');
+    w.forEach(x => l.appendChild(el(`<div class="list-row" style="cursor:default;"><div class="lr-main"><div class="lr-title" style="white-space:normal;">${esc(x.name || x.code)}${x.pick === 'risk' ? ' <span class="pill critical">' + esc(t('cc_pick_risk')) + '</span>' : ''}</div><div class="lr-sub" style="white-space:normal;">${esc(x.branch)} · ${esc(x.day)} · ${esc(t('cc_counted'))} ${Number(x.counted)} · ${esc(t('cc_system'))} ${x.system == null ? '—' : Number(x.system)} · ${esc(t('shr_sold'))} ${Number(x.sold) || 0}</div></div><span class="pill critical">${money(Number(x.value) || 0)}</span></div>`)));
+    box.appendChild(l); }
+  return box;
 }
 function ccHqView(){
   const c = el('<div></div>');
+  c.appendChild(shrinkBlock());   // patch 166
   c.appendChild(el(`<p class="hint" style="margin:0 0 8px;">${esc(t('cc_hq_hint'))}</p>`));
   const since = freshDateAdd(todayStr(), -14);
   const rows = (S.cycleCounts || []).filter(x => x && x.day && x.day > since);
@@ -10734,7 +10765,7 @@ function ccHqView(){
   if(top.length){
     c.appendChild(el(`<h3 class="sec" style="margin-top:14px;">${esc(t('cc_top'))} · ${top.length}</h3>`));
     const l = el('<div class="list"></div>');
-    top.forEach(x => l.appendChild(el(`<div class="list-row" style="cursor:default;"><div class="lr-main"><div class="lr-title" style="white-space:normal;">${esc(x.name || x.code)}${x.pick === 'negative' ? ' <span class="pill warn">' + esc(t('cc_pick_neg')) + '</span>' : ''}</div>
+    top.forEach(x => l.appendChild(el(`<div class="list-row" style="cursor:default;"><div class="lr-main"><div class="lr-title" style="white-space:normal;">${esc(x.name || x.code)}${x.pick === 'risk' ? ' <span class="pill critical">' + esc(t('cc_pick_risk')) + '</span>' : ''}${x.pick === 'negative' ? ' <span class="pill warn">' + esc(t('cc_pick_neg')) + '</span>' : ''}</div>
       <div class="lr-sub" style="white-space:normal;">${esc(x.branch)} · ${esc(x.day)} · ${esc(x.code)} · ${esc(t('cc_counted'))} ${Number(x.counted)} · ${esc(t('cc_system'))} ${x.systemQty == null ? '—' : Number(x.systemQty)}${x.asOf ? ' (' + esc(x.asOf) + ')' : ''}${soldOf(x) != null ? ' · ' + esc(t('cc_sold_day')) + ' ' + soldOf(x) : ''} · ${esc(x.createdByName || '')}</div></div>
       <span class="pill ${Number(x.diffValue) < 0 ? 'critical' : 'ok'}">${x.diffValue == null ? (Number(x.diff) > 0 ? '+' : '') + Number(x.diff) : money(x.diffValue)}</span></div>`)));
     c.appendChild(l);
