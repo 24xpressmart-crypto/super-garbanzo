@@ -559,7 +559,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-05.152';
+const APP_BUILD = '2026-10-05.153';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -718,6 +718,7 @@ const I18N = {
     temp_no_equipment:'该门店尚未设定温控设备（店经理或管理员可在「我的」→ 温控设备 添加）',
     field_passport_expiry:'护照到期日', field_permit_expiry:'工作准证到期日', field_contract_expiry:'合同到期日', admin_doc_expiry:'证件到期提醒（60 天内）',
     doc_expired:'已过期', doc_days_ago:'天', doc_today:'今天到期', doc_days_prefix:'还有', doc_days_suffix:'天到期', notif_doc_expiry:'证件即将到期', doc_none:'60 天内没有到期的证件', doc_passport:'护照', doc_permit:'工作准证', doc_contract:'合同',
+    field_fomema_expiry:'FOMEMA 体检到期日', doc_fomema:'FOMEMA 体检', notif_doc_30:'证件 30 天内到期', admin_fw_register:'外劳证件登记', fw_missing:'未填', fw_none:'没有外劳记录（工资类别 Foreigner）', fw_hint:'护照、准证、合同、FOMEMA 四个日期都要填；60 天前提醒、30 天前再提醒。中介文件与缴费由人办理。',
     nav_tasks:'任务', tasks_title:'今日任务', shift_open:'开店', shift_mid:'交班', shift_close:'闭店', shift_night:'夜班', task_not_started:'未开始', task_in_progress:'进行中', task_done:'已完成',
     btn_complete_checklist:'完成清单', task_photo_required:'需拍照', task_need_photo:'此项需要先拍照', toast_checklist_done:'清单已完成',
     btn_handover:'写交接班记录', sheet_handover:'交接班记录', field_shift:'班次', field_cash:'现金交接 (RM)', field_pending_items:'待办事项', field_issues:'异常情况',
@@ -961,6 +962,7 @@ const I18N = {
     temp_no_equipment:'No equipment set for this store yet (manager or admin adds it under Me → Temperature equipment)',
     field_passport_expiry:'Passport expiry', field_permit_expiry:'Work permit expiry', field_contract_expiry:'Contract expiry', admin_doc_expiry:'Document expiry (next 60 days)',
     doc_expired:'Expired', doc_days_ago:' days ago', doc_today:'Expires today', doc_days_prefix:'in ', doc_days_suffix:' days', notif_doc_expiry:'Document expiring', doc_none:'Nothing expiring within 60 days', doc_passport:'Passport', doc_permit:'Work permit', doc_contract:'Contract',
+    field_fomema_expiry:'FOMEMA medical expiry', doc_fomema:'FOMEMA medical', notif_doc_30:'Document expires within 30 days', admin_fw_register:'Foreign-worker documents', fw_missing:'not filled', fw_none:'No foreign workers on record (pay category Foreigner)', fw_hint:'All four dates are needed: passport, permit, contract, FOMEMA. Reminders at 60 days and again at 30. Agency papers and payments are handled by a person.',
     nav_tasks:'Tasks', tasks_title:'Tasks today', shift_open:'Opening', shift_mid:'Mid-shift', shift_close:'Closing', shift_night:'Night shift', task_not_started:'Not started', task_in_progress:'In progress', task_done:'Done',
     btn_complete_checklist:'Complete checklist', task_photo_required:'Photo required', task_need_photo:'Take a photo for this item first', toast_checklist_done:'Checklist completed',
     btn_handover:'Write handover note', sheet_handover:'Shift handover', field_shift:'Shift', field_cash:'Cash handed over (RM)', field_pending_items:'Pending items', field_issues:'Issues',
@@ -1204,6 +1206,7 @@ const I18N = {
     temp_no_equipment:'Belum ada peralatan ditetapkan untuk kedai ini (pengurus atau admin tambah di Saya → Peralatan suhu)',
     field_passport_expiry:'Tarikh luput pasport', field_permit_expiry:'Tarikh luput permit kerja', field_contract_expiry:'Tarikh luput kontrak', admin_doc_expiry:'Dokumen akan luput (60 hari akan datang)',
     doc_expired:'Luput', doc_days_ago:' hari lepas', doc_today:'Luput hari ini', doc_days_prefix:'dalam ', doc_days_suffix:' hari', notif_doc_expiry:'Dokumen hampir luput', doc_none:'Tiada dokumen luput dalam 60 hari', doc_passport:'Pasport', doc_permit:'Permit kerja', doc_contract:'Kontrak',
+    field_fomema_expiry:'Tarikh luput FOMEMA', doc_fomema:'Pemeriksaan FOMEMA', notif_doc_30:'Dokumen luput dalam 30 hari', admin_fw_register:'Dokumen pekerja asing', fw_missing:'belum diisi', fw_none:'Tiada rekod pekerja asing (kategori gaji Foreigner)', fw_hint:'Keempat-empat tarikh perlu diisi: pasport, permit, kontrak, FOMEMA. Peringatan 60 hari dan sekali lagi 30 hari sebelum luput. Dokumen agensi dan bayaran diurus oleh orang.',
     nav_tasks:'Tugas', tasks_title:'Tugas hari ini', shift_open:'Buka kedai', shift_mid:'Pertukaran syif', shift_close:'Tutup kedai', shift_night:'Syif malam', task_not_started:'Belum mula', task_in_progress:'Sedang dibuat', task_done:'Selesai',
     btn_complete_checklist:'Selesaikan senarai semak', task_photo_required:'Perlu gambar', task_need_photo:'Ambil gambar untuk item ini dahulu', toast_checklist_done:'Senarai semak selesai',
     btn_handover:'Tulis nota serah tugas', sheet_handover:'Serah tugas syif', field_shift:'Syif', field_cash:'Tunai diserahkan (RM)', field_pending_items:'Perkara tertunggak', field_issues:'Masalah',
@@ -4328,7 +4331,9 @@ function buildNotifications(){
   }
   if(canManageStaff()){
     const scopeIds3 = isAdmin() ? null : new Set(S.employees.filter(x=>x.homeBranch===myBranch()).map(x=>x.id));
-    docExpiryItems(scopeIds3, 60).forEach(it=>{ const ts=new Date(new Date(it.date).getTime()-60*86400000).toISOString(); out.push({id:'docexp:'+it.emp.id+':'+it.field, ts, title:t('notif_doc_expiry')+'：'+it.emp.name+' · '+it.label, sub:it.date+' · '+docDaysLabel(it.days), unread:ts>seen, onClick:()=>{ location.hash='#me'; }}); });
+    docExpiryItems(scopeIds3, 60).forEach(it=>{ const ts=new Date(new Date(it.date).getTime()-60*86400000).toISOString(); out.push({id:'docexp:'+it.emp.id+':'+it.field, ts, title:t('notif_doc_expiry')+'：'+it.emp.name+' · '+it.label, sub:it.date+' · '+docDaysLabel(it.days), unread:ts>seen, onClick:()=>{ location.hash='#me'; }});
+      // R37: a second, fresh alert at 30 days (its own id, so it shows as unread again after the 60-day one was seen)
+      if(it.days<=30){ const ts30=new Date(new Date(it.date).getTime()-30*86400000).toISOString(); out.push({id:'docexp30:'+it.emp.id+':'+it.field, ts:ts30, title:t('notif_doc_30')+'：'+it.emp.name+' · '+it.label, sub:it.date+' · '+docDaysLabel(it.days), unread:ts30>seen, onClick:()=>{ location.hash='#me'; }}); } });
     const since24=new Date(Date.now()-24*3600000).toISOString();
     S.tempLogs.filter(l=>l.ok===false && l.createdAt>=since24 && (isAdmin() || l.branch===myBranch())).forEach(l=>{ out.push({id:'temp:'+l.id, ts:l.createdAt, title:t('notif_temp_alert')+'：'+l.equipmentName+' '+l.value+'°C', sub:(l.branch||'')+' · '+(l.employeeName||'')+' · '+fmtDateTime(l.createdAt), unread:l.createdAt>seen, onClick:()=>{ S.taskBranch=l.branch; location.hash='#tasks'; }}); });
   }
@@ -4818,6 +4823,7 @@ function adminSection(){
   }
 
   c.appendChild(docExpiryBlock(null));
+  c.appendChild(fwRegisterBlock());   // R37
   c.appendChild(equipmentAdminBlock(null));
   c.appendChild(auditTemplateAdminBlock());
   c.appendChild(adminBlock(t('admin_task_templates'), ()=>openTaskTemplateForm(), S.taskTemplates.map(tp=>({
@@ -5183,7 +5189,7 @@ function openEmployeeForm(emp, lockBranch){
     {key:'role', label:t('field_role'), type:'select', options:roleOptions},
   ];
   if(isAdmin()){ fields.push({key:'coverBranches', label:t('field_cover_branches'), ph:'BR07, BR09'}, {key:'runner', label:t('field_runner'), type:'select', options:[{v:'',l:t('opt_no')},{v:'yes',l:t('opt_yes')}]}, {key:'annualLeaveDays', label:t('field_annual_leave'), type:'number'}, {key:'sickLeaveDays', label:t('field_sick_leave'), type:'number'}); }
-  fields.push({key:'passportExpiry', label:t('field_passport_expiry'), type:'date'}, {key:'permitExpiry', label:t('field_permit_expiry'), type:'date'}, {key:'contractExpiry', label:t('field_contract_expiry'), type:'date'});
+  fields.push({key:'passportExpiry', label:t('field_passport_expiry'), type:'date'}, {key:'permitExpiry', label:t('field_permit_expiry'), type:'date'}, {key:'contractExpiry', label:t('field_contract_expiry'), type:'date'}, {key:'fomemaExpiry', label:t('field_fomema_expiry'), type:'date'});   // R37
   const body=el('<div>'+fieldsHTML(fields, emp||{})+'</div>');
   if(lockBranch){
     const branchInput = body.querySelector('[data-k="homeBranch"]');
@@ -6453,7 +6459,31 @@ function equipmentAdminBlock(lockBranch){
     onDelete: async()=>{ try{ await S.db.doc('equipment/'+eq.id).delete(); toast(t('toast_deleted')); }catch(e){toast(dbErrMsg(e));} }
   })));
 }
-const DOC_FIELDS=[['passportExpiry','doc_passport'],['permitExpiry','doc_permit'],['contractExpiry','doc_contract']];
+const DOC_FIELDS=[['passportExpiry','doc_passport'],['permitExpiry','doc_permit'],['contractExpiry','doc_contract'],['fomemaExpiry','doc_fomema']];   // R37: FOMEMA added 2026-10-05
+function isForeignWorker(e){ return /^foreign/i.test(String(e.payCategory||'')); }
+// R37: HQ register of every foreign worker's four dates, empty ones marked, so HR can see what is missing (all 30 were empty on 5 Oct 2026)
+function fwRegisterBlock(){
+  const c=el('<div></div>');
+  c.appendChild(el(`<div class="sec-row"><h2 class="sec" style="margin:0;">${esc(t('admin_fw_register'))}</h2></div>`));
+  const fw=S.employees.filter(e=>e.active!==false && !isTestAccount(e) && isForeignWorker(e)).sort((a,b)=>(a.homeBranch||'').localeCompare(b.homeBranch||'')||a.name.localeCompare(b.name));
+  const list=el('<div class="list"></div>');
+  if(fw.length===0) list.appendChild(el(`<div class="hint">${esc(t('fw_none'))}</div>`));
+  const today=todayStr();
+  fw.forEach(e=>{
+    const parts=DOC_FIELDS.map(([k,label])=>{
+      const d=e[k]; if(!d) return `<span class="pill critical">${esc(t(label))}: ${esc(t('fw_missing'))}</span>`;
+      const days=Math.round((new Date(d)-new Date(today))/86400000);
+      const cls=days<0?'critical':(days<=30?'warn':(days<=60?'n':'ok'));
+      return `<span class="pill ${cls}">${esc(t(label))}: ${esc(d)}</span>`;
+    }).join(' ');
+    const row=el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(e.name)}${e.homeBranch?' <span class="num" style="font-weight:500; font-size:11px; color:var(--ink-faint);">'+esc(e.homeBranch)+'</span>':''}</div><div class="lr-sub" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;">${parts}</div></div></div>`);
+    row.onclick=()=>openEmployeeForm(e, null);
+    list.appendChild(row);
+  });
+  c.appendChild(list);
+  c.appendChild(el(`<p class="hint">${esc(t('fw_hint'))}</p>`));
+  return c;
+}
 function docExpiryItems(scopeIds, horizonDays){
   const today=todayStr(); const out=[];
   S.employees.filter(e=>e.active!==false && (!scopeIds || scopeIds.has(e.id))).forEach(e=>{
