@@ -559,7 +559,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-05.158';
+const APP_BUILD = '2026-10-05.159';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -1860,8 +1860,8 @@ function makeSupabaseDb(sb){
   function obIsNetErr(e){ const m = String((e && (e.message || e.details)) || e || ''); return (typeof navigator !== 'undefined' && navigator.onLine === false) || /failed to fetch|load failed|networkerror|network request failed|fetch failed|timeout|timed out|aborted/i.test(m); }
   function obIsAuthErr(e){ const c = String((e && (e.pgCode || e.code || e.status)) || ''); const m = String((e && (e.message || e.details)) || ''); return /^(401|403|42501|PGRST301|PGRST302)$/.test(c) || /jwt|token|row-level security|permission denied|forbidden/i.test(m); }
   // patch 158: server calls that may be sent late. Each carries a client id the server uses to store it only once.
-  const OUTBOX_RPC = {temp_log: 'tempLogs'};
-  function outboxRpc(fn, args){ if(!OUTBOX_RPC[fn] || !args || !args.p_client_id) return false; return outboxPut('@rpc:' + fn, args.p_client_id, args); }
+  const OUTBOX_RPC = {temp_log: 'tempLogs', task_run_item: 'taskRuns'};   // 161: checklist ticks too
+  function outboxRpc(fn, args, id){ if(!OUTBOX_RPC[fn] || !args || !id) return false; return outboxPut('@rpc:' + fn, id, args); }
   function obIsLoginErr(e){ const c = String((e && (e.pgCode || e.code || e.status)) || ''); const m = String((e && (e.message || e.details)) || ''); return /^(401|PGRST301|PGRST302)$/.test(c) || /jwt|token expired|invalid token/i.test(m); }
   function outboxPut(c, id, data){
     if(!S.employeeId) return false;
@@ -1882,7 +1882,7 @@ function makeSupabaseDb(sb){
         try{
           if(String(it.c).startsWith('@rpc:')){   // patch 158: a held server call
             const fn = it.c.slice(5); if(!OUTBOX_RPC[fn]) throw new Error('rpc_not_allowed');
-            const {error:er} = await obTimeout(sb.rpc(fn, it.data)); if(er) throw dbErr(er);
+            const {error:er} = await obTimeout(sb.rpc(fn, it.data)); if(er && !(fn === 'task_run_item' && /run_done/.test(String(er.message || '')))) throw dbErr(er);   // 161: a colleague already completed it = fine
             sent++; done.add(it.id); refreshCollection(OUTBOX_RPC[fn]); continue;
           }
           const {data:ex, error:e0} = await obTimeout(sb.from('store').select('id').eq('collection', it.c).eq('id', it.id)).maybeSingle();
@@ -6130,6 +6130,9 @@ function openTaskRun(tp, branch, date){
   const me=currentEmployee();
   let run = runFor(tp,branch,date) || newRun(tp,branch,date);
   run = JSON.parse(JSON.stringify(run));
+  // patch 161: ticks still waiting in this phone show as they will be once sent
+  ((S.db && S.db.outboxList) ? S.db.outboxList() : []).filter(x => x.c === '@rpc:task_run_item' && x.data && x.data.p_run && x.data.p_run.id === run.id)
+    .forEach(x => { const it = run.items && run.items[x.data.p_idx]; if(it){ it.done = !!x.data.p_done; it.queued = true; if(it.done && !it.by) it.by = me ? me.name : ''; } });
   const body=el('<div></div>');
   body.appendChild(el(`<div class="hint" style="margin-bottom:8px;">${esc(branch)} · ${date} · ${esc(shiftKindLabel(tp.shift))}</div>`));
   const list=el('<div class="list"></div>'); body.appendChild(list);
@@ -6142,11 +6145,15 @@ function openTaskRun(tp, branch, date){
   const applyServer=d=>{ if(!d) return; run=Object.assign({id:run.id}, d); const i=S.taskRuns.findIndex(x=>x.id===run.id); if(i>=0) S.taskRuns[i]=run; else S.taskRuns.unshift(run); };
   const sendItem=(idx, done, photo)=>{ chain=chain.then(()=>rpc('task_run_item', {p_run:header, p_idx:idx, p_done:done, p_photo:photo||null}))
       .then(d=>{ applyServer(d); refresh(); })
-      .catch(e=>{ toast(taskErrMsg(e)); const it0=run.items[idx]; if(it0){ it0.done=!done; if(!done) it0.by=it0.by||''; } refresh(); if(S.db.refresh) S.db.refresh('taskRuns'); }); return chain; };
+      .catch(e=>{
+        // patch 161: no signal - a tick without a photo waits in the phone and is sent later, in order
+        if(isNetErr(e) && !photo && S.db && S.db.outboxRpc && S.db.outboxRpc('task_run_item', {p_run:header, p_idx:idx, p_done:done, p_photo:null}, run.id + '__' + idx + '__' + Date.now().toString(36))){
+          const it1=run.items[idx]; if(it1) it1.queued=true; toast(t('ob_queued')); refresh(); return; }
+        toast(taskErrMsg(e)); const it0=run.items[idx]; if(it0){ it0.done=!done; if(!done) it0.by=it0.by||''; } refresh(); if(S.db.refresh) S.db.refresh('taskRuns'); }); return chain; };
   function refresh(){
     list.innerHTML='';
     run.items.forEach(it=>{
-      const row=el(`<div class="list-row" style="align-items:flex-start; cursor:default;"><button class="btn sm ${it.done?'ok':''}" style="flex-shrink:0; min-width:44px;">${it.done?'✓':''}</button><div class="lr-main"><div class="lr-title" style="white-space:normal; ${it.done?'color:var(--ink-faint); text-decoration:line-through;':''}">${esc(it.text)}</div><div class="lr-sub">${it.photo?esc(t('task_photo_required')):''}${it.by?' · '+esc(it.by)+' '+fmtTime(it.at):''}</div></div></div>`);
+      const row=el(`<div class="list-row" style="align-items:flex-start; cursor:default;"><button class="btn sm ${it.done?'ok':''}" style="flex-shrink:0; min-width:44px;">${it.done?'✓':''}${it.queued?'📤':''}</button><div class="lr-main"><div class="lr-title" style="white-space:normal; ${it.done?'color:var(--ink-faint); text-decoration:line-through;':''}">${esc(it.text)}</div><div class="lr-sub">${it.photo?esc(t('task_photo_required')):''}${it.by?' · '+esc(it.by)+' '+fmtTime(it.at):''}</div></div></div>`);
       const tick=row.querySelector('button');
       const idx=run.items.indexOf(it);
       tick.onclick=()=>{
@@ -6493,7 +6500,7 @@ function temperatureBlock(branch){
         const targs = {p_equipment:eq.id, p_value:v, p_action:action, p_read_at:new Date().toISOString(), p_client_id:(self.crypto && crypto.randomUUID ? crypto.randomUUID() : uidLocal())};   // patch 158
         let r;
         try{ r = await rpc('temp_log', targs); }
-        catch(e1){ if(isNetErr(e1) && S.db && S.db.outboxRpc && S.db.outboxRpc('temp_log', targs)){ inp.value=''; btn.disabled=false; toast(t('ob_queued')); renderFromData(); return; } throw e1; }
+        catch(e1){ if(isNetErr(e1) && S.db && S.db.outboxRpc && S.db.outboxRpc('temp_log', targs, targs.p_client_id)){ inp.value=''; btn.disabled=false; toast(t('ob_queued')); renderFromData(); return; } throw e1; }
         const ok = r ? r.ok !== false : tempOk(eq, v);
         toast(ok ? t('toast_temp_saved') : (r && r.faultId ? t('temp_fault_opened') : t('temp_recheck_toast')));
         if(r && r.faultId && S.db.refresh) S.db.refresh('faults');
