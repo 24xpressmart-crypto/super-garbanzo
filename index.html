@@ -559,7 +559,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-05.159';
+const APP_BUILD = '2026-10-05.160';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -718,6 +718,7 @@ const I18N = {
     temp_no_equipment:'该门店尚未设定温控设备（店经理或管理员可在「我的」→ 温控设备 添加）',
     field_passport_expiry:'护照到期日', field_permit_expiry:'工作准证到期日', field_contract_expiry:'合同到期日', admin_doc_expiry:'证件到期提醒（60 天内）',
     doc_expired:'已过期', doc_days_ago:'天', doc_today:'今天到期', doc_days_prefix:'还有', doc_days_suffix:'天到期', notif_doc_expiry:'证件即将到期', doc_none:'60 天内没有到期的证件', doc_passport:'护照', doc_permit:'工作准证', doc_contract:'合同',
+    field_resign_date:'辞职通知日', field_last_day:'最后工作日', offb_title:'离职清单', offb_none:'没有正在离职或 60 天内离职的员工', offb_days:'最后一天 {d}（{n} 天后）', offb_days_past:'最后一天 {d}（已过 {n} 天）', offb_auto:'系统自动判断', offb_manual:'由店长／HQ 勾选', offb_pin_off:'App 账号已停用（员工总表关掉）', offb_no_punch_after:'最后一天之后没有打卡', offb_al_info:'年假余额（按比例已赚）：{n} 天', offb_notice_info:'法定通知期：{w} 周（服务 {y} 年，EA s.12）', offb_final_due:'最后工资最迟在最后一天后 3 天内付清（EA s.19）；辞职信、交接、制服归还后才付', offb_letter:'辞职信已收到（或解雇信已发）', offb_handover:'钥匙、存货、现金、设备交接完成', offb_uniform:'制服与名牌已归还', offb_al:'年假余额已结算（付钱或休完）', offb_final:'最后工资草稿已由老板批准', offb_cp22a:'CP22A 已交 LHDN（需缴税者，离职前 30 天）', offb_perkeso:'PERKESO 已更新离职', offb_hint:'离职流程：收辞职信 → 定最后一天 → 交接、归还 → 年假结算 → 老板批最后工资 → CP22A、PERKESO → 停用账号。', notif_leaver:'员工即将离职',
     field_join_date:'入职日期', field_probation_end:'试用期结束日', onb_title:'新人入职清单', onb_none:'没有 90 天内入职或试用期中的员工', onb_day:'入职第 {n} 天', onb_done_of:'已完成', onb_open:'打开清单', onb_auto:'系统自动判断', onb_manual:'由店长／HQ 勾选', onb_invite:'已用邀请码登入 App', onb_pdpa:'已阅读个人资料通知（PDPA）', onb_pdpa_off:'通知还没开启', onb_lessons:'学习小课', onb_lessons_na:'只有 HQ 看得到', onb_fw:'外劳四个到期日已填', onb_offer:'Offer letter 已签回', onb_bank:'开户信已给（或已有户口）', onb_perkeso:'PERKESO 已登记新人', onb_cp22:'CP22 已交 LHDN（需缴税者）', onb_uniform:'制服与名牌已发', onb_orient:'店内培训完成（收银、收货、打卡）', onb_confirm:'确认信已发（试用期满）', onb_probation_hint:'试用期结束前 14 天提醒出确认信（或延长）', notif_probation:'试用期快结束', onb_saved:'已记录', onb_by:'由',
     field_fomema_expiry:'FOMEMA 体检到期日', doc_fomema:'FOMEMA 体检', notif_doc_30:'证件 30 天内到期', admin_fw_register:'外劳证件登记', fw_missing:'未填', fw_none:'没有外劳记录（工资类别 Foreigner）', fw_hint:'护照、准证、合同、FOMEMA 四个日期都要填；60 天前提醒、30 天前再提醒。中介文件与缴费由人办理。',
     nav_tasks:'任务', tasks_title:'今日任务', shift_open:'开店', shift_mid:'交班', shift_close:'闭店', shift_night:'夜班', task_not_started:'未开始', task_in_progress:'进行中', task_done:'已完成',
@@ -856,7 +857,7 @@ const I18N = {
     field_start_date:'开始日期', field_end_date:'结束日期', field_reason:'事由', btn_submit_request:'提交申请',
     err_pick_date:'请选择日期', toast_leave_submitted:'已提交，等待审批', sheet_leave:'请假 / 调班申请',
     admin_pending_prefix:'待审批（', admin_pending_suffix:'）', empty_no_pending:'暂无待审批申请',
-    btn_approve:'批准', btn_reject:'驳回', clock_selfie_now:"先拍一张自拍，拍好就自动打卡。", err_fill_one:"请填写：{x}", temp_waiting_signal:"等讯号送出", temp_too_old:"这个读数超过 12 小时，不能再送，请重新量一次。", temp_sent_late:"没讯号，迟送", nav_receive:"收货", sheet_discard_q:"还没送出。关掉的话，填的内容会不见，确定吗？", reject_reason_q:"驳回原因（员工会看到）：", reject_reason_need:"请写驳回原因，至少 2 个字。", reject_why:"驳回原因",
+    btn_approve:'批准', btn_reject:'驳回', sched_other_store:"这是在别间门店的班，要改请到那间门店的班表。", clock_selfie_now:"先拍一张自拍，拍好就自动打卡。", err_fill_one:"请填写：{x}", temp_waiting_signal:"等讯号送出", temp_too_old:"这个读数超过 12 小时，不能再送，请重新量一次。", temp_sent_late:"没讯号，迟送", nav_receive:"收货", sheet_discard_q:"还没送出。关掉的话，填的内容会不见，确定吗？", reject_reason_q:"驳回原因（员工会看到）：", reject_reason_need:"请写驳回原因，至少 2 个字。", reject_why:"驳回原因",
     admin_schedule_mgmt:'排班管理', admin_staff_mgmt:'人员管理', admin_device_mgmt:'点位管理',
     admin_product_mgmt:'商品管理', admin_settings:'业务设置', admin_export:'数据导出',
     label_device_id:'机号 ', label_has_coords:' · 已设坐标', btn_bulk_import:'批量导入',
@@ -963,6 +964,7 @@ const I18N = {
     temp_no_equipment:'No equipment set for this store yet (manager or admin adds it under Me → Temperature equipment)',
     field_passport_expiry:'Passport expiry', field_permit_expiry:'Work permit expiry', field_contract_expiry:'Contract expiry', admin_doc_expiry:'Document expiry (next 60 days)',
     doc_expired:'Expired', doc_days_ago:' days ago', doc_today:'Expires today', doc_days_prefix:'in ', doc_days_suffix:' days', notif_doc_expiry:'Document expiring', doc_none:'Nothing expiring within 60 days', doc_passport:'Passport', doc_permit:'Work permit', doc_contract:'Contract',
+    field_resign_date:'Resignation notice date', field_last_day:'Last working day', offb_title:'Leaver checklist', offb_none:'Nobody is leaving or left within the last 60 days', offb_days:'Last day {d} (in {n} days)', offb_days_past:'Last day {d} ({n} days ago)', offb_auto:'Checked by the system', offb_manual:'Ticked by the manager / HQ', offb_pin_off:'App account switched off (staff list toggle)', offb_no_punch_after:'No clock-in after the last day', offb_al_info:'Annual leave balance (earned to date): {n} days', offb_notice_info:'Statutory notice: {w} weeks ({y} years of service, EA s.12)', offb_final_due:'Final wages within 3 days after the last day (EA s.19); only after the letter, handover and uniform return', offb_letter:'Resignation letter received (or termination letter issued)', offb_handover:'Keys, stock, cash and equipment handed over', offb_uniform:'Uniform and name tag returned', offb_al:'Annual leave balance settled (paid or taken)', offb_final:'Final-pay draft approved by the owner', offb_cp22a:'CP22A filed with LHDN (if taxable; 30 days before leaving)', offb_perkeso:'PERKESO updated for the leaver', offb_hint:'Leaver flow: letter received → last day set → handover and returns → leave settled → owner approves final pay → CP22A, PERKESO → account switched off.', notif_leaver:'Staff member leaving soon',
     field_join_date:'Join date', field_probation_end:'Probation ends', onb_title:'New-joiner checklist', onb_none:'Nobody joined in the last 90 days or is on probation', onb_day:'Day {n}', onb_done_of:'done', onb_open:'Open checklist', onb_auto:'Checked by the system', onb_manual:'Ticked by the manager / HQ', onb_invite:'Signed in to the App with the invite code', onb_pdpa:'Read the personal data notice (PDPA)', onb_pdpa_off:'notice not switched on yet', onb_lessons:'Lessons', onb_lessons_na:'visible to HQ only', onb_fw:'Foreign-worker dates all filled', onb_offer:'Offer letter signed and returned', onb_bank:'Bank letter given (or account exists)', onb_perkeso:'Registered as a new hire with PERKESO', onb_cp22:'CP22 filed with LHDN (if taxable)', onb_uniform:'Uniform and name tag issued', onb_orient:'In-store training done (till, receiving, clock-in)', onb_confirm:'Confirmation letter issued (probation complete)', onb_probation_hint:'Reminder 14 days before probation ends: issue the confirmation (or extend)', notif_probation:'Probation ending soon', onb_saved:'Recorded', onb_by:'by',
     field_fomema_expiry:'FOMEMA medical expiry', doc_fomema:'FOMEMA medical', notif_doc_30:'Document expires within 30 days', admin_fw_register:'Foreign-worker documents', fw_missing:'not filled', fw_none:'No foreign workers on record (pay category Foreigner)', fw_hint:'All four dates are needed: passport, permit, contract, FOMEMA. Reminders at 60 days and again at 30. Agency papers and payments are handled by a person.',
     nav_tasks:'Tasks', tasks_title:'Tasks today', shift_open:'Opening', shift_mid:'Mid-shift', shift_close:'Closing', shift_night:'Night shift', task_not_started:'Not started', task_in_progress:'In progress', task_done:'Done',
@@ -1101,7 +1103,7 @@ const I18N = {
     field_start_date:'Start Date', field_end_date:'End Date', field_reason:'Reason', btn_submit_request:'Submit Request',
     err_pick_date:'Please select dates', toast_leave_submitted:'Submitted, awaiting approval', sheet_leave:'Leave / Shift Swap Request',
     admin_pending_prefix:'Pending Approval (', admin_pending_suffix:')', empty_no_pending:'No pending requests',
-    btn_approve:'Approve', btn_reject:'Reject', clock_selfie_now:"Take a selfie first; the punch goes through as soon as it is taken.", err_fill_one:"Please fill in: {x}", temp_waiting_signal:"waiting for signal", temp_too_old:"This reading is more than 12 hours old and cannot be sent. Please take a new reading.", temp_sent_late:"sent late (no signal)", nav_receive:"Receive", sheet_discard_q:"Not sent yet. Close it and lose what you typed?", reject_reason_q:"Reason for rejecting (the staff member will see it):", reject_reason_need:"Please write a reason, at least 2 characters.", reject_why:"Reason",
+    btn_approve:'Approve', btn_reject:'Reject', sched_other_store:"This shift is at another store; change it in that store's roster.", clock_selfie_now:"Take a selfie first; the punch goes through as soon as it is taken.", err_fill_one:"Please fill in: {x}", temp_waiting_signal:"waiting for signal", temp_too_old:"This reading is more than 12 hours old and cannot be sent. Please take a new reading.", temp_sent_late:"sent late (no signal)", nav_receive:"Receive", sheet_discard_q:"Not sent yet. Close it and lose what you typed?", reject_reason_q:"Reason for rejecting (the staff member will see it):", reject_reason_need:"Please write a reason, at least 2 characters.", reject_why:"Reason",
     admin_schedule_mgmt:'Schedule Management', admin_staff_mgmt:'Staff Management', admin_device_mgmt:'Machine Management',
     admin_product_mgmt:'Product Management', admin_settings:'Business Settings', admin_export:'Data Export',
     label_device_id:'Machine ID ', label_has_coords:' · Coordinates set', btn_bulk_import:'Bulk Import',
@@ -1208,6 +1210,7 @@ const I18N = {
     temp_no_equipment:'Belum ada peralatan ditetapkan untuk kedai ini (pengurus atau admin tambah di Saya → Peralatan suhu)',
     field_passport_expiry:'Tarikh luput pasport', field_permit_expiry:'Tarikh luput permit kerja', field_contract_expiry:'Tarikh luput kontrak', admin_doc_expiry:'Dokumen akan luput (60 hari akan datang)',
     doc_expired:'Luput', doc_days_ago:' hari lepas', doc_today:'Luput hari ini', doc_days_prefix:'dalam ', doc_days_suffix:' hari', notif_doc_expiry:'Dokumen hampir luput', doc_none:'Tiada dokumen luput dalam 60 hari', doc_passport:'Pasport', doc_permit:'Permit kerja', doc_contract:'Kontrak',
+    field_resign_date:'Tarikh notis berhenti', field_last_day:'Hari kerja terakhir', offb_title:'Senarai semak berhenti kerja', offb_none:'Tiada pekerja yang akan berhenti atau berhenti dalam 60 hari ini', offb_days:'Hari terakhir {d} (dalam {n} hari)', offb_days_past:'Hari terakhir {d} ({n} hari lepas)', offb_auto:'Disemak oleh sistem', offb_manual:'Ditanda oleh pengurus / HQ', offb_pin_off:'Akaun App dimatikan (suis senarai staf)', offb_no_punch_after:'Tiada daftar masuk selepas hari terakhir', offb_al_info:'Baki cuti tahunan (diperoleh setakat ini): {n} hari', offb_notice_info:'Notis berkanun: {w} minggu ({y} tahun perkhidmatan, EA s.12)', offb_final_due:'Gaji akhir dalam 3 hari selepas hari terakhir (EA s.19); hanya selepas surat, serah tugas dan pulangan uniform', offb_letter:'Surat berhenti diterima (atau surat penamatan dikeluarkan)', offb_handover:'Kunci, stok, tunai dan peralatan diserahkan', offb_uniform:'Uniform dan tanda nama dipulangkan', offb_al:'Baki cuti tahunan diselesaikan (dibayar atau diambil)', offb_final:'Draf gaji akhir diluluskan pemilik', offb_cp22a:'CP22A dihantar ke LHDN (jika dikenakan cukai; 30 hari sebelum berhenti)', offb_perkeso:'PERKESO dikemas kini untuk pekerja berhenti', offb_hint:'Aliran berhenti: surat diterima → hari terakhir ditetapkan → serah tugas dan pulangan → cuti diselesaikan → pemilik luluskan gaji akhir → CP22A, PERKESO → akaun dimatikan.', notif_leaver:'Pekerja akan berhenti',
     field_join_date:'Tarikh mula kerja', field_probation_end:'Tamat percubaan', onb_title:'Senarai semak pekerja baru', onb_none:'Tiada pekerja yang mula dalam 90 hari ini atau dalam percubaan', onb_day:'Hari ke-{n}', onb_done_of:'selesai', onb_open:'Buka senarai', onb_auto:'Disemak oleh sistem', onb_manual:'Ditanda oleh pengurus / HQ', onb_invite:'Sudah log masuk App dengan kod jemputan', onb_pdpa:'Sudah baca notis data peribadi (PDPA)', onb_pdpa_off:'notis belum dihidupkan', onb_lessons:'Pelajaran', onb_lessons_na:'hanya HQ boleh lihat', onb_fw:'Empat tarikh pekerja asing sudah diisi', onb_offer:'Surat tawaran ditandatangani dan dikembalikan', onb_bank:'Surat bank diberi (atau akaun sudah ada)', onb_perkeso:'Didaftar sebagai pekerja baru di PERKESO', onb_cp22:'CP22 dihantar ke LHDN (jika dikenakan cukai)', onb_uniform:'Uniform dan tanda nama diberi', onb_orient:'Latihan di kedai selesai (mesin tunai, terima barang, daftar masuk)', onb_confirm:'Surat pengesahan dikeluarkan (percubaan tamat)', onb_probation_hint:'Peringatan 14 hari sebelum percubaan tamat: keluarkan pengesahan (atau lanjutkan)', notif_probation:'Percubaan hampir tamat', onb_saved:'Direkod', onb_by:'oleh',
     field_fomema_expiry:'Tarikh luput FOMEMA', doc_fomema:'Pemeriksaan FOMEMA', notif_doc_30:'Dokumen luput dalam 30 hari', admin_fw_register:'Dokumen pekerja asing', fw_missing:'belum diisi', fw_none:'Tiada rekod pekerja asing (kategori gaji Foreigner)', fw_hint:'Keempat-empat tarikh perlu diisi: pasport, permit, kontrak, FOMEMA. Peringatan 60 hari dan sekali lagi 30 hari sebelum luput. Dokumen agensi dan bayaran diurus oleh orang.',
     nav_tasks:'Tugas', tasks_title:'Tugas hari ini', shift_open:'Buka kedai', shift_mid:'Pertukaran syif', shift_close:'Tutup kedai', shift_night:'Syif malam', task_not_started:'Belum mula', task_in_progress:'Sedang dibuat', task_done:'Selesai',
@@ -1346,7 +1349,7 @@ const I18N = {
     field_start_date:'Tarikh mula', field_end_date:'Tarikh tamat', field_reason:'Sebab', btn_submit_request:'Hantar permohonan',
     err_pick_date:'Sila pilih tarikh', toast_leave_submitted:'Dihantar, menunggu kelulusan', sheet_leave:'Permohonan cuti / tukar syif',
     admin_pending_prefix:'Menunggu kelulusan (', admin_pending_suffix:')', empty_no_pending:'Tiada permohonan menunggu',
-    btn_approve:'Lulus', btn_reject:'Tolak', clock_selfie_now:"Ambil swafoto dahulu; punch akan dihantar sebaik sahaja gambar diambil.", err_fill_one:"Sila isi: {x}", temp_waiting_signal:"menunggu isyarat", temp_too_old:"Bacaan ini lebih 12 jam dan tidak boleh dihantar. Sila ambil bacaan baharu.", temp_sent_late:"dihantar lewat (tiada isyarat)", nav_receive:"Terima", sheet_discard_q:"Belum dihantar. Tutup dan buang apa yang ditaip?", reject_reason_q:"Sebab ditolak (staf akan nampak):", reject_reason_need:"Sila tulis sebab, sekurang-kurangnya 2 aksara.", reject_why:"Sebab",
+    btn_approve:'Lulus', btn_reject:'Tolak', sched_other_store:"Syif ini di kedai lain; ubah dalam jadual kedai itu.", clock_selfie_now:"Ambil swafoto dahulu; punch akan dihantar sebaik sahaja gambar diambil.", err_fill_one:"Sila isi: {x}", temp_waiting_signal:"menunggu isyarat", temp_too_old:"Bacaan ini lebih 12 jam dan tidak boleh dihantar. Sila ambil bacaan baharu.", temp_sent_late:"dihantar lewat (tiada isyarat)", nav_receive:"Terima", sheet_discard_q:"Belum dihantar. Tutup dan buang apa yang ditaip?", reject_reason_q:"Sebab ditolak (staf akan nampak):", reject_reason_need:"Sila tulis sebab, sekurang-kurangnya 2 aksara.", reject_why:"Sebab",
     admin_schedule_mgmt:'Pengurusan jadual', admin_staff_mgmt:'Pengurusan staf', admin_device_mgmt:'Pengurusan mesin',
     admin_product_mgmt:'Pengurusan produk', admin_settings:'Tetapan perniagaan', admin_export:'Eksport data',
     label_device_id:'ID mesin ', label_has_coords:' · Koordinat ditetapkan', btn_bulk_import:'Import pukal',
@@ -4405,6 +4408,12 @@ function buildNotifications(){
       const days=-onbDaysSince(x.probationEnd); if(days>14) return;
       const ts=new Date(new Date(x.probationEnd).getTime()-14*86400000).toISOString();
       out.push({id:'probation:'+x.id, ts, title:t('notif_probation')+'：'+x.name, sub:x.probationEnd+' · '+docDaysLabel(-days), unread:ts>seen, onClick:()=>{ location.hash='#me'; }}); });
+    // R36: last day within 7 days (or passed) and the leaver checklist not complete
+    S.employees.filter(x=>!isTestAccount(x) && offbIsLeaver(x) && (!scopeIds3 || scopeIds3.has(x.id))).forEach(x=>{
+      const ld=x.lastDay||x.resignDate; const days=-onbDaysSince(ld); if(days>7) return;
+      const p=offbProgress(x); if(p.done>=p.total) return;
+      const ts=new Date(new Date(ld).getTime()-7*86400000).toISOString();
+      out.push({id:'leaver:'+x.id, ts, title:t('notif_leaver')+'：'+x.name, sub:offbDaysLabel(x)+' · '+p.done+'/'+p.total, unread:ts>seen, onClick:()=>{ location.hash='#me'; }}); });
     const since24=new Date(Date.now()-24*3600000).toISOString();
     S.tempLogs.filter(l=>l.ok===false && l.createdAt>=since24 && (isAdmin() || l.branch===myBranch())).forEach(l=>{ out.push({id:'temp:'+l.id, ts:l.createdAt, title:t('notif_temp_alert')+'：'+l.equipmentName+' '+l.value+'°C', sub:(l.branch||'')+' · '+(l.employeeName||'')+' · '+fmtDateTime(l.createdAt), unread:l.createdAt>seen, onClick:()=>{ S.taskBranch=l.branch; location.hash='#tasks'; }}); });
   }
@@ -4773,6 +4782,7 @@ function managerSection(){
   c.appendChild(branchLocationCard(branch));
   c.appendChild(docExpiryBlock(branchEmpIds));
   c.appendChild(onboardingBlock(branchEmpIds));   // R35
+  c.appendChild(offboardingBlock(branchEmpIds));   // R36
   c.appendChild(equipmentAdminBlock(branch));
   c.appendChild(rectificationsBlock(branch));
 
@@ -4904,6 +4914,7 @@ function adminSection(){
   c.appendChild(docExpiryBlock(null));
   c.appendChild(fwRegisterBlock());   // R37
   c.appendChild(onboardingBlock(null));   // R35
+  c.appendChild(offboardingBlock(null));   // R36
   c.appendChild(equipmentAdminBlock(null));
   c.appendChild(auditTemplateAdminBlock());
   c.appendChild(adminBlock(t('admin_task_templates'), ()=>openTaskTemplateForm(), S.taskTemplates.map(tp=>({
@@ -5271,6 +5282,7 @@ function openEmployeeForm(emp, lockBranch){
   ];
   if(isAdmin()){ fields.push({key:'coverBranches', label:t('field_cover_branches'), ph:'BR07, BR09'}, {key:'runner', label:t('field_runner'), type:'select', options:[{v:'',l:t('opt_no')},{v:'yes',l:t('opt_yes')}]}, {key:'annualLeaveDays', label:t('field_annual_leave'), type:'number'}, {key:'sickLeaveDays', label:t('field_sick_leave'), type:'number'}); }
   fields.push({key:'joinDate', label:t('field_join_date'), type:'date'}, {key:'probationEnd', label:t('field_probation_end'), type:'date'});   // R35: join date was import-only before; probation end feeds the new-joiner checklist
+  fields.push({key:'resignDate', label:t('field_resign_date'), type:'date'}, {key:'lastDay', label:t('field_last_day'), type:'date'});   // R36: leaver checklist
   fields.push({key:'passportExpiry', label:t('field_passport_expiry'), type:'date'}, {key:'permitExpiry', label:t('field_permit_expiry'), type:'date'}, {key:'contractExpiry', label:t('field_contract_expiry'), type:'date'}, {key:'fomemaExpiry', label:t('field_fomema_expiry'), type:'date'});   // R37
   const body=el('<div>'+fieldsHTML(fields, emp||{})+'</div>');
   if(lockBranch){
@@ -6660,6 +6672,88 @@ function openOnboardingSheet(emp){
   onbLoadLessons().then(render);
   openSheet(t('onb_title'), body);
 }
+/* R36 (App .160, 2026-10-05): leaver checklist. Same storage idea as R35: employees.lastDay (+ resignDate, already imported)
+   and employees.offboarding = {key:{at,by}}. System rows: account switched off, no clock-in after the last day; info rows:
+   AL balance earned to the last day (alAvailable) and the statutory notice (EA s.12: 4 / 6 / 8 weeks by service). */
+const OFFB_MANUAL = ['letter','handover','uniform','al','final','cp22a','perkeso'];
+function offbIsLeaver(e){
+  if(isTestAccount(e)) return false;
+  const ld=e.lastDay||e.resignDate; if(!ld) return false;
+  const since=onbDaysSince(ld);
+  if(since==null) return false;
+  if(since<0) return e.active!==false;        // leaving soon
+  return since<=60;                           // left within 60 days: paperwork may still be open
+}
+function offbNoticeWeeks(e){
+  if(!e.joinDate) return null;
+  const y=(new Date(e.lastDay||todayStr())-new Date(e.joinDate))/(365.25*86400000);
+  return {weeks: y<2?4:(y<5?6:8), years: Math.floor(y*10)/10};
+}
+function offbRows(e){
+  const o=e.offboarding||{}; const rows=[]; const ld=e.lastDay||e.resignDate;
+  rows.push({key:'pin', auto:true, done:e.active===false, label:t('offb_pin_off')});
+  if(ld && onbDaysSince(ld)>0){ const lp=latestPunch(e.id); rows.push({key:'punch', auto:true, done:!lp || klDay(lp.createdAt)<=ld, label:t('offb_no_punch_after')}); }
+  OFFB_MANUAL.forEach(k=>rows.push({key:k, auto:false, done:!!o[k], at:o[k]&&o[k].at, by:o[k]&&o[k].by, label:t('offb_'+k)}));
+  return rows;
+}
+function offbProgress(e){ const r=offbRows(e); return {done:r.filter(x=>x.done).length, total:r.length}; }
+function offbDaysLabel(e){
+  const ld=e.lastDay||e.resignDate; const n=onbDaysSince(ld);
+  return n<=0 ? t('offb_days').replace('{d}',ld).replace('{n}',-n) : t('offb_days_past').replace('{d}',ld).replace('{n}',n);
+}
+function offboardingBlock(scopeIds){
+  const c=el('<div></div>');
+  c.appendChild(el(`<div class="sec-row"><h2 class="sec" style="margin:0;">${esc(t('offb_title'))}</h2></div>`));
+  const people=S.employees.filter(e=>(!scopeIds || scopeIds.has(e.id)) && offbIsLeaver(e)).sort((a,b)=>(a.lastDay||a.resignDate||'').localeCompare(b.lastDay||b.resignDate||''));
+  const list=el('<div class="list"></div>');
+  if(people.length===0) list.appendChild(el(`<div class="hint">${esc(t('offb_none'))}</div>`));
+  people.forEach(e=>{
+    const p=offbProgress(e);
+    const row=el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(e.name)}${e.homeBranch?' <span class="num" style="font-weight:500; font-size:11px; color:var(--ink-faint);">'+esc(e.homeBranch)+'</span>':''}</div><div class="lr-sub">${esc(offbDaysLabel(e))}</div></div><span class="pill ${p.done>=p.total?'ok':(p.done===0?'critical':'warn')}">${p.done}/${p.total} ${esc(t('onb_done_of'))}</span></div>`);
+    row.onclick=()=>openOffboardingSheet(e);
+    list.appendChild(row);
+  });
+  c.appendChild(list);
+  c.appendChild(el(`<p class="hint">${esc(t('offb_hint'))}</p>`));
+  return c;
+}
+function openOffboardingSheet(emp){
+  const body=el('<div></div>');
+  const render=()=>{
+    const e=byId(S.employees, emp.id)||emp; body.innerHTML='';
+    const p=offbProgress(e);
+    body.appendChild(el(`<p class="hint" style="margin:0 0 8px;">${esc(e.name)} · ${esc(e.homeBranch||'')} · ${esc(offbDaysLabel(e))} · <b>${p.done}/${p.total}</b></p>`));
+    // last day (editable here too), AL balance and statutory notice as information for the final-pay draft
+    const lf=el(`<label class="field"><span class="fl">${esc(t('field_last_day'))}</span><input type="date" value="${esc(e.lastDay||'')}"></label>`);
+    lf.querySelector('input').onchange=async(ev)=>{ try{ await S.db.doc('employees/'+e.id).update({lastDay:ev.target.value||null}); toast(t('toast_saved')); render(); }catch(err){ toast(dbErrMsg(err)); } };
+    body.appendChild(lf);
+    const al=alAvailable(e, e.lastDay||todayStr()); const nw=offbNoticeWeeks(e);
+    const info=el('<div class="list"></div>');
+    if(al!=null) info.appendChild(el(`<div class="list-row"><div class="lr-main"><div class="lr-title" style="font-weight:500;">${esc(t('offb_al_info').replace('{n}',al))}</div></div></div>`));
+    if(nw) info.appendChild(el(`<div class="list-row"><div class="lr-main"><div class="lr-title" style="font-weight:500;">${esc(t('offb_notice_info').replace('{w}',nw.weeks).replace('{y}',nw.years))}</div></div></div>`));
+    info.appendChild(el(`<div class="list-row"><div class="lr-main"><div class="lr-sub" style="white-space:normal;">${esc(t('offb_final_due'))}</div></div></div>`));
+    body.appendChild(info);
+    body.appendChild(el(`<p class="hint" style="margin:10px 0 4px;">${esc(t('offb_auto'))}</p>`));
+    const auto=el('<div class="list"></div>');
+    offbRows(e).filter(r=>r.auto).forEach(r=>{ auto.appendChild(el(`<div class="list-row"><div class="lr-main"><div class="lr-title" style="font-weight:500;">${esc(r.label)}</div></div><span class="pill ${r.done?'ok':'critical'}">${r.done?'✓':'✗'}</span></div>`)); });
+    body.appendChild(auto);
+    body.appendChild(el(`<p class="hint" style="margin:10px 0 4px;">${esc(t('offb_manual'))}</p>`));
+    const man=el('<div class="list"></div>');
+    offbRows(e).filter(r=>!r.auto).forEach(r=>{
+      const row=el(`<div class="list-row"><div class="lr-main"><div class="lr-title" style="font-weight:500;">${esc(r.label)}</div><div class="lr-sub">${r.done?esc(t('onb_saved')+' '+fmtDateTime(r.at)+' · '+t('onb_by')+' '+(r.by||'')):''}</div></div></div>`);
+      row.appendChild(toggleSwitch(r.done, async(v)=>{
+        const cur=byId(S.employees, e.id)||e; const o=Object.assign({}, cur.offboarding||{});
+        if(v) o[r.key]={at:new Date().toISOString(), by:currentEmployee().name}; else delete o[r.key];
+        try{ await S.db.doc('employees/'+e.id).update({offboarding:o}); toast(t('toast_saved')); render(); }catch(err){ toast(dbErrMsg(err)); render(); }
+      }));
+      man.appendChild(row);
+    });
+    body.appendChild(man);
+    body.appendChild(el(`<p class="hint">${esc(t('offb_hint'))}</p>`));
+  };
+  render();
+  openSheet(t('offb_title'), body);
+}
 function docExpiryItems(scopeIds, horizonDays){
   const today=todayStr(); const out=[];
   S.employees.filter(e=>e.active!==false && (!scopeIds || scopeIds.has(e.id))).forEach(e=>{
@@ -6734,9 +6828,12 @@ function weekScheduleView(lockBranch){
   emps.forEach(e=>{
     const tr=el(`<tr><td class="nm">${esc(e.name)}${branch && e.homeBranch!==branch ? ' <span class="pill n" style="font-size:9px;">'+esc(t('cover_badge'))+'</span>' : ''}</td></tr>`);
     days.forEach(d=>{
-      const ds=todayStr(d); const ss=schedFor(e.id, ds);
-      const td=el(`<td class="${ss.length?'has':''}">${ss.map(s=>`<span class="sh">${esc((s.shiftStart||'').slice(0,5))}–${esc((s.shiftEnd||'').slice(0,5))}</span>`).join('')||'<span class="plus">+</span>'}</td>`);
-      td.onclick=()=>openCellSheet(e, ds, ss);
+      const ds=todayStr(d); const all=schedFor(e.id, ds);
+      // patch 162: this store's shifts; a shift at another store is shown greyed with its store and is not edited here
+      const atB = x => !branch || !x.branch || String(x.branch).toUpperCase() === String(branch).toUpperCase();
+      const ss=all.filter(atB), other=all.filter(x=>!atB(x));
+      const td=el(`<td class="${ss.length?'has':''}">${ss.map(s=>`<span class="sh">${esc((s.shiftStart||'').slice(0,5))}–${esc((s.shiftEnd||'').slice(0,5))}</span>`).join('')}${other.map(s=>`<span class="sh" style="opacity:.45; font-size:10px; display:block;">@${esc(s.branch)} ${esc((s.shiftStart||'').slice(0,5))}–${esc((s.shiftEnd||'').slice(0,5))}</span>`).join('')}${ss.length||other.length?'':'<span class="plus">+</span>'}</td>`);
+      td.onclick=()=>openCellSheet(e, ds, ss, other);
       tr.appendChild(td);
     });
     tb.appendChild(tr);
@@ -6745,9 +6842,10 @@ function weekScheduleView(lockBranch){
   c.appendChild(el(`<p class="hint">${esc(t('week_hint'))}</p>`));
   return c;
 }
-function openCellSheet(emp, date, existing){
+function openCellSheet(emp, date, existing, other){
   const body=el('<div></div>');
   body.appendChild(el(`<div class="hint" style="margin-top:0;">${esc(emp.name)} · ${date} · ${esc(weekdayLabel(localDate(date)))}</div>`));
+  (other||[]).forEach(s=>body.appendChild(el(`<div class="list-row" style="cursor:default; opacity:.6;"><div class="lr-main"><div class="lr-title">${esc(s.shiftStart||'')} – ${esc(s.shiftEnd||'')} · ${esc(s.branch||'')}</div><div class="lr-sub">${esc(t('sched_other_store'))}</div></div></div>`)));   // patch 162
   existing.forEach(s=>{
     const row=el(`<div class="list-row" style="cursor:default;"><div class="lr-main"><div class="lr-title">${esc(s.shiftStart||'')} – ${esc(s.shiftEnd||'')}</div><div class="lr-sub">${esc(s.note||'')}</div></div></div>`);
     const del=el(`<button class="btn sm danger">${esc(t('btn_delete'))}</button>`);
