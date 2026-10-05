@@ -559,7 +559,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-05.160';
+const APP_BUILD = '2026-10-05.161';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -857,7 +857,7 @@ const I18N = {
     field_start_date:'开始日期', field_end_date:'结束日期', field_reason:'事由', btn_submit_request:'提交申请',
     err_pick_date:'请选择日期', toast_leave_submitted:'已提交，等待审批', sheet_leave:'请假 / 调班申请',
     admin_pending_prefix:'待审批（', admin_pending_suffix:'）', empty_no_pending:'暂无待审批申请',
-    btn_approve:'批准', btn_reject:'驳回', sched_other_store:"这是在别间门店的班，要改请到那间门店的班表。", clock_selfie_now:"先拍一张自拍，拍好就自动打卡。", err_fill_one:"请填写：{x}", temp_waiting_signal:"等讯号送出", temp_too_old:"这个读数超过 12 小时，不能再送，请重新量一次。", temp_sent_late:"没讯号，迟送", nav_receive:"收货", sheet_discard_q:"还没送出。关掉的话，填的内容会不见，确定吗？", reject_reason_q:"驳回原因（员工会看到）：", reject_reason_need:"请写驳回原因，至少 2 个字。", reject_why:"驳回原因",
+    btn_approve:'批准', btn_reject:'驳回', sc_title:"门店营运评分（近 7 天）", sc_hint:"只给 HQ 看。分数 = 清单完成率、冷柜温度记录率、出勤（每个迟到／缺勤／漏打卡扣 10%）的平均。没有登记冷柜的店不算温度分。", sc_no_fridge:"没登记冷柜", sc_h_rank:"#", sc_h_store:"门店", sc_h_score:"分数", sc_h_check:"清单", sc_h_temp:"温度", sc_h_att:"出勤问题", sc_h_fb:"顾客", sched_other_store:"这是在别间门店的班，要改请到那间门店的班表。", clock_selfie_now:"先拍一张自拍，拍好就自动打卡。", err_fill_one:"请填写：{x}", temp_waiting_signal:"等讯号送出", temp_too_old:"这个读数超过 12 小时，不能再送，请重新量一次。", temp_sent_late:"没讯号，迟送", nav_receive:"收货", sheet_discard_q:"还没送出。关掉的话，填的内容会不见，确定吗？", reject_reason_q:"驳回原因（员工会看到）：", reject_reason_need:"请写驳回原因，至少 2 个字。", reject_why:"驳回原因",
     admin_schedule_mgmt:'排班管理', admin_staff_mgmt:'人员管理', admin_device_mgmt:'点位管理',
     admin_product_mgmt:'商品管理', admin_settings:'业务设置', admin_export:'数据导出',
     label_device_id:'机号 ', label_has_coords:' · 已设坐标', btn_bulk_import:'批量导入',
@@ -1103,7 +1103,7 @@ const I18N = {
     field_start_date:'Start Date', field_end_date:'End Date', field_reason:'Reason', btn_submit_request:'Submit Request',
     err_pick_date:'Please select dates', toast_leave_submitted:'Submitted, awaiting approval', sheet_leave:'Leave / Shift Swap Request',
     admin_pending_prefix:'Pending Approval (', admin_pending_suffix:')', empty_no_pending:'No pending requests',
-    btn_approve:'Approve', btn_reject:'Reject', sched_other_store:"This shift is at another store; change it in that store's roster.", clock_selfie_now:"Take a selfie first; the punch goes through as soon as it is taken.", err_fill_one:"Please fill in: {x}", temp_waiting_signal:"waiting for signal", temp_too_old:"This reading is more than 12 hours old and cannot be sent. Please take a new reading.", temp_sent_late:"sent late (no signal)", nav_receive:"Receive", sheet_discard_q:"Not sent yet. Close it and lose what you typed?", reject_reason_q:"Reason for rejecting (the staff member will see it):", reject_reason_need:"Please write a reason, at least 2 characters.", reject_why:"Reason",
+    btn_approve:'Approve', btn_reject:'Reject', sc_title:"Store scorecard (last 7 days)", sc_hint:"HQ only. Score = average of checklists done, fridge readings logged, and attendance (each late / absent / missed punch takes 10% off). Stores with no fridge listed get no temperature score.", sc_no_fridge:"no fridge listed", sc_h_rank:"#", sc_h_store:"Store", sc_h_score:"Score", sc_h_check:"Checklists", sc_h_temp:"Fridge", sc_h_att:"Attendance issues", sc_h_fb:"Customers", sched_other_store:"This shift is at another store; change it in that store's roster.", clock_selfie_now:"Take a selfie first; the punch goes through as soon as it is taken.", err_fill_one:"Please fill in: {x}", temp_waiting_signal:"waiting for signal", temp_too_old:"This reading is more than 12 hours old and cannot be sent. Please take a new reading.", temp_sent_late:"sent late (no signal)", nav_receive:"Receive", sheet_discard_q:"Not sent yet. Close it and lose what you typed?", reject_reason_q:"Reason for rejecting (the staff member will see it):", reject_reason_need:"Please write a reason, at least 2 characters.", reject_why:"Reason",
     admin_schedule_mgmt:'Schedule Management', admin_staff_mgmt:'Staff Management', admin_device_mgmt:'Machine Management',
     admin_product_mgmt:'Product Management', admin_settings:'Business Settings', admin_export:'Data Export',
     label_device_id:'Machine ID ', label_has_coords:' · Coordinates set', btn_bulk_import:'Bulk Import',
@@ -1349,7 +1349,7 @@ const I18N = {
     field_start_date:'Tarikh mula', field_end_date:'Tarikh tamat', field_reason:'Sebab', btn_submit_request:'Hantar permohonan',
     err_pick_date:'Sila pilih tarikh', toast_leave_submitted:'Dihantar, menunggu kelulusan', sheet_leave:'Permohonan cuti / tukar syif',
     admin_pending_prefix:'Menunggu kelulusan (', admin_pending_suffix:')', empty_no_pending:'Tiada permohonan menunggu',
-    btn_approve:'Lulus', btn_reject:'Tolak', sched_other_store:"Syif ini di kedai lain; ubah dalam jadual kedai itu.", clock_selfie_now:"Ambil swafoto dahulu; punch akan dihantar sebaik sahaja gambar diambil.", err_fill_one:"Sila isi: {x}", temp_waiting_signal:"menunggu isyarat", temp_too_old:"Bacaan ini lebih 12 jam dan tidak boleh dihantar. Sila ambil bacaan baharu.", temp_sent_late:"dihantar lewat (tiada isyarat)", nav_receive:"Terima", sheet_discard_q:"Belum dihantar. Tutup dan buang apa yang ditaip?", reject_reason_q:"Sebab ditolak (staf akan nampak):", reject_reason_need:"Sila tulis sebab, sekurang-kurangnya 2 aksara.", reject_why:"Sebab",
+    btn_approve:'Lulus', btn_reject:'Tolak', sc_title:"Skor kedai (7 hari lepas)", sc_hint:"HQ sahaja. Skor = purata senarai semak siap, bacaan suhu peti sejuk, dan kehadiran (setiap lewat / tidak hadir / tertinggal punch tolak 10%). Kedai tanpa peti sejuk berdaftar tiada skor suhu.", sc_no_fridge:"tiada peti sejuk", sc_h_rank:"#", sc_h_store:"Kedai", sc_h_score:"Skor", sc_h_check:"Senarai", sc_h_temp:"Suhu", sc_h_att:"Isu kehadiran", sc_h_fb:"Pelanggan", sched_other_store:"Syif ini di kedai lain; ubah dalam jadual kedai itu.", clock_selfie_now:"Ambil swafoto dahulu; punch akan dihantar sebaik sahaja gambar diambil.", err_fill_one:"Sila isi: {x}", temp_waiting_signal:"menunggu isyarat", temp_too_old:"Bacaan ini lebih 12 jam dan tidak boleh dihantar. Sila ambil bacaan baharu.", temp_sent_late:"dihantar lewat (tiada isyarat)", nav_receive:"Terima", sheet_discard_q:"Belum dihantar. Tutup dan buang apa yang ditaip?", reject_reason_q:"Sebab ditolak (staf akan nampak):", reject_reason_need:"Sila tulis sebab, sekurang-kurangnya 2 aksara.", reject_why:"Sebab",
     admin_schedule_mgmt:'Pengurusan jadual', admin_staff_mgmt:'Pengurusan staf', admin_device_mgmt:'Pengurusan mesin',
     admin_product_mgmt:'Pengurusan produk', admin_settings:'Tetapan perniagaan', admin_export:'Eksport data',
     label_device_id:'ID mesin ', label_has_coords:' · Koordinat ditetapkan', btn_bulk_import:'Import pukal',
@@ -2864,7 +2864,7 @@ function homeView(){
   { const sb=safetyBlock(); if(sb) c.appendChild(sb); }
   // patch 135 (owner 2026-10-03: "dashboard should put at main pages"): sales first, right under the greeting
   if(isManager() && /^BR/i.test(myBranch() || '')){ const dc = dayRepCard(String(myBranch()).toUpperCase()); if(dc) c.appendChild(dc); }
-  else if(isAdmin()){ const hs = hqSalesCard(); if(hs) c.appendChild(hs); }
+  else if(isAdmin()){ const hs = hqSalesCard(); if(hs) c.appendChild(hs); const sc = scorecardCard(); if(sc) c.appendChild(sc); }   // 163: weekly store scorecard
   { const nq = (S.db && S.db.outboxCount) ? S.db.outboxCount() : 0;   // patch 107: reports waiting for signal
     if(nq > 0){ const ob = el(`<div class="card" style="border:2px solid var(--warn,#B5731A); cursor:pointer; margin-bottom:10px;"><div style="font-weight:900;">📤 ${esc(t('ob_waiting').split('{n}').join(String(nq)))}</div><div class="hint" style="margin:2px 0 0;">${esc(t('ob_retry'))}</div></div>`);
       ob.onclick = () => { if(S.db && S.db.outboxFlush) S.db.outboxFlush(true); }; c.appendChild(ob); } }
@@ -13258,6 +13258,38 @@ function hqSalesLoad(force){
   rpc('store_day_overview', {p_day: null}).then(r => { S.hqSales = {at: Date.now(), r: r || null, loading: false}; renderFromData(); })
     .catch(err => { const hard = /forbidden/.test(String((err && err.message) || ''));
       S.hqSales = {at: Date.now(), wait: hard ? 6 * 3600e3 : 2 * 60000, r: hard ? null : (c ? c.r : null), loading: false}; });
+}
+// patch 163: weekly store scorecard (HQ only). Fridges the store has not listed are not counted against it; the hint says so.
+function scorecardCard(){
+  if(!isAdmin()) return null;
+  const sc = S.scorecard;
+  if(!sc || (!sc.loading && Date.now() - sc.at > 30 * 60000)){
+    S.scorecard = {at: Date.now(), rows: (sc && sc.rows) || [], loading: true};
+    rpc('store_scorecard', {p_days: 7}).then(r => { S.scorecard = {at: Date.now(), rows: Array.isArray(r) ? r : [], loading: false}; renderFromData(); })
+      .catch(() => { S.scorecard = {at: Date.now(), rows: (sc && sc.rows) || [], loading: false}; });
+  }
+  const rows = (S.scorecard.rows || []).map(r => {
+    const ck = r.checklists_due ? Math.min(1, r.checklists_done / r.checklists_due) : null;
+    const tp = r.temp_due ? Math.min(1, r.temp_done / r.temp_due) : null;
+    const at = Math.max(0, 1 - (Number(r.att_issues) || 0) / 10);
+    const parts = [ck, tp, at].filter(x => x != null);
+    return Object.assign({}, r, {ck, tp, score: Math.round(100 * parts.reduce((a, b) => a + b, 0) / parts.length)});
+  }).sort((a, b) => b.score - a.score || String(a.branch).localeCompare(String(b.branch)));
+  if(!rows.length) return null;
+  const pct = x => x == null ? '–' : Math.round(x * 100) + '%';
+  const col = v => v >= 70 ? 'var(--ok,#3F9463)' : v >= 40 ? 'var(--warn,#B5731A)' : 'var(--bad,#C1392B)';
+  const th = k => `<th style="text-align:left; padding:4px 6px; font-size:11px; color:var(--ink-faint,#8A8F94); white-space:nowrap;">${esc(t(k))}</th>`;
+  const td = (h, x) => `<td style="padding:5px 6px; border-top:1px solid var(--line,#DAD9D2); white-space:nowrap; ${x || ''}">${h}</td>`;
+  const top = rows[0], last = rows[rows.length - 1];
+  return el(`<div class="card" style="margin-bottom:10px;"><details><summary style="font-weight:900; cursor:pointer;">🏆 ${esc(t('sc_title'))} · ${esc(top.branch)} ${top.score} … ${esc(last.branch)} ${last.score}</summary>
+    <p class="hint" style="margin:6px 0;">${esc(t('sc_hint'))}</p>
+    <div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; font-size:13px; font-variant-numeric:tabular-nums;">
+    <thead><tr>${th('sc_h_rank')}${th('sc_h_store')}${th('sc_h_score')}${th('sc_h_check')}${th('sc_h_temp')}${th('sc_h_att')}${th('sc_h_fb')}</tr></thead>
+    <tbody>${rows.map((r, i) => '<tr>' + td(String(i + 1)) + td('<b>' + esc(r.branch) + '</b>') + td('<b>' + r.score + '</b>', 'color:' + col(r.score) + ';')
+      + td(pct(r.ck) + ' <span class="hint">' + (Number(r.checklists_done) || 0) + '/' + (Number(r.checklists_due) || 0) + '</span>')
+      + td(r.temp_due ? pct(r.tp) : '<span class="hint">' + esc(t('sc_no_fridge')) + '</span>')
+      + td(String(Number(r.att_issues) || 0))
+      + td(Number(r.feedback_n) ? esc(String(r.feedback_avg)) + '★ (' + Number(r.feedback_n) + ')' : '–') + '</tr>').join('')}</tbody></table></div></details></div>`);
 }
 function hqSalesCard(){
   if(!isAdmin()) return null;
