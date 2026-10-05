@@ -559,7 +559,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-05.155';
+const APP_BUILD = '2026-10-05.156';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -718,6 +718,7 @@ const I18N = {
     temp_no_equipment:'该门店尚未设定温控设备（店经理或管理员可在「我的」→ 温控设备 添加）',
     field_passport_expiry:'护照到期日', field_permit_expiry:'工作准证到期日', field_contract_expiry:'合同到期日', admin_doc_expiry:'证件到期提醒（60 天内）',
     doc_expired:'已过期', doc_days_ago:'天', doc_today:'今天到期', doc_days_prefix:'还有', doc_days_suffix:'天到期', notif_doc_expiry:'证件即将到期', doc_none:'60 天内没有到期的证件', doc_passport:'护照', doc_permit:'工作准证', doc_contract:'合同',
+    field_join_date:'入职日期', field_probation_end:'试用期结束日', onb_title:'新人入职清单', onb_none:'没有 90 天内入职或试用期中的员工', onb_day:'入职第 {n} 天', onb_done_of:'已完成', onb_open:'打开清单', onb_auto:'系统自动判断', onb_manual:'由店长／HQ 勾选', onb_invite:'已用邀请码登入 App', onb_pdpa:'已阅读个人资料通知（PDPA）', onb_pdpa_off:'通知还没开启', onb_lessons:'学习小课', onb_lessons_na:'只有 HQ 看得到', onb_fw:'外劳四个到期日已填', onb_offer:'Offer letter 已签回', onb_bank:'开户信已给（或已有户口）', onb_perkeso:'PERKESO 已登记新人', onb_cp22:'CP22 已交 LHDN（需缴税者）', onb_uniform:'制服与名牌已发', onb_orient:'店内培训完成（收银、收货、打卡）', onb_confirm:'确认信已发（试用期满）', onb_probation_hint:'试用期结束前 14 天提醒出确认信（或延长）', notif_probation:'试用期快结束', onb_saved:'已记录', onb_by:'由',
     field_fomema_expiry:'FOMEMA 体检到期日', doc_fomema:'FOMEMA 体检', notif_doc_30:'证件 30 天内到期', admin_fw_register:'外劳证件登记', fw_missing:'未填', fw_none:'没有外劳记录（工资类别 Foreigner）', fw_hint:'护照、准证、合同、FOMEMA 四个日期都要填；60 天前提醒、30 天前再提醒。中介文件与缴费由人办理。',
     nav_tasks:'任务', tasks_title:'今日任务', shift_open:'开店', shift_mid:'交班', shift_close:'闭店', shift_night:'夜班', task_not_started:'未开始', task_in_progress:'进行中', task_done:'已完成',
     btn_complete_checklist:'完成清单', task_photo_required:'需拍照', task_need_photo:'此项需要先拍照', toast_checklist_done:'清单已完成',
@@ -855,7 +856,7 @@ const I18N = {
     field_start_date:'开始日期', field_end_date:'结束日期', field_reason:'事由', btn_submit_request:'提交申请',
     err_pick_date:'请选择日期', toast_leave_submitted:'已提交，等待审批', sheet_leave:'请假 / 调班申请',
     admin_pending_prefix:'待审批（', admin_pending_suffix:'）', empty_no_pending:'暂无待审批申请',
-    btn_approve:'批准', btn_reject:'驳回', sheet_discard_q:"还没送出。关掉的话，填的内容会不见，确定吗？", reject_reason_q:"驳回原因（员工会看到）：", reject_reason_need:"请写驳回原因，至少 2 个字。", reject_why:"驳回原因",
+    btn_approve:'批准', btn_reject:'驳回', temp_waiting_signal:"等讯号送出", temp_too_old:"这个读数超过 12 小时，不能再送，请重新量一次。", temp_sent_late:"没讯号，迟送", nav_receive:"收货", sheet_discard_q:"还没送出。关掉的话，填的内容会不见，确定吗？", reject_reason_q:"驳回原因（员工会看到）：", reject_reason_need:"请写驳回原因，至少 2 个字。", reject_why:"驳回原因",
     admin_schedule_mgmt:'排班管理', admin_staff_mgmt:'人员管理', admin_device_mgmt:'点位管理',
     admin_product_mgmt:'商品管理', admin_settings:'业务设置', admin_export:'数据导出',
     label_device_id:'机号 ', label_has_coords:' · 已设坐标', btn_bulk_import:'批量导入',
@@ -962,6 +963,7 @@ const I18N = {
     temp_no_equipment:'No equipment set for this store yet (manager or admin adds it under Me → Temperature equipment)',
     field_passport_expiry:'Passport expiry', field_permit_expiry:'Work permit expiry', field_contract_expiry:'Contract expiry', admin_doc_expiry:'Document expiry (next 60 days)',
     doc_expired:'Expired', doc_days_ago:' days ago', doc_today:'Expires today', doc_days_prefix:'in ', doc_days_suffix:' days', notif_doc_expiry:'Document expiring', doc_none:'Nothing expiring within 60 days', doc_passport:'Passport', doc_permit:'Work permit', doc_contract:'Contract',
+    field_join_date:'Join date', field_probation_end:'Probation ends', onb_title:'New-joiner checklist', onb_none:'Nobody joined in the last 90 days or is on probation', onb_day:'Day {n}', onb_done_of:'done', onb_open:'Open checklist', onb_auto:'Checked by the system', onb_manual:'Ticked by the manager / HQ', onb_invite:'Signed in to the App with the invite code', onb_pdpa:'Read the personal data notice (PDPA)', onb_pdpa_off:'notice not switched on yet', onb_lessons:'Lessons', onb_lessons_na:'visible to HQ only', onb_fw:'Foreign-worker dates all filled', onb_offer:'Offer letter signed and returned', onb_bank:'Bank letter given (or account exists)', onb_perkeso:'Registered as a new hire with PERKESO', onb_cp22:'CP22 filed with LHDN (if taxable)', onb_uniform:'Uniform and name tag issued', onb_orient:'In-store training done (till, receiving, clock-in)', onb_confirm:'Confirmation letter issued (probation complete)', onb_probation_hint:'Reminder 14 days before probation ends: issue the confirmation (or extend)', notif_probation:'Probation ending soon', onb_saved:'Recorded', onb_by:'by',
     field_fomema_expiry:'FOMEMA medical expiry', doc_fomema:'FOMEMA medical', notif_doc_30:'Document expires within 30 days', admin_fw_register:'Foreign-worker documents', fw_missing:'not filled', fw_none:'No foreign workers on record (pay category Foreigner)', fw_hint:'All four dates are needed: passport, permit, contract, FOMEMA. Reminders at 60 days and again at 30. Agency papers and payments are handled by a person.',
     nav_tasks:'Tasks', tasks_title:'Tasks today', shift_open:'Opening', shift_mid:'Mid-shift', shift_close:'Closing', shift_night:'Night shift', task_not_started:'Not started', task_in_progress:'In progress', task_done:'Done',
     btn_complete_checklist:'Complete checklist', task_photo_required:'Photo required', task_need_photo:'Take a photo for this item first', toast_checklist_done:'Checklist completed',
@@ -1099,7 +1101,7 @@ const I18N = {
     field_start_date:'Start Date', field_end_date:'End Date', field_reason:'Reason', btn_submit_request:'Submit Request',
     err_pick_date:'Please select dates', toast_leave_submitted:'Submitted, awaiting approval', sheet_leave:'Leave / Shift Swap Request',
     admin_pending_prefix:'Pending Approval (', admin_pending_suffix:')', empty_no_pending:'No pending requests',
-    btn_approve:'Approve', btn_reject:'Reject', sheet_discard_q:"Not sent yet. Close it and lose what you typed?", reject_reason_q:"Reason for rejecting (the staff member will see it):", reject_reason_need:"Please write a reason, at least 2 characters.", reject_why:"Reason",
+    btn_approve:'Approve', btn_reject:'Reject', temp_waiting_signal:"waiting for signal", temp_too_old:"This reading is more than 12 hours old and cannot be sent. Please take a new reading.", temp_sent_late:"sent late (no signal)", nav_receive:"Receive", sheet_discard_q:"Not sent yet. Close it and lose what you typed?", reject_reason_q:"Reason for rejecting (the staff member will see it):", reject_reason_need:"Please write a reason, at least 2 characters.", reject_why:"Reason",
     admin_schedule_mgmt:'Schedule Management', admin_staff_mgmt:'Staff Management', admin_device_mgmt:'Machine Management',
     admin_product_mgmt:'Product Management', admin_settings:'Business Settings', admin_export:'Data Export',
     label_device_id:'Machine ID ', label_has_coords:' · Coordinates set', btn_bulk_import:'Bulk Import',
@@ -1206,6 +1208,7 @@ const I18N = {
     temp_no_equipment:'Belum ada peralatan ditetapkan untuk kedai ini (pengurus atau admin tambah di Saya → Peralatan suhu)',
     field_passport_expiry:'Tarikh luput pasport', field_permit_expiry:'Tarikh luput permit kerja', field_contract_expiry:'Tarikh luput kontrak', admin_doc_expiry:'Dokumen akan luput (60 hari akan datang)',
     doc_expired:'Luput', doc_days_ago:' hari lepas', doc_today:'Luput hari ini', doc_days_prefix:'dalam ', doc_days_suffix:' hari', notif_doc_expiry:'Dokumen hampir luput', doc_none:'Tiada dokumen luput dalam 60 hari', doc_passport:'Pasport', doc_permit:'Permit kerja', doc_contract:'Kontrak',
+    field_join_date:'Tarikh mula kerja', field_probation_end:'Tamat percubaan', onb_title:'Senarai semak pekerja baru', onb_none:'Tiada pekerja yang mula dalam 90 hari ini atau dalam percubaan', onb_day:'Hari ke-{n}', onb_done_of:'selesai', onb_open:'Buka senarai', onb_auto:'Disemak oleh sistem', onb_manual:'Ditanda oleh pengurus / HQ', onb_invite:'Sudah log masuk App dengan kod jemputan', onb_pdpa:'Sudah baca notis data peribadi (PDPA)', onb_pdpa_off:'notis belum dihidupkan', onb_lessons:'Pelajaran', onb_lessons_na:'hanya HQ boleh lihat', onb_fw:'Empat tarikh pekerja asing sudah diisi', onb_offer:'Surat tawaran ditandatangani dan dikembalikan', onb_bank:'Surat bank diberi (atau akaun sudah ada)', onb_perkeso:'Didaftar sebagai pekerja baru di PERKESO', onb_cp22:'CP22 dihantar ke LHDN (jika dikenakan cukai)', onb_uniform:'Uniform dan tanda nama diberi', onb_orient:'Latihan di kedai selesai (mesin tunai, terima barang, daftar masuk)', onb_confirm:'Surat pengesahan dikeluarkan (percubaan tamat)', onb_probation_hint:'Peringatan 14 hari sebelum percubaan tamat: keluarkan pengesahan (atau lanjutkan)', notif_probation:'Percubaan hampir tamat', onb_saved:'Direkod', onb_by:'oleh',
     field_fomema_expiry:'Tarikh luput FOMEMA', doc_fomema:'Pemeriksaan FOMEMA', notif_doc_30:'Dokumen luput dalam 30 hari', admin_fw_register:'Dokumen pekerja asing', fw_missing:'belum diisi', fw_none:'Tiada rekod pekerja asing (kategori gaji Foreigner)', fw_hint:'Keempat-empat tarikh perlu diisi: pasport, permit, kontrak, FOMEMA. Peringatan 60 hari dan sekali lagi 30 hari sebelum luput. Dokumen agensi dan bayaran diurus oleh orang.',
     nav_tasks:'Tugas', tasks_title:'Tugas hari ini', shift_open:'Buka kedai', shift_mid:'Pertukaran syif', shift_close:'Tutup kedai', shift_night:'Syif malam', task_not_started:'Belum mula', task_in_progress:'Sedang dibuat', task_done:'Selesai',
     btn_complete_checklist:'Selesaikan senarai semak', task_photo_required:'Perlu gambar', task_need_photo:'Ambil gambar untuk item ini dahulu', toast_checklist_done:'Senarai semak selesai',
@@ -1343,7 +1346,7 @@ const I18N = {
     field_start_date:'Tarikh mula', field_end_date:'Tarikh tamat', field_reason:'Sebab', btn_submit_request:'Hantar permohonan',
     err_pick_date:'Sila pilih tarikh', toast_leave_submitted:'Dihantar, menunggu kelulusan', sheet_leave:'Permohonan cuti / tukar syif',
     admin_pending_prefix:'Menunggu kelulusan (', admin_pending_suffix:')', empty_no_pending:'Tiada permohonan menunggu',
-    btn_approve:'Lulus', btn_reject:'Tolak', sheet_discard_q:"Belum dihantar. Tutup dan buang apa yang ditaip?", reject_reason_q:"Sebab ditolak (staf akan nampak):", reject_reason_need:"Sila tulis sebab, sekurang-kurangnya 2 aksara.", reject_why:"Sebab",
+    btn_approve:'Lulus', btn_reject:'Tolak', temp_waiting_signal:"menunggu isyarat", temp_too_old:"Bacaan ini lebih 12 jam dan tidak boleh dihantar. Sila ambil bacaan baharu.", temp_sent_late:"dihantar lewat (tiada isyarat)", nav_receive:"Terima", sheet_discard_q:"Belum dihantar. Tutup dan buang apa yang ditaip?", reject_reason_q:"Sebab ditolak (staf akan nampak):", reject_reason_need:"Sila tulis sebab, sekurang-kurangnya 2 aksara.", reject_why:"Sebab",
     admin_schedule_mgmt:'Pengurusan jadual', admin_staff_mgmt:'Pengurusan staf', admin_device_mgmt:'Pengurusan mesin',
     admin_product_mgmt:'Pengurusan produk', admin_settings:'Tetapan perniagaan', admin_export:'Eksport data',
     label_device_id:'ID mesin ', label_has_coords:' · Koordinat ditetapkan', btn_bulk_import:'Import pukal',
@@ -1507,6 +1510,8 @@ function randomSalt(){
 }
 // a refusal by the database (row-level security) is not a network problem: say so
 function dbErr(e){ const m=String((e&&(e.message||e.details||e.hint))||''); return Object.assign(e||{}, {pgCode:(e&&e.code)||'', code: ((e&&e.code)==='42501' || /row-level security|permission denied|not_saved/i.test(m)) ? 'forbidden' : 'unavailable'}); }
+// patch 158: true when the call failed because there was no signal (not because the server said no)
+function isNetErr(e){ const m = String((e && (e.message || e.details)) || e || ''); return (typeof navigator !== 'undefined' && navigator.onLine === false) || /failed to fetch|load failed|networkerror|network request failed|fetch failed|timeout|timed out|aborted/i.test(m); }
 function dbErrMsg(e){
   if(e && e.code === 'forbidden') return t('err_forbidden');
   { const raw = String((e && (e.message || e.details)) || e || '');   // 154: a lost signal is named as such
@@ -1854,6 +1859,10 @@ function makeSupabaseDb(sb){
   const obRead = () => obReadK(obKey());
   function obIsNetErr(e){ const m = String((e && (e.message || e.details)) || e || ''); return (typeof navigator !== 'undefined' && navigator.onLine === false) || /failed to fetch|load failed|networkerror|network request failed|fetch failed|timeout|timed out|aborted/i.test(m); }
   function obIsAuthErr(e){ const c = String((e && (e.pgCode || e.code || e.status)) || ''); const m = String((e && (e.message || e.details)) || ''); return /^(401|403|42501|PGRST301|PGRST302)$/.test(c) || /jwt|token|row-level security|permission denied|forbidden/i.test(m); }
+  // patch 158: server calls that may be sent late. Each carries a client id the server uses to store it only once.
+  const OUTBOX_RPC = {temp_log: 'tempLogs'};
+  function outboxRpc(fn, args){ if(!OUTBOX_RPC[fn] || !args || !args.p_client_id) return false; return outboxPut('@rpc:' + fn, args.p_client_id, args); }
+  function obIsLoginErr(e){ const c = String((e && (e.pgCode || e.code || e.status)) || ''); const m = String((e && (e.message || e.details)) || ''); return /^(401|PGRST301|PGRST302)$/.test(c) || /jwt|token expired|invalid token/i.test(m); }
   function outboxPut(c, id, data){
     if(!S.employeeId) return false;
     const k = obKey(), a = obReadK(k); if(a.length >= 30) return false;
@@ -1871,6 +1880,11 @@ function makeSupabaseDb(sb){
       for(const it of a){
         if(offline) break;
         try{
+          if(String(it.c).startsWith('@rpc:')){   // patch 158: a held server call
+            const fn = it.c.slice(5); if(!OUTBOX_RPC[fn]) throw new Error('rpc_not_allowed');
+            const {error:er} = await obTimeout(sb.rpc(fn, it.data)); if(er) throw dbErr(er);
+            sent++; done.add(it.id); refreshCollection(OUTBOX_RPC[fn]); continue;
+          }
           const {data:ex, error:e0} = await obTimeout(sb.from('store').select('id').eq('collection', it.c).eq('id', it.id)).maybeSingle();
           if(e0) throw dbErr(e0);
           if(!ex){
@@ -1880,7 +1894,7 @@ function makeSupabaseDb(sb){
           sent++; done.add(it.id); refreshCollection(it.c);
         }catch(err){
           if(obIsNetErr(err)){ offline = true; continue; }
-          if(obIsAuthErr(err)) break;                                  // login problem: try again after the next log-in
+          if(String(it.c).startsWith('@rpc:') ? obIsLoginErr(err) : obIsAuthErr(err)) break;   // login problem: try again after the next log-in (158b: a server 'forbidden' on a held call is a normal refusal)
           const n = Object.assign({}, it, {tries: (it.tries || 0) + 1});
           if(n.tries < 5) upd.set(it.id, n);
           else { done.add(it.id); dead.push(n); try{ logClientError('outbox_dropped', it.c + ': ' + String((err && (err.message || err.code)) || err).slice(0, 200)); }catch(e){} }
@@ -1897,7 +1911,7 @@ function makeSupabaseDb(sb){
     if(sent || dead.length){ try{ renderFromData(); }catch(e){} }
     return sent;
   }
-  return { collection: collectionRef, doc: docRef, fullRecord, refresh: refreshCollection, outboxFlush, outboxCount: () => obRead().length,
+  return { collection: collectionRef, doc: docRef, fullRecord, refresh: refreshCollection, outboxFlush, outboxRpc, outboxCount: () => obRead().length, outboxList: () => obRead(),
     rawFetch: (collection, filters, order, dir)=>fetchAll(collection, {filters, order, dir}) };
 }
 function makeBrowserDownloads(){
@@ -2137,9 +2151,11 @@ try{ if(history.state && history.state.sheet) history.replaceState(null, ''); }c
 window.addEventListener('popstate', ()=>{
   if(S.sheetPopSkip){ S.sheetPopSkip=false; return; }                 // our own clean-up step
   if(document.querySelector('[data-livecam]')) return;                 // the App camera handles its own Back
-  if(history.state && history.state.sheet) return;                     // back on the sheet's step (e.g. the camera just closed)
+  const st = history.state || {};
+  if((st.sheet || st.livecam) && !sheetIsOpen()){ S.sheetPopSkip=true; try{ history.back(); }catch(e){ S.sheetPopSkip=false; } return; }   // 158b: a leftover step
+  if(st.sheet) return;                                                  // back on the sheet's step (e.g. the camera just closed)
   if(!sheetIsOpen()) return;
-  if(sheetCanLeave()){ $('modalWrap').classList.remove('show'); $('sheet').innerHTML=''; S.sheetDirty=false; }
+  if(sheetCanLeave()){ $('modalWrap').classList.remove('show'); $('sheet').innerHTML=''; S.sheetDirty=false; S.sheetGuard=null; }
   else { try{ history.pushState({sheet:1}, ''); }catch(e){} }           // stay: put the step back
 });
 
@@ -2195,7 +2211,7 @@ function navTabs(){
   const e=currentEmployee(); const br=String((e && e.homeBranch)||'').toUpperCase();
   if(!e || isAdmin() || isRunner(e) || !br || br==='HQ' || br==='VM') return TABS;
   const recv = receivingBranches().some(b => b===br || coversBranch(e, b));
-  return TABS.filter(tb => tb.id!=='stock' && (!recv || tb.id!=='equip')).map(tb => tb.id==='me' && recv ? [{id:'receive', label:'tile_receive', icon:ICONS.inbox}, tb] : [tb]).flat();
+  return TABS.filter(tb => tb.id!=='stock' && (!recv || tb.id!=='equip')).map(tb => tb.id==='me' && recv ? [{id:'receive', label:'nav_receive', icon:ICONS.inbox}, tb] : [tb]).flat();
 }
 function renderNav(){
   const nav=$('nav'); nav.innerHTML='';
@@ -2216,16 +2232,16 @@ function openSheet(title, bodyHTML, footNode){
   $('sheetBody').appendChild(typeof bodyHTML==='string' ? el('<div>'+bodyHTML+'</div>') : bodyHTML);
   if(footNode) $('sheetBody').appendChild(footNode);
   wrap.classList.add('show');
-  S.sheetDirty=false; clearTimeout(S.sheetPopT);
+  S.sheetDirty=false; S.sheetGuard=null; clearTimeout(S.sheetPopT);
   if(!(history.state && history.state.sheet)){ try{ history.pushState({sheet:1}, ''); }catch(e){} }   // patch 157: one history step per open sheet, so Android Back closes it
   $('sheetClose').onclick=closeSheet;
   wrap.querySelector('.backdrop').onclick=()=>{ if(sheetCanLeave()) closeSheet(); };   // 157: a stray tap outside does not throw a typed form away
 }
-function closeSheet(){ $('modalWrap').classList.remove('show'); $('sheet').innerHTML=''; S.sheetDirty=false;
+function closeSheet(){ $('modalWrap').classList.remove('show'); $('sheet').innerHTML=''; S.sheetDirty=false; S.sheetGuard=null;
   // 157: drop the sheet's history step, unless another sheet opens straight after (it then reuses the step)
   clearTimeout(S.sheetPopT); S.sheetPopT=setTimeout(()=>{ if(!sheetIsOpen() && history.state && history.state.sheet){ S.sheetPopSkip=true; try{ history.back(); }catch(e){ S.sheetPopSkip=false; } } }, 250); }
 function sheetIsOpen(){ const w=$('modalWrap'); return !!(w && w.classList.contains('show')); }
-function sheetCanLeave(){ return !S.sheetDirty || confirm(t('sheet_discard_q')); }
+function sheetCanLeave(){ if(S.sheetGuard) return !!S.sheetGuard(); return !S.sheetDirty || confirm(t('sheet_discard_q')); }
 // a field counts as typed when it holds text (search boxes, ticks and picked options do not count) or a photo/file was chosen
 function sheetDirtyField(tg){
   if(!tg || !tg.tagName) return false;
@@ -2334,6 +2350,7 @@ function photoPicker(onReady, cameraOnly, existingUrl, opts){
   input.addEventListener('cancel', ()=>{ S.pickerOpenAt = 0; });                  // camera closed without a photo
   input.onchange=async (ev)=>{
     const f=(ev && ev.liveBlob) || input.files[0]; if(!f){ S.pickerOpenAt = 0; return; }   // patch 119: or a picture from the App camera
+    if(input.closest && input.closest('#sheet')) S.sheetDirty = true;   // 158b: Back must not throw a photo away silently
     S.pickerOpenAt = Date.now(); setTimeout(()=>{ S.pickerOpenAt = 0; }, 3000);            // keep the screen still until the photo is in the form
     btn.querySelector('span').textContent=t('photo_compressing');
     try{
@@ -4367,6 +4384,11 @@ function buildNotifications(){
     docExpiryItems(scopeIds3, 60).forEach(it=>{ const ts=new Date(new Date(it.date).getTime()-60*86400000).toISOString(); out.push({id:'docexp:'+it.emp.id+':'+it.field, ts, title:t('notif_doc_expiry')+'：'+it.emp.name+' · '+it.label, sub:it.date+' · '+docDaysLabel(it.days), unread:ts>seen, onClick:()=>{ location.hash='#me'; }});
       // R37: a second, fresh alert at 30 days (its own id, so it shows as unread again after the 60-day one was seen)
       if(it.days<=30){ const ts30=new Date(new Date(it.date).getTime()-30*86400000).toISOString(); out.push({id:'docexp30:'+it.emp.id+':'+it.field, ts:ts30, title:t('notif_doc_30')+'：'+it.emp.name+' · '+it.label, sub:it.date+' · '+docDaysLabel(it.days), unread:ts30>seen, onClick:()=>{ location.hash='#me'; }}); } });
+    // R35: probation ending within 14 days and no confirmation letter ticked yet
+    S.employees.filter(x=>x.active!==false && !isTestAccount(x) && x.probationEnd && !(x.onboarding&&x.onboarding.confirm) && (!scopeIds3 || scopeIds3.has(x.id))).forEach(x=>{
+      const days=-onbDaysSince(x.probationEnd); if(days>14) return;
+      const ts=new Date(new Date(x.probationEnd).getTime()-14*86400000).toISOString();
+      out.push({id:'probation:'+x.id, ts, title:t('notif_probation')+'：'+x.name, sub:x.probationEnd+' · '+docDaysLabel(-days), unread:ts>seen, onClick:()=>{ location.hash='#me'; }}); });
     const since24=new Date(Date.now()-24*3600000).toISOString();
     S.tempLogs.filter(l=>l.ok===false && l.createdAt>=since24 && (isAdmin() || l.branch===myBranch())).forEach(l=>{ out.push({id:'temp:'+l.id, ts:l.createdAt, title:t('notif_temp_alert')+'：'+l.equipmentName+' '+l.value+'°C', sub:(l.branch||'')+' · '+(l.employeeName||'')+' · '+fmtDateTime(l.createdAt), unread:l.createdAt>seen, onClick:()=>{ S.taskBranch=l.branch; location.hash='#tasks'; }}); });
   }
@@ -4734,6 +4756,7 @@ function managerSection(){
   c.appendChild(pendingRequestsBlock(branchEmpIds));
   c.appendChild(branchLocationCard(branch));
   c.appendChild(docExpiryBlock(branchEmpIds));
+  c.appendChild(onboardingBlock(branchEmpIds));   // R35
   c.appendChild(equipmentAdminBlock(branch));
   c.appendChild(rectificationsBlock(branch));
 
@@ -4860,6 +4883,7 @@ function adminSection(){
 
   c.appendChild(docExpiryBlock(null));
   c.appendChild(fwRegisterBlock());   // R37
+  c.appendChild(onboardingBlock(null));   // R35
   c.appendChild(equipmentAdminBlock(null));
   c.appendChild(auditTemplateAdminBlock());
   c.appendChild(adminBlock(t('admin_task_templates'), ()=>openTaskTemplateForm(), S.taskTemplates.map(tp=>({
@@ -5208,6 +5232,7 @@ function showInviteSheet(emp, code){
     openSheet(t('invite_code_label'), body);
     // the code is shown only once: closing before it was copied or sent asks first (openSheet sets these again next time)
     const guard = () => { if(!shared && !confirm(t('inv_close_confirm'))) return; closeSheet(); };
+    S.sheetGuard = () => shared || confirm(t('inv_close_confirm'));   // 158b: Android Back asks the same
     $('sheetClose').onclick = guard;
     const bd = $('modalWrap') && $('modalWrap').querySelector('.backdrop'); if(bd) bd.onclick = guard;
   }, 150);
@@ -5225,6 +5250,7 @@ function openEmployeeForm(emp, lockBranch){
     {key:'role', label:t('field_role'), type:'select', options:roleOptions},
   ];
   if(isAdmin()){ fields.push({key:'coverBranches', label:t('field_cover_branches'), ph:'BR07, BR09'}, {key:'runner', label:t('field_runner'), type:'select', options:[{v:'',l:t('opt_no')},{v:'yes',l:t('opt_yes')}]}, {key:'annualLeaveDays', label:t('field_annual_leave'), type:'number'}, {key:'sickLeaveDays', label:t('field_sick_leave'), type:'number'}); }
+  fields.push({key:'joinDate', label:t('field_join_date'), type:'date'}, {key:'probationEnd', label:t('field_probation_end'), type:'date'});   // R35: join date was import-only before; probation end feeds the new-joiner checklist
   fields.push({key:'passportExpiry', label:t('field_passport_expiry'), type:'date'}, {key:'permitExpiry', label:t('field_permit_expiry'), type:'date'}, {key:'contractExpiry', label:t('field_contract_expiry'), type:'date'}, {key:'fomemaExpiry', label:t('field_fomema_expiry'), type:'date'});   // R37
   const body=el('<div>'+fieldsHTML(fields, emp||{})+'</div>');
   if(lockBranch){
@@ -6376,7 +6402,7 @@ function askTempAction(eq, v){
     openSheet(t('temp_action_title'), body);
   });
 }
-function lastTempFor(eqId){ return S.tempLogs.find(l=>l.equipmentId===eqId); }
+function lastTempFor(eqId){ let best = null, bt = ''; S.tempLogs.forEach(l => { if(l.equipmentId !== eqId) return; const at = String(l.readAt || l.createdAt || ''); if(!best || at > bt){ best = l; bt = at; } }); return best; }   // 158b: by reading time
 function hasNum(v){ return v!=null && v!=='' && !isNaN(Number(v)); }
 function tempOk(eq, v){ if(v==null||isNaN(v)) return true; if(hasNum(eq.min) && v<Number(eq.min)) return false; if(hasNum(eq.max) && v>Number(eq.max)) return false; return true; }
 function rangeLabel(eq){ return (hasNum(eq.min)?eq.min:'')+' ~ '+(hasNum(eq.max)?eq.max:'')+' °C'; }
@@ -6429,7 +6455,8 @@ function temperatureBlock(branch){
   const list=el('<div class="list"></div>');
   eqs.forEach(eq=>{
     const last=lastTempFor(eq.id);
-    const lastTxt = last ? fmtDateTime(last.createdAt)+' · '+last.value+' °C · '+esc(last.employeeName||'') : esc(t('temp_none'));
+    const held = (S.db && S.db.outboxList ? S.db.outboxList() : []).filter(x => x.c === '@rpc:temp_log' && x.data && x.data.p_equipment === eq.id);   // 158b
+    const lastTxt = (held.length ? '📤 ' + held.map(x => x.data.p_value + ' °C').join(', ') + ' · ' + esc(t('temp_waiting_signal')) + ' · ' : '') + (last ? fmtDateTime(last.readAt||last.createdAt)+' · '+last.value+' °C · '+esc(last.employeeName||'')+(last.sentLate?' · '+esc(t('temp_sent_late')):'') : esc(t('temp_none')));   // 158: a late reading shows when it was read
     const pill = (last ? `<span class="pill ${last.ok===false?'critical':'ok'}">${esc(last.ok===false?t('temp_out_of_range'):t('temp_ok'))}</span>` : '')
       + (last && last.ok===false && last.recheckBy ? ` <span class="pill ${tempRecheckOverdue(eq.id)?'critical':'warn'}">${esc(t(tempRecheckOverdue(eq.id)?'temp_recheck_late':'temp_recheck_by'))} ${esc(fmtTime(last.recheckBy))}</span>` : '');
     const row=el(`<div class="list-row" style="flex-wrap:wrap; cursor:default;">${ib('thermo','c-teal')}<div class="lr-main" style="min-width:160px;"><div class="lr-title">${esc(eq.name)} <span class="pill n" style="font-size:10px;">${esc(equipKindLabel(eq.kind))}</span></div><div class="lr-sub">${esc(rangeLabel(eq))} · ${lastTxt}</div></div>${pill}<div class="row" style="gap:6px; flex-basis:100%;"><input type="number" step="0.1" placeholder="°C" style="flex:1; min-width:80px;"><button class="btn sm primary">${esc(t('btn_log_temp'))}</button></div></div>`);
@@ -6443,12 +6470,15 @@ function temperatureBlock(branch){
       btn.disabled=true;
       try{
         // the server fills who, store, equipment limits and whether it is in range (patch 50)
-        const r = await rpc('temp_log', {p_equipment:eq.id, p_value:v, p_action:action});
+        const targs = {p_equipment:eq.id, p_value:v, p_action:action, p_read_at:new Date().toISOString(), p_client_id:(self.crypto && crypto.randomUUID ? crypto.randomUUID() : uidLocal())};   // patch 158
+        let r;
+        try{ r = await rpc('temp_log', targs); }
+        catch(e1){ if(isNetErr(e1) && S.db && S.db.outboxRpc && S.db.outboxRpc('temp_log', targs)){ inp.value=''; btn.disabled=false; toast(t('ob_queued')); renderFromData(); return; } throw e1; }
         const ok = r ? r.ok !== false : tempOk(eq, v);
         toast(ok ? t('toast_temp_saved') : (r && r.faultId ? t('temp_fault_opened') : t('temp_recheck_toast')));
         if(r && r.faultId && S.db.refresh) S.db.refresh('faults');
         if(S.db.refresh) S.db.refresh('tempLogs');
-      }catch(e){ const m = String(e && e.message); toast(/bad_value/.test(m) ? t('temp_bad_value') : (/need_action/.test(m) ? t('temp_action_ask') : dbErrMsg(e))); }
+      }catch(e){ const m = String(e && e.message); toast(/bad_value/.test(m) ? t('temp_bad_value') : (/need_action/.test(m) ? t('temp_action_ask') : (/too_old/.test(m) ? t('temp_too_old') : dbErrMsg(e)))); }
       btn.disabled=false;
     };
     list.appendChild(row);
@@ -6522,6 +6552,86 @@ function fwRegisterBlock(){
   c.appendChild(list);
   c.appendChild(el(`<p class="hint">${esc(t('fw_hint'))}</p>`));
   return c;
+}
+/* R35 (App .154, 2026-10-05): new-joiner checklist. Lives on the staff record (employees.onboarding = {key:{at,by}}, employees.probationEnd),
+   so a store manager can tick their own staff and HQ everyone with the existing write rules. System-checked rows come from
+   hasPin (invite used), memoReads (PDPA notice), lesson_progress (HQ only) and the R37 foreign-worker dates. */
+const ONB_MANUAL = ['offer','bank','perkeso','cp22','uniform','orient','confirm'];
+function onbDaysSince(d){ return d ? Math.round((new Date(todayStr())-new Date(d))/86400000) : null; }
+function onbIsJoiner(e){
+  if(e.active===false || isTestAccount(e)) return false;
+  const since=onbDaysSince(e.joinDate);
+  const pe=e.probationEnd && !(e.onboarding && e.onboarding.confirm);
+  return (since!=null && since>=0 && since<=90) || e.pending===true || (!e.hasPin && since!=null && since<=180) || (pe && e.probationEnd>=todayStr()) || (pe && onbDaysSince(e.probationEnd)<=30);
+}
+function onbRows(e){
+  const o=e.onboarding||{}; const rows=[];
+  rows.push({key:'invite', auto:true, done:!!e.hasPin, label:t('onb_invite')});
+  rows.push({key:'pdpa', auto:true, done:pdpaOn() && !!pdpaAckedBy(e.id), label:t('onb_pdpa')+(pdpaOn()?'':' · '+t('onb_pdpa_off'))});
+  if(isAdmin()){ const lp=S.lessonProg && S.lessonProg.by[e.id]; const n=lp?lp.length:0; rows.push({key:'lessons', auto:true, done:n>=LESSONS.length, label:t('onb_lessons')+' '+n+'/'+LESSONS.length}); }
+  else rows.push({key:'lessons', auto:true, done:null, label:t('onb_lessons')+' · '+t('onb_lessons_na')});
+  if(isForeignWorker(e)) rows.push({key:'fw', auto:true, done:DOC_FIELDS.every(([k])=>!!e[k]), label:t('onb_fw')});
+  ONB_MANUAL.forEach(k=>{ if(k==='confirm' && !e.probationEnd) return; rows.push({key:k, auto:false, done:!!o[k], at:o[k]&&o[k].at, by:o[k]&&o[k].by, label:t('onb_'+k)}); });
+  return rows;
+}
+function onbProgress(e){ const r=onbRows(e).filter(x=>x.done!==null); return {done:r.filter(x=>x.done).length, total:r.length}; }
+function onbLoadLessons(){
+  if(!isAdmin()) return Promise.resolve();
+  if(S.lessonProg && Date.now()-S.lessonProg.at<10*60000) return Promise.resolve();
+  return rpc('lesson_progress').then(rows=>{ const by={}; (Array.isArray(rows)?rows:[]).forEach(r=>{ by[r.id]=r.passed||[]; }); S.lessonProg={at:Date.now(), by}; }).catch(()=>{ S.lessonProg={at:Date.now(), by:{}}; });
+}
+function onboardingBlock(scopeIds){
+  const c=el('<div></div>');
+  c.appendChild(el(`<div class="sec-row"><h2 class="sec" style="margin:0;">${esc(t('onb_title'))}</h2></div>`));
+  const people=S.employees.filter(e=>(!scopeIds || scopeIds.has(e.id)) && onbIsJoiner(e)).sort((a,b)=>(b.joinDate||'').localeCompare(a.joinDate||''));
+  const list=el('<div class="list"></div>');
+  if(people.length===0) list.appendChild(el(`<div class="hint">${esc(t('onb_none'))}</div>`));
+  people.forEach(e=>{
+    const p=onbProgress(e); const since=onbDaysSince(e.joinDate);
+    const pe=e.probationEnd ? ' · '+t('field_probation_end')+' '+e.probationEnd : '';
+    const row=el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(e.name)}${e.homeBranch?' <span class="num" style="font-weight:500; font-size:11px; color:var(--ink-faint);">'+esc(e.homeBranch)+'</span>':''}</div><div class="lr-sub">${since!=null?esc(t('onb_day').replace('{n}',since)):''}${esc(pe)}</div></div><span class="pill ${p.done>=p.total?'ok':(p.done===0?'critical':'warn')}">${p.done}/${p.total} ${esc(t('onb_done_of'))}</span></div>`);
+    row.onclick=()=>openOnboardingSheet(e);
+    list.appendChild(row);
+  });
+  c.appendChild(list);
+  c.appendChild(el(`<p class="hint">${esc(t('onb_probation_hint'))}</p>`));
+  if(isAdmin() && people.length && !(S.lessonProg && Date.now()-S.lessonProg.at<10*60000)) onbLoadLessons().then(()=>{ if(S.tab==='me') renderApp(); });
+  return c;
+}
+function openOnboardingSheet(emp){
+  const body=el('<div></div>');
+  const render=()=>{
+    const e=byId(S.employees, emp.id)||emp; body.innerHTML='';
+    const p=onbProgress(e);
+    body.appendChild(el(`<p class="hint" style="margin:0 0 8px;">${esc(e.name)} · ${esc(e.homeBranch||'')} · ${e.joinDate?esc(t('field_join_date')+' '+e.joinDate):''} · <b>${p.done}/${p.total}</b></p>`));
+    body.appendChild(el(`<p class="hint" style="margin:0 0 4px;">${esc(t('onb_auto'))}</p>`));
+    const auto=el('<div class="list"></div>');
+    onbRows(e).filter(r=>r.auto).forEach(r=>{ auto.appendChild(el(`<div class="list-row"><div class="lr-main"><div class="lr-title" style="font-weight:500;">${esc(r.label)}</div></div><span class="pill ${r.done===null?'n':(r.done?'ok':'critical')}">${r.done===null?'—':(r.done?'✓':'✗')}</span></div>`)); });
+    body.appendChild(auto);
+    body.appendChild(el(`<p class="hint" style="margin:10px 0 4px;">${esc(t('onb_manual'))}</p>`));
+    const man=el('<div class="list"></div>');
+    onbRows(e).filter(r=>!r.auto).forEach(r=>{
+      const row=el(`<div class="list-row"><div class="lr-main"><div class="lr-title" style="font-weight:500;">${esc(r.label)}</div><div class="lr-sub">${r.done?esc(t('onb_saved')+' '+fmtDateTime(r.at)+' · '+t('onb_by')+' '+(r.by||'')):''}</div></div></div>`);
+      row.appendChild(toggleSwitch(r.done, async(v)=>{
+        const cur=byId(S.employees, e.id)||e; const o=Object.assign({}, cur.onboarding||{});
+        if(v) o[r.key]={at:new Date().toISOString(), by:currentEmployee().name}; else delete o[r.key];
+        try{ await S.db.doc('employees/'+e.id).update({onboarding:o}); toast(t('toast_saved')); render(); }catch(err){ toast(dbErrMsg(err)); render(); }
+      }));
+      man.appendChild(row);
+    });
+    body.appendChild(man);
+    // probation end date, saved on change (default: join date + 3 months, shown as a placeholder)
+    const def=e.joinDate ? (()=>{ const d=new Date(e.joinDate); d.setMonth(d.getMonth()+3); return todayStr(d); })() : '';
+    const pf=el(`<label class="field" style="margin-top:10px;"><span class="fl">${esc(t('field_probation_end'))}</span><input type="date" value="${esc(e.probationEnd||'')}" placeholder="${esc(def)}"></label>`);
+    const inp=pf.querySelector('input');
+    if(!e.probationEnd && def){ const b=el(`<button class="btn sm" style="margin:4px 0 0;">${esc(def)}</button>`); b.onclick=()=>{ inp.value=def; inp.dispatchEvent(new Event('change')); }; pf.appendChild(b); }
+    inp.onchange=async()=>{ try{ await S.db.doc('employees/'+e.id).update({probationEnd:inp.value||null}); toast(t('toast_saved')); render(); }catch(err){ toast(dbErrMsg(err)); } };
+    body.appendChild(pf);
+    body.appendChild(el(`<p class="hint">${esc(t('onb_probation_hint'))}</p>`));
+  };
+  render();
+  onbLoadLessons().then(render);
+  openSheet(t('onb_title'), body);
 }
 function docExpiryItems(scopeIds, horizonDays){
   const today=todayStr(); const out=[];
@@ -11526,7 +11636,7 @@ function soAllStoresView(){
    receipt teaches it again. */
 async function openSupplierMemory(){
   const body = el(`<div><p class="hint" style="margin:0 0 8px;">${esc(t('sim_hint'))}</p>
-    <label class="field"><span class="fl">${esc(t('order_search'))}</span><input type="text" placeholder="${esc(t('sim_search_ph'))}"></label><div class="sim-list"><p class="hint">${esc(t('acc_loading'))}</p></div></div>`);
+    <label class="field"><span class="fl">${esc(t('order_search'))}</span><input type="text" data-nodirty placeholder="${esc(t('sim_search_ph'))}"></label><div class="sim-list"><p class="hint">${esc(t('acc_loading'))}</p></div></div>`);
   openSheet(t('sim_title'), body);
   let rows = [];
   try{ rows = (await S.db.rawFetch('supplierItems')).map(r => Object.assign({id:r.id}, r.data)); }
