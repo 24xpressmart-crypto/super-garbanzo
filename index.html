@@ -559,7 +559,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-05.153';
+const APP_BUILD = '2026-10-05.154';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -855,7 +855,7 @@ const I18N = {
     field_start_date:'开始日期', field_end_date:'结束日期', field_reason:'事由', btn_submit_request:'提交申请',
     err_pick_date:'请选择日期', toast_leave_submitted:'已提交，等待审批', sheet_leave:'请假 / 调班申请',
     admin_pending_prefix:'待审批（', admin_pending_suffix:'）', empty_no_pending:'暂无待审批申请',
-    btn_approve:'批准', btn_reject:'驳回',
+    btn_approve:'批准', btn_reject:'驳回', reject_reason_q:"驳回原因（员工会看到）：", reject_reason_need:"请写驳回原因，至少 2 个字。", reject_why:"驳回原因",
     admin_schedule_mgmt:'排班管理', admin_staff_mgmt:'人员管理', admin_device_mgmt:'点位管理',
     admin_product_mgmt:'商品管理', admin_settings:'业务设置', admin_export:'数据导出',
     label_device_id:'机号 ', label_has_coords:' · 已设坐标', btn_bulk_import:'批量导入',
@@ -1099,7 +1099,7 @@ const I18N = {
     field_start_date:'Start Date', field_end_date:'End Date', field_reason:'Reason', btn_submit_request:'Submit Request',
     err_pick_date:'Please select dates', toast_leave_submitted:'Submitted, awaiting approval', sheet_leave:'Leave / Shift Swap Request',
     admin_pending_prefix:'Pending Approval (', admin_pending_suffix:')', empty_no_pending:'No pending requests',
-    btn_approve:'Approve', btn_reject:'Reject',
+    btn_approve:'Approve', btn_reject:'Reject', reject_reason_q:"Reason for rejecting (the staff member will see it):", reject_reason_need:"Please write a reason, at least 2 characters.", reject_why:"Reason",
     admin_schedule_mgmt:'Schedule Management', admin_staff_mgmt:'Staff Management', admin_device_mgmt:'Machine Management',
     admin_product_mgmt:'Product Management', admin_settings:'Business Settings', admin_export:'Data Export',
     label_device_id:'Machine ID ', label_has_coords:' · Coordinates set', btn_bulk_import:'Bulk Import',
@@ -1343,7 +1343,7 @@ const I18N = {
     field_start_date:'Tarikh mula', field_end_date:'Tarikh tamat', field_reason:'Sebab', btn_submit_request:'Hantar permohonan',
     err_pick_date:'Sila pilih tarikh', toast_leave_submitted:'Dihantar, menunggu kelulusan', sheet_leave:'Permohonan cuti / tukar syif',
     admin_pending_prefix:'Menunggu kelulusan (', admin_pending_suffix:')', empty_no_pending:'Tiada permohonan menunggu',
-    btn_approve:'Lulus', btn_reject:'Tolak',
+    btn_approve:'Lulus', btn_reject:'Tolak', reject_reason_q:"Sebab ditolak (staf akan nampak):", reject_reason_need:"Sila tulis sebab, sekurang-kurangnya 2 aksara.", reject_why:"Sebab",
     admin_schedule_mgmt:'Pengurusan jadual', admin_staff_mgmt:'Pengurusan staf', admin_device_mgmt:'Pengurusan mesin',
     admin_product_mgmt:'Pengurusan produk', admin_settings:'Tetapan perniagaan', admin_export:'Eksport data',
     label_device_id:'ID mesin ', label_has_coords:' · Koordinat ditetapkan', btn_bulk_import:'Import pukal',
@@ -4301,7 +4301,7 @@ function buildNotifications(){
   });
   S.leaveRequests.filter(l=>l.employeeId===e.id && l.status!=='pending' && l.reviewedAt).forEach(l=>{
     out.push({id:'leave:'+l.id, ts:l.reviewedAt, title:l.status==='approved'?t('notif_leave_approved'):t('notif_leave_rejected'),
-      sub:l.startDate+(l.endDate&&l.endDate!==l.startDate?' ~ '+l.endDate:''), unread:l.reviewedAt>seen, onClick:()=>{ location.hash='#me'; }});
+      sub:l.startDate+(l.endDate&&l.endDate!==l.startDate?' ~ '+l.endDate:'')+rejWhyTxt(l), unread:l.reviewedAt>seen, onClick:()=>{ location.hash='#me'; }});
   });
   S.schedules.filter(s=>s.employeeId===e.id && s.createdAt && s.date>=todayStr()).forEach(s=>{
     out.push({id:'sched:'+s.id, ts:s.createdAt, title:t('notif_new_schedule'), sub:s.date+' '+(s.shiftStart||'')+' - '+(s.shiftEnd||''), unread:s.createdAt>seen, onClick:()=>{ location.hash='#me'; }});
@@ -4313,10 +4313,10 @@ function buildNotifications(){
     });
   }
   S.punchRequests.filter(r=>r.employeeId===e.id && r.status!=='pending' && r.reviewedAt).forEach(r=>{
-    out.push({id:'punch:'+r.id, ts:r.reviewedAt, title:r.status==='approved'?t('notif_punch_approved'):t('notif_punch_rejected'), sub:punchSummary(r), unread:r.reviewedAt>seen, onClick:()=>{ location.hash='#me'; }});
+    out.push({id:'punch:'+r.id, ts:r.reviewedAt, title:r.status==='approved'?t('notif_punch_approved'):t('notif_punch_rejected'), sub:punchSummary(r)+rejWhyTxt(r), unread:r.reviewedAt>seen, onClick:()=>{ location.hash='#me'; }});
   });
   S.swapRequests.filter(r=>(r.employeeId===e.id || r.withEmployeeId===e.id) && r.reviewedAt && (r.status==='approved'||r.status==='rejected')).forEach(r=>{
-    out.push({id:'swap:'+r.id, ts:r.reviewedAt, title:r.status==='approved'?t('notif_swap_approved'):t('notif_swap_rejected'), sub:swapSummary(r), unread:r.reviewedAt>seen, onClick:()=>{ location.hash='#me'; }});
+    out.push({id:'swap:'+r.id, ts:r.reviewedAt, title:r.status==='approved'?t('notif_swap_approved'):t('notif_swap_rejected'), sub:swapSummary(r)+rejWhyTxt(r), unread:r.reviewedAt>seen, onClick:()=>{ location.hash='#me'; }});
   });
   S.swapRequests.filter(r=>r.employeeId===e.id && r.status==='declined' && r.answeredAt).forEach(r=>{
     out.push({id:'swapno:'+r.id, ts:r.answeredAt, title:t('notif_swap_declined'), sub:swapSummary(r), unread:r.answeredAt>seen, onClick:()=>{ location.hash='#me'; }});
@@ -4371,8 +4371,11 @@ function buildNotifications(){
       out.push({id:'vmdue:'+d.id+':'+todayStr(), ts, title:t('notif_vm_expired')+'：'+d.name, sub:i.due+' '+t('vm_pcs'), unread:ts>seen,
         onClick:()=>{ S.stockSection='snacks'; S.vmDev=d.id; location.hash='#stock'; }}); } });
   }
-  out.sort((a,b)=>a.ts<b.ts?1:-1);
-  return out.slice(0,60);
+  // patch 156: news items (memos, decisions, roster, audits, bank-ins) leave the bell after 14 days; open items (approvals, SOS, expiring documents, faults...) stay until handled
+  const cut14=new Date(Date.now()-14*86400000).toISOString();
+  const live=out.filter(n=>!/^(memo|leave|punch|swap|swapno|sched|audit|bankin):/.test(n.id) || String(n.ts||'')>=cut14 || (n.id.startsWith('memo:') && n.unread));   // an unopened memo keeps nagging
+  live.sort((a,b)=>a.ts<b.ts?1:-1);
+  return live.slice(0,60);
 }
 function openNotifSheet(){
   const e=currentEmployee();
@@ -4656,7 +4659,7 @@ function meView(){
   const myLeaves=S.leaveRequests.filter(l=>l.employeeId===e.id).slice(0,8);
   const leaveList=el('<div class="list"></div>');
   if(myLeaves.length===0) leaveList.appendChild(el(`<div class="hint">${esc(t('empty_no_requests'))}</div>`));
-  myLeaves.forEach(l=>leaveList.appendChild(el(`<div class="list-row" style="cursor:default;"><div class="lr-main"><div class="lr-title">${esc(leaveKindLabel(l))} · ${esc(l.startDate)}${l.endDate&&l.endDate!==l.startDate?' ~ '+esc(l.endDate):''}</div><div class="lr-sub">${esc(l.reason||'')}</div></div><span class="pill ${LEAVE_STATUS[l.status].c}">${esc(t(LEAVE_STATUS[l.status].t))}</span></div>`)));
+  myLeaves.forEach(l=>leaveList.appendChild(el(`<div class="list-row" style="cursor:default;"><div class="lr-main"><div class="lr-title">${esc(leaveKindLabel(l))} · ${esc(l.startDate)}${l.endDate&&l.endDate!==l.startDate?' ~ '+esc(l.endDate):''}</div><div class="lr-sub" style="white-space:normal;">${esc(l.reason||'')}${rejWhy(l)}</div></div><span class="pill ${LEAVE_STATUS[l.status].c}">${esc(t(LEAVE_STATUS[l.status].t))}</span></div>`)));
   c.appendChild(leaveList);
   c.appendChild(myOtherRequestsList());
 
@@ -4690,7 +4693,7 @@ function managerSection(){
     const btns=el('<div class="row" style="margin-top:-6px; margin-bottom:10px;"></div>');
     const ok=el(`<button class="btn ok sm">${esc(t('btn_approve'))}</button>`), no=el(`<button class="btn danger sm">${esc(t('btn_reject'))}</button>`);
     ok.onclick=async ()=>{ try{ await S.db.doc('leaveRequests/'+l.id).update({status:'approved', reviewedAt:new Date().toISOString(), reviewedBy:currentEmployee().name}); toast(t('toast_saved')); }catch(e){toast(dbErrMsg(e));} };
-    no.onclick=async ()=>{ try{ await S.db.doc('leaveRequests/'+l.id).update({status:'rejected', reviewedAt:new Date().toISOString(), reviewedBy:currentEmployee().name}); toast(t('toast_saved')); }catch(e){toast(dbErrMsg(e));} };
+    no.onclick=async ()=>{ const why=askReject(); if(why==null) return; try{ await S.db.doc('leaveRequests/'+l.id).update({status:'rejected', reviewNote:why, reviewedAt:new Date().toISOString(), reviewedBy:currentEmployee().name}); toast(t('toast_saved')); }catch(e){toast(dbErrMsg(e));} };
     btns.appendChild(ok); btns.appendChild(no);
     list.appendChild(row); list.appendChild(btns);
   });
@@ -4780,7 +4783,7 @@ function adminSection(){
     const btns=el('<div class="row" style="margin-top:-6px; margin-bottom:10px;"></div>');
     const ok=el(`<button class="btn ok sm">${esc(t('btn_approve'))}</button>`), no=el(`<button class="btn danger sm">${esc(t('btn_reject'))}</button>`);
     ok.onclick=async ()=>{ try{ await S.db.doc('leaveRequests/'+l.id).update({status:'approved', reviewedAt:new Date().toISOString(), reviewedBy:currentEmployee().name}); toast(t('leave_approved')); }catch(e){toast(dbErrMsg(e));} };
-    no.onclick=async ()=>{ try{ await S.db.doc('leaveRequests/'+l.id).update({status:'rejected', reviewedAt:new Date().toISOString(), reviewedBy:currentEmployee().name}); toast(t('leave_rejected')); }catch(e){toast(dbErrMsg(e));} };
+    no.onclick=async ()=>{ const why=askReject(); if(why==null) return; try{ await S.db.doc('leaveRequests/'+l.id).update({status:'rejected', reviewNote:why, reviewedAt:new Date().toISOString(), reviewedBy:currentEmployee().name}); toast(t('leave_rejected')); }catch(e){toast(dbErrMsg(e));} };
     btns.appendChild(ok); btns.appendChild(no);
     list.appendChild(row); list.appendChild(btns);
   });
@@ -5606,10 +5609,10 @@ function openSwapRequestForm(){
 }
 function punchSummary(r){ return (r.type==='in'?t('clock_in_short'):t('clock_out_short'))+' · '+(r.at && !isNaN(new Date(r.at)) ? fmtDateTime(r.at) : r.date+' '+r.time)+(r.branch?' · '+r.branch:''); }
 function swapSummary(r){ return t('swap_gives')+' '+r.date+' '+r.shift+' → '+r.withName+(r.takeDate?' · '+t('swap_takes')+' '+r.takeDate+' '+r.takeShift:''); }
-async function reviewPunch(r, approve){
+async function reviewPunch(r, approve, why){
   // The back-dated punch is written by a database transaction, never by the phone.
   try{
-    await rpc('approve_punch_request', {req_id:r.id, approve:!!approve, note:null});
+    await rpc('approve_punch_request', {req_id:r.id, approve:!!approve, note:why||null});   // patch 95/156: kept as reviewNote
     toast(approve?t('leave_approved'):t('leave_rejected'));
   }catch(e){ const m=String((e&&e.message)||''); toast(/bad_time/.test(m) ? t('err_punch_time') : /own_request/.test(m) ? t('err_own_request') : /already_reviewed/.test(m) ? t('err_already_reviewed') : dbErrMsg(e)); }
 }
@@ -5620,10 +5623,10 @@ function swapErrMsg(e){
           .find(x=>new RegExp('(^|[^a-z_])'+x[0]+'([^a-z_]|$)').test(m));
   return k ? t(k[1]) : dbErrMsg(e);
 }
-async function reviewSwap(r, approve){
+async function reviewSwap(r, approve, why){
   // both roster rows and the request change together on the server, after it re-checks overlaps and leave
   try{
-    await rpc('swap_review', {p_id:r.id, p_approve:!!approve, p_note:null});
+    await rpc('swap_review', {p_id:r.id, p_approve:!!approve, p_note:why||null});
     toast(approve?t('leave_approved'):t('leave_rejected'));
     if(S.db.refresh){ S.db.refresh('swapRequests'); S.db.refresh('schedules'); }
   }catch(e){ toast(swapErrMsg(e)); }
@@ -5676,7 +5679,7 @@ function pendingRequestsBlock(scopeIds){
       list.appendChild(el(`<div class="card card-tight"><div class="lr-title">${esc(r.employeeName)}</div><div class="lr-sub" style="white-space:normal;">${esc(summary(r))}${r.reason?' · '+esc(r.reason):''}</div></div>`));
       const btns=el('<div class="row" style="margin-top:-6px; margin-bottom:10px;"></div>');
       const ok=el(`<button class="btn ok sm">${esc(t('btn_approve'))}</button>`), no=el(`<button class="btn danger sm">${esc(t('btn_reject'))}</button>`);
-      const go=a=>{ ok.disabled=no.disabled=true; Promise.resolve(review(r,a)).finally(()=>{ ok.disabled=no.disabled=false; }); };
+      const go=a=>{ let why=null; if(!a){ why=askReject(); if(why==null) return; } ok.disabled=no.disabled=true; Promise.resolve(review(r,a,why)).finally(()=>{ ok.disabled=no.disabled=false; }); };   // patch 156
       ok.onclick=()=>go(true); no.onclick=()=>go(false);
       btns.appendChild(ok); btns.appendChild(no); list.appendChild(btns);
     });
@@ -5686,6 +5689,9 @@ function pendingRequestsBlock(scopeIds){
   mk(t('pending_swap_title'), swap, swapSummary, reviewSwap);
   return c;
 }
+// patch 156: the reviewer's reason under a rejected request (escaped here, inserted as HTML)
+function rejWhy(x){ return x && x.status==='rejected' && x.reviewNote ? `<br><b style="color:var(--bad,#C1392B);">${esc(t('reject_why'))}: </b>${esc(x.reviewNote)}` : ''; }
+function rejWhyTxt(x){ return x && x.status==='rejected' && x.reviewNote ? ' · '+t('reject_why')+': '+x.reviewNote : ''; }
 function myOtherRequestsList(){
   const e=currentEmployee();
   const list=el('<div class="list"></div>');
@@ -5695,7 +5701,7 @@ function myOtherRequestsList(){
   ).sort((a,b)=>a.r.createdAt<b.r.createdAt?1:-1).slice(0,8);
   rows.forEach(({r,label})=>{
     const st=LEAVE_STATUS[r.status]||LEAVE_STATUS.pending;
-    const row=el(`<div class="list-row" style="cursor:default;"><div class="lr-main"><div class="lr-title" style="white-space:normal;">${esc(label)}</div><div class="lr-sub">${esc(r.reason||'')}</div></div><span class="pill ${st.c}">${esc(t(st.t))}</span></div>`);
+    const row=el(`<div class="list-row" style="cursor:default;"><div class="lr-main"><div class="lr-title" style="white-space:normal;">${esc(label)}</div><div class="lr-sub" style="white-space:normal;">${esc(r.reason||'')}${rejWhy(r)}</div></div><span class="pill ${st.c}">${esc(t(st.t))}</span></div>`);
     if(r.withEmployeeId && r.employeeId===e.id && (r.status==='waiting' || r.status==='pending')){   // a swap still open: the requester may withdraw it
       const cb=el(`<button class="btn sm" style="margin-left:6px;">${esc(t('btn_swap_cancel'))}</button>`); cb.onclick=()=>{ cb.disabled=true; cancelSwap(r).finally(()=>{ cb.disabled=false; }); }; row.appendChild(cb);
     }
@@ -7595,6 +7601,8 @@ async function accAct(fn, args, okMsg){
   try{ const r=await accRpc(fn, args); toast((okMsg||t('acc_done'))+(typeof r==='string'?' · '+r:'')); await accLoad(); }
   catch(err){ toast(t('acc_failed_prefix')+String((err&&err.message)||err)); }
 }
+// patch 156: a reject always carries a reason the staff member can read
+function askReject(){ const v = prompt(t('reject_reason_q')); if(v == null) return null; const r = v.trim(); if(r.length < 2){ toast(t('reject_reason_need')); return null; } return r.slice(0, 300); }
 function accAsk(label, min){ const v=prompt(label); if(v==null) return null; const s=v.trim(); if(min && s.length<min){ toast(label); return null; } return s; }
 
 function accView(){
@@ -9258,6 +9266,7 @@ function receiveView(){
         toast(t('recv_toast_sent'));
         if(S.db.refresh) S.db.refresh('receipts');
         renderFromData();
+        setTimeout(() => { const mw = document.getElementById('modalWrap'); if(location.hash === '#receive' && !(mw && mw.classList.contains('show'))) lessonNudge('recv', () => {}); }, 2500);   // patch 156: once a day, after the receipt is sent
       }catch(err){ toast(recvErrMsg(err));
         if(/arrival_unanswered/.test(String((err && (err.message || err.code)) || ''))){ S.arrivalAsk = Object.assign({}, S.arrivalAsk, {[draft.id]: true}); renderFromData(); }   // review 128: the server's date decides; show the question
       }
@@ -13728,7 +13737,7 @@ function funcGrid(clockedIn){
   if(isAdmin() || receivingBranches().some(b => b === (myBranch()||'').toUpperCase() || coversBranch(currentEmployee(), b))){
     tiles.push({k:'receive', icon:'inbox', cls:'c-green', label:t('tile_receive'),
       count: isAdmin() ? S.receipts.filter(r=>r.status==='submitted' && r.accStatus==='exception').length : 0,
-      go:()=>{ lessonNudge('recv', () => { location.hash='#receive'; }); }});   // patch 105
+      go:()=>{ location.hash='#receive'; }});   // patch 156: no lesson prompt while the driver waits (it comes after sending)
     tiles.push({k:'stockout', icon:'swap', cls:'c-red', label:t('tile_stockout'),
       count: soPendingForMe().length,
       go:()=>{ location.hash='#stockout'; }});
