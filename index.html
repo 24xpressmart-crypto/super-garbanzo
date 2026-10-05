@@ -559,7 +559,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-05.157';
+const APP_BUILD = '2026-10-05.158';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -856,7 +856,7 @@ const I18N = {
     field_start_date:'开始日期', field_end_date:'结束日期', field_reason:'事由', btn_submit_request:'提交申请',
     err_pick_date:'请选择日期', toast_leave_submitted:'已提交，等待审批', sheet_leave:'请假 / 调班申请',
     admin_pending_prefix:'待审批（', admin_pending_suffix:'）', empty_no_pending:'暂无待审批申请',
-    btn_approve:'批准', btn_reject:'驳回', err_fill_one:"请填写：{x}", temp_waiting_signal:"等讯号送出", temp_too_old:"这个读数超过 12 小时，不能再送，请重新量一次。", temp_sent_late:"没讯号，迟送", nav_receive:"收货", sheet_discard_q:"还没送出。关掉的话，填的内容会不见，确定吗？", reject_reason_q:"驳回原因（员工会看到）：", reject_reason_need:"请写驳回原因，至少 2 个字。", reject_why:"驳回原因",
+    btn_approve:'批准', btn_reject:'驳回', clock_selfie_now:"先拍一张自拍，拍好就自动打卡。", err_fill_one:"请填写：{x}", temp_waiting_signal:"等讯号送出", temp_too_old:"这个读数超过 12 小时，不能再送，请重新量一次。", temp_sent_late:"没讯号，迟送", nav_receive:"收货", sheet_discard_q:"还没送出。关掉的话，填的内容会不见，确定吗？", reject_reason_q:"驳回原因（员工会看到）：", reject_reason_need:"请写驳回原因，至少 2 个字。", reject_why:"驳回原因",
     admin_schedule_mgmt:'排班管理', admin_staff_mgmt:'人员管理', admin_device_mgmt:'点位管理',
     admin_product_mgmt:'商品管理', admin_settings:'业务设置', admin_export:'数据导出',
     label_device_id:'机号 ', label_has_coords:' · 已设坐标', btn_bulk_import:'批量导入',
@@ -1101,7 +1101,7 @@ const I18N = {
     field_start_date:'Start Date', field_end_date:'End Date', field_reason:'Reason', btn_submit_request:'Submit Request',
     err_pick_date:'Please select dates', toast_leave_submitted:'Submitted, awaiting approval', sheet_leave:'Leave / Shift Swap Request',
     admin_pending_prefix:'Pending Approval (', admin_pending_suffix:')', empty_no_pending:'No pending requests',
-    btn_approve:'Approve', btn_reject:'Reject', err_fill_one:"Please fill in: {x}", temp_waiting_signal:"waiting for signal", temp_too_old:"This reading is more than 12 hours old and cannot be sent. Please take a new reading.", temp_sent_late:"sent late (no signal)", nav_receive:"Receive", sheet_discard_q:"Not sent yet. Close it and lose what you typed?", reject_reason_q:"Reason for rejecting (the staff member will see it):", reject_reason_need:"Please write a reason, at least 2 characters.", reject_why:"Reason",
+    btn_approve:'Approve', btn_reject:'Reject', clock_selfie_now:"Take a selfie first; the punch goes through as soon as it is taken.", err_fill_one:"Please fill in: {x}", temp_waiting_signal:"waiting for signal", temp_too_old:"This reading is more than 12 hours old and cannot be sent. Please take a new reading.", temp_sent_late:"sent late (no signal)", nav_receive:"Receive", sheet_discard_q:"Not sent yet. Close it and lose what you typed?", reject_reason_q:"Reason for rejecting (the staff member will see it):", reject_reason_need:"Please write a reason, at least 2 characters.", reject_why:"Reason",
     admin_schedule_mgmt:'Schedule Management', admin_staff_mgmt:'Staff Management', admin_device_mgmt:'Machine Management',
     admin_product_mgmt:'Product Management', admin_settings:'Business Settings', admin_export:'Data Export',
     label_device_id:'Machine ID ', label_has_coords:' · Coordinates set', btn_bulk_import:'Bulk Import',
@@ -1346,7 +1346,7 @@ const I18N = {
     field_start_date:'Tarikh mula', field_end_date:'Tarikh tamat', field_reason:'Sebab', btn_submit_request:'Hantar permohonan',
     err_pick_date:'Sila pilih tarikh', toast_leave_submitted:'Dihantar, menunggu kelulusan', sheet_leave:'Permohonan cuti / tukar syif',
     admin_pending_prefix:'Menunggu kelulusan (', admin_pending_suffix:')', empty_no_pending:'Tiada permohonan menunggu',
-    btn_approve:'Lulus', btn_reject:'Tolak', err_fill_one:"Sila isi: {x}", temp_waiting_signal:"menunggu isyarat", temp_too_old:"Bacaan ini lebih 12 jam dan tidak boleh dihantar. Sila ambil bacaan baharu.", temp_sent_late:"dihantar lewat (tiada isyarat)", nav_receive:"Terima", sheet_discard_q:"Belum dihantar. Tutup dan buang apa yang ditaip?", reject_reason_q:"Sebab ditolak (staf akan nampak):", reject_reason_need:"Sila tulis sebab, sekurang-kurangnya 2 aksara.", reject_why:"Sebab",
+    btn_approve:'Lulus', btn_reject:'Tolak', clock_selfie_now:"Ambil swafoto dahulu; punch akan dihantar sebaik sahaja gambar diambil.", err_fill_one:"Sila isi: {x}", temp_waiting_signal:"menunggu isyarat", temp_too_old:"Bacaan ini lebih 12 jam dan tidak boleh dihantar. Sila ambil bacaan baharu.", temp_sent_late:"dihantar lewat (tiada isyarat)", nav_receive:"Terima", sheet_discard_q:"Belum dihantar. Tutup dan buang apa yang ditaip?", reject_reason_q:"Sebab ditolak (staf akan nampak):", reject_reason_need:"Sila tulis sebab, sekurang-kurangnya 2 aksara.", reject_why:"Sebab",
     admin_schedule_mgmt:'Pengurusan jadual', admin_staff_mgmt:'Pengurusan staf', admin_device_mgmt:'Pengurusan mesin',
     admin_product_mgmt:'Pengurusan produk', admin_settings:'Tetapan perniagaan', admin_export:'Eksport data',
     label_device_id:'ID mesin ', label_has_coords:' · Koordinat ditetapkan', btn_bulk_import:'Import pukal',
@@ -3012,7 +3012,9 @@ function clockView(){
     } }
   const bigBtn=el(`<button class="clockbtn ${nextType==='out'?'out':''}"><span class="t">${nextType==='in'?esc(t('btn_clock_in')):esc(t('btn_clock_out'))}</span><span class="s" id="clockNow">${pad2(now.getHours())}:${pad2(now.getMinutes())}</span></button>`);
   card.appendChild(bigBtn);
-  const photoWrap = photoPicker(null, true, null, {front:true, backLabel:t('clock_photo_shop')});                       // a selfie: the front camera only (owner 2026-09-30: no gallery)
+  let goAfterSelfie = false;   // patch 160: the big button asked for the selfie; carry on once it is taken
+  const photoWrap = photoPicker(d => { if(!d){ goAfterSelfie = false; return; } photoWrap.dataset.unsaved = String(Date.now());   // keep the screen from refreshing the selfie away
+    if(goAfterSelfie){ goAfterSelfie = false; setTimeout(() => { if(photoWrap.isConnected && !bigBtn.disabled) bigBtn.onclick(); }, 400); } }, true, null, {front:true, backLabel:t('clock_photo_shop')});                       // a selfie: the front camera only (owner 2026-09-30: no gallery)
   { const sp = photoWrap.querySelector('button span'); if(sp) sp.textContent = t('clock_selfie_req'); }
   photoWrap.style.margin='12px auto 0'; photoWrap.style.maxWidth='320px';
   card.appendChild(photoWrap);
@@ -3024,7 +3026,10 @@ function clockView(){
   bigBtn.onclick=async ()=>{
     if(!S.db){ toast(t('err_db_disconnected')); return; }
     if(bigBtn.disabled) return;
-    if(!photoWrap.getPhoto()){ toast(t('clock_need_selfie')); return; }           // the selfie is required (owner 2026-09-30)
+    if(!photoWrap.getPhoto()){   // the selfie is required (owner 2026-09-30); 160: open the camera straight away
+      goAfterSelfie = true; toast(t('clock_selfie_now'));
+      const pb = photoWrap.querySelector('button'); if(pb) pb.click();
+      return; }
     if(nextType==='out' && !confirm(t('clock_confirm_out'))) return;          // no clock-out by a stray tap
     bigBtn.disabled=true;
     geoStatus.textContent=t('clock_geo_getting');
