@@ -246,7 +246,7 @@
   .clockbtn .s{font-size:20px; font-weight:900; font-family:"JetBrains Mono",monospace;}
   .clockbtn:disabled{opacity:.55;}
 
-  input[type=text], input[type=number], input[type=date], input[type=time], input[type=tel], input[type=password], select, textarea{
+  input:not([type]), input[type=search], input[type=text], input[type=number], input[type=date], input[type=time], input[type=tel], input[type=password], select, textarea{
     width:100%; background:var(--surface-2); border:1px solid var(--border); color:var(--ink);
     border-radius:10px; padding:10px 12px; font-size:14px; outline:none;
   }
@@ -559,7 +559,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-05.199';
+const APP_BUILD = '2026-10-05.200';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -16046,6 +16046,7 @@ function xferAppErr(err){
   return /^[a-z_ ]+[\w :.'-]*$/i.test(m) && m.length < 160 ? m : dbErrMsg(err);   // the accounting checks speak plain English (e.g. "item X is not an active AutoCount item")
 }
 function openXferAppSend(fromList){
+  ensureCatalog();   // 200: the goods list loads on the order / goods-in pages; a transfer opened first had nothing to search
   const lines = [];
   let from = fromList.includes(String(myBranch() || '').toUpperCase()) ? String(myBranch()).toUpperCase() : fromList[0];
   const body = el(`<div><p class="hint" style="margin:0 0 8px;">${esc(t('xfa_send_hint'))}</p>
@@ -16100,6 +16101,9 @@ function openXferAppSend(fromList){
   const search = () => {
     const q = body.querySelector('[data-f="q"]').value.trim(); hits.innerHTML = '';
     if(q.length < 2) return;
+    if(!S.skusLoaded){   // 200: still loading: say so and look again shortly (only while this sheet is open)
+      catalogReady(); hits.appendChild(el(`<div class="hint">${esc(t('acc_loading'))}</div>`));
+      clearTimeout(S.xfaSearchT); S.xfaSearchT = setTimeout(() => { if(body.isConnected) search(); }, 1500); return; }
     (S.skus || []).filter(s => s.code && s.active !== false && skuMatch(s, q)).slice(0, 12).forEach(s => {
       const r = el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(s.name || '')}</div><div class="lr-sub">${esc(s.code)} · ${esc(s.unit || 'PC')}</div></div><span>＋</span></div>`);
       r.onclick = () => { const ex = lines.find(l => l.code === String(s.code) && l.unit === String(s.unit || 'PC').toUpperCase());
