@@ -559,7 +559,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-05.195';
+const APP_BUILD = '2026-10-05.196';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -2255,7 +2255,7 @@ function sheetDirtyField(tg){
   if(!tg || !tg.tagName) return false;
   if(tg.tagName==='INPUT' && tg.type==='file') return !!(tg.files && tg.files.length);
   if(!/^(TEXTAREA|INPUT)$/.test(tg.tagName) || tg.hasAttribute('data-nodirty')) return false;
-  if(tg.tagName==='INPUT' && /^(search|checkbox|radio|range|button|submit|hidden)$/.test(tg.type)) return false;
+  if(tg.tagName==='INPUT' && /^(search|checkbox|radio|range|button|submit|hidden|password)$/.test(tg.type)) return false;   // 196: a PIN box is not a form to lose
   if(/search|搜|cari|find|查找|filter|筛选/i.test(String(tg.placeholder||'')+' '+String(tg.getAttribute('aria-label')||''))) return false;
   return String(tg.value||'').trim().length>0;
 }
