@@ -559,7 +559,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-05.196';
+const APP_BUILD = '2026-10-05.197';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -10502,7 +10502,14 @@ function receiptReadCard(branch, draft){
   const box = el('<div class="card" style="margin:12px 0 0; border-color:var(--accent); padding:12px;"></div>');
   const ask = async (btn)=>{
     btn.disabled = true;
-    try{ await rpc('request_receipt_read', {p_receipt: draft.id}); toast(t('recv_ai_asked')); }
+    try{
+      // 197: the card shows as soon as the phone makes the draft; wait for that write, and give a slow line two more tries
+      if(draftCreating) await draftCreating.catch(()=>{});
+      for(let tries = 1; ; tries++){
+        try{ await rpc('request_receipt_read', {p_receipt: draft.id}); break; }
+        catch(err){ if(tries >= 3 || !/no_receipt/.test(String((err && err.message) || ''))) throw err; await new Promise(r=>setTimeout(r, 2500)); }
+      }
+      toast(t('recv_ai_asked')); }
     catch(err){ const m = String((err && err.message) || '');
       toast(recvErrMsg(err)); btn.disabled = false; }
   };
