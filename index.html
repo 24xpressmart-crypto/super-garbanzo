@@ -559,7 +559,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-05.198';
+const APP_BUILD = '2026-10-05.199';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -1538,7 +1538,7 @@ function isManager(){const e=currentEmployee(); return !!(e && e.role==='manager
 function canManageStaff(){return isAdmin()||isManager();}
 function myBranch(){const e=currentEmployee(); return e&&e.homeBranch;}
 function branchList(){
-  const set = new Set(S.employees.map(e=>e.homeBranch).filter(Boolean));
+  const set = new Set(S.employees.map(e=>String(e.homeBranch || '').trim().toUpperCase()).filter(Boolean));   // 199
   return [...set].sort((a,b)=>a.localeCompare(b,'zh'));
 }
 function lowThreshold(product){return (product && product.lowStockThreshold!=null) ? product.lowStockThreshold : S.settings.lowStockDefault;}
@@ -5653,6 +5653,9 @@ function openEmployeeForm(emp, lockBranch){
   btn.onclick=async ()=>{
     const v=readFields(body,fields);
     if(!v.name||!v.name.trim()){ toast(t('err_fill_name2')); return; }
+    // 199: 'BR07 ' or 'br07' would be a store of its own; cover stores may be typed with spaces between them
+    if(typeof v.homeBranch === 'string') v.homeBranch = v.homeBranch.trim().toUpperCase();
+    if(typeof v.coverBranches === 'string') v.coverBranches = v.coverBranches.toUpperCase().split(/[\s,;]+/).filter(Boolean).filter((x, i, a)=>a.indexOf(x) === i && x !== v.homeBranch).join(', ');
     try{
       if(emp) await S.db.doc('employees/'+emp.id).update(v);
       else await S.db.collection('employees').add(Object.assign({active:true, createdAt:new Date().toISOString()}, v));
@@ -7263,7 +7266,7 @@ function weekScheduleView(lockBranch){
   }
   S.schedBranchCtx=branch||'';
   const rostered = new Set(branch ? S.schedules.filter(x=>String(x.branch||'').toUpperCase()===String(branch).toUpperCase()).map(x=>x.employeeId) : []);   // e.g. SUPPORT staff picked for an open shift
-  const emps=S.employees.filter(e=>e.active!==false && (!branch || e.homeBranch===branch || coversBranch(e,branch) || rostered.has(e.id))).sort((a,b)=>a.name.localeCompare(b.name,'zh'));
+  const emps=S.employees.filter(e=>e.active!==false && (!branch || String(e.homeBranch || '').trim().toUpperCase()===branch || coversBranch(e,branch) || rostered.has(e.id))).sort((a,b)=>a.name.localeCompare(b.name,'zh'));   // 199
   const sub=el(`<div class="row" style="justify-content:space-between; margin-bottom:6px;"><span class="hint" style="margin:0;">${todayStr(days[0])} ~ ${todayStr(days[6])}${branch?' · '+esc(branch):''}</span></div>`);
   const copyBtn=el(`<button class="btn sm">${esc(t('btn_copy_last_week'))}</button>`);
   copyBtn.onclick=()=>copyLastWeek(emps, days);
