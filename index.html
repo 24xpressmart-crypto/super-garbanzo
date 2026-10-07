@@ -559,7 +559,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-05.202';
+const APP_BUILD = '2026-10-05.203';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -9803,7 +9803,9 @@ function receiveView(){
   if(branches.length > 1){
     const chipRow = el('<div class="chiprow"></div>');
     branches.forEach(b=>{
-      const chip = el(`<button class="chip ${branch===b?'on':''}">${/^VM_/i.test(b) ? '🥤 ' : ''}${esc(b)}</button>`);
+      const vend = !/^BR\d/i.test(b) && String(b).toUpperCase() !== 'HQ';   // 203: vending site (H1, P5, P8A, P3, A1, VM)
+      const sname = vend && siteFor(b) && siteFor(b).name ? ' · ' + siteFor(b).name : '';
+      const chip = el(`<button class="chip ${branch===b?'on':''}">${vend ? '🥤 ' : ''}${esc(b)}${esc(sname)}</button>`);
       chip.onclick = ()=>{ S.receiveBranch = b; renderApp(); };
       chipRow.appendChild(chip);
     });
