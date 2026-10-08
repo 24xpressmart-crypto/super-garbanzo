@@ -559,7 +559,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-05.204';
+const APP_BUILD = '2026-10-05.205';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -9796,6 +9796,7 @@ function receiveView(){
     c.appendChild(seg);
     if(S.recvAdminMode!=='receive'){ c.appendChild(receiveInboxView()); return c; }
   }
+  else if(isAccHandler()){ c.appendChild(receiveInboxView()); return c; }   // 205: checker reads every store's deliveries, receives nothing
 
   const pilot = receivingBranches();
   const branches = [...new Set(allBranchIds().concat(pilot))].filter(b => (isAdmin() || b === myBranch() || coversBranch(e, b)) && pilot.includes(String(b).toUpperCase()));   // 202: + vending sites
@@ -11792,6 +11793,7 @@ function stockOutView(){
     c.appendChild(seg);
     if(S.soAdminMode !== 'record'){ c.appendChild(soAllStoresView()); return c; }
   }
+  else if(isAccHandler()){ c.appendChild(soAllStoresView()); return c; }   // 205: checker, read only
   const waiting = isAdmin() ? [] : soPendingForMe();
   if(waiting.length){
     c.appendChild(secH('alert','c-amber', t('so_approvals') + ' (' + waiting.length + ')'));
@@ -15174,7 +15176,7 @@ function funcGrid(clockedIn){
      go:()=>{ S.orderTab='inbox'; location.hash='#order'; }},
   ];
   // receiving is switched on per store (Settings > receiving pilot stores) so the trial can start with two
-  if(isAdmin() || receivingBranches().some(b => b === (myBranch()||'').toUpperCase() || coversBranch(currentEmployee(), b))){
+  if(isAdmin() || isAccHandler() || receivingBranches().some(b => b === (myBranch()||'').toUpperCase() || coversBranch(currentEmployee(), b))){   // 205: + checker
     tiles.push({k:'receive', icon:'inbox', cls:'c-green', label:t('tile_receive'),
       count: isAdmin() ? S.receipts.filter(r=>r.status==='submitted' && r.accStatus==='exception').length : 0,
       go:()=>{ location.hash='#receive'; }});   // patch 156: no lesson prompt while the driver waits (it comes after sending)
