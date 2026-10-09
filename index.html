@@ -559,7 +559,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-05.219';
+const APP_BUILD = '2026-10-05.220';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -9865,7 +9865,7 @@ function receiveView(){
   else if(isAccHandler()){ c.appendChild(receiveInboxView()); return c; }   // 205: checker reads every store's deliveries, receives nothing
 
   const pilot = receivingBranches();
-  const branches = [...new Set(allBranchIds().concat(pilot))].filter(b => (isAdmin() || b === myBranch() || coversBranch(e, b) || (recvAllOutlets(e) && /^BR\d+$/i.test(b))) && pilot.includes(String(b).toUpperCase()));   // 202: + vending sites; 208: all-outlet receiver
+  const branches = [...new Set(allBranchIds().concat(pilot))].filter(b => (isAdmin() || b === myBranch() || coversBranch(e, b) || (recvAllOutlets(e) && /^BR\d+$/i.test(b)) || (recvVmSites(e) && !/^BR\d+$/i.test(b) && String(b).toUpperCase() !== 'HQ')) && pilot.includes(String(b).toUpperCase()));   // 202: + vending sites; 208: all-outlet receiver; 220: vending-site receiver
   const branch = branches.includes(receiveBranchFor()) ? receiveBranchFor() : (branches[0] || '');
   if(branches.length > 1){
     const chipRow = el('<div class="chiprow"></div>');
@@ -16177,6 +16177,9 @@ function xferMyShops(){ const e = currentEmployee(); const own = [myBranch()].co
 // patch 208 (owner 8 Oct: Shahir receives goods and does transfers for all outlets). HQ lists people in settings.allOutletReceivers;
 // the server (patch124) allows only goods receive + transfers at those outlets, nothing else.
 function recvAllOutlets(e){ e = e || currentEmployee(); return !!(e && e.id) && String((S.settings && S.settings.allOutletReceivers) || '').toUpperCase().split(/[\s,;]+/).includes(String(e.id).toUpperCase()); }
+// patch 220 (owner 9 Oct: Shahir receives goods for the vending machines too). HQ lists people in settings.vmReceivers;
+// the server (patch125) lets them receive at the vending sites in receivingBranches (H1, P5, P8A, P3, A1, VM). App transfers stay BR to BR.
+function recvVmSites(e){ e = e || currentEmployee(); return !!(e && e.id) && String((S.settings && S.settings.vmReceivers) || '').toUpperCase().split(/[\s,;]+/).includes(String(e.id).toUpperCase()); }
 function xferRetailStores(){ return allBranchIds().map(b => String(b).toUpperCase()).filter(b => /^BR\d+$/.test(b) && !['BR24', 'BR26'].includes(b)).sort(); }
 function xferAppLoad(force){
   if(!xferAppOn()) return;
