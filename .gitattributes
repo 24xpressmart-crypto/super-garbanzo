@@ -1,0 +1,5 @@
+# index.html pins a sha384 Subresource Integrity hash for every file in vendor/.
+# If Git rewrites one line ending the bytes change, the hash stops matching and
+# the browser blocks the script - on supabase-js that means every phone gets an
+# app with no database. core.autocrlf is true on this machine, so say it here.
+vendor/** -text
