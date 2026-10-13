@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://smpazgmbmmeqighyhbon.supabase.co; connect-src 'self' https://smpazgmbmmeqighyhbon.supabase.co wss://smpazgmbmmeqighyhbon.supabase.co; manifest-src 'self'; worker-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://smpazgmbmmeqighyhbon.supabase.co; connect-src 'self' https://smpazgmbmmeqighyhbon.supabase.co wss://smpazgmbmmeqighyhbon.supabase.co; manifest-src 'self'; worker-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
 <meta name="robots" content="noindex, nofollow">
 <script>if (window.top !== window.self) { try { window.top.location = window.self.location; } catch (e) { document.documentElement.style.display = "none"; } }</script>
 <script>
@@ -42,10 +42,10 @@
   }, 10000); });
 })();
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
+<script src="./vendor/supabase-js-2.116.0.js?v=88b75d1d32e8" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP"></script>
 <!-- patch 100: QR + barcode for the POS code of a points redemption (optional: the code is also shown as text) -->
-<script defer src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js" integrity="sha384-8FWZA6BGMXhsfO+BLtrJK0We6gg5o1JyO8xQm6peWDEUs17ACA5ziE/NIAkl9z2k" crossorigin="anonymous"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/barcodes/JsBarcode.code128.min.js" integrity="sha384-7XguhfRLAUmvSGmJn2K+BQDpX0gf5NMsj79jcgd7TVtV87euzdySNZqTjOQxgIiB" crossorigin="anonymous"></script>
+<script defer src="./vendor/qrcode-generator-1.4.4.js?v=f0559903a046" integrity="sha384-8FWZA6BGMXhsfO+BLtrJK0We6gg5o1JyO8xQm6peWDEUs17ACA5ziE/NIAkl9z2k"></script>
+<script defer src="./vendor/JsBarcode.code128-3.11.6.min.js?v=ed782e85f44b" integrity="sha384-7XguhfRLAUmvSGmJn2K+BQDpX0gf5NMsj79jcgd7TVtV87euzdySNZqTjOQxgIiB"></script>
 <style>
   :root{
     --paper:#F1F1EC; --surface:#FFFFFF; --surface-2:#E9E9E3; --border:#DAD9D2;
@@ -559,7 +559,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-05.224';
+const APP_BUILD = '2026-10-05.225';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -13696,8 +13696,8 @@ function loadJsBarcode(){
   if(window.JsBarcode) return Promise.resolve(window.JsBarcode);
   if(JSBARCODE_P) return JSBARCODE_P;
   JSBARCODE_P = new Promise((res, rej) => { const sc = document.createElement('script');
-    sc.src = 'https://cdn.jsdelivr.net/npm/jsbarcode@3.12.3/dist/JsBarcode.all.min.js';
-    sc.integrity = 'sha384-vmcSy8TM1KhZWBIKMKTR8AxbrJQCuConAolGY+42odu9ZGIzw8L8xAT/u7ul4X2U'; sc.crossOrigin = 'anonymous';
+    sc.src = './vendor/JsBarcode.all-3.12.3.min.js?v=be6712cbc4cc';
+    sc.integrity = 'sha384-vmcSy8TM1KhZWBIKMKTR8AxbrJQCuConAolGY+42odu9ZGIzw8L8xAT/u7ul4X2U';
     sc.onload = () => window.JsBarcode ? res(window.JsBarcode) : rej(new Error('barcode_lib'));
     sc.onerror = () => { JSBARCODE_P = null; rej(new Error('barcode_lib')); };
     document.head.appendChild(sc); });
