@@ -559,7 +559,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-05.229';
+const APP_BUILD = '2026-10-05.230';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -10119,7 +10119,8 @@ function receiveView(){
         if(cur.docKind !== 'online'){   // patch 226
           const idk = docNoIdKind(cur.docNo);
           if(idk === 'tin'){ toast(t('recv_docno_taxid')); return; }
-          if(idk === 'reg' && !confirm(t('recv_docno_regmaybe'))) return; }
+          if(idk === 'reg'){ const rk = String(cur.docNo || '').toUpperCase().replace(/[^A-Z0-9]/g, ''), okSet = S._regAsked = S._regAsked || new Set();
+            if(!okSet.has(rk)){ if(!confirm(t('recv_docno_regmaybe'))) return; okSet.add(rk); } } }
         { const rdn = receiptReadFor(cur), Rn = rdn && rdn.status === 'done' ? (rdn.result || {}) : null, nzn = s => String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
           // patch 217 (8 Oct: BR03 Gardenia 6005EU02 sent as "1", BR19 VHealthcare DO3577 sent blank; the AI had read both numbers, but
           // the AI fill never replaces a number already typed): a blank or 1–3 character number, when the AI read a real one, is offered
@@ -10423,7 +10424,7 @@ function photoRotatable(img){
     if(!nw || !nh){ deg = (deg + 270) % 360; return; }   // not loaded yet: ignore this tap
     const s = W / nh, w = Math.round(nw * s), hh = Math.round(nh * s);
     wrap.style.height = w + 'px';
-    img.setAttribute('style', base + ';position:absolute;max-width:none;width:' + w + 'px;height:' + hh + 'px;top:50%;left:50%;transform:translate(-50%,-50%) rotate(' + deg + 'deg)');
+    img.setAttribute('style', base.replace(/margin-top:\s*6px;?/, '') + ';position:absolute;max-width:none;width:' + w + 'px;height:' + hh + 'px;top:50%;left:50%;transform:translate(-50%,-50%) rotate(' + deg + 'deg)');
   };
   wrap.appendChild(img);
   const out = el('<div></div>'); out.appendChild(wrap); out.appendChild(btn); return out;
@@ -10445,8 +10446,8 @@ function listFilterApply(rows, f, g){
 function listFilterBar(c, rows, key, g){
   const st = S._lf = S._lf || {}, f = st[key] = st[key] || {q: '', month: '', store: '', sort: ''};
   const klm = iso => { const ms = Date.parse(iso || ''); return isFinite(ms) ? new Date(ms + 8 * 3600e3).toISOString().slice(0, 7) : ''; };
-  const months = [...new Set(rows.map(r => klm(g.date(r))).filter(Boolean))].sort().reverse();
-  const stores = [...new Set(rows.map(r => String(g.store(r) || '').toUpperCase()).filter(Boolean))].sort();
+  const months = [...new Set(rows.map(r => klm(g.date(r))).concat(f.month ? [f.month] : []).filter(Boolean))].sort().reverse();
+  const stores = [...new Set(rows.map(r => String(g.store(r) || '').toUpperCase()).concat(f.store ? [f.store] : []).filter(Boolean))].sort();
   const bar = el('<div style="display:flex; gap:6px; flex-wrap:wrap; margin:0 0 10px; align-items:center;"></div>');
   const q = el(`<input type="search" placeholder="${esc(t('lf_search'))}" value="${esc(f.q)}" style="flex:1; min-width:150px;">`);
   q.onchange = () => { f.q = q.value; renderApp(); };
