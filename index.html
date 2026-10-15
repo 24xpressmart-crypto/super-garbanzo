@@ -559,7 +559,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-05.230';
+const APP_BUILD = '2026-10-05.231';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -10443,23 +10443,28 @@ function listFilterApply(rows, f, g){
   return out;
 }
 // the controls; state kept per list in S._lf[key]; returns the filtered rows
-function listFilterBar(c, rows, key, g){
+function listFilterBar(c, rows, key, g, renderRows){
   const st = S._lf = S._lf || {}, f = st[key] = st[key] || {q: '', month: '', store: '', sort: ''};
   const klm = iso => { const ms = Date.parse(iso || ''); return isFinite(ms) ? new Date(ms + 8 * 3600e3).toISOString().slice(0, 7) : ''; };
   const months = [...new Set(rows.map(r => klm(g.date(r))).concat(f.month ? [f.month] : []).filter(Boolean))].sort().reverse();
   const stores = [...new Set(rows.map(r => String(g.store(r) || '').toUpperCase()).concat(f.store ? [f.store] : []).filter(Boolean))].sort();
   const bar = el('<div style="display:flex; gap:6px; flex-wrap:wrap; margin:0 0 10px; align-items:center;"></div>');
   const q = el(`<input type="search" placeholder="${esc(t('lf_search'))}" value="${esc(f.q)}" style="flex:1; min-width:150px;">`);
-  q.onchange = () => { f.q = q.value; renderApp(); };
-  const sel = (val, opts, set) => { const s = el(`<select>${opts.map(([v, l]) => `<option value="${esc(v)}"${v === val ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select>`); s.onchange = () => { set(s.value); renderApp(); }; return s; };
+  q.oninput = () => { f.q = q.value; paint(); };
+  const sel = (val, opts, set) => { const s = el(`<select>${opts.map(([v, l]) => `<option value="${esc(v)}"${v === val ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select>`); s.onchange = () => { set(s.value); paint(); }; return s; };
   bar.appendChild(q);
   bar.appendChild(sel(f.month, [['', t('lf_all_months')]].concat(months.map(m => [m, m])), v => { f.month = v; }));
   bar.appendChild(sel(f.store, [['', t('lf_all_stores')]].concat(stores.map(s => [s, s])), v => { f.store = v; }));
   bar.appendChild(sel(f.sort, [['', t('lf_sort_new')], ['old', t('lf_sort_old')], ['sup', t('lf_sort_sup')], ['store', t('lf_sort_store')]], v => { f.sort = v; }));
   c.appendChild(bar);
-  const out = listFilterApply(rows, f, g);
-  if(f.q || f.month || f.store) c.appendChild(el(`<div class="hint" style="margin:-4px 0 8px;">${esc(t('lf_shown').split('{n}').join(out.length).split('{m}').join(rows.length))}</div>`));
-  return out;
+  const hint = el('<div class="hint" style="margin:-4px 0 8px;" hidden></div>'), box = el('<div></div>');
+  c.appendChild(hint); c.appendChild(box);
+  function paint(){
+    const out = listFilterApply(rows, f, g), on = !!(f.q || f.month || f.store);
+    hint.hidden = !on; hint.textContent = on ? t('lf_shown').split('{n}').join(out.length).split('{m}').join(rows.length) : '';
+    box.innerHTML = ''; renderRows(out, box);
+  }
+  paint();
 }
 function receiptRow(r, showBranch){
   const n = receiptLines(r).length;
@@ -12777,8 +12782,8 @@ function soAllStoresView(){
   const rows = S.stockOuts.filter(r => (r.status||'draft') !== 'draft' && r.status !== 'pending' && (f === 'all' || r.kind === f))
     .sort((a,b)=>String(b.decidedAt||b.submittedAt||'').localeCompare(String(a.decidedAt||a.submittedAt||'')));
   if(!rows.length){ c.appendChild(el(`<div class="hint">${esc(t('so_none'))}</div>`)); return c; }
-  const rows2 = listFilterBar(c, rows, 'so', {date: r => r.decidedAt || r.submittedAt || r.createdAt, sup: r => r.supplierName, store: r => r.branch, text: r => (r.docNo || '') + ' ' + (r.refInvoice || '')});   // patch 229
-  const list = el('<div class="list"></div>'); rows2.slice(0, 200).forEach(r => list.appendChild(soRow(r, true))); c.appendChild(list);
+  listFilterBar(c, rows, 'so', {date: r => r.decidedAt || r.submittedAt || r.createdAt, sup: r => r.supplierName, store: r => r.branch, text: r => (r.docNo || '') + ' ' + (r.refInvoice || '')},   // patch 229 / 231
+    (out, box) => { const list = el('<div class="list"></div>'); out.slice(0, 200).forEach(r => list.appendChild(soRow(r, true))); box.appendChild(list); });
   return c;
 }
 
@@ -12848,10 +12853,8 @@ function receiveInboxView(){
     else if(f === 'query') rows = rows.filter(r => { const g = gcFor(r); return g && g.result === 'query'; });
   }
   if(!rows.length){ c.appendChild(el(`<div class="hint">${esc(t('recv_no_history'))}</div>`)); return c; }
-  rows = listFilterBar(c, rows, 'recv', {date: r => r.submittedAt || r.createdAt, sup: r => r.supplierName, store: r => r.branch, text: r => (r.docNo || '') + ' ' + (r.amount || '')});   // patch 229
-  const list = el('<div class="list"></div>');
-  rows.slice(0, 200).forEach(r=> list.appendChild(receiptRow(r, true)));
-  c.appendChild(list);
+  listFilterBar(c, rows, 'recv', {date: r => r.submittedAt || r.createdAt, sup: r => r.supplierName, store: r => r.branch, text: r => (r.docNo || '') + ' ' + (r.amount || '')},   // patch 229 / 231
+    (out, box) => { const list = el('<div class="list"></div>'); out.slice(0, 200).forEach(r => list.appendChild(receiptRow(r, true))); box.appendChild(list); });
   return c;
 }
 
