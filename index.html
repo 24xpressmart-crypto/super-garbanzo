@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-05.243';
+const APP_BUILD = '2026-10-05.244';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -10939,7 +10939,9 @@ function openHrcv(){
   gs.forEach(x => {
     const card = el(`<div class="card" style="margin-bottom:8px;"><div style="font-weight:900;">${esc(x.name)}</div>
       <div class="lr-sub" style="white-space:normal;">${x.code ? '💡 ' + esc(t('hr_sugg')) + ': <b class="num">' + esc(x.code) + '</b>' : esc(t('hr_nomatch'))} · ${esc(t('hr_n').split('{n}').join(String(x.rows.length)))}</div></div>`);
-    x.rows.slice().sort((a, b) => hrcvAge(b) - hrcvAge(a)).forEach(r => card.appendChild(el(`<div class="lr-sub" style="white-space:normal;">${esc(r.branch || '')} · ${esc(r.docNo || '')} · ${esc(r.supplierName || '')} · ${esc(t('hr_d').split('{n}').join(String(hrcvAge(r))))}</div>`)));
+    x.rows.slice().sort((a, b) => hrcvAge(b) - hrcvAge(a)).forEach(r => { const line = el(`<div class="lr-sub" style="white-space:normal; cursor:pointer; text-decoration:underline;">${esc(r.branch || '')} · ${esc(r.docNo || '')} · ${esc(r.supplierName || '')} · ${esc(t('hr_d').split('{n}').join(String(hrcvAge(r))))}</div>`);
+      line.onclick = () => { closeSheet(); setTimeout(() => openReceiptDetail(r), 200); };   // the delivery has the "Fix items / qty" button
+      card.appendChild(line); });
     body.appendChild(card); });
   if(!gs.length) body.appendChild(el(`<p class="hint">✓</p>`));
   openSheet(t('hr_title'), body);
