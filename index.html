@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-05.251';
+const APP_BUILD = '2026-10-05.252';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -1677,13 +1677,16 @@ function makeSupabaseDb(sb){
   // The trailing order on id is a unique tie-breaker: without it Postgres may return rows in a
   // different order per request, so pages can skip or repeat rows. Display order comes from sortRows.
   async function fetchAll(collection, opts, select){
-    const out=[]; let from=0; const page=1000;
+    const out=[]; let last=null; const page=1000;   // review 23 Oct: key-based paging (id > last) instead of offset - offset got slower with every page (skus: 11 pages, 8 s worst case)
     while(true){
-      const {data, error} = await buildQuery(collection, opts, select).order('id', {ascending:true}).range(from, from+page-1);
+      let qy = buildQuery(collection, opts, select);
+      if(last!==null) qy = qy.gt('id', last);
+      const {data, error} = await qy.order('id', {ascending:true}).limit(page);
       if(error) throw error;
       out.push(...(data||[]));
       if(!data || data.length<page) break;
-      from+=page;
+      last = data[data.length-1].id;
+      if(last==null) break;
     }
     return out;
   }
