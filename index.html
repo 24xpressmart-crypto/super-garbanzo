@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-05.257';
+const APP_BUILD = '2026-10-05.258';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -2154,7 +2154,6 @@ function subscribeAll(){
   sub('grnAmends','grnAmends',{order:'at',limit:200,sinceDays:60,sinceField:'at'});   // patch 222: item / qty fixes (RUN_97); HQ only (RLS)   // patch 206: accounts check of each goods receive (patch123): checkers + HQ all, a store its own
   sub('freshChecks','freshChecks',{order:'createdAt',limit:800,sinceDays:21});        // freshness checks (patch 40): own stores
   sub('zeroChecks','zeroChecks',{order:'createdAt',limit:800,sinceDays:30});   // zero-sales answers (patch 42)
-  sub('cycleCounts','cycleCounts',{order:'createdAt',limit:1500,sinceDays:60});
   sub('einvHq','einvHq',{order:'createdAt',limit:500,sinceDays:120});   // patch 201: MyInvois invoices with no single store: HQ only (RLS)   // blind counts (patch 59): only HQ can read them (RLS)          // zero-sales answers (patch 42): own stores (HQ counts come from zero_checks_summary)
   sub('hqTasks','hqTasks',{order:'createdAt',limit:300,sinceDays:60});                // HQ tasks (patch 44): the ones for my stores; HQ all
   sub('hqTaskDone','hqTaskDone',{order:'createdAt',limit:5000,sinceDays:45});         // completions: own stores; HQ's board also fetches per task
@@ -12158,7 +12157,9 @@ function shrinkBlock(){
     box.appendChild(l); }
   return box;
 }
+let ccSubbed = false;   // review 23 Oct: only the HQ count view reads cycleCounts; it is loaded here, not for every phone at login. 3,800 counts came in 14 days, so the old 1,500 limit under-counted
 function ccHqView(){
+  if(!ccSubbed && subDb){ ccSubbed = true; sub('cycleCounts','cycleCounts',{order:'createdAt',limit:4000,sinceDays:14}); }
   const c = el('<div></div>');
   c.appendChild(shrinkBlock());   // patch 166
   c.appendChild(el(`<p class="hint" style="margin:0 0 8px;">${esc(t('cc_hq_hint'))}</p>`));
