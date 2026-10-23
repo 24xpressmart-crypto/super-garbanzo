@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-05.258';
+const APP_BUILD = '2026-10-05.259';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -15343,7 +15343,8 @@ function openSnap(){
         const b = el(`<button class="btn sm ${route === r ? 'primary' : ''}">${esc(t('sd_route_' + r))} ${n}</button>`); b.onclick = () => { route = r; fill(); }; chips.appendChild(b); });
       box.appendChild(el(`<h3 style="margin:12px 0 0;">🧾 ${esc(t('sd_to_handle'))} (${todo.length})</h3>`)); box.appendChild(chips);
       const shown = todo.filter(d => route === 'all' || d.route === route).sort((a, b) => (((b.urgent ? 2 : 0) + (sdocAiWarn(b) ? 1 : 0)) - ((a.urgent ? 2 : 0) + (sdocAiWarn(a) ? 1 : 0))) || (Date.parse(a.createdAt) - Date.parse(b.createdAt)) || 0);   // 182: AI warnings next
-      if(!shown.length) box.appendChild(el(`<p class="hint">${esc(t('sd_none_todo'))}</p>`)); else shown.forEach(d => box.appendChild(sdocRow(d, true)));
+      if(!shown.length) box.appendChild(el(`<p class="hint">${esc(t('sd_none_todo'))}</p>`)); else { const lim = S.sdLimit || 40; shown.slice(0, lim).forEach(d => box.appendChild(sdocRow(d, true)));   // review 23 Oct: the to-handle list was uncapped (cheap phones)
+        if(shown.length > lim){ const mb = el(`<button class="btn block" style="margin-top:8px;">${esc(t('hqt_more').split('{n}').join(String(shown.length - lim)))}</button>`); mb.onclick = () => { S.sdLimit = lim + 40; fill(); }; box.appendChild(mb); } }
     }
     const recent = rows.filter(d => !(isAdmin() && sdocCanHandle(d)));
     box.appendChild(el(`<h3 style="margin:12px 0 6px;">${esc(t(isAdmin() ? 'sd_recent_all' : 'sd_recent'))}</h3>`));
