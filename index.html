@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-05.254';
+const APP_BUILD = '2026-10-05.255';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -11413,7 +11413,15 @@ function receiptReadCard(branch, draft){
 const PACK_ALIAS = {CTNS:'CTN', CARTON:'CTN', CARTONS:'CTN', CASE:'CS', CASES:'CS', CRATE:'CRT', CRATES:'CRT', BOXES:'BOX', BX:'BOX', PKTS:'PKT', PACK:'PKT', PACKET:'PKT', PACKETS:'PKT'};
 function packUnit(x){ x = String(x || '').toUpperCase().replace(/[^A-Z]/g, ''); return PACK_ALIAS[x] || x; }
 const PACK_UNIT_RE = /^(CTN|CS|CRT|BOX)$/;   // a carton-type unit; a packet (PKT) of 1 piece is a real thing, so PKT is not refused
-function aiPackNeeded(l, sku, kegL){ return !!sku && !!l && !!l.uom && !sameUnit(l.uom, sku.unit) && packUnit(l.uom) !== packUnit(sku.unit) && !kegL && aiExpected(l, sku) == null; }
+// review 23 Oct: paper unit 'UNIT' counts as 'PC', so '1 UNIT  Plain Croissant (60/ctn)' booked 1 piece for a carton of 60 (F&B stock short on 6 receipts).
+// A carton marked in the description ('60/ctn', 'x24 ctn') must ask for pieces per carton even when the paper unit looks like a piece.
+const DESC_CTN_RE = /(\d{1,4})\s*\/\s*(?:CTN|CTNS|CARTON|CASE|BOX)\b/i;
+function descCtnPack(l){ const m = String((l && l.description) || '').match(DESC_CTN_RE); const n = m ? Number(m[1]) : null; return n > 1 ? n : null; }
+function aiPackNeeded(l, sku, kegL){
+  if(!sku || !l || kegL) return false;
+  if(l.uom && !sameUnit(l.uom, sku.unit) && packUnit(l.uom) !== packUnit(sku.unit) && aiExpected(l, sku) == null) return true;
+  return !!descCtnPack(l) && !PACK_UNIT_RE.test(packUnit(sku.unit)) && !(sku.id === l.skuId && l.ourQty != null);   // 'UNIT' looks like a piece to aiExpected, so do not rely on it here; an already-converted count (ourQty) is respected
+}
 function aiPackCheck(uom, v, itemUnit){
   const s = String(v == null ? '' : v).trim(), n = Number(s);
   if(s === '' || !isFinite(n) || !(n > 0)) return 'need';
@@ -11423,7 +11431,7 @@ function aiPackCheck(uom, v, itemUnit){
 function paperPack(l){
   const u = String((l && l.uom) || '').trim().match(/^(\d{1,4})\s*(?:S|'S|PCS?|PIECES?)$/i);
   const d = String((l && l.description) || '').match(/(?:^|[^A-Z0-9])X\s*(\d{1,4})(?![\d.\/]|\s*(?:G|GM|GR|KG|ML|CL|L|LTR)\b)/i);   // 'X 33G' is a weight, not a pack
-  const n = u ? Number(u[1]) : d ? Number(d[1]) : null;
+  const n = u ? Number(u[1]) : descCtnPack(l) ? descCtnPack(l) : d ? Number(d[1]) : null;
   return n > 1 ? n : null;
 }
 function aiCountCheck(q, expected){
