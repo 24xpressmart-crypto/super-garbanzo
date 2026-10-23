@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-05.249';
+const APP_BUILD = '2026-10-05.250';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -1520,7 +1520,7 @@ function dbErrMsg(e){
   if(e && e.code === 'forbidden') return t('err_forbidden');
   { const raw = String((e && (e.message || e.details)) || e || '');   // 154: a lost signal is named as such
     if((typeof navigator !== 'undefined' && navigator.onLine === false) || /failed to fetch|load failed|networkerror|network request failed|fetch failed/i.test(raw)) return t('err_no_signal');
-    if(/statement timeout|57014/i.test(raw + ' ' + String((e && e.code) || ''))){ if(!S.errQuiet) logClientError('shown_error', 'statement timeout (after retry)', ''); return t('err_busy'); } }   // patch 214
+    if(/statement timeout|57014/i.test(raw + ' ' + String((e && e.code) || ''))){ if(!S.errQuiet) logClientError('shown_error', 'statement timeout (after retry)', String((e && (e.hint || e.details)) || '').slice(0, 150) + ' @' + (location.hash || S.tab || '')); return t('err_busy'); } }   // patch 214
   { const raw = String((e && (e.message || e.details)) || '');   // refusals from the server's own rules (patch 54)
     if(/template_changed|bad_template|bad_scores/.test(raw)) return t('err_audit_template');
     if(/bad_photo/.test(raw)) return t('err_audit_photo');
@@ -1708,9 +1708,10 @@ function makeSupabaseDb(sb){
   // A burst of changes (a bulk import touches thousands of rows, one realtime event each)
   // becomes one re-fetch per collection instead of one per event.
   const soonTimers = new Map();
+  const BIG_COLLECTIONS = new Set(['attendance', 'tempLogs', 'taskRuns', 'hqTaskDone', 'schedules', 'cycleCounts']);   // review 23 Oct: each event re-downloads thousands of rows on every phone
   function refreshSoon(collection){
     if(soonTimers.has(collection)) return;
-    soonTimers.set(collection, setTimeout(()=>{ soonTimers.delete(collection); refreshCollection(collection); }, (collection==='skus' || collection==='suppliers') ? 30000 : 1200));
+    soonTimers.set(collection, setTimeout(()=>{ soonTimers.delete(collection); refreshCollection(collection); }, (collection==='skus' || collection==='suppliers') ? 30000 : (BIG_COLLECTIONS.has(collection) ? 6000 : 1200)));
   }
   // At most one fetch per collection in flight; calls made meanwhile are folded into one more.
   const inFlight = new Map(); // collection -> {again:boolean}
@@ -1999,7 +2000,12 @@ document.addEventListener('pointerdown', e=>{
   if(tgt && a && a !== tgt && !tgt.contains(a) && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) a.blur();
 }, true);
 let dataRenderWaiting = false;
+let rfdTimer = 0;   // review 23 Oct: ~55 first-load results each rebuilt the whole screen; now one redraw per 150 ms burst
 function renderFromData(){
+  if(rfdTimer) return;
+  rfdTimer = setTimeout(() => { rfdTimer = 0; renderFromDataNow(); }, 150);
+}
+function renderFromDataNow(){
   if(!uiBusy()) return renderApp();
   if(dataRenderWaiting) return;
   dataRenderWaiting = true;
@@ -15282,7 +15288,7 @@ function openSnap(){
   const e = currentEmployee();
   const body = el(`<div>${!(S.settings && S.settings.snapDocsOn === 'yes') ? `<div class="card card-tight" style="border-color:var(--warn,#B5731A); margin-bottom:8px;">⚠ ${esc(t('sd_off_hq'))}</div>` : ''}
     <p class="hint" style="margin:0 0 8px;">${esc(t('sd_hint'))}</p><div class="sd-new"></div><div class="sd-box"><p class="hint">${esc(t('acc_loading'))}</p></div></div>`);
-  const nb = el(`<button class="btn primary block">📷 ${esc(t('sd_new'))}</button>`); nb.onclick = () => { closeSheet(); setTimeout(() => openSnapPick(), 200); }; body.querySelector('.sd-new').appendChild(nb);
+  const nb = el(`<button class="btn primary block">📷 ${esc(t('sd_new'))}</button>`); nb.onclick = () => { if(nb.disabled) return; nb.disabled = true; closeSheet(); setTimeout(() => openSnapPick(), 200); }; body.querySelector('.sd-new').appendChild(nb);
   const box = body.querySelector('.sd-box');
   let route = 'all';
   const fill = () => {
@@ -15312,7 +15318,7 @@ function openSnapPick(){
     const grid = el('<div style="display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:8px;"></div>');
     Object.keys(SDOC).filter(k => SDOC[k].g === g && !SDOC[k].hide).forEach(k => {
       const b = el(`<button class="btn" style="justify-content:flex-start; text-align:left; white-space:normal; min-height:52px;" data-type="${k}"><span style="font-size:20px;">${SDOC[k].i}</span><span>${esc(sdocLabel(k))}</span></button>`);
-      b.onclick = () => { closeSheet(); setTimeout(() => openSnapForm(k), 200); }; grid.appendChild(b);
+      b.onclick = () => { if(b.disabled) return; b.disabled = true; closeSheet(); setTimeout(() => openSnapForm(k), 200); }; grid.appendChild(b);
     });
     body.appendChild(grid);
   });
@@ -17924,7 +17930,7 @@ function openVisitForm(){
   const body=el('<div>'+fieldsHTML(f,{docs:'yes'})+'</div>');
   const pw=photoPicker(null,false,null,{required:true}); body.appendChild(pw);
   const foot=el('<div class="sheet-foot"></div>'); const btn=el(`<button class="btn primary block">${esc(t('btn_visit'))}</button>`);
-  btn.onclick=async()=>{ const v=readFields(body,f); if(!v.branch){ needFill(['branch'], v); return; } btn.disabled=true; btn.textContent=t('clock_geo_getting');
+  btn.onclick=async()=>{ const v=readFields(body,f); if(!v.branch){ needFill(['branch'], v); return; } if(v.cash && !(Number(v.cash) >= 0)){ needFill(['cash'], v); return; } btn.disabled=true; btn.textContent=t('clock_geo_getting');
     const rec=Object.assign({employeeId:e.id, employeeName:e.name, branch:v.branch, docs:v.docs, supplies:(v.supplies||'').trim(), cash:v.cash?Number(v.cash):0, note:(v.note||'').trim(), createdAt:new Date().toISOString()}, await visitGeo(v.branch));
     const p=pw.getPhoto(); if(p) rec.photo=p;
     { const dup = rvDupOf(rec, S.runnerVisits);
