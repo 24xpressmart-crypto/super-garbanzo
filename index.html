@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-24.261';
+const APP_BUILD = '2026-10-25.262';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -1938,10 +1938,20 @@ function makeBrowserDownloads(){
 }
 
 /* ============================ BOOTSTRAP ============================ */
+// review 23 Oct: the database library is a separate file; on a bad connection it sometimes fails to arrive and the App could not start. Ask for the same file again (same address, same checksum), up to 2 times.
+function loadDbLib(){ return new Promise(res => { try{
+  const old = document.querySelector('script[src*="supabase-js"]');
+  if(!old){ res(false); return; }   // the page's own script tag gives the address and checksum
+  const s = document.createElement('script');
+  s.src = old.getAttribute('src') + (String(old.getAttribute('src')).includes('?') ? '&' : '?') + 'r=' + Date.now();
+  if(old.integrity) s.integrity = old.integrity;
+  s.onload = () => res(true); s.onerror = () => res(false); document.head.appendChild(s);
+}catch(e){ res(false); } }); }
 async function boot(){
   tickClock();
   setInterval(tickClock, 30000);
   renderApp();
+  for(let tries = 0; tries < 2 && !(window.supabase && window.supabase.createClient); tries++){ await loadDbLib(); }
   if(!window.supabase || !window.supabase.createClient){ S.dbState='unavailable'; renderApp(); logClientError('js_error', 'database library not loaded', navigator.userAgent); setTimeout(flushClientErrors, 2000); return; }
   const tok=LS.get('bgc_token');
   if(tok && tokenValid(tok)){ S.token=tok; } else { LS.remove('bgc_token'); S.token=null; }
