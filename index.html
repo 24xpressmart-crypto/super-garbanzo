@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-26.272';
+const APP_BUILD = '2026-10-27.273';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -11501,6 +11501,7 @@ function receiptReadCard(branch, draft){
       tb.textContent = t('recv_total_far_again').split('{v}').join(v);
       toast(t('recv_total_far').split('{v}').join(v).split('{a}').join(aiMoney(aiT))); return; }
     const patch = {amount: v, amountConfirmed: v, amountConfirmedBy: currentEmployee().id, amountConfirmedAt: new Date().toISOString()};
+    { const tx = Number(R.tax); patch.paperTax = isFinite(tx) && tx > 0 ? tx.toFixed(2) : '0'; }   // 27 Oct: the SST printed on the paper, so lines + tax can be tied to the total (Gardenia XG00000725: 101.11 + 2.28 = 103.39)
     if(R.docKind === 'do' || R.docKind === 'invoice') patch.docKind = R.docKind;
     try{ await recvUpdate(draft.id, d=>Object.assign({}, patch, !d.docNo && R.docNo ? {docNo: R.docNo} : {}, !d.docDate && realDay(R.docDate) ? {docDate: R.docDate} : {})); toast(t('toast_saved')); }catch(err){ toast(recvErrMsg(err)); }
   };
