@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-10-27.275';
+const APP_BUILD = '2026-10-29.276';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -10713,8 +10713,11 @@ function listFilterApply(rows, f, g){
 function listFilterBar(c, rows, key, g, renderRows){
   const st = S._lf = S._lf || {}, f = st[key] = st[key] || {q: '', month: '', store: '', sort: ''};
   const klm = iso => { const ms = Date.parse(iso || ''); return isFinite(ms) ? new Date(ms + 8 * 3600e3).toISOString().slice(0, 7) : ''; };
-  const months = [...new Set(rows.map(r => klm(g.date(r))).concat(f.month ? [f.month] : []).filter(Boolean))].sort().reverse();
-  const stores = [...new Set(rows.map(r => String(g.store(r) || '').toUpperCase()).concat(f.store ? [f.store] : []).filter(Boolean))].sort();
+  // 29 Oct (Helen, Goods Received): a store or month picked in one tab (All) used to stay in the list and filter to nothing in another tab (Not checked), e.g. "VM" with no invoices. The choice is kept only while the rows still have it.
+  const months = [...new Set(rows.map(r => klm(g.date(r))).filter(Boolean))].sort().reverse();
+  const stores = [...new Set(rows.map(r => String(g.store(r) || '').toUpperCase()).filter(Boolean))].sort();
+  if(f.month && !months.includes(f.month)) f.month = '';
+  if(f.store && !stores.includes(String(f.store).toUpperCase())) f.store = '';
   const bar = el('<div style="display:flex; gap:6px; flex-wrap:wrap; margin:0 0 10px; align-items:center;"></div>');
   const q = el(`<input type="search" placeholder="${esc(t('lf_search'))}" value="${esc(f.q)}" style="flex:1; min-width:150px;">`);
   q.oninput = () => { f.q = q.value; paint(); };
