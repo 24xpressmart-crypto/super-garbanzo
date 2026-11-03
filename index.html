@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-02.279';
+const APP_BUILD = '2026-11-03.280';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -11493,7 +11493,11 @@ function sameUnit(a, b){ const u = x => { x = String(x || '').toUpperCase().repl
 // what the paper says arrived, in our unit, or null when the store has to count it without a hint
 function aiExpected(l, sku){
   const printed = (Number(l.qty)||0) + (Number(l.foc)||0);
-  if(sku.id === l.skuId && l.ourQty != null) return l.ourQty;
+  if(printed === 0 && Number(l.amount) > 0) return null;   // 3 Nov: a charged line read as qty 0 is a misread, not "nothing arrived"
+  // 3 Nov: a learned "1 piece per carton" (Quintmas 0.3 Ctn/Pk = 3 packs, learned as 1) is not trusted: it flagged every cigarette delivery as over and re-taught itself
+  const ctnOne = PACK_UNIT_RE.test(packUnit(l.uom)) && !PACK_UNIT_RE.test(packUnit(sku.unit)) && printed > 0 && l.ourQty != null && Number(l.ourQty) / printed <= 1;
+  if(sku.id === l.skuId && l.ourQty != null && !ctnOne) return l.ourQty;
+  if(ctnOne) return null;
   const litres = /KEG/i.test(l.uom || '') && isDraughtMug(sku) ? kegLitresOf(l.description) : null;
   if(litres) return printed * kegMugs(litres);
   if(!l.uom || sameUnit(l.uom, sku.unit)) return printed;
@@ -11609,7 +11613,7 @@ function receiptReadCard(branch, draft){
 /* patch 234: receive quantity checks. aiPackNeeded: the paper unit differs from ours, nothing converts it (not a keg), so the store must say the pieces in 1 unit.
    aiPackCheck: '' ok, 'need' empty or not a positive number, 'one' a carton-type unit of 1 piece. aiCountCheck: the count against what the paper says arrived. */
 const PACK_ALIAS = {CTNS:'CTN', CARTON:'CTN', CARTONS:'CTN', CASE:'CS', CASES:'CS', CRATE:'CRT', CRATES:'CRT', BOXES:'BOX', BX:'BOX', PKTS:'PKT', PACK:'PKT', PACKET:'PKT', PACKETS:'PKT'};
-function packUnit(x){ x = String(x || '').toUpperCase().replace(/[^A-Z]/g, ''); return PACK_ALIAS[x] || x; }
+function packUnit(x){ x = String(x || '').toUpperCase().replace(/[^A-Z]/g, ''); return PACK_ALIAS[x] || (/^CTN/.test(x) ? 'CTN' : x); }   // 3 Nov: 'Ctn/Pk', 'CTNPKT' are cartons
 const PACK_UNIT_RE = /^(CTN|CS|CRT|BOX)$/;   // a carton-type unit; a packet (PKT) of 1 piece is a real thing, so PKT is not refused
 // review 23 Oct: paper unit 'UNIT' counts as 'PC', so '1 UNIT  Plain Croissant (60/ctn)' booked 1 piece for a carton of 60 (F&B stock short on 6 receipts).
 // A carton marked in the description ('60/ctn', 'x24 ctn') must ask for pieces per carton even when the paper unit looks like a piece.
@@ -11745,8 +11749,9 @@ function openAiLineSheet(branch, draftId, l){
       const printed = (Number(l.qty)||0) + (Number(l.foc)||0);
       const sameU = !l.uom || sameUnit(l.uom, sku.unit);
       // what the paper says arrived, in our unit (the reader's conversion, a keg in mugs, or the printed count)
-      const noPaperQty = l.qty == null && !(sku.id === l.skuId && l.ourQty != null);   // the reader found no quantity: nothing to compare the count with
-      const expected = packV != null ? Math.round(printed * packV * 100) / 100 : (noPaperQty ? null : aiExpected(l, sku));
+      // the reader found no quantity, or read a charged line as 0 (3 Nov, Quintmas "0 CTN" RM 59.99): nothing to compare the count with
+      const noPaperQty = (printed === 0 && Number(l.amount) > 0) || (l.qty == null && !(sku.id === l.skuId && l.ourQty != null));
+      const expected = noPaperQty ? null : packV != null ? Math.round(printed * packV * 100) / 100 : aiExpected(l, sku);
       const isReturn = Number(a) < 0;   // a minus amount: the goods went back, the count is the returned pieces, no short / over question
       cc = isReturn ? {kind:'ok', diff:0} : aiCountCheck(q, expected);   // patch 234 items 2 and 3
       if(cc.kind === 'over' && overAsked !== q + '|' + expected){ overAsked = q + '|' + expected; toast(t('recv_over_ask').split('{p}').join(expected).split('{c}').join(q)); qty.querySelector('input').focus(); return; }
