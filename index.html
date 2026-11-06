@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-03.280';
+const APP_BUILD = '2026-11-06.281';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -1752,6 +1752,9 @@ function makeSupabaseDb(sb){
   // different order per request, so pages can skip or repeat rows. Display order comes from sortRows.
   async function fetchAll(collection, opts, select){
     const out=[]; let last=null; const page=1000;   // review 23 Oct: key-based paging (id > last) instead of offset - offset got slower with every page (skus: 11 pages, 8 s worst case)
+    // 5 Nov: the key (id) must be the ONLY server order while paging. With "order by createdAt, id" the next page "id > last" skipped ~39% of Oct attendance (2256 rows, 882 lost) -> payroll detail missed days. Sort by opts.order after all pages are in.
+    const sortKey = opts.order, sortDesc = opts.dir==='desc';
+    opts = Object.assign({}, opts, {order:null});
     while(true){
       let qy = buildQuery(collection, opts, select);
       if(last!==null) qy = qy.gt('id', last);
@@ -1762,6 +1765,8 @@ function makeSupabaseDb(sb){
       last = data[data.length-1].id;
       if(last==null) break;
     }
+    if(sortKey){ const g=r=>{ const d=r&&r.data; return d?d[sortKey]:undefined; };
+      out.sort((a,b)=>{ const x=g(a), y=g(b); const c = x==null ? (y==null?0:1) : y==null ? -1 : (x<y?-1:x>y?1:0); return sortDesc ? -c : c; }); }
     return out;
   }
   function matchFilters(row, filters){
