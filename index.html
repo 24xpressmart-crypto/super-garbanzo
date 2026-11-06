@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-06.281';
+const APP_BUILD = '2026-11-06.282';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -5561,7 +5561,7 @@ function adminSection(){
     [t('export_restock'),'restockLogs', S.restockLogs, ['deviceId','productId','type','deltaQty','qtyAfter','employeeName','note','createdAt']],
     [t('export_faults'),'faults', S.faults, ['deviceId','description','severity','status','employeeName','createdAt']],
     [t('export_inspections'),'inspections', S.inspections, ['deviceId','employeeName','issuesFound','note','createdAt']],
-    [t('export_leave'),'leaveRequests', S.leaveRequests, ['employeeName','type','startDate','endDate','reason','status']],
+    [t('export_leave'),'leaveRequests', S.leaveRequests, ['employeeName','type','kind','convertedFrom','half','startDate','endDate','reason','status']],
     [t('export_kegs'),'kegs', S.kegs, ['productId','batchNo','status','sizeLiters','remainingLiters','tapId','depositStatus','receivedDate','openedAt','emptiedAt']],
     [t('export_keg_logs'),'kegLogs', S.kegLogs, ['kegId','productId','type','deltaLiters','tapId','employeeName','note','createdAt']],
     [t('export_runner'),'runnerVisits', S.runnerVisits.map(v=>Object.assign({}, v, {cashFinal:effAmt('runnerVisits', v)})), ['employeeName','branch','docs','supplies','cash','cashFinal','distanceM','geoFlag','note','createdAt']],
