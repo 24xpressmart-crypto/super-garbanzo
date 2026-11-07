@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-07.286';
+const APP_BUILD = '2026-11-07.287';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -18487,7 +18487,7 @@ function runnerView(){
   if(bal && held && bal.since && bal.since<date) c.appendChild(el(`<div class="card card-tight" data-rc-warn style="border-color:var(--critical); color:var(--critical); margin-bottom:10px;">${esc(t('rc_held_warn').replace('{x}', money(hold)).replace('{d}', bal.since))}</div>`));
   if(!bal && runnerBalFailed(emp.id, date)) c.appendChild(el(`<div class="hint" style="margin-bottom:10px;">${esc(t('rc_bal_unavail'))}</div>`));
   if(isAdmin() && me.id!==emp.id){ const ab=el(`<button class="btn sm" style="margin-bottom:10px;">${esc(t('rc_btn_adjust'))}</button>`); ab.onclick=()=>openCashAdjustForm(emp, bal, date); c.appendChild(ab); }
-  if(isAdmin()){ const tb=el(`<button class="btn sm" style="margin:0 0 10px 8px;">🗺 ${esc(t('tl_btn'))}</button>`); tb.onclick=()=>openRunnerTimeline(emp, date); c.appendChild(tb); }
+  if(isAdmin() || (me && emp && me.id===emp.id)){ const tb=el(`<button class="btn sm" style="margin:0 0 10px 8px;">🗺 ${esc(t('tl_btn'))}</button>`); tb.onclick=()=>openRunnerTimeline(emp, date); c.appendChild(tb); }
   if(bal && over) c.appendChild(el(`<div class="card card-tight" style="border-color:var(--critical); color:var(--critical); margin-bottom:10px;">${esc(t('rc_over'))}</div>`));
   if(!isAdmin() || me.id===emp.id){
     const row=el('<div class="row" style="margin-bottom:12px;"></div>');
