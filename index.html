@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-08.288';
+const APP_BUILD = '2026-11-08.289';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -2745,6 +2745,13 @@ function geoPreState(geo, gi, radius){
   if(!gi || !gi.configured) return {k:'nocoords', weak, acc:geo.accuracy};
   return {k: gi.inRange ? 'ok' : 'far', dist: gi.distance, where: gi.branch || (gi.device && (gi.device.name || gi.device.id)) || '', weak, acc: geo.accuracy, radius};
 }
+// 8 Nov: the fix the clock screen got on opening, when the tap's own fix failed and that fix is a real one under 2 min old; else null
+function useScreenFix(tapGeo, pre, now){
+  if(tapGeo && !tapGeo.error) return null;
+  const g = pre && pre.g; if(!g || g.error || g.lat == null || g.lng == null) return null;
+  if(!(now - pre.at >= 0 && now - pre.at <= 120000)) return null;
+  return {lat: g.lat, lng: g.lng, accuracy: g.accuracy};
+}
 function geoPreBox(st, onRetry){
   const fill = (s, m) => s.replace(/\{([bmra])\}/g, (x, k) => m[k]);   // a function: a store name with "$&" stays as it is
   const zh = typeof S !== 'undefined' && S.lang === 'zh';
@@ -3462,13 +3469,19 @@ function clockView(){
     bigBtn.disabled=true;
     geoStatus.textContent=t('clock_geo_getting');
     let punched=false;
-    const geo = await getGeo();
+    const geo0 = await getGeo();
+    // 8 Nov (owner: "build location reuse"): when the tap's own fix fails, use the fix this screen got on opening if it is under
+    // 2 min old. SHAQAIB 1 Oct-7 Nov: 10 punches with no location, 9 of them clock-ins on arrival, each followed by a located
+    // clock-out from the same phone - the GPS needed more time, the permission was on. The punch is noted so HR can see it.
+    const reuse = useScreenFix(geo0, S.preGeo, Date.now());
+    const geo = reuse || geo0, geoNote = reuse ? 'geo_from_screen_open' : '';
+    if(reuse) logClientError('other', 'geo_reused', (geo0 && geo0.error) || '');
     const geoOk = geo && !geo.error;
     const branch = clockSel ? clockSel.value : defaultClockBranch();
     const bInfo = branchGeoInfo(geo, branch);
     const near = bInfo ? null : nearestDeviceInfo(geo);
     const photo = photoWrap.getPhoto();
-    const rec = {employeeId:e.id, employeeName:e.name, type:nextType, createdAt:new Date().toISOString(), note:''};
+    const rec = {employeeId:e.id, employeeName:e.name, type:nextType, createdAt:new Date().toISOString(), note:geoNote};
     if(geoOk) rec.geo=geo;
     if(branch){ rec.branch=branch; if(myBranch() && branch!==myBranch()) rec.cover=true; }
     if(bInfo){ rec.distanceM=bInfo.distance; rec.geoFlag=bInfo.inRange?'in_range':'out_of_range'; }
@@ -3485,7 +3498,7 @@ function clockView(){
           let sent = photo || '';
           if(photo){ const st = await storeOrKeep('selfies', e.id + '/' + todayStr().slice(0, 7), photo); sent = st.ref; photoPending = !!st.pending; }
           const args = {kind:nextType, branch:branch||'', lat:geoOk?geo.lat:null, lng:geoOk?geo.lng:null,
-                        accuracy:geoOk?geo.accuracy:null, photo:sent, note:''};
+                        accuracy:geoOk?geo.accuracy:null, photo:sent, note:geoNote};
           // 8 Nov (review): a missed clock-out request still waits, so the server still sees the old clock-in open and would refuse this
           // clock-in. Close it first with a "bridge" out; once the request is approved, payClean leaves the bridge out. Errors here are
           // ignored: the server then refuses the clock-in itself and the screen says to wait for the manager.
@@ -3521,7 +3534,8 @@ function clockView(){
     const gi = bInfo || (near&&near.configured ? near : null);
     geoStatus.textContent = '';
     if(!geoOk) logClientError('other', 'geo_' + ((geo && geo.error) || 'none'), branch || '');
-    S.preGeo = {g: geo, at: Date.now()}; if(S.preGeoShow) S.preGeoShow();   // 8 Nov: the location box (newest drawing) shows what this punch found
+    if(!reuse) S.preGeo = {g: geo, at: Date.now()};   // a reused fix keeps its own (older) time, so it is never reused twice
+    if(S.preGeoShow) S.preGeoShow();   // 8 Nov: the location box (newest drawing) shows what this punch found
   };
 
   // history / monthly report
@@ -6705,7 +6719,7 @@ function computePayrollDetail(){
         if(x.in&&!firstIn) firstIn=x.in; if(x.out) lastOut=x.out;
         if(x.in&&x.out){ raw+=(x.out-x.in)/60000; night+=payNightMinutes(x.in,x.out); if(x.out-x.in<15*60000) flags.push('tiny'); }   // 8 Nov: in and out within 15 min: probably a forgotten clock-in
         (x.fixes||[]).forEach(f=>flags.push(f));                                                                                       // 8 Nov: taps payClean() left out
-        (x.recs||[]).forEach(r=>{ (Array.isArray(r.flags)?r.flags:[]).forEach(f=>{ if(PAY_REC_FLAGS.includes(f)) flags.push(f); }); if(r.manual) flags.push('manual'); }); });
+        (x.recs||[]).forEach(r=>{ (Array.isArray(r.flags)?r.flags:[]).forEach(f=>{ if(PAY_REC_FLAGS.includes(f)) flags.push(f); }); if(r.manual) flags.push('manual'); if(r.note==='geo_from_screen_open') flags.push('geo_screen'); }); });   // 8 Nov: location from the screen opening, not the tap
       const brk = raw>=9*60 ? 60 : 0, net=raw-brk;
       let schedMin=null; if(sc){ const ss=toMin(sc.shiftStart), se=toMin(sc.shiftEnd); if(ss!=null&&se!=null){ schedMin=se-ss; if(schedMin<=0) schedMin+=1440; }
         if(ss!=null&&firstIn&&klMinOfDay(firstIn)>ss+grace) flags.push('late'); }
