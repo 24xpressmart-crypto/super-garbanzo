@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-13.293';
+const APP_BUILD = '2026-11-13.294';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -3403,7 +3403,7 @@ function homeView(){
     if(am.length){ const ac = el(`<div class="card" data-gc-amend style="border:2px solid var(--warn,#B5731A); cursor:pointer; margin-bottom:10px;"><div style="font-weight:900;">🛠 ${esc(t('gc_acc_n').split('{n}').join(String(am.length)))}</div></div>`);
       ac.onclick = () => openGcAmend(); c.appendChild(ac); } }
   if(labelsOn()){   // price labels (13 Nov 2026): every signed-in employee
-    const lc = el(`<div class="card" data-lbl-home style="border:2px solid var(--accent,#2E6F91); cursor:pointer; margin-bottom:10px;"><div style="font-weight:900;">🏷 ${esc(lt('title'))}</div><div style="font-size:13px;opacity:.75;">${esc(lt('sub'))}</div></div>`);
+    const lc = el(`<div class="card" data-lbl-home style="border:2px solid var(--accent,#2E6F91); cursor:pointer; margin-bottom:10px;"><div style="font-weight:900;">${esc(lt('title'))}</div><div style="font-size:13px;opacity:.75;">${esc(lt('sub'))}</div></div>`);
     lc.onclick = () => { S.tab = 'labels'; renderApp(); }; c.appendChild(lc); }
   if(!isAdmin() && !itemCreateOn() && promoOn()){   // patch 260: a maintainer who has only promotions switched on reaches the page from Home
     const pc = el(`<div class="card" style="border:2px solid var(--accent,#2E6F91); cursor:pointer; margin-bottom:10px;"><div style="font-weight:900;">🏷 ${esc(t('imv_title'))} · ${esc(t('promo_tab'))}</div></div>`);
@@ -9079,30 +9079,54 @@ module.exports = { checkDigit, normalize, modules, svg, decodeSvg, decodeBits };
 
  return module.exports; })();
 const LBL_RENDER = (function(){ const module = {exports:{}}; 
-// Shared label renderer v2 (13 Nov 2026): used by build_labels.js (PC) and by the Staff App label screen. No dependencies except ean.js.
-//   const R = require('./label_render')(E, {logo: dataUrl, printed: '13 NOV 26', test: true, mode: 'color'|'bw'});  R.page(size, labels, title)
-// v2 changes (owner: "enhance the design, compare top convenience-store label formats"): NIST SP 1181 (2025) four-block order (name+size / price / unit price / retailer),
-// size as a bold chip, unit price on a tinted band when the pack holds several pieces, deal end date inside the SAVE bar, darker small print (contrast), bigger barcode digits.
+// Shared label renderer v3 (13 Nov 2026, owner: "align design"): used by build_labels.js (PC) and by the Staff App label screen. Only dependency: ean.js.
+//   const R = require('./label_render')(E, {logo: dataUrl, printed: '13 NOV 26', test: true, mode: 'color'|'bw', catMap: {'20':'drinks'}});
+//   R.page(size, labels, title)   R.one(size, label, leftMm, topMm)   (one = a single .lab div, used for the App preview)
+// v3 follows the "24 Xpress Label Design System" (Claude Design): shelf-label anatomy = category stripe | logo column | description + flag | barcode + price | SKU line;
+// deal = whole label in promo yellow with a black flag and the logo on a white panel; WAS price struck through above the price; category stripe colour + caps word.
+// Known, deliberate differences: scannable EAN needs ~30mm so the price on the 70x38 label is 46pt (DS 'lg' 57pt); no picture column (no pictures exist yet);
+// B&W logo is a grayscale filter (the DS has no one-colour logo yet). Category colours stay OFF until the owner confirms the group map (O.catMap).
 (function (root, factory) { if (typeof module === 'object' && module.exports) module.exports = factory; else root.LabelRender = factory; })(this, function (E, O) {
 const MON = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const fmt = n => n.toFixed(2);
+const CATS = { grocery: ['#E06D12', 'GROCERY'], chilled: ['#0091D5', 'CHILLED'], frozen: ['#0079B3', 'FROZEN'], bakery: ['#F08C00', 'BAKERY'], drinks: ['#DE2008', 'DRINKS'], household: ['#5C534D', 'HOUSEHOLD'], fresh: ['#00875A', 'FRESH'] };
+const catOf = l => { const k = O.catMap && O.catMap[l.group]; return k && CATS[k] ? { key: k, color: CATS[k][0], word: CATS[k][1] } : null; };
 function priceHtml(p) { const [i, s] = fmt(p).split('.'); return `<span class="rm">RM</span><span class="int">${i}</span><span class="sen">.${s}</span>`; }
-function bcDigits(l) { const d = l.bc; return d.length === 13 ? `${d[0]} ${d.slice(1, 7)} ${d.slice(7)}` : `${d.slice(0, 4)} ${d.slice(4)}`; }
 const box = (x, y, w, h, cls, html, extra) => `<div class="${cls}" style="left:${x}mm;top:${y}mm;width:${w}mm;height:${h}mm;${extra || ''}">${html || ''}</div>`;
-const tag = l => `${l.code} · ${l.uom}${l.size && l.rate <= 1 ? ' · ' + l.size : ''} · ${O.printed}${O.test ? ' · TEST' : ''}`;
+const eanTxt = l => l.bc.length === 13 ? `${l.bc[0]} ${l.bc.slice(1, 7)} ${l.bc.slice(7)}` : `${l.bc.slice(0, 4)} ${l.bc.slice(4)}`;
+const bcDigits = eanTxt;
+const stamp = () => `${O.printed}${O.test ? ' · TEST' : ''}`;
 const unitLine = l => [l.size, l.rate > 1 ? '1 ' + l.uom + ' = ' + l.rate + ' ' + l.baseUom : l.uom].filter(Boolean).join(' · ');
-// the master often repeats the name in Chinese inside 【…】; the label keeps the English part (size words stay)
+// the master often repeats the name in Chinese inside 【…】; the label keeps the English part (size words stay). Multiplication shows as ×.
 const shortName = l => { const n = String(l.name).replace(/\s*【[^】]*】?\s*$/, '').trim(); return n || String(l.name); };
-const nameEl = l => esc(shortName(l));
-// long names shrink instead of losing the size words at the end
+// DS: sentence case for product copy, lowercase units ("330ml", "800g"), × for pack multiplication. The master is ALL CAPS, so: first word capitalised, the rest lowercase,
+// tokens with digits lowercased (3in1, 20g, 25's), known acronyms and brand tokens with & kept as they are (M&M'S). Proper nouns after the first word become lowercase (accepted).
+const ACRO = new Set(['UHT', 'USB', 'LED', 'BBQ', 'PET', 'DIY', 'TV', 'UV', 'XL', 'XXL', 'XS', 'SPF', 'CD', 'DVD', 'MSG', 'RTE', 'AA', 'AAA', 'PVC', 'OK', 'NFC']);
+function senCase(s) {
+  let first = true;
+  return String(s).split(' ').map(t => {
+    if (!t) return t;
+    if (/&/.test(t) || ACRO.has(t.replace(/[^A-Za-z]/g, ''))) { first = false; return t; }
+    if (/\d/.test(t)) return /^\d/.test(t) ? t.replace(/[A-Z]+/g, m => m.toLowerCase()) : t;
+    const low = t.toLowerCase();
+    if (first && /[a-z]/.test(low)) { first = false; return low.replace(/[a-z]/, c => c.toUpperCase()); }
+    return low;
+  }).join(' ');
+}
+const cleanName = l => senCase(shortName(l).replace(/(\w)\s+[xX]\s+(\d)/g, '$1 × $2').replace(/(\d[A-Za-z]*)[xX](\d)/g, '$1×$2'));
+const nameEl = l => esc(cleanName(l));
+const lowUnit = s => String(s == null ? '' : s).toLowerCase();
+// a very long name on a narrow deal label keeps its head and its LAST words (the size) and drops the middle
+const nameFit = (l, max) => { const n = cleanName(l); return esc(n.length <= max ? n : n.slice(0, max - 17).trimEnd() + ' … ' + n.slice(-14).trimStart()); };
 const nc = (l, a, b, c) => c && shortName(l).length > c ? ' sm3' : shortName(l).length > b ? ' sm2' : shortName(l).length > a ? ' sm1' : '';
-const chip = l => `<span class="chip">${esc(unitLine(l))}</span>`;
-// Unit price: ONLY where the pack count is certain. (a) the unit of sale holds several base units (UOM rate from AutoCount), (b) the name says so: "25'S", "x5", "6 x 330ML".
-// A wrong unit price is worse than none, so anything else shows nothing.
+const chip = l => `<span class="chip">${esc(lowUnit(unitLine(l)))}</span>`;
+// two short lines for the narrow logo column: size (or unit) / pack
+const chip2 = l => { const a = l.size || l.uom, b = l.rate > 1 ? '×' + l.rate + ' ' + String(l.baseUom).toLowerCase() : (l.size ? l.uom : ''); return `<span class="chip2"><b>${esc(lowUnit(a))}</b>${b ? `<i>${esc(lowUnit(b))}</i>` : ''}</span>`; };
+// Unit price: ONLY where the pack count is certain: (a) the unit of sale holds several base units (UOM rate), (b) the name says so: "25'S", "x5", "6 x 330ML".
 function packCount(l) {
   if (l.rate > 1 && l.rate <= 100) return { n: l.rate, word: /^(LOOSE|PCS|PC|PIECE)$/i.test(l.baseUom) ? 'pc' : String(l.baseUom).toLowerCase() };
-  if (/^(LOOSE|PCS|PIECE|STICK|SACHET|SINGLE)$/i.test(l.uom)) return null;   // a loose single already IS the per-piece price, whatever the pack name says
+  if (/^(LOOSE|PCS|PIECE|STICK|SACHET|SINGLE)$/i.test(l.uom)) return null;   // a loose single already IS the per-piece price
   const nm = shortName(l).toUpperCase(); let m;
   if ((m = nm.match(/\b(\d{1,2})\s*['’]?S\b/)) || (m = nm.match(/\b\d+(?:\.\d+)?\s*(?:G|ML|KG|L)\s*X\s*(\d{1,2})\b/)) || (m = nm.match(/\b(\d{1,2})\s*X\s*\d+(?:\.\d+)?\s*(?:G|ML|KG|L)\b/))) { const n = +m[1]; if (n >= 2 && n <= 48) return { n, word: 'pc' }; }
   return null;
@@ -9110,48 +9134,54 @@ function packCount(l) {
 function unitPrice(l) { const p = packCount(l); if (!p || !(l.price > 0)) return null; return `RM${fmt(l.price / p.n)} / ${p.word}`; }
 const unitBand = (l, x, y, w, h, cls) => { const u = unitPrice(l); return u ? box(x, y, w, h, 'unit mono ' + cls, esc(u)) : ''; };
 const promoWords = l => l.promo.qty > 1 ? `${l.promo.qty} FOR` : 'NOW';
-const promoSub = l => l.promo.qty > 1 ? `RM${fmt(l.promo.unit)} each (was ${fmt(l.price)})` : `was RM${fmt(l.price)}`;
+const wasHtml = l => `WAS <s>RM${fmt(l.promo.was)}</s>`;                        // DS: "WAS" caps + struck price, above the price
+const eachTxt = l => l.promo.qty > 1 ? `RM${fmt(l.promo.unit)} / ${/^(LOOSE|PCS|PC|PIECE)$/i.test(l.uom) ? 'pc' : lowUnit(l.uom)}` : '';   // DS: "RM2.15 / can", never "each"
 const endTxt = l => l.promo.to ? ` · UNTIL ${+l.promo.to.slice(8)} ${MON[+l.promo.to.slice(5, 7) - 1]}` : '';
 const saveTxt = l => `SAVE RM${fmt(l.promo.save)}${endTxt(l)}`;
+const stripe = (w, h, l, wordCls) => { const c = catOf(l); return box(0, 0, w, h, 'stripe' + (c ? ' vword ' + wordCls : ''), c ? c.word : '', `background:${c ? c.color : '#2A211D'}`); };
+const logoBox = (x, y, w, h, P) => box(x, y, w, h, 'logo' + (P ? ' panel' : ''), '');
 
 const LAYOUT = {
   S: { w: 70, h: 38, per: { cols: 3, rows: 7, top: 15.5 }, html(l) {
-    const P = l.promo, stripe = P ? '#FFD100' : '#2A211D', bc = E.svg(l.bc);
-    return box(0, 0, 2, 38, 'stripe', '', `background:${stripe}`)
-      + box(3.8, 1.8, 47, 8.6, 'name s-name' + nc(l, 50, 62), nameEl(l))
-      + box(55.5, 1.6, 12, 8.6, 'logo', '')
-      + box(3.8, 10.7, 31, 3.4, 'chipbox s-chip', chip(l))
-      + box(3.8, 14.8, 31.5, 11.2, 'barcode', bc)
-      + box(3.8, 26.1, 31.5, 3.4, 'mono s-bcnum', bcDigits(l))
-      + (P ? box(36, 10.8, 31.5, 3.8, 'flag s-flag', promoWords(l)) + box(36, 14.2, 31.5, 11.2, 'price s-price promo', priceHtml(P.total)) + box(36, 25.6, 31.5, 3, 'mono s-sub', promoSub(l)) + box(36, 28.9, 31.5, 4, 'save s-save', saveTxt(l))
-        : box(35.5, 10.6, 32, 15.4, 'price s-price', priceHtml(l.price)) + unitBand(l, 40.5, 26.9, 27, 4.2, 's-unit'))
-      + box(3.8, 33.5, 63.5, 3, 'mono s-tag', tag(l));
+    // DS safe area 3mm: nothing but the category stripe closer than 3mm to an edge (top 3, bottom 35, right 67)
+    const P = l.promo, c = catOf(l), sw = c ? 4.6 : 2.6, lcx = sw + 1.2, mcx = lcx + 13.8, mce = 67, mcw = mce - mcx;
+    return stripe(sw, 38, l, 's-vw')
+      + logoBox(lcx, 3, 12.6, 9, P)
+      + box(lcx, 13, 12.6, 7, 'chipbox2', chip2(l))
+      + box(mcx, 3, P ? mcw - 17.5 : mcw, 6.6, 'name s-name' + (P ? nc(l, 28, 40) : nc(l, 50, 62)), P ? nameFit(l, 60) : nameEl(l))
+      + (P ? box(mce - 16.5, 3, 16.5, 4, 'flag s-flag', promoWords(l))
+           + box(mce - 30, 8.6, 30, 3, 'was s-was', wasHtml(l))
+           + box(mcx, 12.2, mcw, 11.4, 'price s-price promo', priceHtml(P.total))
+           + (eachTxt(l) ? box(mcx, 14.8, 13.5, 3, 'mono s-each', eachTxt(l)) : '')
+           + box(37.5, 25.2, mce - 37.5, 4.2, 'save s-save', saveTxt(l))
+         : box(mcx, 9.4, mcw, 14.2, 'price s-price', priceHtml(l.price)) + unitBand(l, mce - 23, 25.4, 23, 4, 's-unit'))
+      + box(sw + 0.2, 24.6, 29.8, 7.6, 'barcode', E.svg(l.bc))
+      + box(lcx, 32.4, mce - lcx, 2.6, 'mono s-tag', `SKU ${l.code} · EAN ${eanTxt(l)} · ${stamp()}`);
   } },
   M: { w: 105, h: 74, per: { cols: 2, rows: 3, top: 37 }, html(l) {
-    const P = l.promo, stripe = P ? '#FFD100' : '#2A211D', bc = E.svg(l.bc);
-    return box(0, 0, 3, 74, 'stripe', '', `background:${stripe}`)
-      + (P ? box(6, 3.5, 68, 10.5, 'flag m-flag', 'XPRESS DEAL · ' + promoWords(l)) : '')
-      + box(6, P ? 16 : 4.5, 71, 14.5, 'name m-name' + nc(l, 34, 62, 78), nameEl(l))
-      + box(80, 3, 21, 15, 'logo', '')
-      + box(6, P ? 31.5 : 21, 42, 6, 'chipbox m-chip', chip(l))
-      + box(6, 40.5, 44, 17.5, 'barcode', bc)
-      + box(6, 58.3, 44, 5, 'mono m-bcnum', bcDigits(l))
-      + (P ? box(48, 28.5, 53, 22, 'price m-price promo', priceHtml(P.total)) + box(48, 51, 53, 4.5, 'mono m-sub', promoSub(l)) + box(48, 56, 53, 7, 'save m-save', saveTxt(l))
-        : box(48, 30, 53, 26, 'price m-price', priceHtml(l.price)) + unitBand(l, 60, 57.5, 41, 6.2, 'm-unit'))
-      + box(6, 67.6, 95, 4, 'mono m-tag', tag(l));
+    const P = l.promo, c = catOf(l), sw = c ? 7 : 3.5;
+    return stripe(sw, 74, l, 'm-vw')
+      + (P ? box(sw + 2.5, 3.5, 60, 9, 'flag m-flag', 'XPRESS DEAL · ' + promoWords(l)) : '')
+      + logoBox(81, 3, 21, 15.4, P)
+      + box(sw + 2.5, P ? 15 : 4.5, 70, 14.5, 'name m-name' + nc(l, 34, 62, 78), nameEl(l))
+      + box(sw + 2.5, P ? 31.5 : 21, 42, 6, 'chipbox m-chip', chip(l))
+      + box(sw + 0.2, 40.5, 44, 17.5, 'barcode', E.svg(l.bc))
+      + (P ? box(52, 26.5, 49, 5, 'was m-was', wasHtml(l)) + box(48, 31, 53, 21, 'price m-price promo', priceHtml(P.total)) + (eachTxt(l) ? box(48, 52.2, 53, 4.2, 'mono m-each', eachTxt(l)) : '') + box(48, 57, 53, 7, 'save m-save', saveTxt(l))
+         : box(48, 30, 53, 26, 'price m-price', priceHtml(l.price)) + unitBand(l, 60, 57.5, 41, 6.2, 'm-unit'))
+      + box(sw + 2.5, 66.8, 98 - sw, 4, 'mono m-tag', `SKU ${l.code} · EAN ${eanTxt(l)} · ${stamp()}`);
   } },
   L: { w: 210, h: 297, per: { cols: 1, rows: 1, top: 0 }, html(l) {
-    const P = l.promo, stripe = P ? '#FFD100' : '#2A211D', bc = E.svg(l.bc);
-    return box(0, 0, 8, 297, 'stripe', '', `background:${stripe}`)
-      + (P ? box(16, 14, 130, 30, 'flag l-flag', 'XPRESS DEAL') : '')
-      + box(155, 12, 45, 33, 'logo', '')
-      + box(16, 54, 184, 56, 'name l-name' + nc(l, 36, 52, 78), nameEl(l))
-      + box(16, 112, 120, 14, 'chipbox l-chip', chip(l))
-      + (P ? box(16, 130, 184, 22, 'l-flag2 flag', promoWords(l)) + box(16, 150, 184, 74, 'price l-price promo', priceHtml(P.total)) + box(16, 226, 184, 12, 'mono l-sub', promoSub(l)) + box(16, 240, 184, 16, 'save l-save', saveTxt(l))
-        : box(16, 134, 184, 96, 'price l-price', priceHtml(l.price)) + unitBand(l, 96, 233, 104, 16, 'l-unit'))
-      + box(130, 262, 65, 20, 'barcode', bc)
+    const P = l.promo, c = catOf(l), sw = c ? 14 : 8;
+    return stripe(sw, 297, l, 'l-vw')
+      + (P ? box(sw + 8, 14, 130, 30, 'flag l-flag', 'XPRESS DEAL') : '')
+      + logoBox(155, 12, 45, 33, P)
+      + box(sw + 8, 54, 184 - (sw - 8), 56, 'name l-name' + nc(l, 36, 52, 78), nameEl(l))
+      + box(sw + 8, 112, 120, 14, 'chipbox l-chip', chip(l))
+      + (P ? box(sw + 8, 130, 184, 22, 'l-flag2 flag', promoWords(l)) + box(120, 152, 80, 14, 'was l-was', wasHtml(l)) + box(sw + 8, 164, 184 - (sw - 8), 66, 'price l-price promo', priceHtml(P.total)) + (eachTxt(l) ? box(sw + 8, 232, 184, 10, 'mono l-each', eachTxt(l)) : '') + box(sw + 8, 242, 184 - (sw - 8), 16, 'save l-save', saveTxt(l))
+         : box(sw + 8, 134, 184 - (sw - 8), 96, 'price l-price', priceHtml(l.price)) + unitBand(l, 96, 233, 104, 16, 'l-unit'))
+      + box(130, 262, 65, 20, 'barcode', E.svg(l.bc))
       + box(130, 282.4, 65, 6, 'mono l-bcnum', bcDigits(l))
-      + box(16, 283, 110, 5, 'mono l-tag', tag(l));
+      + box(sw + 8, 283, 110, 5, 'mono l-tag', `SKU ${l.code} · ${stamp()}`);
   } },
 };
 
@@ -9164,43 +9194,54 @@ body{font-family:'Archivo','Arial Narrow',Arial,sans-serif;color:#14100E;-webkit
 .sheet:last-child{page-break-after:auto}
 .hdr{position:absolute;left:6mm;top:5mm;right:6mm;font:500 7pt 'IBM Plex Mono',Consolas,monospace;color:#3A322D}
 .lab{position:absolute;background:#fff;border:.2mm solid #BDB7B2;overflow:hidden}
+.lab.deal{background:#FFD100}
 .lab>div{position:absolute;overflow:hidden}
 .name{font-weight:700;line-height:1.08;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;text-transform:none}
 .logo{background:url(${O.logo}) right top/contain no-repeat}
+.logo.panel{background-color:#fff;background-position:center;background-size:86%}
 .barcode svg{width:100%;height:100%;display:block}
 .mono{font-family:'IBM Plex Mono',Consolas,monospace;color:#14100E;white-space:nowrap}
+.vword{writing-mode:vertical-rl;transform:rotate(180deg);color:#fff;font-weight:700;letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;justify-content:center;text-align:center}
 .chipbox{display:flex;align-items:center;white-space:nowrap}
-.chip{background:#EBE7E4;color:#14100E;font-weight:700;letter-spacing:.03em;padding:0 1.6mm;height:100%;display:inline-flex;align-items:center;text-transform:uppercase}
+.chip{background:#EBE7E4;color:#14100E;font-weight:700;letter-spacing:.03em;padding:0 1.6mm;height:100%;display:inline-flex;align-items:center}
+.chipbox2{display:flex}
+.chip2{background:#EBE7E4;color:#14100E;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:6.3pt;line-height:1.15;text-align:center;overflow:hidden}
+.chip2 b{font-weight:700}.chip2 i{font-style:normal;font-weight:600;font-size:5.6pt}
 .unit{background:#EBE7E4;color:#14100E;font-weight:600;display:flex;align-items:center;justify-content:center}
+.deal .chip,.deal .chip2,.deal .unit{background:#fff}
 .price{font-family:'Barlow Condensed','Bahnschrift Condensed','Arial Narrow',sans-serif;font-weight:700;letter-spacing:-.02em;line-height:.82;white-space:nowrap;text-align:right;color:#14100E}
 .price .rm{font-size:.42em;vertical-align:top;position:relative;top:.06em;margin-right:.1em}
 .price .sen{font-size:.46em;vertical-align:top;position:relative;top:.04em}
-.flag{background:#FFD100;color:#14100E;font-weight:700;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;display:flex;align-items:center;padding-left:1.2mm}
+.was{font-weight:700;letter-spacing:.08em;color:#463E39;text-align:right;white-space:nowrap}
+.was s{text-decoration:line-through;text-decoration-thickness:.2mm}
+.flag{background:#14100E;color:#fff;font-weight:700;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;display:flex;align-items:center;justify-content:center}
 .save{background:#14100E;color:#FFD100;font-weight:700;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap;display:flex;align-items:center;justify-content:center}
 /* S 70x38 */
-.s-name{font-size:8pt}.s-flag{font-size:7pt;justify-content:flex-end;padding-right:1.2mm}.s-price{font-size:40pt}.s-price.promo{font-size:31pt}
-.s-chip{font-size:6.6pt}.s-bcnum{font-size:6.4pt;letter-spacing:.12em}.s-tag{font-size:5.4pt;color:#3A322D}.s-sub{font-size:5.4pt;color:#2C2622;text-align:right;justify-content:flex-end}.s-save{font-size:5.9pt}.s-unit{font-size:6.6pt}
+.s-name{font-size:8pt}.s-flag{font-size:6.6pt}.s-price{font-size:46pt}.s-price.promo{font-size:38pt}.s-was{font-size:5.6pt}.s-each{font-size:5.4pt}
+.s-tag{font-size:5.2pt;color:#3A322D}.s-save{font-size:5.6pt}.s-unit{font-size:6.6pt}.s-vw{font-size:5.4pt}
 /* M 105x74 */
-.m-name{font-size:15pt}.m-flag{font-size:13pt}.m-price{font-size:78pt}.m-price.promo{font-size:62pt}
-.m-chip{font-size:9.5pt}.m-bcnum{font-size:9pt;letter-spacing:.12em}.m-tag{font-size:7pt;color:#3A322D}.m-sub{font-size:8pt;color:#2C2622;text-align:right}.m-save{font-size:10.5pt}.m-unit{font-size:10pt}
+.m-name{font-size:15pt}.m-flag{font-size:13pt}.m-price{font-size:78pt}.m-price.promo{font-size:60pt}.m-was{font-size:9pt}.m-each{font-size:8pt;text-align:right}
+.m-chip{font-size:9.5pt}.m-tag{font-size:6.6pt;color:#3A322D}.m-save{font-size:10.5pt}.m-unit{font-size:10pt}.m-vw{font-size:7pt}
 .s-name.sm1{font-size:7pt}.s-name.sm2{font-size:6pt}.l-name.sm3{font-size:24pt;-webkit-line-clamp:4;max-height:4.4em}.m-name.sm3{font-size:8.5pt;-webkit-line-clamp:4;max-height:4.4em}.name{max-height:2.2em}.name.sm1,.name.sm2{-webkit-line-clamp:3;max-height:3.3em}.m-name.sm1{font-size:12.5pt}.m-name.sm2{font-size:9.5pt}.l-name.sm1{font-size:34pt}.l-name.sm2{font-size:27pt}
 /* L A4 */
-.l-name{font-size:42pt}.l-flag{font-size:30pt}.l-flag2{font-size:34pt}.l-price{font-size:250pt}.l-price.promo{font-size:200pt}
-.l-chip{font-size:20pt}.l-bcnum{font-size:14pt;letter-spacing:.14em}.l-tag{font-size:10pt;color:#3A322D}.l-sub{font-size:16pt;color:#2C2622;text-align:right}.l-save{font-size:24pt}.l-unit{font-size:22pt}
+.l-name{font-size:42pt}.l-flag{font-size:30pt}.l-flag2{font-size:34pt;justify-content:flex-start;padding-left:3mm}.l-price{font-size:250pt}.l-price.promo{font-size:190pt}.l-was{font-size:18pt}.l-each{font-size:16pt;text-align:right}
+.l-chip{font-size:20pt}.l-bcnum{font-size:14pt;letter-spacing:.14em}.l-tag{font-size:10pt;color:#3A322D}.l-save{font-size:24pt}.l-unit{font-size:22pt}.l-vw{font-size:12pt}
 `;
-const BW = '.bw .flag{background:#fff!important;color:#000!important;border:.5mm solid #000}.bw .save{background:#000!important;color:#fff!important}.bw .stripe{background:#000!important}.bw .logo{filter:grayscale(1) contrast(1.7)}.bw .price,.bw .name,.bw .mono{color:#000!important}.bw .lab{border-color:#000}.bw .chip,.bw .unit{background:#fff!important;border:.3mm solid #000;color:#000!important}';
+// black and white: the deal field becomes white with a heavy black frame; flag and SAVE bar stay black; chips get outlines
+const BW = '.bw .lab.deal{background:#fff;border:.7mm solid #000}.bw .flag,.bw .save{background:#000!important;color:#fff!important}.bw .stripe{background:#000!important}.bw .logo{filter:grayscale(1) contrast(1.7)}.bw .price,.bw .name,.bw .mono,.bw .was{color:#000!important}.bw .lab{border-color:#000}.bw .chip,.bw .chip2,.bw .unit{background:#fff!important;border:.3mm solid #000;color:#000!important}';
 const FONTS = `<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Archivo:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">`;
 
+const one = (size, l, x, y) => { const S = LAYOUT[size]; return `<div class="lab${l.promo ? ' deal' : ''}" style="left:${x}mm;top:${y}mm;width:${S.w}mm;height:${S.h}mm">${S.html(l)}</div>`; };
 function sheets(size, labels, title) {
   const S = LAYOUT[size], per = S.per.cols * S.per.rows, pages = [];
   for (let i = 0; i < labels.length; i += per) pages.push(labels.slice(i, i + per));
   return pages.map((pg, pi) => `<div class="sheet${O.mode === 'bw' ? ' bw' : ''}">${size === 'L' ? '' : `<div class="hdr">${esc(title)} · size ${size} · page ${pi + 1}/${pages.length}${O.test ? ' · TEST PACK - NOT FOR SHELF' : ''}</div>`}`
-    + pg.map((l, k) => { const c = k % S.per.cols, r = Math.floor(k / S.per.cols); return `<div class="lab" style="left:${c * S.w}mm;top:${S.per.top + r * S.h}mm;width:${S.w}mm;height:${S.h}mm">${S.html(l)}</div>`; }).join('')
+    + pg.map((l, k) => one(size, l, (k % S.per.cols) * S.w, S.per.top + Math.floor(k / S.per.cols) * S.h)).join('')
     + `</div>`).join('');
 }
 function page(size, labels, title) { return `<!doctype html><html><head><meta charset="utf-8"><title>${esc(title)} ${size}</title>${FONTS}<style>${CSS()}${BW}</style></head><body>${sheets(size, labels, title)}</body></html>`; }
 
-return { LAYOUT, CSS, FONTS, sheets, page, unitPrice, packCount, O };
+return { LAYOUT, CSS, BW, FONTS, sheets, page, one, unitPrice, packCount, CATS, O };
 });
 
  return module.exports; })();
@@ -9216,7 +9257,8 @@ function lblWhy(code){ if(!code) return ''; if(/^BARCODE_LENGTH_/.test(code)) re
 function labelsOn(){ return S.settings && S.settings.labelsOn === 'yes'; }
 function lblState(){ if(!S.lbl) S.lbl = {outlet:null, q:'', res:[], cart:[], size:'S', mode:'color', status:null, busy:false, err:null, seq:0}; return S.lbl; }
 function lblOutlet(){ const L = lblState(); if(isAdmin()) return L.outlet || String(myBranch() || 'BR19').toUpperCase(); return String(myBranch() || '').toUpperCase(); }
-function lblRender(mode){ return LBL_RENDER(LBL_EAN, {logo: LBL_LOGO, printed: lblPrinted(), test: false, mode: mode || 'color'}); }
+const LBL_CATMAP = {};   // item group -> design-system category (grocery/chilled/frozen/bakery/drinks/household/fresh). EMPTY until the owner confirms the map: then labels get coloured stripes.
+function lblRender(mode){ return LBL_RENDER(LBL_EAN, {logo: LBL_LOGO, printed: lblPrinted(), test: false, mode: mode || 'color', catMap: LBL_CATMAP}); }
 function lblPrinted(){ const k = new Date(Date.now() + 8 * 3600e3), M = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']; return k.getUTCDate() + ' ' + M[k.getUTCMonth()] + ' ' + String(k.getUTCFullYear()).slice(2); }
 const lblR2 = n => Math.round(n * 100) / 100;
 // a server row -> the label record the renderer draws; returns {label} or {block:'REASON'}; every check is done again here, the server is not trusted blindly
@@ -9236,13 +9278,13 @@ function lblMake(r, useDeal){
 function lblFresh(){ const st = lblState().status; if(!st || !st.master_at) return {h: null, cls: 'bad'}; const h = (Date.now() - Date.parse(st.master_at)) / 3600e3; return {h, cls: h > 72 ? 'bad' : h > 36 ? 'warn' : 'ok'}; }
 function lblPreviewDoc(label, size, mode){
   const R = lblRender(mode), G = R.LAYOUT[size];
-  return '<!doctype html><html><head><meta charset="utf-8">' + R.FONTS + '<style>' + R.CSS() + 'body{margin:0;background:#fff}.sheet{width:' + G.w + 'mm;height:' + G.h + 'mm;page-break-after:auto}</style></head><body><div class="sheet' + (mode === 'bw' ? ' bw' : '') + '"><div class="lab" style="left:0;top:0;width:' + G.w + 'mm;height:' + G.h + 'mm">' + G.html(label) + '</div></div></body></html>';
+  return '<!doctype html><html><head><meta charset="utf-8">' + R.FONTS + '<style>' + R.CSS() + 'body{margin:0;background:#fff}.sheet{width:' + G.w + 'mm;height:' + G.h + 'mm;page-break-after:auto}</style></head><body><div class="sheet' + (mode === 'bw' ? ' bw' : '') + '">' + R.one(size, label, 0, 0) + '</div></body></html>';
 }
 function labelsView(){
   const L = lblState(), c = el('<div></div>');
   if(!labelsOn()){ c.appendChild(el('<div class="empty"><div>' + esc(lt('off')) + '</div></div>')); return c; }
   const outlet = lblOutlet();
-  c.appendChild(el('<div style="font-weight:900;font-size:18px;margin:2px 0 2px;">🏷 ' + esc(lt('title')) + '</div>'));
+  c.appendChild(el('<div style="font-weight:900;font-size:18px;margin:2px 0 2px;">' + esc(lt('title')) + '</div>'));
   c.appendChild(el('<div style="opacity:.7;margin-bottom:10px;">' + esc(lt('sub')) + '</div>'));
   const head = el('<div class="card" style="margin-bottom:10px;"></div>'); c.appendChild(head);
   const sel = isAdmin() ? '<select data-o style="margin-left:8px;">' + branchList().map(b => '<option' + (b.toUpperCase() === outlet ? ' selected' : '') + '>' + esc(b.toUpperCase()) + '</option>').join('') + '</select>' : '<b style="margin-left:8px;">' + esc(outlet || '?') + '</b>';
@@ -9272,7 +9314,7 @@ function labelsView(){
     L.res.forEach(r => {
       const mk = lblMake(r, true), blk = mk.block || null, deal = !blk && mk.label && mk.label.promo;
       const price = '<b style="font-size:18px;">RM' + (+r.price || 0).toFixed(2) + '</b>' + (deal ? ' <span style="background:#FFD100;color:#14100E;font-weight:800;padding:1px 6px;font-size:12px;">' + esc(deal.qty > 1 ? deal.qty + ' FOR RM' + deal.total.toFixed(2) : 'NOW RM' + deal.total.toFixed(2)) + '</span>' : '');
-      const row = el('<div class="card" style="margin-bottom:6px;display:flex;gap:10px;align-items:center;' + (blk ? 'opacity:.75;' : '') + '"><div style="flex:1;min-width:0;"><div style="font-weight:700;overflow:hidden;text-overflow:ellipsis;">' + esc(r.name) + '</div><div style="font-size:12px;opacity:.7;">' + esc(r.item_code) + ' · ' + esc(r.uom) + (+r.rate > 1 ? ' (1=' + (+r.rate) + ' ' + esc(r.base_uom || '') + ')' : '') + ' · ' + esc(r.barcode || '—') + '</div>' + (blk ? '<div style="color:var(--bad,#C1392B);font-weight:700;font-size:13px;">⛔ ' + esc(lt('blocked')) + ': ' + esc(lblWhy(blk)) + '</div>' : '') + '</div><div style="text-align:right;">' + price + '</div></div>');
+      const row = el('<div class="card" style="margin-bottom:6px;display:flex;gap:10px;align-items:center;' + (blk ? 'opacity:.75;' : '') + '"><div style="flex:1;min-width:0;"><div style="font-weight:700;overflow:hidden;text-overflow:ellipsis;">' + esc(r.name) + '</div><div style="font-size:12px;opacity:.7;">' + esc(r.item_code) + ' · ' + esc(r.uom) + (+r.rate > 1 ? ' (1=' + (+r.rate) + ' ' + esc(r.base_uom || '') + ')' : '') + ' · ' + esc(r.barcode || '—') + '</div>' + (blk ? '<div style="color:var(--bad,#C1392B);font-weight:700;font-size:13px;">' + esc(lt('blocked')) + ': ' + esc(lblWhy(blk)) + '</div>' : '') + '</div><div style="text-align:right;">' + price + '</div></div>');
       if(!blk){ const b = el('<button class="btn sm primary">' + esc(lt('add')) + '</button>'); b.onclick = () => { addRow(r); }; row.appendChild(b); }
       list.appendChild(row);
     });
@@ -9290,7 +9332,7 @@ function labelsView(){
     if(!L.cart.length){ cartBox.appendChild(el('<div style="opacity:.7;">' + esc(lt('empty')) + '</div>')); return; }
     L.cart.forEach((x, i) => {
       const hasDeal = x.row.promo_qty != null && !x.row.promo_block;
-      const ln = el('<div class="row" style="align-items:center;"><div style="flex:1;min-width:0;"><div style="font-weight:700;">' + esc(x.row.name) + '</div><div style="font-size:12px;opacity:.7;">' + esc(x.row.item_code) + ' · RM' + (+x.row.price).toFixed(2) + '</div>' + (hasDeal ? '<label style="font-size:12px;"><input type="checkbox" data-d' + (x.deal ? ' checked' : '') + '> ' + esc(lt('deal')) + '</label>' : '') + '</div><div><button class="btn sm" data-m>−</button> <b data-n style="display:inline-block;min-width:24px;text-align:center;">' + x.copies + '</b> <button class="btn sm" data-p>+</button></div><button class="btn sm" data-x aria-label="' + esc(lt('remove')) + '">✕</button></div>');
+      const ln = el('<div class="row" style="align-items:center;"><div style="flex:1;min-width:0;"><div style="font-weight:700;">' + esc(x.row.name) + '</div><div style="font-size:12px;opacity:.7;">' + esc(x.row.item_code) + ' · RM' + (+x.row.price).toFixed(2) + '</div>' + (hasDeal ? '<label style="font-size:12px;"><input type="checkbox" data-d' + (x.deal ? ' checked' : '') + '> ' + esc(lt('deal')) + '</label>' : '') + '</div><div><button class="btn sm" data-m>-</button> <b data-n style="display:inline-block;min-width:24px;text-align:center;">' + x.copies + '</b> <button class="btn sm" data-p>+</button></div><button class="btn sm" data-x>' + esc(lt('remove')) + '</button></div>');
       ln.querySelector('[data-m]').onclick = () => { x.copies = Math.max(1, x.copies - 1); drawCart(); drawPrev(); drawMake(); };
       ln.querySelector('[data-p]').onclick = () => { x.copies = Math.min(50, x.copies + 1); drawCart(); drawPrev(); drawMake(); };
       ln.querySelector('[data-x]').onclick = () => { L.cart.splice(i, 1); drawCart(); drawPrev(); drawMake(); };
@@ -9313,7 +9355,7 @@ function labelsView(){
   }
   function drawMake(){
     const f = lblFresh(), n = total(), ok = n > 0 && n <= 200 && f.cls !== 'bad' && !!outlet;
-    go.textContent = '🖨 ' + lt('make') + (n ? ' (' + n + ')' : ''); go.disabled = !ok; go.title = n > 200 ? lt('limitn') : '';
+    go.textContent = '' + lt('make') + (n ? ' (' + n + ')' : ''); go.disabled = !ok; go.title = n > 200 ? lt('limitn') : '';
   }
   async function search(immediate){
     const qq = L.q.trim(), my = ++L.seq; L.err = null;
@@ -9335,7 +9377,7 @@ function labelsView(){
     for(const x of L.cart){ const mk = lblMake(x.row, x.deal); if(mk.block){ if(w) w.close(); toast(lblWhy(mk.block)); return; } for(let i = 0; i < x.copies; i++) labels.push(mk.label); items.push({code: x.row.item_code, uom: x.row.uom, price: +x.row.price, deal: !!mk.label.promo, copies: x.copies}); }
     if(!labels.length || labels.length > 200 || lblFresh().cls === 'bad'){ if(w) w.close(); return; }
     let html = R.page(L.size, labels, outlet + ' · ' + lblPrinted());
-    const bar = '<style>@media print{.noprint{display:none!important}}.noprint{position:fixed;top:0;left:0;right:0;background:#2A211D;color:#fff;padding:8px 12px;font:14px Archivo,Arial,sans-serif;z-index:9}.noprint button{font-size:15px;padding:6px 14px;margin-right:10px}body{padding-top:46px}@media print{body{padding-top:0}}</style><div class="noprint"><button onclick="window.print()">🖨 Print / Save as PDF</button>' + esc(L.size === 'L' ? 'A4' : 'A4') + ' · ' + esc(L.mode === 'bw' ? lt('bw') : lt('colour')) + ' · ' + labels.length + '</div><script>window.addEventListener("load",function(){var go=function(){setTimeout(function(){window.print()},400)};if(document.fonts&&document.fonts.ready){Promise.race([document.fonts.ready,new Promise(function(r){setTimeout(r,4000)})]).then(go)}else go()});<\/script>';
+    const bar = '<style>@media print{.noprint{display:none!important}}.noprint{position:fixed;top:0;left:0;right:0;background:#2A211D;color:#fff;padding:8px 12px;font:14px Archivo,Arial,sans-serif;z-index:9}.noprint button{font-size:15px;padding:6px 14px;margin-right:10px}body{padding-top:46px}@media print{body{padding-top:0}}</style><div class="noprint"><button onclick="window.print()">Print / Save as PDF</button>' + esc(L.size === 'L' ? 'A4' : 'A4') + ' · ' + esc(L.mode === 'bw' ? lt('bw') : lt('colour')) + ' · ' + labels.length + '</div><script>window.addEventListener("load",function(){var go=function(){setTimeout(function(){window.print()},400)};if(document.fonts&&document.fonts.ready){Promise.race([document.fonts.ready,new Promise(function(r){setTimeout(r,4000)})]).then(go)}else go()});<\/script>';
     html = html.replace('</body>', bar + '</body>');
     if(w){ w.document.open(); w.document.write(html); w.document.close(); } else toast('Allow pop-ups to open the print page');
     accRpc('label_log', {p_outlet: outlet, p_size: L.size, p_mode: L.mode, p_items: items}).catch(() => {});      // audit; never blocks printing
