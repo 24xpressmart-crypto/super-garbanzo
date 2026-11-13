@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-13.292';
+const APP_BUILD = '2026-11-13.293';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -9079,64 +9079,78 @@ module.exports = { checkDigit, normalize, modules, svg, decodeSvg, decodeBits };
 
  return module.exports; })();
 const LBL_RENDER = (function(){ const module = {exports:{}}; 
-// Shared label renderer (TEST PACK 13 Nov 2026): used by build_labels.js (PC) and by the Staff App label screen. No dependencies except ean.js.
+// Shared label renderer v2 (13 Nov 2026): used by build_labels.js (PC) and by the Staff App label screen. No dependencies except ean.js.
 //   const R = require('./label_render')(E, {logo: dataUrl, printed: '13 NOV 26', test: true, mode: 'color'|'bw'});  R.page(size, labels, title)
+// v2 changes (owner: "enhance the design, compare top convenience-store label formats"): NIST SP 1181 (2025) four-block order (name+size / price / unit price / retailer),
+// size as a bold chip, unit price on a tinted band when the pack holds several pieces, deal end date inside the SAVE bar, darker small print (contrast), bigger barcode digits.
 (function (root, factory) { if (typeof module === 'object' && module.exports) module.exports = factory; else root.LabelRender = factory; })(this, function (E, O) {
 const MON = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-// ---------- 5. label HTML ----------
 const fmt = n => n.toFixed(2);
 function priceHtml(p) { const [i, s] = fmt(p).split('.'); return `<span class="rm">RM</span><span class="int">${i}</span><span class="sen">.${s}</span>`; }
 function bcDigits(l) { const d = l.bc; return d.length === 13 ? `${d[0]} ${d.slice(1, 7)} ${d.slice(7)}` : `${d.slice(0, 4)} ${d.slice(4)}`; }
 const box = (x, y, w, h, cls, html, extra) => `<div class="${cls}" style="left:${x}mm;top:${y}mm;width:${w}mm;height:${h}mm;${extra || ''}">${html || ''}</div>`;
-const tag = (l) => `${l.code} · ${l.uom}${l.size && l.rate <= 1 ? ' · ' + l.size : ''} · ${O.printed}${O.test ? ' · TEST' : ''}`;
+const tag = l => `${l.code} · ${l.uom}${l.size && l.rate <= 1 ? ' · ' + l.size : ''} · ${O.printed}${O.test ? ' · TEST' : ''}`;
 const unitLine = l => [l.size, l.rate > 1 ? '1 ' + l.uom + ' = ' + l.rate + ' ' + l.baseUom : l.uom].filter(Boolean).join(' · ');
-// the master often repeats the name in Chinese inside 【…】; the label keeps the English part (size words stay) - the Chinese tail does not fit 2 lines
+// the master often repeats the name in Chinese inside 【…】; the label keeps the English part (size words stay)
 const shortName = l => { const n = String(l.name).replace(/\s*【[^】]*】?\s*$/, '').trim(); return n || String(l.name); };
-function nameEl(l) { return esc(shortName(l)); }
-// long names shrink instead of losing the size words at the end (a clamped name once cut off '350ML')
+const nameEl = l => esc(shortName(l));
+// long names shrink instead of losing the size words at the end
 const nc = (l, a, b, c) => c && shortName(l).length > c ? ' sm3' : shortName(l).length > b ? ' sm2' : shortName(l).length > a ? ' sm1' : '';
-function promoWords(l) { const p = l.promo; return p.qty > 1 ? `${p.qty} FOR` : 'NOW'; }
-function promoSub(l) { const p = l.promo; return p.qty > 1 ? `RM${fmt(p.unit)} each (was ${fmt(l.price)})` : `was RM${fmt(l.price)}`; }
-function promoEnd(l) { return l.promo.to ? ` · until ${l.promo.to.slice(8)} ${MON[+l.promo.to.slice(5, 7) - 1]}` : ''; }
+const chip = l => `<span class="chip">${esc(unitLine(l))}</span>`;
+// Unit price: ONLY where the pack count is certain. (a) the unit of sale holds several base units (UOM rate from AutoCount), (b) the name says so: "25'S", "x5", "6 x 330ML".
+// A wrong unit price is worse than none, so anything else shows nothing.
+function packCount(l) {
+  if (l.rate > 1 && l.rate <= 100) return { n: l.rate, word: /^(LOOSE|PCS|PC|PIECE)$/i.test(l.baseUom) ? 'pc' : String(l.baseUom).toLowerCase() };
+  if (/^(LOOSE|PCS|PIECE|STICK|SACHET|SINGLE)$/i.test(l.uom)) return null;   // a loose single already IS the per-piece price, whatever the pack name says
+  const nm = shortName(l).toUpperCase(); let m;
+  if ((m = nm.match(/\b(\d{1,2})\s*['’]?S\b/)) || (m = nm.match(/\b\d+(?:\.\d+)?\s*(?:G|ML|KG|L)\s*X\s*(\d{1,2})\b/)) || (m = nm.match(/\b(\d{1,2})\s*X\s*\d+(?:\.\d+)?\s*(?:G|ML|KG|L)\b/))) { const n = +m[1]; if (n >= 2 && n <= 48) return { n, word: 'pc' }; }
+  return null;
+}
+function unitPrice(l) { const p = packCount(l); if (!p || !(l.price > 0)) return null; return `RM${fmt(l.price / p.n)} / ${p.word}`; }
+const unitBand = (l, x, y, w, h, cls) => { const u = unitPrice(l); return u ? box(x, y, w, h, 'unit mono ' + cls, esc(u)) : ''; };
+const promoWords = l => l.promo.qty > 1 ? `${l.promo.qty} FOR` : 'NOW';
+const promoSub = l => l.promo.qty > 1 ? `RM${fmt(l.promo.unit)} each (was ${fmt(l.price)})` : `was RM${fmt(l.price)}`;
+const endTxt = l => l.promo.to ? ` · UNTIL ${+l.promo.to.slice(8)} ${MON[+l.promo.to.slice(5, 7) - 1]}` : '';
+const saveTxt = l => `SAVE RM${fmt(l.promo.save)}${endTxt(l)}`;
 
 const LAYOUT = {
   S: { w: 70, h: 38, per: { cols: 3, rows: 7, top: 15.5 }, html(l) {
     const P = l.promo, stripe = P ? '#FFD100' : '#2A211D', bc = E.svg(l.bc);
     return box(0, 0, 2, 38, 'stripe', '', `background:${stripe}`)
-      + box(3.6, 2, 49, 9, 'name s-name' + nc(l, 50, 62), nameEl(l))
-      + box(55, 1.8, 12.5, 9.2, 'logo', '')
-      + (P ? box(36, 11.2, 31.5, 4.2, 'flag s-flag', promoWords(l)) + box(36, 14.8, 31.5, 11.5, 'price s-price promo', priceHtml(P.total)) + box(36, 26.6, 31.5, 3, 'mono s-sub', promoSub(l)) + box(36, 29.7, 31.5, 3.5, 'save s-save', `SAVE RM${fmt(P.save)}`)
-        : box(36, 11.5, 31.5, 15.5, 'price s-price', priceHtml(l.price)))
-      + box(3.6, 11.4, 30, 3, 'mono s-size', esc(unitLine(l)))
-      + box(3.6, 15.2, 31, 10.4, 'barcode', bc)
-      + box(3.6, 25.8, 31, 3, 'mono s-bcnum', bcDigits(l))
-      + box(3.6, 33.4, 63, 3, 'mono s-tag', tag(l) + (P ? promoEnd(l) : ''));
+      + box(3.8, 1.8, 47, 8.6, 'name s-name' + nc(l, 50, 62), nameEl(l))
+      + box(55.5, 1.6, 12, 8.6, 'logo', '')
+      + box(3.8, 10.7, 31, 3.4, 'chipbox s-chip', chip(l))
+      + box(3.8, 14.8, 31.5, 11.2, 'barcode', bc)
+      + box(3.8, 26.1, 31.5, 3.4, 'mono s-bcnum', bcDigits(l))
+      + (P ? box(36, 10.8, 31.5, 3.8, 'flag s-flag', promoWords(l)) + box(36, 14.2, 31.5, 11.2, 'price s-price promo', priceHtml(P.total)) + box(36, 25.6, 31.5, 3, 'mono s-sub', promoSub(l)) + box(36, 28.9, 31.5, 4, 'save s-save', saveTxt(l))
+        : box(35.5, 10.6, 32, 15.4, 'price s-price', priceHtml(l.price)) + unitBand(l, 40.5, 26.9, 27, 4.2, 's-unit'))
+      + box(3.8, 33.5, 63.5, 3, 'mono s-tag', tag(l));
   } },
   M: { w: 105, h: 74, per: { cols: 2, rows: 3, top: 37 }, html(l) {
     const P = l.promo, stripe = P ? '#FFD100' : '#2A211D', bc = E.svg(l.bc);
     return box(0, 0, 3, 74, 'stripe', '', `background:${stripe}`)
-      + (P ? box(6, 4, 66, 11, 'flag m-flag', 'XPRESS DEAL · ' + promoWords(l)) : '')
-      + box(6, P ? 17 : 5, 70, 15, 'name m-name' + nc(l, 34, 62, 78), nameEl(l))
-      + box(79, 3, 22, 16, 'logo', '')
-      + (P ? box(52, 33, 49, 22, 'price m-price promo', priceHtml(P.total)) + box(47, 55.5, 54, 5, 'mono m-sub', promoSub(l)) + box(52, 60.8, 49, 6.2, 'save m-save', `SAVE RM${fmt(P.save)}`)
-        : box(47, 36, 54, 27, 'price m-price', priceHtml(l.price)))
-      + box(6, P ? 34 : 33, 40, 4.5, 'mono m-size', esc(unitLine(l)))
-      + box(6, 42, 42, 17, 'barcode', bc)
-      + box(6, 59.4, 42, 4.5, 'mono m-bcnum', bcDigits(l))
-      + box(6, 67.5, 95, 4, 'mono m-tag', tag(l) + (P ? promoEnd(l) : ''));
+      + (P ? box(6, 3.5, 68, 10.5, 'flag m-flag', 'XPRESS DEAL · ' + promoWords(l)) : '')
+      + box(6, P ? 16 : 4.5, 71, 14.5, 'name m-name' + nc(l, 34, 62, 78), nameEl(l))
+      + box(80, 3, 21, 15, 'logo', '')
+      + box(6, P ? 31.5 : 21, 42, 6, 'chipbox m-chip', chip(l))
+      + box(6, 40.5, 44, 17.5, 'barcode', bc)
+      + box(6, 58.3, 44, 5, 'mono m-bcnum', bcDigits(l))
+      + (P ? box(48, 28.5, 53, 22, 'price m-price promo', priceHtml(P.total)) + box(48, 51, 53, 4.5, 'mono m-sub', promoSub(l)) + box(48, 56, 53, 7, 'save m-save', saveTxt(l))
+        : box(48, 30, 53, 26, 'price m-price', priceHtml(l.price)) + unitBand(l, 60, 57.5, 41, 6.2, 'm-unit'))
+      + box(6, 67.6, 95, 4, 'mono m-tag', tag(l));
   } },
   L: { w: 210, h: 297, per: { cols: 1, rows: 1, top: 0 }, html(l) {
     const P = l.promo, stripe = P ? '#FFD100' : '#2A211D', bc = E.svg(l.bc);
     return box(0, 0, 8, 297, 'stripe', '', `background:${stripe}`)
       + (P ? box(16, 14, 130, 30, 'flag l-flag', 'XPRESS DEAL') : '')
       + box(155, 12, 45, 33, 'logo', '')
-      + box(16, 56, 184, 62, 'name l-name' + nc(l, 36, 52, 78), nameEl(l))
-      + (P ? box(16, 118, 184, 24, 'l-flag2 flag', promoWords(l)) + box(16, 142, 184, 80, 'price l-price promo', priceHtml(P.total)) + box(16, 224, 184, 12, 'mono l-sub', promoSub(l)) + box(16, 238, 184, 16, 'save l-save', `SAVE RM${fmt(P.save)}${promoEnd(l)}`)
-        : box(16, 130, 184, 100, 'price l-price', priceHtml(l.price)))
-      + box(16, P ? 258 : 236, 90, 12, 'mono l-size', esc(unitLine(l)))
+      + box(16, 54, 184, 56, 'name l-name' + nc(l, 36, 52, 78), nameEl(l))
+      + box(16, 112, 120, 14, 'chipbox l-chip', chip(l))
+      + (P ? box(16, 130, 184, 22, 'l-flag2 flag', promoWords(l)) + box(16, 150, 184, 74, 'price l-price promo', priceHtml(P.total)) + box(16, 226, 184, 12, 'mono l-sub', promoSub(l)) + box(16, 240, 184, 16, 'save l-save', saveTxt(l))
+        : box(16, 134, 184, 96, 'price l-price', priceHtml(l.price)) + unitBand(l, 96, 233, 104, 16, 'l-unit'))
       + box(130, 262, 65, 20, 'barcode', bc)
-      + box(130, 282.2, 65, 5, 'mono l-bcnum', bcDigits(l))
+      + box(130, 282.4, 65, 6, 'mono l-bcnum', bcDigits(l))
       + box(16, 283, 110, 5, 'mono l-tag', tag(l));
   } },
 };
@@ -9148,32 +9162,34 @@ html,body{background:#fff}
 body{font-family:'Archivo','Arial Narrow',Arial,sans-serif;color:#14100E;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .sheet{position:relative;width:210mm;height:297mm;page-break-after:always;overflow:hidden}
 .sheet:last-child{page-break-after:auto}
-.hdr{position:absolute;left:6mm;top:5mm;right:6mm;font:500 7pt 'IBM Plex Mono',Consolas,monospace;color:#555}
+.hdr{position:absolute;left:6mm;top:5mm;right:6mm;font:500 7pt 'IBM Plex Mono',Consolas,monospace;color:#3A322D}
 .lab{position:absolute;background:#fff;border:.2mm solid #BDB7B2;overflow:hidden}
 .lab>div{position:absolute;overflow:hidden}
 .name{font-weight:700;line-height:1.08;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;text-transform:none}
 .logo{background:url(${O.logo}) right top/contain no-repeat}
 .barcode svg{width:100%;height:100%;display:block}
 .mono{font-family:'IBM Plex Mono',Consolas,monospace;color:#14100E;white-space:nowrap}
+.chipbox{display:flex;align-items:center;white-space:nowrap}
+.chip{background:#EBE7E4;color:#14100E;font-weight:700;letter-spacing:.03em;padding:0 1.6mm;height:100%;display:inline-flex;align-items:center;text-transform:uppercase}
+.unit{background:#EBE7E4;color:#14100E;font-weight:600;display:flex;align-items:center;justify-content:center}
 .price{font-family:'Barlow Condensed','Bahnschrift Condensed','Arial Narrow',sans-serif;font-weight:700;letter-spacing:-.02em;line-height:.82;white-space:nowrap;text-align:right;color:#14100E}
 .price .rm{font-size:.42em;vertical-align:top;position:relative;top:.06em;margin-right:.1em}
 .price .sen{font-size:.46em;vertical-align:top;position:relative;top:.04em}
 .flag{background:#FFD100;color:#14100E;font-weight:700;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;display:flex;align-items:center;padding-left:1.2mm}
-.save{background:#14100E;color:#FFD100;font-weight:700;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;display:flex;align-items:center;justify-content:center}
-.sub{}
+.save{background:#14100E;color:#FFD100;font-weight:700;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap;display:flex;align-items:center;justify-content:center}
 /* S 70x38 */
-.s-name{font-size:8pt}.s-flag{font-size:7pt;justify-content:flex-end;padding-right:1.2mm}.s-price{font-size:36pt}.s-price.promo{font-size:31pt}
-.s-size{font-size:5.6pt;color:#555}.s-bcnum{font-size:5.6pt;letter-spacing:.14em}.s-tag{font-size:5pt;color:#555}.s-sub{font-size:5pt;color:#444;text-align:right}.s-save{font-size:6.6pt}
+.s-name{font-size:8pt}.s-flag{font-size:7pt;justify-content:flex-end;padding-right:1.2mm}.s-price{font-size:40pt}.s-price.promo{font-size:31pt}
+.s-chip{font-size:6.6pt}.s-bcnum{font-size:6.4pt;letter-spacing:.12em}.s-tag{font-size:5.4pt;color:#3A322D}.s-sub{font-size:5.4pt;color:#2C2622;text-align:right;justify-content:flex-end}.s-save{font-size:5.9pt}.s-unit{font-size:6.6pt}
 /* M 105x74 */
-.m-name{font-size:15pt}.m-flag{font-size:13pt;height:11mm}.m-price{font-size:78pt}.m-price.promo{font-size:64pt}
-.m-size{font-size:8pt;color:#555}.m-bcnum{font-size:8pt;letter-spacing:.14em}.m-tag{font-size:6.5pt;color:#555}.m-sub{font-size:7.5pt;color:#444;text-align:right}.m-save{font-size:11pt}
+.m-name{font-size:15pt}.m-flag{font-size:13pt}.m-price{font-size:78pt}.m-price.promo{font-size:62pt}
+.m-chip{font-size:9.5pt}.m-bcnum{font-size:9pt;letter-spacing:.12em}.m-tag{font-size:7pt;color:#3A322D}.m-sub{font-size:8pt;color:#2C2622;text-align:right}.m-save{font-size:10.5pt}.m-unit{font-size:10pt}
 .s-name.sm1{font-size:7pt}.s-name.sm2{font-size:6pt}.l-name.sm3{font-size:24pt;-webkit-line-clamp:4;max-height:4.4em}.m-name.sm3{font-size:8.5pt;-webkit-line-clamp:4;max-height:4.4em}.name{max-height:2.2em}.name.sm1,.name.sm2{-webkit-line-clamp:3;max-height:3.3em}.m-name.sm1{font-size:12.5pt}.m-name.sm2{font-size:9.5pt}.l-name.sm1{font-size:34pt}.l-name.sm2{font-size:27pt}
 /* L A4 */
-.l-name{font-size:42pt}.l-flag{font-size:30pt}.l-flag2{font-size:34pt}.l-price{font-size:250pt}.l-price.promo{font-size:210pt}
-.l-size{font-size:16pt;color:#555}.l-bcnum{font-size:13pt;letter-spacing:.16em}.l-tag{font-size:10pt;color:#555}.l-sub{font-size:15pt;color:#444;text-align:right}.l-save{font-size:24pt}
+.l-name{font-size:42pt}.l-flag{font-size:30pt}.l-flag2{font-size:34pt}.l-price{font-size:250pt}.l-price.promo{font-size:200pt}
+.l-chip{font-size:20pt}.l-bcnum{font-size:14pt;letter-spacing:.14em}.l-tag{font-size:10pt;color:#3A322D}.l-sub{font-size:16pt;color:#2C2622;text-align:right}.l-save{font-size:24pt}.l-unit{font-size:22pt}
 `;
-const BW = '.bw .flag{background:#fff!important;color:#000!important;border:.5mm solid #000}.bw .save{background:#000!important;color:#fff!important}.bw .stripe{background:#000!important}.bw .logo{filter:grayscale(1) contrast(1.7)}.bw .price,.bw .name,.bw .mono{color:#000!important}.bw .lab{border-color:#000}';
-const FONTS = `<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Archivo:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">`;
+const BW = '.bw .flag{background:#fff!important;color:#000!important;border:.5mm solid #000}.bw .save{background:#000!important;color:#fff!important}.bw .stripe{background:#000!important}.bw .logo{filter:grayscale(1) contrast(1.7)}.bw .price,.bw .name,.bw .mono{color:#000!important}.bw .lab{border-color:#000}.bw .chip,.bw .unit{background:#fff!important;border:.3mm solid #000;color:#000!important}';
+const FONTS = `<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Archivo:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">`;
 
 function sheets(size, labels, title) {
   const S = LAYOUT[size], per = S.per.cols * S.per.rows, pages = [];
@@ -9184,8 +9200,7 @@ function sheets(size, labels, title) {
 }
 function page(size, labels, title) { return `<!doctype html><html><head><meta charset="utf-8"><title>${esc(title)} ${size}</title>${FONTS}<style>${CSS()}${BW}</style></head><body>${sheets(size, labels, title)}</body></html>`; }
 
-
-return { LAYOUT, CSS, FONTS, sheets, page, O };
+return { LAYOUT, CSS, FONTS, sheets, page, unitPrice, packCount, O };
 });
 
  return module.exports; })();
