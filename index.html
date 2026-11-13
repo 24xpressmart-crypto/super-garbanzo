@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-13.295';
+const APP_BUILD = '2026-11-13.296';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -9093,7 +9093,10 @@ const MON = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const fmt = n => n.toFixed(2);
 const CATS = { grocery: ['#E06D12', 'GROCERY'], chilled: ['#0091D5', 'CHILLED'], frozen: ['#0079B3', 'FROZEN'], bakery: ['#F08C00', 'BAKERY'], drinks: ['#DE2008', 'DRINKS'], household: ['#5C534D', 'HOUSEHOLD'], fresh: ['#00875A', 'FRESH'] };
-const catOf = l => { const k = O.catMap && O.catMap[l.group]; return k && CATS[k] ? { key: k, color: CATS[k][0], word: CATS[k][1] } : null; };
+// The WORD on the stripe is the item's REAL AutoCount group ("BEER", "BEVERAGES", "BAKERY AND CAKES"), shortened to fit; only the COLOUR comes from the coarse design-system map
+// (13 Nov: the owner saw "DRINKS" on a beer label because the word came from the map; it must come from the group). Unmapped groups keep the warm-black stripe with their word.
+const shortGroup = n => { n = String(n || '').toUpperCase().replace(/\s+/g, ' ').trim(); if (n.length <= 16) return n; const cut = n.split(/ AND | & | \(/)[0].trim(); return cut.length <= 16 ? cut : cut.slice(0, 16).replace(/\s+\S*$/, ''); };
+const catOf = l => { const k = O.catMap && O.catMap[l.group], known = k && CATS[k], word = l.groupName ? shortGroup(l.groupName) : (known ? CATS[k][1] : ''); return (word || known) ? { key: k, color: known ? CATS[k][0] : '#2A211D', word } : null; };
 // label type; deal/reduced without a promo fall back to plain
 const typeOf = l => { const t = l.type || (l.promo ? 'deal' : 'plain'); return (t === 'deal' || t === 'reduced') && !l.promo ? 'plain' : (['plain', 'deal', 'reduced', 'lock'].includes(t) ? t : 'plain'); };
 const flagText = l => { const t = typeOf(l); return t === 'lock' ? 'PRICE LOCK' : t === 'reduced' ? 'REDUCED' : t === 'deal' ? (l.promo.qty > 1 ? `${l.promo.qty} FOR` : 'NOW') : ''; };
@@ -9283,7 +9286,7 @@ function lblMake(r, type){
   const price = lblR2(+r.price); if(!(price > 0)) return {block: 'PRICE_ZERO'};
   if(!r.name) return {block: 'NO_NAME'};
   const m = String(r.name).match(/(\d+(?:\.\d+)?)\s?(ML|L|G|KG|GM|PCS|PC)\b/i);
-  const L = {code: r.item_code, key: r.item_code + '|' + r.uom, name: String(r.name), group: r.item_group, uom: r.uom, rate: +r.rate || 1, baseUom: r.base_uom || r.uom, price, bc: bc.digits, bcType: bc.type, size: m ? (m[1] + m[2]).toUpperCase() : '', promo: null, type: 'plain'};
+  const L = {code: r.item_code, key: r.item_code + '|' + r.uom, name: String(r.name), group: r.item_group, groupName: r.group_name || '', uom: r.uom, rate: +r.rate || 1, baseUom: r.base_uom || r.uom, price, bc: bc.digits, bcType: bc.type, size: m ? (m[1] + m[2]).toUpperCase() : '', promo: null, type: 'plain'};
   if((ty === 'deal' || ty === 'reduced') && r.promo_qty != null && r.promo_unit != null && !r.promo_block){
     const q = Math.max(1, +r.promo_qty), unit = lblR2(+r.promo_unit), total = lblR2(q * unit), was = lblR2(q * price);
     if(total < was && unit > 0) { L.promo = {qty: q, unit, total, was, save: lblR2(was - total), to: r.promo_to ? String(r.promo_to).slice(0, 10) : ''}; L.type = ty; }
