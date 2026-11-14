@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-14.299';
+const APP_BUILD = '2026-11-14.300';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -2916,6 +2916,24 @@ function nearestDeviceInfo(geo){
   });
   return {configured:true, device:best, distance:Math.round(bestD), inRange: bestD<=(S.settings.geofenceRadius||300)};
 }
+// 14 Nov (owner: "build runner distance", flagged 8 Nov for SHAHIR MAMOON and again for ISRAR AHMED on 14 Nov): a
+// runner (isRunner) has no single fixed work point - SHAHIR's real route runs through BR11/HQ, not his home BR25;
+// ISRAR's "VM" covers machines kilometres apart, not the one VM pin - so comparing the punch only to the chosen
+// branch's pin reports "too far" on an ordinary working day. For a runner only, measure against the NEAREST of every
+// branch site AND every device instead, and use that for the in/out-of-range flag on NEW punches; old punches keep
+// the flag the server already gave them, same rule as every earlier pin fix. Never touches pay (geoFlag does not
+// change hours). Returns {configured, label, kind, distance, inRange} or null (not a runner, no fix, or nothing
+// with coordinates to compare against).
+function runnerGeoInfo(geo, isRunnerFlag){
+  if(!isRunnerFlag || !geo || geo.error) return null;
+  let best=null, bestDist=Infinity, bestKind=null;
+  (S.sites||[]).forEach(s=>{ if(s.lat==null||s.lng==null) return;
+    const d=haversine(geo.lat,geo.lng,s.lat,s.lng); if(d<bestDist){ bestDist=d; best=s.id; bestKind='branch'; } });
+  S.devices.forEach(d=>{ const c=deviceCoords(d); if(!c) return;
+    const dist=haversine(geo.lat,geo.lng,c.lat,c.lng); if(dist<bestDist){ bestDist=dist; best=d.name||d.id; bestKind='device'; } });
+  if(best==null) return null;
+  return {configured:true, label:best, kind:bestKind, distance:Math.round(bestDist), inRange: bestDist<=(S.settings.geofenceRadius||300)};
+}
 
 /* ============================ FIELD FORM HELPER ============================ */
 // patch 159: name the missing field, mark it and put the cursor in it (keys in the order they are checked)
@@ -3612,13 +3630,15 @@ function clockView(){
     if(reuse) logClientError('other', 'geo_reused', (geo0 && geo0.error) || '');
     const geoOk = geo && !geo.error;
     const branch = clockSel ? clockSel.value : defaultClockBranch();
-    const bInfo = branchGeoInfo(geo, branch);
-    const near = bInfo ? null : nearestDeviceInfo(geo);
+    const runnerInfo = runnerGeoInfo(geo, isRunner(e));   // 14 Nov: a runner has no single fixed point - compare to the nearest branch/device instead
+    const bInfo = runnerInfo ? null : branchGeoInfo(geo, branch);
+    const near = (runnerInfo || bInfo) ? null : nearestDeviceInfo(geo);
     const photo = photoWrap.getPhoto();
     const rec = {employeeId:e.id, employeeName:e.name, type:nextType, createdAt:new Date().toISOString(), note:geoNote};
     if(geoOk) rec.geo=geo;
     if(branch){ rec.branch=branch; if(myBranch() && branch!==myBranch()) rec.cover=true; }
-    if(bInfo){ rec.distanceM=bInfo.distance; rec.geoFlag=bInfo.inRange?'in_range':'out_of_range'; }
+    if(runnerInfo){ rec.distanceM=runnerInfo.distance; rec.geoFlag=runnerInfo.inRange?'in_range':'out_of_range'; rec.nearestLabel=runnerInfo.label; rec.runner=true; }
+    else if(bInfo){ rec.distanceM=bInfo.distance; rec.geoFlag=bInfo.inRange?'in_range':'out_of_range'; }
     else if(near && near.configured){ rec.nearestDeviceId=near.device.id; rec.distanceM=near.distance; rec.geoFlag = near.inRange?'in_range':'out_of_range'; }
     else if(geoOk) rec.geoFlag='not_configured';
     else { rec.geoFlag='no_location'; if(geo && geo.error) rec.geoErrorReason=geo.error; }
@@ -4228,6 +4248,8 @@ function vmTodayView(){
     <div><div class="v num" style="${due?'color:var(--critical);':''}">${due}</div><div class="l">${esc(t('vm_sum_due'))}</div></div>
     <div><div class="v num" style="${soon?'color:var(--warn);':''}">${soon}</div><div class="l">${esc(t('vm_sum_soon'))}</div></div></div>`));
   c.appendChild(el(`<p class="hint">${esc(t('vm_today_hint'))}</p>`));
+  // owner 14 Nov: link the XY back-end on the vending page (XY = the vending machine supplier's system)
+  c.appendChild(el(`<a class="btn block" href="http://47.237.130.169/wcgjApp/#" target="_blank" rel="noopener" style="margin-top:8px; text-align:center; text-decoration:none;">🔗 XY 后台 / XY back-end</a>`));
   { const D = S.vmXs && S.vmXs.data;   // patch 190
     if(D && Array.isArray(D.machines) && D.machines.length){ const off = devs.filter(v => v.x && v.x.online === false).length;
       const xc = el(`<div class="card" style="margin-top:10px;"><div class="lr-sub">📡 ${D.readAt ? esc(t('vxs_read').split('{t}').join(fmtDateTime(D.readAt))) : ''}${off ? ' · <b style="color:var(--bad,#C1392B);">' + esc(t('vxs_off').split('{n}').join(String(off))) + '</b>' : ''}</div></div>`);
@@ -6508,6 +6530,13 @@ function geoVerdict(a){
     const d=Math.round(haversine(g.lat,g.lng,s.lat,s.lng));
     if(!nearest || d<nearest.dist) nearest={id:s.id, dist:d};
   });
+  // 14 Nov: a runner has no single fixed point (SHAHIR's route, ISRAR's "VM") - judge against the nearest branch OR
+  // device, not one branch pin, same rule as runnerGeoInfo at the tap. Only for rows the App itself marked `runner`.
+  if(a.runner){
+    S.devices.forEach(d=>{ const c=deviceCoords(d); if(!c) return;
+      const dist=Math.round(haversine(g.lat,g.lng,c.lat,c.lng)); if(!nearest||dist<nearest.dist) nearest={id:d.name||d.id, dist}; });
+    return nearest ? {state: nearest.dist<=radius?'in_range':'out_of_range', dist:nearest.dist, at:nearest.id} : {state:'not_configured'};
+  }
   const c = a.branch ? siteCoordsFor(a.branch) : null;
   if(c){
     const dist = Math.round(haversine(g.lat,g.lng,c.lat,c.lng));
