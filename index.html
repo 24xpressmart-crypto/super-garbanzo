@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-14.298';
+const APP_BUILD = '2026-11-14.299';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -9092,7 +9092,7 @@ const LBL_RENDER = (function(){ const module = {exports:{}};
 const MON = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const fmt = n => n.toFixed(2);
-const CATS = { grocery: ['#E06D12', 'GROCERY'], chilled: ['#0091D5', 'CHILLED'], frozen: ['#0079B3', 'FROZEN'], bakery: ['#F08C00', 'BAKERY'], drinks: ['#DE2008', 'DRINKS'], household: ['#5C534D', 'HOUSEHOLD'], fresh: ['#00875A', 'FRESH'] };
+const CATS = { grocery: ['#E06D12', 'GROCERY'], chilled: ['#0091D5', 'CHILLED'], frozen: ['#0079B3', 'FROZEN'], bakery: ['#F08C00', 'BAKERY'], drinks: ['#6C3FA0', 'DRINKS'], household: ['#5C534D', 'HOUSEHOLD'], fresh: ['#00875A', 'FRESH'] };
 // The WORD on the stripe is the item's REAL AutoCount group ("BEER", "BEVERAGES", "BAKERY AND CAKES"), shortened to fit; only the COLOUR comes from the coarse design-system map
 // (13 Nov: the owner saw "DRINKS" on a beer label because the word came from the map; it must come from the group). Unmapped groups keep the warm-black stripe with their word.
 const shortGroup = n => { n = String(n || '').toUpperCase().replace(/\s+/g, ' ').trim(); if (n.length <= 16) return n; const cut = n.split(/ AND | & | \(/)[0].trim(); return cut.length <= 16 ? cut : cut.slice(0, 16).replace(/\s+\S*$/, ''); };
