@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-13.297';
+const APP_BUILD = '2026-11-14.298';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -9356,12 +9356,56 @@ function lblPreviewDoc(label, size, mode){
   const R = lblRender(mode), G = R.LAYOUT[size];
   return '<!doctype html><html><head><meta charset="utf-8">' + R.FONTS + '<style>' + R.CSS() + 'body{margin:0;background:#fff}.sheet{width:' + G.w + 'mm;height:' + G.h + 'mm;page-break-after:auto}</style></head><body><div class="sheet' + (mode === 'bw' ? ' bw' : '') + '">' + R.one(size, label, 0, 0) + '</div></body></html>';
 }
+// Red-arrow walkthrough (14 Nov 2026): one step at a time, a red outline + a red arrow on the real control, Chinese line then English line. No data is read or changed.
+const LBL_GUIDE = [
+  {s: '[data-q]', zh: '在这里输入商品名、商品编号，或扫描条码。', en: 'Type the item name or code here, or scan the barcode.'},
+  {s: '[data-res] button.primary', f: '[data-q]', zh: '点「加入」，商品就进入打印清单。红字「不能打印」＝条码或价格有问题，不要打印，通知总部。', en: 'Tap "Add" and the item goes into the print list. Red "Cannot print" = bad barcode or price. Do not print it. Tell HQ.'},
+  {s: '[data-cart]', zh: '检查清单。用 + − 改张数。需要时选标签类型：平常价 / 优惠 / 降价 / 锁价。', en: 'Check the list. Use + − for the number of labels. Pick the label type if needed: Plain / Deal / Reduced / Price lock.'},
+  {s: '[data-opt]', zh: '选尺寸，再选「彩色」或「黑白」。', en: 'Pick the size, then "Colour" or "Black & white".'},
+  {s: '[data-prev]', zh: '看预览：名称、价格、条码对不对。', en: 'Check the preview: name, price and barcode are right.'},
+  {s: '[data-make]', zh: '点这里。打印窗口里选打印机，或选「另存为 PDF」。用 A4 纸，选「实际大小」，不要选「适合页面」。', en: 'Tap here. In the print window pick the printer, or "Save as PDF". Use A4 paper and "Actual size", never "Fit to page".'}
+];
+function lblGuide(root, start){
+  const old = document.getElementById('lblGuide'); if(old) old.remove();
+  const RED = '#E4002B';
+  const find = st => { const a = root.querySelector(st.s) || (st.f ? root.querySelector(st.f) : null); return a && a.getClientRects().length ? a : null; };
+  const steps = LBL_GUIDE.filter(st => find(st));
+  if(!steps.length) return;
+  let i = Math.max(0, Math.min(steps.length - 1, start || 0)), cur = null, saved = '';
+  const w = document.createElement('div'); w.id = 'lblGuide';
+  w.innerHTML = '<div data-ar style="position:fixed;z-index:99998;pointer-events:none;width:46px;height:58px;"><svg viewBox="0 0 46 58" width="46" height="58"><path d="M23 56 L3 29 H15 V2 H31 V29 H43 Z" fill="' + RED + '" stroke="#fff" stroke-width="3" stroke-linejoin="round"/></svg></div>' +
+    '<div data-bub style="position:fixed;left:8px;right:8px;bottom:8px;z-index:99999;max-width:560px;margin:0 auto;background:#fff;color:#14100E;border:3px solid ' + RED + ';border-radius:12px;padding:10px 12px;box-shadow:0 6px 24px rgba(0,0,0,.35);font:15px/1.4 Archivo,Arial,sans-serif;">' +
+    '<div data-n style="font-weight:900;color:' + RED + ';"></div><div data-zh style="font-weight:700;"></div><div data-en style="margin-top:2px;"></div>' +
+    '<div style="display:flex;gap:8px;margin-top:8px;"><button class="btn sm" data-b>Back / 上一步</button><button class="btn sm primary" data-nx style="flex:1;"></button><button class="btn sm" data-c>Close / 关闭</button></div></div>';
+  document.body.appendChild(w);
+  const ar = w.querySelector('[data-ar]');
+  function place(){
+    if(!cur) return; const r = cur.getBoundingClientRect(), vw = window.innerWidth || 390;
+    const above = r.top > 70, x = Math.max(4, Math.min(vw - 50, r.left + Math.min(r.width / 2, 70) - 23));
+    ar.style.left = x + 'px'; ar.style.top = (above ? r.top - 62 : Math.min(r.bottom + 4, (window.innerHeight || 800) - 200)) + 'px'; ar.style.transform = above ? '' : 'rotate(180deg)';
+  }
+  function clear(){ if(cur){ cur.style.outline = saved; cur.style.outlineOffset = ''; cur.style.scrollMarginTop = ''; } cur = null; }
+  function close(){ clear(); window.removeEventListener('scroll', place, true); window.removeEventListener('resize', place); w.remove(); try{ localStorage.setItem('lblGuideSeen', '1'); }catch(e){} }
+  function show(){
+    clear(); const st = steps[i], e = find(st); if(!e){ return; }
+    cur = e; saved = e.style.outline; e.style.outline = '4px solid ' + RED; e.style.outlineOffset = '3px'; e.style.scrollMarginTop = '96px';
+    w.querySelector('[data-n]').textContent = (i + 1) + ' / ' + steps.length; w.querySelector('[data-zh]').textContent = st.zh; w.querySelector('[data-en]').textContent = st.en;
+    w.querySelector('[data-nx]').textContent = i === steps.length - 1 ? 'Done / 完成' : 'Next / 下一步'; w.querySelector('[data-b]').disabled = i === 0;
+    try{ e.scrollIntoView({block: 'start'}); }catch(x){} place(); setTimeout(place, 120);
+  }
+  w.querySelector('[data-b]').onclick = () => { if(i > 0){ i--; show(); } };
+  w.querySelector('[data-nx]').onclick = () => { if(i >= steps.length - 1) close(); else { i++; show(); } };
+  w.querySelector('[data-c]').onclick = close;
+  window.addEventListener('scroll', place, true); window.addEventListener('resize', place);
+  show();
+}
 function labelsView(){
   const L = lblState(), c = el('<div></div>');
   if(!labelsOn()){ c.appendChild(el('<div class="empty"><div>' + esc(lt('off')) + '</div></div>')); return c; }
   const outlet = lblOutlet();
   c.appendChild(el('<div style="font-weight:900;font-size:18px;margin:2px 0 2px;">' + esc(lt('title')) + '</div>'));
   c.appendChild(el('<div style="opacity:.7;margin-bottom:10px;">' + esc(lt('sub')) + '</div>'));
+  const gb = el('<button class="btn sm" data-guide style="margin-bottom:10px;border:2px solid #E4002B;color:#E4002B;font-weight:800;">How to print / 怎样打印</button>'); gb.onclick = () => lblGuide(c); c.appendChild(gb);
   const head = el('<div class="card" style="margin-bottom:10px;"></div>'); c.appendChild(head);
   const sel = isAdmin() ? '<select data-o style="margin-left:8px;">' + branchList().map(b => '<option' + (b.toUpperCase() === outlet ? ' selected' : '') + '>' + esc(b.toUpperCase()) + '</option>').join('') + '</select>' : '<b style="margin-left:8px;">' + esc(outlet || '?') + '</b>';
   head.innerHTML = '<div>' + esc(lt('outlet')) + sel + '</div><div data-asof style="font-size:13px;margin-top:6px;"></div>';
