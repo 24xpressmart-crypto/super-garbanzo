@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-15.302';
+const APP_BUILD = '2026-11-16.303';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -725,7 +725,7 @@ const I18N = {
     field_join_date:'入职日期', field_probation_end:'试用期结束日', onb_title:'新人入职清单', onb_none:'没有 90 天内入职或试用期中的员工', onb_day:'入职第 {n} 天', onb_done_of:'已完成', onb_open:'打开清单', onb_auto:'系统自动判断', onb_manual:'由店长／HQ 勾选', onb_invite:'已用邀请码登入 App', onb_pdpa:'已阅读个人资料通知（PDPA）', onb_pdpa_off:'通知还没开启', onb_lessons:'学习小课', onb_lessons_na:'只有 HQ 看得到', onb_fw:'外劳四个到期日已填', onb_offer:'Offer letter 已签回', onb_bank:'开户信已给（或已有户口）', onb_perkeso:'PERKESO 已登记新人', onb_cp22:'CP22 已交 LHDN（需缴税者）', onb_uniform:'制服与名牌已发', onb_orient:'店内培训完成（收银、收货、打卡）', onb_confirm:'确认信已发（试用期满）', onb_probation_hint:'试用期结束前 14 天提醒出确认信（或延长）', notif_probation:'试用期快结束', onb_saved:'已记录', onb_by:'由',
     field_fomema_expiry:'FOMEMA 体检到期日', doc_fomema:'FOMEMA 体检', notif_doc_30:'证件 30 天内到期', admin_fw_register:'外劳证件登记', fw_missing:'未填', fw_none:'没有外劳记录（工资类别 Foreigner）', fw_hint:'护照、准证、合同、FOMEMA 四个日期都要填；60 天前提醒、30 天前再提醒。中介文件与缴费由人办理。',
     nav_tasks:'任务', tasks_title:'今日任务', shift_open:'开店', shift_mid:'交班', shift_close:'闭店', shift_night:'夜班', task_not_started:'未开始', task_in_progress:'进行中', task_done:'已完成',
-    btn_complete_checklist:'完成清单', task_photo_required:'需拍照', task_need_photo:'此项需要先拍照', toast_checklist_done:'清单已完成',
+    btn_complete_checklist:'完成清单', task_photo_required:'需拍照', task_need_photo:'此项需要先拍照', toast_checklist_done:'清单已完成', proof_ok:'已证明', proof_no:'未证明', proof_fast:'一分钟内全部勾完', proof_window:'不在规定时间内勾', proof_photo:'缺照片', proof_temp:'当天没有温度记录', proof_hint:'做完一项就勾一项。一分钟内全部勾完，或不在规定时间内勾的，不算证明。', task_need_temp:'请先在下面记录冰箱温度，再勾这一项', task_temp_item:'看温度记录', field_window_from:'最早开始时间（可不填）', tpl_items_hint:'一行一项；* 开头要拍照；# 开头看温度记录',
     btn_handover:'写交接班记录', sheet_handover:'交接班记录', field_shift:'班次', field_cash:'现金交接 (RM)', field_pending_items:'待办事项', field_issues:'异常情况',
     handover_last:'上一班交接', handover_none:'过去 24 小时没有交接记录', handover_recent:'最近交接',
     tasks_no_templates:'该门店暂无任务清单（管理员可在「我的」→ 任务清单模板 添加）', admin_task_templates:'任务清单模板', sheet_task_template:'任务清单模板',
@@ -979,7 +979,7 @@ const I18N = {
     field_join_date:'Join date', field_probation_end:'Probation ends', onb_title:'New-joiner checklist', onb_none:'Nobody joined in the last 90 days or is on probation', onb_day:'Day {n}', onb_done_of:'done', onb_open:'Open checklist', onb_auto:'Checked by the system', onb_manual:'Ticked by the manager / HQ', onb_invite:'Signed in to the App with the invite code', onb_pdpa:'Read the personal data notice (PDPA)', onb_pdpa_off:'notice not switched on yet', onb_lessons:'Lessons', onb_lessons_na:'visible to HQ only', onb_fw:'Foreign-worker dates all filled', onb_offer:'Offer letter signed and returned', onb_bank:'Bank letter given (or account exists)', onb_perkeso:'Registered as a new hire with PERKESO', onb_cp22:'CP22 filed with LHDN (if taxable)', onb_uniform:'Uniform and name tag issued', onb_orient:'In-store training done (till, receiving, clock-in)', onb_confirm:'Confirmation letter issued (probation complete)', onb_probation_hint:'Reminder 14 days before probation ends: issue the confirmation (or extend)', notif_probation:'Probation ending soon', onb_saved:'Recorded', onb_by:'by',
     field_fomema_expiry:'FOMEMA medical expiry', doc_fomema:'FOMEMA medical', notif_doc_30:'Document expires within 30 days', admin_fw_register:'Foreign-worker documents', fw_missing:'not filled', fw_none:'No foreign workers on record (pay category Foreigner)', fw_hint:'All four dates are needed: passport, permit, contract, FOMEMA. Reminders at 60 days and again at 30. Agency papers and payments are handled by a person.',
     nav_tasks:'Tasks', tasks_title:'Tasks today', shift_open:'Opening', shift_mid:'Mid-shift', shift_close:'Closing', shift_night:'Night shift', task_not_started:'Not started', task_in_progress:'In progress', task_done:'Done',
-    btn_complete_checklist:'Complete checklist', task_photo_required:'Photo required', task_need_photo:'Take a photo for this item first', toast_checklist_done:'Checklist completed',
+    btn_complete_checklist:'Complete checklist', task_photo_required:'Photo required', task_need_photo:'Take a photo for this item first', toast_checklist_done:'Checklist completed', proof_ok:'Proven', proof_no:'Not proven', proof_fast:'All ticked inside 1 minute', proof_window:'Ticked outside its time', proof_photo:'Photo missing', proof_temp:'No temperature reading that day', proof_hint:'Tick each item as you finish it. A list ticked all inside one minute, or outside its time, is not proven.', task_need_temp:'Log the fridge temperature below first, then tick this item', task_temp_item:'Checked from the temperature log', field_window_from:'Earliest start time (optional)', tpl_items_hint:'one item per line; start with * for a photo, # to check the temperature log',
     btn_handover:'Write handover note', sheet_handover:'Shift handover', field_shift:'Shift', field_cash:'Cash handed over (RM)', field_pending_items:'Pending items', field_issues:'Issues',
     handover_last:'Last handover', handover_none:'No handover note in the last 24 hours', handover_recent:'Recent handovers',
     tasks_no_templates:'No checklist for this store yet (admins add them under Me → Checklist templates)', admin_task_templates:'Checklist templates', sheet_task_template:'Checklist template',
@@ -1233,7 +1233,7 @@ const I18N = {
     field_join_date:'Tarikh mula kerja', field_probation_end:'Tamat percubaan', onb_title:'Senarai semak pekerja baru', onb_none:'Tiada pekerja yang mula dalam 90 hari ini atau dalam percubaan', onb_day:'Hari ke-{n}', onb_done_of:'selesai', onb_open:'Buka senarai', onb_auto:'Disemak oleh sistem', onb_manual:'Ditanda oleh pengurus / HQ', onb_invite:'Sudah log masuk App dengan kod jemputan', onb_pdpa:'Sudah baca notis data peribadi (PDPA)', onb_pdpa_off:'notis belum dihidupkan', onb_lessons:'Pelajaran', onb_lessons_na:'hanya HQ boleh lihat', onb_fw:'Empat tarikh pekerja asing sudah diisi', onb_offer:'Surat tawaran ditandatangani dan dikembalikan', onb_bank:'Surat bank diberi (atau akaun sudah ada)', onb_perkeso:'Didaftar sebagai pekerja baru di PERKESO', onb_cp22:'CP22 dihantar ke LHDN (jika dikenakan cukai)', onb_uniform:'Uniform dan tanda nama diberi', onb_orient:'Latihan di kedai selesai (mesin tunai, terima barang, daftar masuk)', onb_confirm:'Surat pengesahan dikeluarkan (percubaan tamat)', onb_probation_hint:'Peringatan 14 hari sebelum percubaan tamat: keluarkan pengesahan (atau lanjutkan)', notif_probation:'Percubaan hampir tamat', onb_saved:'Direkod', onb_by:'oleh',
     field_fomema_expiry:'Tarikh luput FOMEMA', doc_fomema:'Pemeriksaan FOMEMA', notif_doc_30:'Dokumen luput dalam 30 hari', admin_fw_register:'Dokumen pekerja asing', fw_missing:'belum diisi', fw_none:'Tiada rekod pekerja asing (kategori gaji Foreigner)', fw_hint:'Keempat-empat tarikh perlu diisi: pasport, permit, kontrak, FOMEMA. Peringatan 60 hari dan sekali lagi 30 hari sebelum luput. Dokumen agensi dan bayaran diurus oleh orang.',
     nav_tasks:'Tugas', tasks_title:'Tugas hari ini', shift_open:'Buka kedai', shift_mid:'Pertukaran syif', shift_close:'Tutup kedai', shift_night:'Syif malam', task_not_started:'Belum mula', task_in_progress:'Sedang dibuat', task_done:'Selesai',
-    btn_complete_checklist:'Selesaikan senarai semak', task_photo_required:'Perlu gambar', task_need_photo:'Ambil gambar untuk item ini dahulu', toast_checklist_done:'Senarai semak selesai',
+    btn_complete_checklist:'Selesaikan senarai semak', task_photo_required:'Perlu gambar', task_need_photo:'Ambil gambar untuk item ini dahulu', toast_checklist_done:'Senarai semak selesai', proof_ok:'Terbukti', proof_no:'Tidak terbukti', proof_fast:'Semua ditanda dalam 1 minit', proof_window:'Ditanda di luar waktu', proof_photo:'Gambar tiada', proof_temp:'Tiada bacaan suhu hari itu', proof_hint:'Tanda setiap item sebaik siap. Senarai yang ditanda semua dalam satu minit, atau di luar waktu, tidak terbukti.', task_need_temp:'Rekod suhu peti sejuk di bawah dahulu, kemudian tanda item ini', task_temp_item:'Disemak daripada log suhu', field_window_from:'Masa mula paling awal (pilihan)', tpl_items_hint:'satu item satu baris; mula dengan * untuk gambar, # untuk semak log suhu',
     btn_handover:'Tulis nota serah tugas', sheet_handover:'Serah tugas syif', field_shift:'Syif', field_cash:'Tunai diserahkan (RM)', field_pending_items:'Perkara tertunggak', field_issues:'Masalah',
     handover_last:'Serah tugas terakhir', handover_none:'Tiada nota serah tugas dalam 24 jam lepas', handover_recent:'Serah tugas terkini',
     tasks_no_templates:'Belum ada senarai semak untuk kedai ini (admin tambah di Saya → Templat senarai semak)', admin_task_templates:'Templat senarai semak', sheet_task_template:'Templat senarai semak',
@@ -7006,6 +7006,44 @@ function taskDay(){ return todayStr(new Date(Date.now()-4*3600000)); }
 function checklistLate(tp, run){ if(!tp || !/^\d{2}:\d{2}$/.test(tp.dueTime||'') || (run && run.status==='done')) return false;
   const td = m => (m - 240 + 1440) % 1440; const [h, mi] = tp.dueTime.split(':').map(Number);
   return td(klMinOfDay(new Date())) > td(h*60+mi); }
+/* checklist proof (16 Nov 2026, owner "run it" on the deep checklist plan). Raw taskRuns 2-15 Nov: 132 of 150 finished lists had
+   every item ticked inside 60 s, so a tick only proves a button was pressed. A finished list is PROVEN when (1) a list of 4+ items
+   was not all ticked inside one minute, (2) every tick is inside [windowFrom or due - 4 h, due + 1 h], (3) every photo item has
+   its photo, (4) a temperature item (# in the template) has a reading at this store that task day. Advisory: only a temperature
+   item with no reading is blocked. Who was clocked in is checked on the server side (tests/sql/checklist_proof_baseline.sql). */
+const PROOF_FAST_MS = 60000, PROOF_FAST_MIN = 4;
+function klDayOf(ms){ return Number.isFinite(ms) ? new Date(ms + KL_MS - 4 * 3600000).toISOString().slice(0, 10) : ''; }   // task day, turns at 04:00 KL
+function checklistWindow(tp, date){
+  if(!tp || !/^\d{2}:\d{2}$/.test(tp.dueTime || '') || !/^\d{4}-\d{2}-\d{2}$/.test(date || '')) return null;
+  const d0 = Date.parse(date + 'T00:00:00+08:00');
+  const at = hm => { const [h, m] = hm.split(':').map(Number); return d0 + (hm < '04:00' ? 86400000 : 0) + (h * 60 + m) * 60000; };   // before 04:00 = the night after (the task day turns at 04:00, as taskDay / checklistLate)
+  const due = at(tp.dueTime);
+  let from = /^\d{2}:\d{2}$/.test(tp.windowFrom || '') ? at(tp.windowFrom) : due - 4 * 3600000;
+  if(from > due) from -= 86400000; else if(from === due) from = due - 4 * 3600000;   // review: equal start and due is not a 24 h window
+  return [from, due + 3600000];
+}
+// review: matched by text (the server refuses a run whose item texts differ from the template), not by position
+function checklistTempItem(tp, text){ return ((tp && tp.items) || []).some(x => x && x.link === 'temp' && x.text === text); }
+function hasTempReading(logs, branch, date){ return (logs || []).some(l => l && l.branch === branch && klDayOf(Date.parse(l.readAt || l.createdAt)) === date); }
+// logs = this store's temperature logs, or null when the store has no fridge on the list (then a temperature item cannot be proven or failed)
+function checklistProof(run, tp, logs){
+  if(!run || run.status !== 'done') return null;
+  const reasons = [], items = run.items || [];
+  const ts = items.filter(i => i && i.done && i.at).map(i => Date.parse(i.at)).filter(Number.isFinite);
+  if(items.length >= PROOF_FAST_MIN && ts.length && Math.max(...ts) - Math.min(...ts) < PROOF_FAST_MS) reasons.push('fast');
+  const w = checklistWindow(tp, run.date);
+  if(w && ts.some(x => x < w[0] || x > w[1])) reasons.push('window');
+  if(items.some(i => i && i.photo && i.done && !i.photoUrl)) reasons.push('photo');
+  if(logs !== null && items.some(i => i && checklistTempItem(tp, i.text)) && !hasTempReading(logs, run.branch, run.date)) reasons.push('temp');
+  return {proven: reasons.length === 0, reasons};
+}
+function proofReasonsText(pr){ return pr && !pr.proven ? pr.reasons.map(r => t('proof_' + r)).join(' · ') : ''; }
+function proofPill(pr){ if(!pr) return '';
+  return `<span class="pill ${pr.proven ? 'ok' : 'warn'}" style="font-size:10px;">${pr.proven ? '✓ ' + esc(t('proof_ok')) : esc(t('proof_no'))}</span>`; }
+// review: a reading taken with no signal waits in the phone (outbox), not yet in S.tempLogs; it still allows the tick
+function heldTempReading(branch){ const ids = new Set(equipmentFor(branch).map(q => q.id));
+  return ((S.db && S.db.outboxList) ? S.db.outboxList() : []).some(x => x && x.c === '@rpc:temp_log' && x.data && ids.has(x.data.p_equipment)); }
+function proofLogs(branch){ return equipmentFor(branch).some(q => TEMP_KINDS.includes(q.kind)) ? (S.tempLogs || []) : null; }
 /* ============================ HQ TASK PUSH (patch 44 / build .51) ============================
    HQ sends a one-off task to some or all stores with a due time and (optionally) a live-camera photo as proof.
    Stores see it on the home screen and in Tasks; done = public.hq_task_done (photo checked, who / when stamped);
@@ -7268,7 +7306,8 @@ function tasksView(){
     const run=runFor(tp,branch,today); const st=runStatus(run,tp); const p=runProgress(run,tp);
     const who = run ? (st==='done' ? (run.completedBy||'')+' '+fmtTime(run.completedAt||run.createdAt) : (run.startedBy||'')) : '';
     const lateNow = checklistLate(tp, run);
-    const row=el(`<div class="list-row">${ib('check', tp.shift==='open'?'c-amber':(tp.shift==='close'?'c-purple':'c-blue'))}<div class="lr-main"><div class="lr-title">${esc(tp.name)} <span class="pill n" style="font-size:10px;">${esc(shiftKindLabel(tp.shift))}</span></div><div class="lr-sub">${p.done}/${p.total}${who?' · '+esc(who):''}${tp.dueTime && st!=='done'?` · <span style="${lateNow?'color:var(--bad,#C1392B); font-weight:800;':''}">${esc(lateNow?t('task_late'):t('task_due'))} ${esc(tp.dueTime)}</span>`:''}</div></div><span class="pill ${TASK_STATUS[st].c}">${esc(t(TASK_STATUS[st].t))}</span></div>`);
+    const pr = checklistProof(run, tp, proofLogs(branch)), prTxt = proofReasonsText(pr);   // checklist proof (16 Nov)
+    const row=el(`<div class="list-row">${ib('check', tp.shift==='open'?'c-amber':(tp.shift==='close'?'c-purple':'c-blue'))}<div class="lr-main"><div class="lr-title">${esc(tp.name)} <span class="pill n" style="font-size:10px;">${esc(shiftKindLabel(tp.shift))}</span> ${proofPill(pr)}</div><div class="lr-sub">${p.done}/${p.total}${who?' · '+esc(who):''}${tp.dueTime && st!=='done'?` · <span style="${lateNow?'color:var(--bad,#C1392B); font-weight:800;':''}">${esc(lateNow?t('task_late'):t('task_due'))} ${esc(tp.dueTime)}</span>`:''}${prTxt?` · <span style="color:var(--warn,#B5731A);">${esc(prTxt)}</span>`:''}</div></div><span class="pill ${TASK_STATUS[st].c}">${esc(t(TASK_STATUS[st].t))}</span></div>`);
     row.onclick=()=>openTaskRun(tp, branch, today);
     list.appendChild(row);
   });
@@ -7293,6 +7332,8 @@ function openTaskRun(tp, branch, date){
     .forEach(x => { const it = run.items && run.items[x.data.p_idx]; if(it){ it.done = !!x.data.p_done; it.queued = true; if(it.done && !it.by) it.by = me ? me.name : ''; } });
   const body=el('<div></div>');
   body.appendChild(el(`<div class="hint" style="margin-bottom:8px;">${esc(branch)} · ${date} · ${esc(shiftKindLabel(tp.shift))}</div>`));
+  const tLogs = proofLogs(branch);   // checklist proof (16 Nov): null = no fridge listed at this store
+  const proofBox = el('<div class="hint" style="margin-bottom:8px;"></div>'); body.appendChild(proofBox);
   const list=el('<div class="list"></div>'); body.appendChild(list);
   const foot=el('<div class="sheet-foot"></div>');
   const doneBtn=el('<button class="btn primary block"></button>');
@@ -7311,12 +7352,14 @@ function openTaskRun(tp, branch, date){
   function refresh(){
     list.innerHTML='';
     run.items.forEach(it=>{
-      const row=el(`<div class="list-row" style="align-items:flex-start; cursor:default;"><button class="btn sm ${it.done?'ok':''}" style="flex-shrink:0; min-width:44px;">${it.done?'✓':''}${it.queued?'📤':''}</button><div class="lr-main"><div class="lr-title" style="white-space:normal; ${it.done?'color:var(--ink-faint); text-decoration:line-through;':''}">${esc(it.text)}</div><div class="lr-sub">${it.photo?esc(t('task_photo_required')):''}${it.by?' · '+esc(it.by)+' '+fmtTime(it.at):''}</div></div></div>`);
-      const tick=row.querySelector('button');
       const idx=run.items.indexOf(it);
+      const isTemp = checklistTempItem(tp, it.text) && tLogs !== null;   // # item: proven by a temperature reading, not by the tick
+      const row=el(`<div class="list-row" style="align-items:flex-start; cursor:default;"><button class="btn sm ${it.done?'ok':''}" style="flex-shrink:0; min-width:44px;">${it.done?'✓':''}${it.queued?'📤':''}</button><div class="lr-main"><div class="lr-title" style="white-space:normal; ${it.done?'color:var(--ink-faint); text-decoration:line-through;':''}">${esc(it.text)}</div><div class="lr-sub">${it.photo?esc(t('task_photo_required')):''}${isTemp?'🌡 '+esc(t('task_temp_item')):''}${it.by?' · '+esc(it.by)+' '+fmtTime(it.at):''}</div></div></div>`);
+      const tick=row.querySelector('button');
       tick.onclick=()=>{
         if(run.status==='done') return;
         if(!it.done && it.photo && !it.photoUrl){ toast(t('task_need_photo')); return; }
+        if(!it.done && isTemp && !hasTempReading(tLogs, branch, date) && !heldTempReading(branch)){ toast(t('task_need_temp')); return; }
         it.done=!it.done; it.by=it.done?me.name:''; it.at=it.done?new Date().toISOString():'';
         refresh(); sendItem(idx, it.done, it.done && it.photo ? (it.photoUrl || null) : null);
       };
@@ -7331,6 +7374,8 @@ function openTaskRun(tp, branch, date){
       list.appendChild(row);
     });
     const p=runProgress(run,tp);
+    const pr=checklistProof(run, tp, tLogs);
+    proofBox.innerHTML = pr ? proofPill(pr) + (pr.proven ? '' : ' ' + esc(proofReasonsText(pr))) : esc(t('proof_hint'));
     if(run.status==='done'){ doneBtn.textContent=t('task_done')+' · '+(run.completedBy||'')+' '+fmtTime(run.completedAt||run.createdAt); doneBtn.disabled=true; }
     else { doneBtn.textContent=t('btn_complete_checklist')+' ('+p.done+'/'+p.total+')'; doneBtn.disabled = p.done<p.total; }
   }
@@ -7437,15 +7482,20 @@ function openHandoverDetail(h){
   if(h.photo) body.appendChild(photoSlot('handovers', h, 'photo', casePhotoEls));
   openSheet(t('sheet_handover'), body);
 }
+// one template line: "* " = photo required, "# " = proven by the store's temperature log (either order)
+function parseTemplateItem(s){ let x = String(s || '').trim(), photo = false, temp = false;
+  for(let k = 0; k < 2; k++){ if(/^\*/.test(x)){ photo = true; x = x.replace(/^\*\s*/, ''); } else if(/^#\s/.test(x)){ temp = true; x = x.replace(/^#\s+/, ''); } }   // review: "#2 chiller" stays plain text
+  return temp ? {text: x, photo, link: 'temp'} : {text: x, photo}; }
 function openTaskTemplateForm(tp){
   const f=[
     {key:'name', label:t('field_template_name')},
     {key:'shift', label:t('field_shift'), type:'select', options:SHIFT_KINDS.map(k=>({v:k,l:shiftKindLabel(k)}))},
     {key:'branches', label:t('field_branches_opt'), ph:'all'},
+    {key:'windowFrom', label:t('field_window_from'), type:'time'},   // checklist proof (16 Nov): ticks before this do not count
     {key:'dueTime', label:t('field_task_due'), type:'time'},
-    {key:'itemsText', label:t('field_items'), type:'textarea'},
+    {key:'itemsText', label:t('field_items')+' — '+t('tpl_items_hint'), type:'textarea'},
   ];
-  const vals = tp ? Object.assign({}, tp, {itemsText:(tp.items||[]).map(i=>(i.photo?'* ':'')+i.text).join('\n')}) : {branches:'all'};
+  const vals = tp ? Object.assign({}, tp, {itemsText:(tp.items||[]).map(i=>(i.photo?'* ':'')+(i.link==='temp'?'# ':'')+i.text).join('\n')}) : {branches:'all'};
   const body=el('<div>'+fieldsHTML(f, vals)+'</div>');
   const ta=body.querySelector('[data-k="itemsText"]'); if(ta) ta.style.minHeight='180px';
   const foot=el('<div class="sheet-foot"></div>');
@@ -7453,9 +7503,10 @@ function openTaskTemplateForm(tp){
   btn.onclick=async ()=>{
     const v=readFields(body,f);
     if(!v.name||!v.name.trim()){ needFill(['name'], v); return; }
-    const items=(v.itemsText||'').split('\n').map(s=>s.trim()).filter(Boolean).map(s=>({text:s.replace(/^\*\s*/,''), photo:/^\*/.test(s)}));
+    const items=(v.itemsText||'').split('\n').map(s=>s.trim()).filter(Boolean).map(parseTemplateItem).filter(x=>x.text);
     if(items.length===0){ toast(t('err_fill_all')); return; }
-    const data={name:v.name.trim(), shift:v.shift, branches:(v.branches||'all').trim()||'all', dueTime:/^\d{2}:\d{2}$/.test(v.dueTime||'')?v.dueTime:'', items};
+    const data={name:v.name.trim(), shift:v.shift, branches:(v.branches||'all').trim()||'all', dueTime:/^\d{2}:\d{2}$/.test(v.dueTime||'')?v.dueTime:'',
+      windowFrom:/^\d{2}:\d{2}$/.test(v.windowFrom||'')?v.windowFrom:'', items};
     try{
       if(tp) await S.db.doc('taskTemplates/'+tp.id).update(data);
       else await S.db.collection('taskTemplates').add(Object.assign({active:true, createdAt:new Date().toISOString()}, data));
