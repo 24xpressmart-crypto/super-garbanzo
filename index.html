@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-18.313';
+const APP_BUILD = '2026-11-18.314';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -3566,6 +3566,12 @@ function homeView(){
 // (flagged no_location/geoErrorReason for the manager), covering only this one attempt - a later punch asks again.
 function openNoLocationConfirm(errorReason, onRetry, onSendAnyway){
   const body = el(`<div><p style="font-weight:700; margin:0 0 8px;">${esc(t('nl_body'))}</p><p class="hint" style="margin:0;">${esc(t('nl_hint'))}</p></div>`);
+  // 18 Nov: "denied" is a browser/site permission block, not a GPS-off problem - nl_body's "check location is on" cannot
+  // fix it. 9 real devices hit "denied" repeatedly over 2 days (geopre_denied/geo_denied, live client_errors), each one
+  // only ever seeing this generic text, never the iPhone/Android steps that already exist for the clock-screen pre-check
+  // box below. Same steps, same wording, just also shown here where staff actually get asked.
+  if(errorReason === 'denied'){ ['geo_help_iphone', 'geo_help_android', 'geo_help_reload'].forEach(k => {
+    body.appendChild(el(`<p class="hint" style="margin:6px 0 0;">${esc(t(k))}</p>`)); }); }
   const foot = el('<div class="sheet-foot" style="display:flex; flex-direction:column; gap:8px;"></div>');
   const retry = el(`<button class="btn primary block">${esc(t('nl_retry_btn'))}</button>`), send = el(`<button class="btn block">${esc(t('nl_send_btn'))}</button>`);
   retry.onclick = () => { closeSheet(); logClientError('other', 'nl_answer_retry', errorReason || ''); onRetry(); };
