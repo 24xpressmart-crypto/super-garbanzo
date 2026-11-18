@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-18.312';
+const APP_BUILD = '2026-11-18.313';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -9438,11 +9438,11 @@ const LAYOUT = {
       + box(130, 282.4, 65, 6, 'mono l-bcnum', bcDigits(l))
       + box(sw + 8, 283, 110, 5, 'mono l-tag', `SKU ${l.code} · ${stamp(l)}`);
   } },
-  // T = mini shelf-edge tag 50x30 (nothing closer than 2mm to an edge; 4 across x 9 down = 36 per A4). EAN-13 box is 26mm wide (80% magnification of the symbol).
+  // T = mini shelf-edge tag 50x30 (nothing closer than 2mm to an edge; 4 across x 9 down = 36 per A4). EAN-13 box is 29.8mm wide = 0.264mm per module = 80% of the GS1 nominal 0.33mm (the minimum); the svg is 113 modules wide with quiet zones.
   T: { w: 50, h: 30, per: { cols: 4, rows: 9, top: 13.5 }, html(l) {
-    const ty = typeOf(l), P = (ty === 'deal' || ty === 'reduced') ? l.promo : null, c = catOf(l), sw = c ? 3.4 : 1.8, x0 = sw + 1.2, xe = 48, FL = flagText(l);
-    const right = P ? box(x0 + 27, 19.4, xe - x0 - 27, 3.8, 'save t-save', `SAVE RM${fmt(P.save)}`)
-      : (unitPrice(l) ? box(x0 + 27, 19.6, xe - x0 - 27, 3.6, 'unit mono t-unit', esc(unitPrice(l))) : (unitNote(l) ? box(x0 + 27, 19.6, xe - x0 - 27, 3.6, 'unit mono t-unit', esc(unitNote(l))) : ''));
+    const ty = typeOf(l), P = (ty === 'deal' || ty === 'reduced') ? l.promo : null, c = catOf(l), sw = c ? 2.6 : 1.6, x0 = sw + 1, xe = 48, BCW = 29.8, rx = x0 + BCW + 0.8, FL = flagText(l);
+    const right = P ? box(rx, 19.4, xe - rx, 3.8, 'save t-save', `SAVE RM${fmt(P.save)}`)
+      : (unitPrice(l) ? box(rx, 19.6, xe - rx, 3.6, 'unit mono t-unit', esc(unitPrice(l))) : (unitNote(l) ? box(rx, 19.6, xe - rx, 3.6, 'unit mono t-unit', esc(unitNote(l))) : ''));
     return stripe(sw, 30, l, 't-vw')
       + logoBox(xe - 8, 2, 8, 5.6, ty)
       + box(x0, 2, xe - x0 - 9, 6.2, 'name t-name' + nc(l, 26, 36, 46), nameEl(l))
@@ -9450,7 +9450,7 @@ const LAYOUT = {
       + (P ? box(x0 + 11.5, 8.4, xe - x0 - 11.5, 2.4, 'was t-was', wasHtml(l)) : '')
       + (P ? box(x0 + 11.5, 10.6, xe - x0 - 11.5, 8.6, 'price t-price promo' + pcls(l), priceHtml(P.total))
            : box(x0 + (FL ? 11.5 : 0), 8.6, xe - x0 - (FL ? 11.5 : 0), 10.4, 'price t-price' + pcls(l), priceHtml(l.price)))
-      + box(x0, 19.4, 26, 6.8, 'barcode', E.svg(l.bc))
+      + box(x0, 19.4, BCW, 6.8, 'barcode', E.svg(l.bc))
       + right
       + box(x0, 26.6, xe - x0, 2.2, 'mono t-tag', `SKU ${l.code} · ${stamp(l)}${P ? endTxt(l) : ''}`);
   } },
