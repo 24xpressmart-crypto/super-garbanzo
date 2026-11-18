@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-18.306';
+const APP_BUILD = '2026-11-18.307';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -3623,7 +3623,13 @@ function clockView(){
   };
   S.preGeoShow = showPre;
   if(clockSel) clockSel.addEventListener('change', () => showPre());
-  if(S.preGeo && Date.now() - S.preGeo.at < 300000) showPre();   // 5 min: the screen redraws often, the phone is asked again on "Try again" and at the punch
+  // 18 Nov: "every change anywhere redraws the page" (uiBusy, above) re-runs this on a device with no GPS at all
+  // (NORHAYATI's office PC: 13 geopre_timeout in 3 h, 20 s each, never once a real fix) every time anyone else in
+  // the company punches, taps a photo, anything. A real fix still auto-refreshes every 5 min as before; an error
+  // backs off to 15 min - "Try again" (geoPreBox's own button) always calls runPre() directly, so an explicit retry
+  // is never slowed down, only the automatic one on someone else's unrelated redraw.
+  const preStaleMs = (S.preGeo && S.preGeo.g && S.preGeo.g.error) ? 900000 : 300000;
+  if(S.preGeo && Date.now() - S.preGeo.at < preStaleMs) showPre();   // the phone is asked again on "Try again" and at the punch regardless
   else if(S.preGeoBusy) showPre();
   else runPre();
 
