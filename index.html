@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-18.317';
+const APP_BUILD = '2026-11-18.318';
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
 async function checkNewBuild(){
@@ -9638,8 +9638,8 @@ function lblPreviewDoc(label, size, mode){
 }
 // Red-arrow walkthrough (14 Nov 2026): one step at a time, a red outline + a red arrow on the real control, Chinese line then English line. No data is read or changed.
 const LBL_GUIDE = [
-  {s: '[data-q]', zh: '在这里输入商品名、商品编号，或扫描条码。', en: 'Type the item name or code here, or scan the barcode.'},
-  {s: '[data-res] button.primary', f: '[data-q]', zh: '点「加入」，商品就进入打印清单。红字「不能打印」＝条码或价格有问题，不要打印，通知总部。', en: 'Tap "Add" and the item goes into the print list. Red "Cannot print" = bad barcode or price. Do not print it. Tell HQ.'},
+  {s: '[data-q]', zh: '在这里输入商品名、商品编号，或用扫描枪扫条码。手机有「用手机相机扫条码」按钮：对准条码就自动加入，可连续扫，按「完成」结束。', en: 'Type the item name or code here, or scan the barcode with the scanner. If you see "Scan barcode with camera", point the phone at the barcode: it adds by itself, scan many, then press "Done".'},
+  {s: '[data-res] button.primary', f: '[data-q]', zh: '点「加入」，商品就进入打印清单。红字「不能打印」＝条码或价格有问题，不要打印，通知总部。常用的商品点 ☆，下次按「★ 常用商品」一键调出。小字「这台手机……打印过」是上次打印的日期；变红＝价格变了，要重新打印。', en: 'Tap "Add" and the item goes into the print list. Red "Cannot print" = bad barcode or price. Do not print it. Tell HQ. Tap ☆ on items you use often, then press "★ My usual items" next time. The small line "Printed from this phone" shows the last print date; red = the price changed, print a new label.'},
   {s: '[data-cart]', zh: '检查清单。用 + − 改张数。需要时选标签类型：平常价 / 优惠 / 降价 / 锁价。', en: 'Check the list. Use + − for the number of labels. Pick the label type if needed: Plain / Deal / Reduced / Price lock.'},
   {s: '[data-opt]', zh: '选尺寸，再选「彩色」或「黑白」。', en: 'Pick the size, then "Colour" or "Black & white".'},
   {s: '[data-prev]', zh: '看预览：名称、价格、条码对不对。', en: 'Check the preview: name, price and barcode are right.'},
