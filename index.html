@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-21.325';
+const APP_BUILD = '2026-11-21.326';
 const RECV_OPEN_SITES = ['H1','P5','P8A'];   // 2026-11-21 (Helen, WhatsApp): VM_H1, VM_P5, VM_P8 open as goods-receive locations for every receiver
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
@@ -1936,7 +1936,8 @@ function isManager(){const e=currentEmployee(); return !!(e && e.role==='manager
 function canManageStaff(){return isAdmin()||isManager();}
 function myBranch(){const e=currentEmployee(); return e&&e.homeBranch;}
 function branchList(){
-  const set = new Set(S.employees.map(e=>String(e.homeBranch || '').trim().toUpperCase()).filter(Boolean));   // 199
+  // 2026-11-21: a home branch typed as "BR07, BR09" is two stores - split it, so each gets one button (no duplicate)
+  const set = new Set(S.employees.flatMap(e=>String(e.homeBranch || '').toUpperCase().split(/[\s,;]+/)).map(s=>s.trim()).filter(Boolean));   // 199
   return [...set].sort((a,b)=>a.localeCompare(b,'zh'));
 }
 function lowThreshold(product){return (product && product.lowStockThreshold!=null) ? product.lowStockThreshold : S.settings.lowStockDefault;}
