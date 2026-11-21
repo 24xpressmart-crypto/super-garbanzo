@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-21.327';
+const APP_BUILD = '2026-11-21.328';
 const RECV_OPEN_SITES = ['H1','P5','P8A'];   // 2026-11-21 (Helen, WhatsApp): VM_H1, VM_P5, VM_P8 open as goods-receive locations for every receiver
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
@@ -9960,6 +9960,7 @@ async function accLoad(){
       accDb().from('pos_day').select('day,outlet').gte('day', since21).limit(2000),
       accDb().from('v_stock_out_pending').select('*').limit(1000),
     ]);
+    S.acc.summary=sum;   // 2026-11-21: set before the list checks - a failed list used to hide the owner tabs, so the held tab could not be reached
     for(const r of [recv,exc,jrn]) if(r.error) throw r.error;
     // any other list that failed is said, never shown as an empty (all clear) list
     const failed=[['AP',owed],['AP',owedInv],['GRNI',grni],['POS',posDay],['POS',posTender],['POS',posShift],['cash',tillCash],['payments',pay],['returns',soP]].filter(([,r])=>r && r.error).map(([n])=>n);
