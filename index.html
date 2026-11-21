@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-21.326';
+const APP_BUILD = '2026-11-21.327';
 const RECV_OPEN_SITES = ['H1','P5','P8A'];   // 2026-11-21 (Helen, WhatsApp): VM_H1, VM_P5, VM_P8 open as goods-receive locations for every receiver
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
@@ -744,7 +744,7 @@ const I18N = {
     pending_punch_title:'待审批补卡', pending_swap_title:'待审批换班',
     notif_punch_approved:'补卡已批准', notif_punch_rejected:'补卡被拒绝', notif_swap_approved:'换班已批准', notif_swap_rejected:'换班被拒绝', notif_pending_punch:'待审批补卡', notif_pending_swap:'待审批换班',
     branch_location_title:'本店位置', branch_location_set:'已设定', branch_location_unset:'尚未设定：请在店内点击下方按钮，打卡才能核对距离', btn_set_branch_location:'用当前位置设为本店坐标', btn_use_my_location:'使用当前位置',
-    toast_location_saved:'门店位置已保存', toast_location_filled:'已填入当前坐标', swap_gives:'换出', swap_takes:'接手',
+    toast_location_saved:'门店位置已保存', loc_weak:'定位不够准（±{m} 米）。请站到店门口空旷处，等几秒再按。', loc_far_hq:'你离这间店现在的位置 {m}。经理只能微调（{r}以内）。要搬更远，请让总部改。', loc_far_q:'要把 {b} 的位置搬走 {m} 吗？打卡和跑腿到店都会按新位置算。', toast_location_filled:'已填入当前坐标', swap_gives:'换出', swap_takes:'接手',
     nav_home:'首页', nav_clock:'打卡', nav_stock:'库存', nav_equip:'设备', nav_me:'我的',
     insp_clean:'外观 / 玻璃清洁', insp_lane:'货道、出货口正常', insp_pay:'扫码 / 刷卡支付正常',
     insp_lock:'门锁、防盗完好', insp_change:'找零 / 退币正常', insp_temp:'制冷 / 温度正常（如适用）',
@@ -998,7 +998,7 @@ const I18N = {
     pending_punch_title:'Pending punch requests', pending_swap_title:'Pending shift swaps',
     notif_punch_approved:'Punch request approved', notif_punch_rejected:'Punch request rejected', notif_swap_approved:'Shift swap approved', notif_swap_rejected:'Shift swap rejected', notif_pending_punch:'Punch request pending', notif_pending_swap:'Swap request pending',
     branch_location_title:'Store location', branch_location_set:'Set', branch_location_unset:'Not set: tap the button below while at the store so clock-ins can be checked', btn_set_branch_location:'Use my location as store position', btn_use_my_location:'Use my location',
-    toast_location_saved:'Store location saved', toast_location_filled:'Coordinates filled in', swap_gives:'gives', swap_takes:'takes',
+    toast_location_saved:'Store location saved', loc_weak:'Location not precise enough (±{m} m). Stand in the open at the shop front, wait a few seconds, then try again.', loc_far_hq:'You are {m} from this store\'s pin. A manager can only nudge it (within {r}). A bigger move is done by HQ.', loc_far_q:'Move the {b} pin by {m}? Clock-ins and runner visits will be measured from the new spot.', toast_location_filled:'Coordinates filled in', swap_gives:'gives', swap_takes:'takes',
     nav_home:'Home', nav_clock:'Clock', nav_stock:'Stock', nav_equip:'Equipment', nav_me:'Me',
     insp_clean:'Exterior / glass clean', insp_lane:'Lanes & dispense chute working', insp_pay:'QR / card payment working',
     insp_lock:'Door lock & security intact', insp_change:'Change / coin return working', insp_temp:'Refrigeration / temperature normal (if applicable)',
@@ -1252,7 +1252,7 @@ const I18N = {
     pending_punch_title:'Permohonan daftar menunggu', pending_swap_title:'Tukar syif menunggu',
     notif_punch_approved:'Permohonan daftar diluluskan', notif_punch_rejected:'Permohonan daftar ditolak', notif_swap_approved:'Tukar syif diluluskan', notif_swap_rejected:'Tukar syif ditolak', notif_pending_punch:'Permohonan daftar menunggu', notif_pending_swap:'Permohonan tukar menunggu',
     branch_location_title:'Lokasi kedai', branch_location_set:'Ditetapkan', branch_location_unset:'Belum ditetapkan: ketik butang di bawah semasa berada di kedai supaya daftar masuk boleh disemak', btn_set_branch_location:'Guna lokasi saya sebagai kedudukan kedai', btn_use_my_location:'Guna lokasi saya',
-    toast_location_saved:'Lokasi kedai disimpan', toast_location_filled:'Koordinat diisi', swap_gives:'serah', swap_takes:'ambil',
+    toast_location_saved:'Lokasi kedai disimpan', loc_weak:'Lokasi kurang tepat (±{m} m). Berdiri di kawasan terbuka di depan kedai, tunggu sebentar, kemudian cuba lagi.', loc_far_hq:'Anda {m} dari pin kedai ini. Pengurus hanya boleh laras sedikit (dalam {r}). Alihan lebih jauh dibuat oleh HQ.', loc_far_q:'Alih pin {b} sejauh {m}? Punch masuk dan lawatan runner akan diukur dari tempat baru.', toast_location_filled:'Koordinat diisi', swap_gives:'serah', swap_takes:'ambil',
     nav_home:'Utama', nav_clock:'Daftar', nav_stock:'Stok', nav_equip:'Peralatan', nav_me:'Saya',
     insp_clean:'Luaran / kaca bersih', insp_lane:'Lorong & saluran keluar berfungsi', insp_pay:'Bayaran QR / kad berfungsi',
     insp_lock:'Kunci pintu & keselamatan baik', insp_change:'Baki / pemulangan syiling berfungsi', insp_temp:'Penyejukan / suhu normal (jika berkenaan)',
@@ -6667,11 +6667,23 @@ function branchGeoInfo(geo, branch){
   const dist=Math.round(haversine(geo.lat,geo.lng,c.lat,c.lng));
   return {configured:true, branch, distance:dist, inRange: dist<=(S.settings.geofenceRadius||300)};
 }
+// 21 Nov 2026: on 15 Oct one tap here moved BR13's pin (Batu Lanchang) 15 km, to Juru next to BR20; clock-ins and runner visits
+// were measured on it from then on. Now: a good fix only (<= 50 m); a manager may only nudge a pin (LOC_NUDGE_M); a bigger move
+// is HQ's (admin, after a confirm). The pin it replaces stays on the row (prevLat/prevLng/prevSetBy/prevSetAt).
+const LOC_NUDGE_M = 150;
 async function saveBranchLocation(branch){
   const geo=await getGeo();
   if(!geo || geo.error){ toast(geoErrorMessage(geo&&geo.error)); return false; }
-  const existing=siteFor(branch);
+  const acc=Number(geo.accuracy);
+  if(!(acc<=50)){ toast(t('loc_weak').split('{m}').join(Number.isFinite(acc) ? String(Math.round(acc)) : '?')); return false; }
+  const existing=siteFor(branch), old=siteCoordsFor(branch);
+  const moved = (old && Number.isFinite(old.lat) && Number.isFinite(old.lng)) ? Math.round(haversine(geo.lat,geo.lng,old.lat,old.lng)) : null;
+  if(moved!=null && moved>LOC_NUDGE_M){
+    if(!isAdmin()){ toast(t('loc_far_hq').split('{m}').join(fmtDist(moved)).split('{r}').join(fmtDist(LOC_NUDGE_M))); return false; }
+    if(!confirm(t('loc_far_q').split('{b}').join(branch).split('{m}').join(fmtDist(moved)))) return false;
+  }
   const data={lat:geo.lat, lng:geo.lng, locSetBy:currentEmployee().name, locSetAt:new Date().toISOString(), locAccuracy:geo.accuracy};
+  if(existing && moved!=null){ data.prevLat=old.lat; data.prevLng=old.lng; data.prevSetBy=existing.locSetBy||''; data.prevSetAt=existing.locSetAt||''; }
   try{
     if(existing) await S.db.doc('sites/'+existing.id).update(data);
     else await S.db.doc('sites/'+branch).set(Object.assign({address:'', city:''}, data));
