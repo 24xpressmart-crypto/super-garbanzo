@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-21.331';
+const APP_BUILD = '2026-11-22.332';
 const RECV_OPEN_SITES = ['H1','P5','P8A'];   // 2026-11-21 (Helen, WhatsApp): VM_H1, VM_P5, VM_P8 open as goods-receive locations for every receiver
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
@@ -774,6 +774,7 @@ const I18N = {
     memo_audience_all:'全公司', memo_audience_label:'发布对象', memo_priority:'优先级', memo_priority_normal:'普通', memo_priority_important:'重要',
     field_memo_title:'标题', field_memo_body:'内容', sheet_post_memo:'发布公告', err_fill_memo:'请填写标题和内容', toast_memo_posted:'公告已发布',
     memo_unread:'未读', memo_important:'重要', memo_read_stats_prefix:'已读 ', memo_unread_by:'未读人员', memo_all_read:'所有人都已读',
+    esign_required:'需要签名', esign_sign_needed:'待签名', esign_title:'阅读确认及签名', esign_sentence_pp:'本人 {name}（护照 {ic}）已阅读并明白本公告内容，并同意遵守。', esign_sentence:'本人 {name}（身份证 {ic}）已阅读并明白本公告内容，并同意遵守。', esign_pad_hint:'请用手指在框内签名', esign_clear:'清除', esign_sign_btn:'签名', esign_need_ink:'请先签名', esign_saving:'正在保存签名…', esign_done:'已签名，谢谢', esign_signed_at:'已签名：', esign_no_ic:'（未登记）', esign_view_copy:'查看/打印签名副本', esign_print:'打印 / 存为 PDF', esign_signed_count:'已签名 ', esign_not_signed_by:'未签名人员', esign_all_signed:'所有人都已签名', esign_signed_list:'已签名人员', esign_prompt_title:'有公告需要你签名', esign_gps:'位置', esign_no_gps:'没有位置', esign_copy_title:'签名副本', esign_err_already:'你已签过这份公告', esign_tick_hint:'员工打开后需阅读并用手指签名，签名后不能修改或删除',
     btn_delete_memo:'删除公告', confirm_delete_memo:'确定删除这条公告？', memo_posted_by:'发布人：',
     notif_title:'通知', notif_empty:'暂无新通知', notif_new_memo:'新公告', notif_leave_approved:'请假申请已批准', notif_leave_rejected:'请假申请已驳回',
     notif_new_schedule:'新排班', notif_pending_leave:'待审批申请', notif_new_fault:'新故障报修', notif_keg_expiring:'鲜啤即将到期', notif_keg_expired:'鲜啤已过保鲜期',
@@ -1028,6 +1029,7 @@ const I18N = {
     memo_audience_all:'Whole Company', memo_audience_label:'Send To', memo_priority:'Priority', memo_priority_normal:'Normal', memo_priority_important:'Important',
     field_memo_title:'Title', field_memo_body:'Message', sheet_post_memo:'Post Announcement', err_fill_memo:'Please enter a title and message', toast_memo_posted:'Announcement posted',
     memo_unread:'Unread', memo_important:'Important', memo_read_stats_prefix:'Read ', memo_unread_by:'Not yet read by', memo_all_read:'Everyone has read this',
+    esign_required:'Signature required', esign_sign_needed:'Sign needed', esign_title:'Read and sign', esign_sentence_pp:'I, {name}, Passport {ic}, have read and understood this memo and agree to follow it.', esign_sentence:'I, {name}, IC {ic}, have read and understood this memo and agree to follow it.', esign_pad_hint:'Sign inside the box with your finger', esign_clear:'Clear', esign_sign_btn:'Sign', esign_need_ink:'Please sign first', esign_saving:'Saving signature…', esign_done:'Signed, thank you', esign_signed_at:'Signed: ', esign_no_ic:'(not on file)', esign_view_copy:'Open / print signed copy', esign_print:'Print / save as PDF', esign_signed_count:'Signed ', esign_not_signed_by:'Not yet signed by', esign_all_signed:'Everyone has signed', esign_signed_list:'Signed by', esign_prompt_title:'A memo needs your signature', esign_gps:'Location', esign_no_gps:'No location', esign_copy_title:'Signed copy', esign_err_already:'You have already signed this memo', esign_tick_hint:'Staff must read it and sign with a finger; a signature cannot be changed or deleted',
     btn_delete_memo:'Delete Announcement', confirm_delete_memo:'Delete this announcement?', memo_posted_by:'Posted by: ',
     notif_title:'Notifications', notif_empty:'No new notifications', notif_new_memo:'New announcement', notif_leave_approved:'Leave request approved', notif_leave_rejected:'Leave request rejected',
     notif_new_schedule:'New shift scheduled', notif_pending_leave:'Leave request to review', notif_new_fault:'New fault report', notif_keg_expiring:'Keg expiring soon', notif_keg_expired:'Keg past freshness',
@@ -1282,6 +1284,7 @@ const I18N = {
     memo_audience_all:'Seluruh syarikat', memo_audience_label:'Hantar kepada', memo_priority:'Keutamaan', memo_priority_normal:'Biasa', memo_priority_important:'Penting',
     field_memo_title:'Tajuk', field_memo_body:'Mesej', sheet_post_memo:'Hantar pengumuman', err_fill_memo:'Sila masukkan tajuk dan mesej', toast_memo_posted:'Pengumuman dihantar',
     memo_unread:'Belum dibaca', memo_important:'Penting', memo_read_stats_prefix:'Dibaca ', memo_unread_by:'Belum dibaca oleh', memo_all_read:'Semua sudah baca',
+    esign_required:'Tandatangan diperlukan', esign_sign_needed:'Perlu tandatangan', esign_title:'Baca dan tandatangan', esign_sentence_pp:'Saya, {name}, Pasport {ic}, telah membaca dan memahami memo ini dan bersetuju untuk mematuhinya.', esign_sentence:'Saya, {name}, No. KP {ic}, telah membaca dan memahami memo ini dan bersetuju untuk mematuhinya.', esign_pad_hint:'Tandatangan dalam kotak dengan jari anda', esign_clear:'Padam', esign_sign_btn:'Tandatangan', esign_need_ink:'Sila tandatangan dahulu', esign_saving:'Menyimpan tandatangan…', esign_done:'Sudah ditandatangan, terima kasih', esign_signed_at:'Ditandatangan: ', esign_no_ic:'(tiada dalam rekod)', esign_view_copy:'Buka / cetak salinan bertandatangan', esign_print:'Cetak / simpan PDF', esign_signed_count:'Ditandatangan ', esign_not_signed_by:'Belum tandatangan', esign_all_signed:'Semua sudah tandatangan', esign_signed_list:'Sudah tandatangan', esign_prompt_title:'Ada memo perlu tandatangan anda', esign_gps:'Lokasi', esign_no_gps:'Tiada lokasi', esign_copy_title:'Salinan bertandatangan', esign_err_already:'Anda sudah tandatangan memo ini', esign_tick_hint:'Staf mesti baca dan tandatangan dengan jari; tandatangan tidak boleh diubah atau dipadam',
     btn_delete_memo:'Padam pengumuman', confirm_delete_memo:'Padam pengumuman ini?', memo_posted_by:'Dihantar oleh: ',
     notif_title:'Pemberitahuan', notif_empty:'Tiada pemberitahuan baharu', notif_new_memo:'Pengumuman baharu', notif_leave_approved:'Permohonan cuti diluluskan', notif_leave_rejected:'Permohonan cuti ditolak',
     notif_new_schedule:'Syif baharu dijadualkan', notif_pending_leave:'Permohonan cuti untuk disemak', notif_new_fault:'Laporan kerosakan baharu', notif_keg_expiring:'Tong hampir tamat kesegaran', notif_keg_expired:'Tong sudah lepas kesegaran',
@@ -1445,7 +1448,7 @@ const S = {
   settings:{businessName:'24 Xpress', lowStockDefault:5, geofenceRadius:300, lateGraceMin:10, nightStart:'23:00', nightEnd:'07:00', safetyIntervalMin:120, emergencyPhone:'', slaHighHours:4, slaMediumHours:24, slaLowHours:72, shiftTemplates:'早班 Morning=09:00-18:00\n中班 Afternoon=14:00-23:00\n夜班 Night=23:00-07:00'},
   stockDeviceFilter:'all', equipTab:'devices', faultFilter:'open', historyRange:'today', attnScope:'mine',
   stockSection:'snacks', kegFilter:'tapped', beerZoneFilter:'all', pickerBranch:null, staffBranchFilter:'all', lastGeoMsg:null, clockSub:'records', reportMonth:(function(){const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');})(), reportBranch:'all', reportData:null, reportLoading:false,
-  beerProducts:[], taps:[], kegs:[], kegLogs:[], memos:[], memoReads:[], vmSlots:[], vmVisits:[], vmTab:'today', vmDev:null, vmRange:7,
+  beerProducts:[], taps:[], kegs:[], kegLogs:[], memos:[], memoReads:[], memoSigns:[], vmSlots:[], vmVisits:[], vmTab:'today', vmDev:null, vmRange:7,
   skus:[], stockRequests:[], receiptReads:[], orderBranch:null, orderTab:'inbox',
   appQuestions:[], suppliers:[], receipts:[], grnChecks:[], grnMoves:[], floatRegs:[], refundLogs:[], cashHandovers:[], ccSubbed:false, supplierReqs:[], hqEscalations:[], srqAt:0, grnAmends:[], gcFilter:null, receiveBranch:null, stockOuts:[], onlineOrders:[], purchaseOrders:[], freshChecks:[], zeroChecks:[], cycleCounts:[], hqTasks:[], hqTaskDone:[], olFilter:'ordered', soTab:'return', soBranch:null, soDraft:{}, soAdminMode:'all', soAdminKind:'all',
   acc:{summary:null, receiving:[], exceptions:[], journals:[], payments:[], cod:[], owed:[], owedInv:[], owedOpen:null, grni:[], posDay:[], posTender:[], posShift:[], posLoad:null, posHist:[], tillCash:[], tillGrn:[], soPending:[], soErr:null, soUntick:{}, bills:null, billDraft:null, loading:false, loadedAt:null, error:null, tab:'exceptions'},
@@ -2473,6 +2476,7 @@ function sub(colPath, key, opts){
     if(key==='skus') S.skusLoaded=true;
     if(key==='purchaseOrders') S.poLoaded=true;   // patch 137c: orphan clean-up only once the real list is in
     if(key==='memoReads') S.memoReadsLoaded=true;
+    if(key==='memoSigns') S.memoSignsLoaded=true;
     if(key==='schedules') S.schedulesLoaded=true;   // patch 177
     renderFromData();
   }, err=>{ console.warn(colPath, err); });
@@ -2544,6 +2548,7 @@ function subscribeAll(){
   sub('schedules','schedules',{order:'date',dir:'asc',limit:4000,sinceDays:30,sinceField:'date',sinceDate:true});   // HQ sees every store's weeks, not the oldest 600 rows
   sub('leaveRequests','leaveRequests',{order:'createdAt',limit:400,sinceDays:400});
   sub('memos','memos',{order:'createdAt',limit:200});
+  sub('memoSigns','memoSigns',{limit:3000}); // memo e-sign (patch158): no picture here, it is in memoSignPics, read only when a copy is opened
   sub('memoReads','memoReads',{limit:500}); // one doc per employee: {readIds:{memoId:readAt}}
   sub('punchRequests','punchRequests',{order:'createdAt',limit:300,sinceDays:120});
   sub('materialRequests','materialRequests',{order:'createdAt',limit:400,sinceDays:120});
@@ -2628,6 +2633,7 @@ function renderApp(){
   if(S.tab==='order' || S.tab==='receive' || S.tab==='stockout' || S.tab==='online') ensureCatalog();
   view.appendChild((map[S.tab]||homeView)());
   pdpaMaybePrompt();
+  esignMaybePrompt();
   view.querySelectorAll('.list-row, .id-pick-row').forEach(r=>{ if(r.onclick && !r.hasAttribute('tabindex')){ r.setAttribute('tabindex','0'); r.setAttribute('role','button'); } });
 }
 function screenMsg(icon,title,body){
@@ -5285,7 +5291,8 @@ function memoRow(m){
   const readCount=members.filter(x=>memoIsReadBy(m.id,x.id)).length;
   const audienceLabel = m.audience==='all' ? t('memo_audience_all') : m.audience;
   const stats = canManageStaff() ? ` · ${t('memo_read_stats_prefix')}${readCount}/${members.length}` : '';
-  const pill = m.important ? `<span class="pill critical">${esc(t('memo_important'))}</span>` : (unread ? `<span class="pill accent">${esc(t('memo_unread'))}</span>` : '');
+  const signDue = esignNeeds(m, e) && !memoSignOf(m.id, e.id);
+  const pill = signDue ? `<span class="pill critical">${esc(t('esign_sign_needed'))}</span>` : m.important ? `<span class="pill critical">${esc(t('memo_important'))}</span>` : (unread ? `<span class="pill accent">${esc(t('memo_unread'))}</span>` : '');
   const row=el(`<div class="list-row">${m.image?`<img class="lr-thumb" src="${safeSrc(m.image)}">`:ib('megaphone', m.important?'c-red':'c-orange')}<div class="lr-main"><div class="lr-title" style="${unread?'':'font-weight:500;'}">${esc(m.title)}</div><div class="lr-sub">${esc(m.authorName||'')} · ${fmtDateTime(m.createdAt)} · ${esc(audienceLabel)}${esc(stats)}</div></div>${pill}</div>`);
   row.onclick=()=>openMemoDetail(m);
   return row;
@@ -5314,6 +5321,145 @@ async function markMemoRead(memoId){
   try{ await S.db.doc('memoReads/'+e.id).updateWith(d=>({readIds:Object.assign({}, d.readIds||{}, {[memoId]:at})})); }
   catch(err){ if(err && err.code==='not_found'){ try{ await S.db.doc('memoReads/'+e.id).set({employeeId:e.id, employeeName:e.name, readIds:{[memoId]:at}}); }catch(e2){ console.warn(e2); } } else console.warn(err); }
 }
+/* ============================ MEMO E-SIGN (owner 21 Nov 2026: "build memo esign") ============================
+   A memo posted with "Signature required" asks every staff member it reaches to sign it with a finger.
+   The signature is saved ONLY by the server function memo_sign (patch158): it takes the name and the masked IC from
+   the staff record (only icLast4 is kept, never the full IC), keeps a copy of the memo text as it was signed, and
+   refuses a second signature. Staff cannot edit or delete a signature (memoSigns / memoSignPics: no direct writes).
+   memoSigns = the record (small, synced); memoSignPics = the PNG, read only when a signed copy is opened.
+   Unsigned memos open by themselves once per App open (never over the clock screen or an open form). */
+function esignLang(){ return S.lang==='zh' ? 'zh' : (S.lang==='ms' ? 'ms' : 'en'); }
+// icLast4 = last 4 of the IC, or of the passport when idType is 'PASSPORT' (foreign staff); never the full number
+function esignIsPassport(emp){ return !!(emp && emp.idType==='PASSPORT'); }
+function esignMask(emp){ const x=String((emp && emp.icLast4) || ''); if(!/^[0-9A-Za-z]{4}$/.test(x)) return ''; return esignIsPassport(emp) ? '****'+x : '******-**-'+x; }
+function esignSentence(lang, name, mask, passport){
+  const L=I18N[lang] || I18N.en;
+  return String(passport ? L.esign_sentence_pp : L.esign_sentence).replace('{name}', name || '').replace('{ic}', mask || L.esign_no_ic);
+}
+function memoSignOf(memoId, empId){ return (S.memoSigns || []).find(x=>x.memoId===memoId && x.employeeId===empId) || null; }
+function esignNeeds(m, e){
+  return !!(m && m.signRequired && e && m.authorId!==e.id && e.active!==false && (m.audience==='all' || m.audience===e.homeBranch));
+}
+function esignPending(){
+  const e=currentEmployee(); if(!e || !S.memoSignsLoaded) return [];
+  return visibleMemos().filter(m=>esignNeeds(m, e) && !memoSignOf(m.id, e.id));
+}
+function esignMaybePrompt(){
+  const open=()=>{ const mw=typeof document!=='undefined' && document.getElementById ? document.getElementById('modalWrap') : null; return !!(mw && mw.classList && mw.classList.contains('show')); };
+  if(S.esignAsked || S.tab==='clock' || open()) return;   // never in the way of clock in / out
+  const e=currentEmployee(); if(!e || !S.employeesLoaded || !S.memoSignsLoaded) return;
+  const p=esignPending(); if(!p.length) return;
+  S.esignAsked=true;
+  setTimeout(()=>{
+    if(open() || S.tab==='clock'){ S.esignAsked=false; return; }   // the PDPA notice or a form came first: ask on the next screen
+    const left=esignPending(); if(!left.length) return;
+    toast(t('esign_prompt_title')); openMemoDetail(left[0]);
+  }, 900);
+}
+// finger signature pad: white box, black ink, Clear button; png() gives a small PNG (480 px wide)
+function esignPad(){
+  const w=el(`<div><div class="hint" style="margin:8px 0 4px;">${esc(t('esign_pad_hint'))}</div><canvas class="esign-cv" style="width:100%; height:160px; border:1.5px dashed var(--line,#B9B8B0); border-radius:10px; background:#fff; touch-action:none; display:block;"></canvas><div class="row" style="justify-content:flex-end; margin-top:6px;"><button class="btn sm esign-clr" type="button">${esc(t('esign_clear'))}</button></div></div>`);
+  const cv=w.querySelector('canvas'); let ctx=null, last=null, ink=0;
+  const setup=()=>{ const r=cv.getBoundingClientRect(), dpr=Math.min(2, window.devicePixelRatio||1);
+    cv.width=Math.max(300, Math.round((r.width||320)*dpr)); cv.height=Math.round(160*dpr);
+    ctx=cv.getContext('2d'); ctx.lineWidth=2.6*dpr; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle='#111'; ink=0; };
+  const pos=ev=>{ const r=cv.getBoundingClientRect(); return [(ev.clientX-r.left)*cv.width/r.width, (ev.clientY-r.top)*cv.height/r.height]; };
+  cv.addEventListener('pointerdown', ev=>{ if(!ctx) setup(); ev.preventDefault(); try{ cv.setPointerCapture(ev.pointerId); }catch(e){}
+    last=pos(ev); ctx.beginPath(); ctx.arc(last[0], last[1], ctx.lineWidth/2, 0, 6.3); ctx.fillStyle='#111'; ctx.fill(); ink+=1; });
+  cv.addEventListener('pointermove', ev=>{ if(!last) return; ev.preventDefault(); const p=pos(ev);
+    ctx.beginPath(); ctx.moveTo(last[0], last[1]); ctx.lineTo(p[0], p[1]); ctx.stroke(); ink+=Math.hypot(p[0]-last[0], p[1]-last[1]); last=p; });
+  ['pointerup','pointercancel','pointerleave'].forEach(k=>cv.addEventListener(k, ()=>{ last=null; }));
+  w.querySelector('.esign-clr').onclick=()=>setup();
+  w.hasInk=()=>!!ctx && ink>40;   // a dot or a tiny tick is not a signature
+  w.png=()=>{ const o=document.createElement('canvas'); o.width=480; o.height=Math.round(480*cv.height/cv.width);
+    const g=o.getContext('2d'); g.fillStyle='#fff'; g.fillRect(0, 0, o.width, o.height); g.drawImage(cv, 0, 0, o.width, o.height); return o.toDataURL('image/png'); };
+  return w;
+}
+function esignStaffBlock(m, e){
+  const box=el(`<div class="card" style="margin-top:12px; border:2px solid var(--accent,#2E6F91);"><div class="lr-title">${esc(t('esign_title'))}</div></div>`);
+  const done=memoSignOf(m.id, e.id);
+  if(done){
+    box.appendChild(el(`<div class="lr-sub" style="white-space:normal; margin-top:4px;"><span class="pill ok">${esc(t('esign_signed_at'))}${esc(fmtDateTime(done.signedAt))}</span></div>`));
+    box.appendChild(el(`<p style="margin:8px 0; white-space:normal;">${esc(done.sentence||'')}</p>`));
+    const v=el(`<button class="btn block">${esc(t('esign_view_copy'))}</button>`); v.onclick=()=>openSignedCopy(done); box.appendChild(v);
+    return box;
+  }
+  box.appendChild(el(`<p style="margin:8px 0; white-space:normal; font-weight:700;">${esc(esignSentence(esignLang(), e.name, esignMask(e), esignIsPassport(e)))}</p>`));
+  const pad=esignPad(); box.appendChild(pad);
+  const b=el(`<button class="btn primary block" style="margin-top:8px;">${esc(t('esign_sign_btn'))}</button>`);
+  b.onclick=()=>esignSubmit(m, pad, b);
+  box.appendChild(b);
+  return box;
+}
+async function esignSubmit(m, pad, btn){
+  if(!pad.hasInk()){ toast(t('esign_need_ink')); return; }
+  btn.disabled=true; btn.textContent=t('esign_saving');
+  const png=pad.png();
+  let geo=null; try{ geo=await Promise.race([getGeo(), new Promise(r=>setTimeout(()=>r(null), 9000))]); }catch(e){ geo=null; }
+  const g = geo && !geo.error && isFinite(geo.lat) && isFinite(geo.lng) ? geo : null;   // location helps but is never required
+  try{
+    const rec=await rpc('memo_sign', {p_memo:m.id, p_sig:png, p_lang:esignLang(), p_lat:g?g.lat:null, p_lng:g?g.lng:null, p_acc:g&&g.accuracy!=null?g.accuracy:null});
+    if(rec && rec.id && !(S.memoSigns||[]).some(x=>x.id===rec.id)) S.memoSigns=(S.memoSigns||[]).concat([rec]);
+    markMemoRead(m.id);
+    toast(t('esign_done')); closeSheet(); renderFromData();
+  }catch(err){
+    toast(/already_signed/.test(String(err && err.message || '')) ? t('esign_err_already') : dbErrMsg(err));
+    btn.disabled=false; btn.textContent=t('esign_sign_btn');
+  }
+}
+function esignAdminBlock(m){
+  const box=el('<div style="margin-top:10px;"></div>');
+  const members=memoAudienceMembers(m).filter(x=>x.id!==m.authorId && !x.testAccount);
+  const signs=(S.memoSigns||[]).filter(x=>x.memoId===m.id);
+  const signedIds=new Set(signs.map(x=>x.employeeId));
+  const notYet=members.filter(x=>!signedIds.has(x.id));
+  box.appendChild(el(`<div style="font-weight:800; font-size:12.5px; color:var(--ink-soft); margin-bottom:6px;">${esc(t('esign_required'))} · ${esc(t('esign_signed_count'))}${members.length-notYet.length}/${members.length}</div>`));
+  box.appendChild(el(`<p class="hint" style="margin-top:0; white-space:normal;">${notYet.length ? '<b>'+esc(t('esign_not_signed_by'))+'</b>：'+esc(notYet.map(x=>x.name).join('、')) : esc(t('esign_all_signed'))}</p>`));
+  if(signs.length){
+    box.appendChild(el(`<div style="font-weight:800; font-size:12.5px; color:var(--ink-soft); margin:6px 0;">${esc(t('esign_signed_list'))}</div>`));
+    const list=el('<div class="list"></div>');
+    signs.slice().sort((a,b)=>a.signedAt<b.signedAt?-1:1).forEach(sg=>{
+      const r=el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(sg.employeeName||'')}</div><div class="lr-sub">${esc(sg.branch||'')} · ${esc(fmtDateTime(sg.signedAt))}</div></div><span class="pill n">${esc(t('esign_print'))}</span></div>`);
+      r.onclick=()=>openSignedCopy(sg); list.appendChild(r);
+    });
+    box.appendChild(list);
+  }
+  return box;
+}
+// one staff member's signed copy as a printable page (Print -> "Save as PDF" on the phone or PC)
+async function openSignedCopy(sg){
+  let png='';
+  try{ const snap=await S.db.doc('memoSignPics/'+sg.id).get(); const d=snap && snap.exists && snap.data(); png=(d && d.png) || ''; }catch(err){ console.warn(err); }
+  const when=iso=>{ try{ return new Date(iso).toLocaleString('en-GB', {timeZone:'Asia/Kuala_Lumpur', year:'numeric', month:'short', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit'}); }catch(e){ return String(iso||''); } };
+  const loc = sg.lat!=null && sg.lng!=null ? Number(sg.lat).toFixed(5)+', '+Number(sg.lng).toFixed(5)+(sg.acc!=null?' (±'+Math.round(sg.acc)+' m)':'') : t('esign_no_gps');
+  const okPng = /^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(png);
+  const doc=`<!doctype html><html><head><meta charset="utf-8"><title>${esc(t('esign_copy_title'))} - ${esc(sg.employeeName||'')}</title><style>
+    body{font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif; color:#111; margin:24px; font-size:14px; line-height:1.5;}
+    h1{font-size:18px; margin:0 0 2px;} .muted{color:#555; font-size:12px;} .memo{white-space:pre-wrap; border:1px solid #ccc; border-radius:6px; padding:12px; margin:12px 0;}
+    .sig{border:1px solid #999; border-radius:6px; width:100%; max-width:480px; display:block; margin:6px 0;} table{border-collapse:collapse; margin-top:8px;} td{padding:3px 10px 3px 0; vertical-align:top;}
+    .decl{font-weight:700; margin-top:14px;} @media print{body{margin:12mm;}}</style></head><body>
+    <div class="muted">24 XPRESS SDN BHD · ${esc(t('esign_copy_title'))}</div>
+    <h1>${esc(sg.memoTitle||'')}</h1>
+    <div class="muted">${esc(t('memo_posted_by'))}${esc(sg.memoAuthorName||'')} · ${esc(when(sg.memoCreatedAt))}</div>
+    <div class="memo">${esc(sg.memoBody||'')}</div>
+    <div class="decl">${esc(sg.sentence||'')}</div>
+    ${okPng ? `<img class="sig" src="${png}">` : '<p class="muted">(signature picture could not be loaded)</p>'}
+    <table><tr><td>Name</td><td><b>${esc(sg.employeeName||'')}</b></td></tr>
+    <tr><td>${sg.idType==='PASSPORT'?'Passport':'IC'}</td><td>${esc(sg.icMasked||t('esign_no_ic'))}</td></tr>
+    <tr><td>Staff code</td><td>${esc(sg.staffCode||'')}</td></tr>
+    <tr><td>Store</td><td>${esc(sg.branch||'')}</td></tr>
+    <tr><td>Signed</td><td>${esc(when(sg.signedAt))} (MYT)</td></tr>
+    <tr><td>${esc(t('esign_gps'))}</td><td>${esc(loc)}</td></tr>
+    <tr><td>Record</td><td class="muted">${esc(sg.id||'')}</td></tr></table></body></html>`;
+  const body=el('<div></div>');
+  const fr=document.createElement('iframe'); fr.style.cssText='width:100%; height:60vh; border:1px solid var(--line,#DAD9D2); border-radius:8px; background:#fff;'; fr.srcdoc=doc;
+  body.appendChild(fr);
+  const foot=el('<div class="sheet-foot"></div>');
+  const pb=el(`<button class="btn primary block">${esc(t('esign_print'))}</button>`);
+  pb.onclick=()=>{ try{ fr.contentWindow.focus(); fr.contentWindow.print(); }catch(e){ const w=window.open('', '_blank'); if(w){ w.document.write(doc); w.document.close(); w.print(); } } };
+  foot.appendChild(pb); body.appendChild(foot);
+  openSheet(t('esign_copy_title')+' · '+(sg.employeeName||''), body);
+}
 // who a memo reaches, per store: read / phone gets push / used the App in the last 7 days (public.memo_reach, patch 47)
 function memoReachBlock(m, fallback){
   const box = el(`<div style="margin-top:10px;"><div style="font-weight:800; font-size:12.5px; color:var(--ink-soft); margin-bottom:6px;">${esc(t('memo_reach_title'))}</div><div class="reach-body hint">${esc(t('acc_loading'))}</div></div>`);
@@ -5339,10 +5485,11 @@ function openMemoDetail(m){
   const e=currentEmployee();
   const body=el('<div></div>');
   const audienceLabel = m.audience==='all' ? t('memo_audience_all') : m.audience;
-  body.innerHTML=`<div class="row" style="margin-bottom:8px;">${m.important?`<span class="pill critical">${esc(t('memo_important'))}</span>`:''}<span class="pill n">${esc(audienceLabel)}</span></div>
+  body.innerHTML=`<div class="row" style="margin-bottom:8px;">${m.signRequired?`<span class="pill accent">${esc(t('esign_required'))}</span>`:''}${m.important?`<span class="pill critical">${esc(t('memo_important'))}</span>`:''}<span class="pill n">${esc(audienceLabel)}</span></div>
     <div class="hint">${esc(t('memo_posted_by'))}${esc(m.authorName||'')} · ${fmtDateTime(m.createdAt)}</div>
     <div class="memo-body">${esc(m.body||'')}</div>`;
   if(m.image) body.appendChild(el(`<img class="photow" src="${safeSrc(m.image)}">`));
+  if(m.signRequired && esignNeeds(m, e)) body.appendChild(esignStaffBlock(m, e));
   if(canManageStaff()){
     const members=memoAudienceMembers(m);
     const unreadPeople=members.filter(x=>!memoIsReadBy(m.id,x.id));
@@ -5350,6 +5497,7 @@ function openMemoDetail(m){
     // what this phone knows (own store staff) is only the fallback; memo_reach counts everyone in the manager's / HQ's scope
     const fallback = `<div style="font-weight:800; font-size:12.5px; color:var(--ink-soft); margin-bottom:6px;">${esc(t('memo_read_stats_prefix'))}${members.length-unreadPeople.length}/${members.length}</div><p class="hint" style="margin-top:0;">${unreadPeople.length? esc(t('memo_unread_by'))+'：'+esc(unreadPeople.map(x=>x.name).join('、')) : esc(t('memo_all_read'))}</p>`;
     body.appendChild(memoReachBlock(m, fallback));
+    if(m.signRequired) body.appendChild(esignAdminBlock(m));
     if(isAdmin() || m.authorId===e.id){
       const del=el(`<button class="btn danger block" style="margin-top:10px;">${esc(t('btn_delete_memo'))}</button>`);
       del.onclick=async()=>{ if(!confirm(t('confirm_delete_memo'))) return; try{ await S.db.doc('memos/'+m.id).delete(); toast(t('toast_deleted')); closeSheet(); }catch(err){ toast(dbErrMsg(err)); } };
@@ -5375,6 +5523,8 @@ function openMemoForm(){
   const imgLabel=el(`<label class="field"><span class="fl">${esc(t('field_product_image'))}</span></label>`);
   const photoWrap=photoPicker(null,false);
   imgLabel.appendChild(photoWrap); body.appendChild(imgLabel);
+  const signTick=el(`<label class="field" style="display:flex; gap:8px; align-items:flex-start;"><input type="checkbox" class="esign-tick" style="width:22px; height:22px; margin-top:2px;"><span><b>${esc(t('esign_required'))}</b><br><span class="hint">${esc(t('esign_tick_hint'))}</span></span></label>`);
+  body.appendChild(signTick);
   const foot=el('<div class="sheet-foot"></div>');
   const btn=el(`<button class="btn primary block">${esc(t('btn_post_memo'))}</button>`);
   btn.onclick=async()=>{
@@ -5382,7 +5532,7 @@ function openMemoForm(){
     if(!v.title||!v.title.trim()||!v.body||!v.body.trim()){ toast(t('err_fill_memo')); return; }
     btn.disabled=true; btn.textContent=t('toast_submitting');
     try{
-      await S.db.collection('memos').add({title:v.title.trim(), body:v.body.trim(), audience:v.audience||'all', important:v.priority==='important', image:photoWrap.getPhoto(), authorId:e.id, authorName:e.name, createdAt:new Date().toISOString()});
+      await S.db.collection('memos').add({title:v.title.trim(), body:v.body.trim(), audience:v.audience||'all', important:v.priority==='important', image:photoWrap.getPhoto(), signRequired:!!signTick.querySelector('input').checked, authorId:e.id, authorName:e.name, createdAt:new Date().toISOString()});
       toast(t('toast_memo_posted')); closeSheet();
     }catch(err){ toast(dbErrMsg(err)); btn.disabled=false; btn.textContent=t('btn_post_memo'); }
   };
