@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-24.339';
+const APP_BUILD = '2026-11-24.340';
 const RECV_OPEN_SITES = ['H1','P5','P8A'];   // 2026-11-21 (Helen, WhatsApp): VM_H1, VM_P5, VM_P8 open as goods-receive locations for every receiver
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
@@ -840,7 +840,7 @@ const I18N = {
     clock_in_short:'上班', clock_out_short:'下班', dist_to_device:' · 距点位 ', dist_meters:'米',
     stock_title:'库存与补货', btn_back_to_list:'返回列表', btn_view_report:'查看报表', zone_all:'全部区域',
     empty_add_device:'请先在「我的」中添加点位', empty_add_product:'请先在「我的」中添加商品',
-    stock_current:'当前 ', seg_restock:'补货 +', seg_out:'出库 −', seg_adjust:'盘点校正 =', field_expiry:'到期日（可选）', exp_expired:'已过期', exp_soon:'{n} 天内到期', cnt_start:'做盘点单', cnt_title:'盘点单', cnt_hint:'只填你数了的货。空白的不改。', cnt_submit:'交给经理确认', cnt_empty:'至少填一个数', cnt_sent:'已交给经理确认', cnt_pending:'待确认的盘点单', cnt_lines:'{n} 项有差异', cnt_approve:'确认改库存', cnt_reject:'退回', cnt_approved:'已确认，库存已改', cnt_rejected:'已退回', cnt_confirm:'确认后，库存改成盘点的数字。继续？',
+    stock_current:'当前 ', seg_restock:'补货 +', seg_out:'出库 −', seg_adjust:'盘点校正 =', field_expiry:'到期日（可选）', exp_expired:'已过期', prq_title:'价签 / 调价申请', prq_tag:'要新价签', prq_change:'要改价', prq_new_price:'新价钱（改价时填）', prq_note:'说明（例如：价签掉了）', prq_need_note:'要写说明', prq_submit:'交给经理', prq_sent:'已交给经理', prq_need_price:'改价要填新价钱', prq_pending:'待确认的价签/调价', prq_approved:'已确认。请通知总部改 POS 价钱', prq_rejected:'已退回', wo_btn:'报损', wo_title:'报损', wo_none:'这台机没有库存', wo_qty:'报损数量', wo_r_expired:'过期', wo_r_damaged:'损坏', wo_r_other:'其他', wo_submit:'交给经理确认', wo_sent:'已交给经理确认', wo_bad_qty:'数量超过库存', wo_pending:'待确认的报损', wo_approved:'已报损，库存已减', wo_rejected:'已退回', wo_confirm:'确认报损，库存会减少。继续？', exp_soon:'{n} 天内到期', cnt_start:'做盘点单', cnt_title:'盘点单', cnt_hint:'只填你数了的货。空白的不改。', cnt_submit:'交给经理确认', cnt_empty:'至少填一个数', cnt_sent:'已交给经理确认', cnt_pending:'待确认的盘点单', cnt_lines:'{n} 项有差异', cnt_approve:'确认改库存', cnt_reject:'退回', cnt_approved:'已确认，库存已改', cnt_rejected:'已退回', cnt_confirm:'确认后，库存改成盘点的数字。继续？',
     field_qty:'数量', ph_adjust_qty:'盘点后的实际数量', field_note_opt:'备注（可选）', ph_restock_note:'例如：供应商送货、临期报损…',
     btn_submit:'提交', err_valid_qty:'请输入有效数量', toast_submitting:'提交中…', toast_stock_updated:'库存已更新',
     sheet_stock_adjust:' · 库存调整',
@@ -1095,7 +1095,7 @@ const I18N = {
     clock_in_short:'In', clock_out_short:'Out', dist_to_device:' · ', dist_meters:'m from machine',
     stock_title:'Stock & Restocking', btn_back_to_list:'Back to List', btn_view_report:'View Report', zone_all:'All Zones',
     empty_add_device:'Please add a machine under Me first', empty_add_product:'Please add a product under Me first',
-    stock_current:'Current ', seg_restock:'Restock +', seg_out:'Dispense/Out −', seg_adjust:'Count Adjustment =', field_expiry:'Expiry date (optional)', exp_expired:'Expired', exp_soon:'Expires in {n} day(s)', cnt_start:'Stock count', cnt_title:'Stock count', cnt_hint:'Fill only what you counted. Blank = no change.', cnt_submit:'Send to manager', cnt_empty:'Fill at least one count', cnt_sent:'Sent to the manager', cnt_pending:'Counts waiting for approval', cnt_lines:'{n} line(s) differ', cnt_approve:'Approve, update stock', cnt_reject:'Send back', cnt_approved:'Approved, stock updated', cnt_rejected:'Sent back', cnt_confirm:'Stock will be set to the counted numbers. Continue?',
+    stock_current:'Current ', seg_restock:'Restock +', seg_out:'Dispense/Out −', seg_adjust:'Count Adjustment =', field_expiry:'Expiry date (optional)', exp_expired:'Expired', prq_title:'Tag / price change request', prq_tag:'Need new shelf tag', prq_change:'Price change', prq_new_price:'New price (for price change)', prq_note:'Note (e.g. tag lost)', prq_need_note:'Please write a note', prq_submit:'Send to manager', prq_sent:'Sent to the manager', prq_need_price:'Enter the new price for a price change', prq_pending:'Tag / price requests waiting', prq_approved:'Confirmed. Tell HQ to change the POS price', prq_rejected:'Sent back', wo_btn:'Write off', wo_title:'Write off', wo_none:'No stock in this machine', wo_qty:'Quantity to write off', wo_r_expired:'Expired', wo_r_damaged:'Damaged', wo_r_other:'Other', wo_submit:'Send to manager', wo_sent:'Sent to the manager', wo_bad_qty:'More than the stock', wo_pending:'Write-offs waiting', wo_approved:'Written off, stock reduced', wo_rejected:'Sent back', wo_confirm:'Stock will go down by the written-off amount. Continue?', exp_soon:'Expires in {n} day(s)', cnt_start:'Stock count', cnt_title:'Stock count', cnt_hint:'Fill only what you counted. Blank = no change.', cnt_submit:'Send to manager', cnt_empty:'Fill at least one count', cnt_sent:'Sent to the manager', cnt_pending:'Counts waiting for approval', cnt_lines:'{n} line(s) differ', cnt_approve:'Approve, update stock', cnt_reject:'Send back', cnt_approved:'Approved, stock updated', cnt_rejected:'Sent back', cnt_confirm:'Stock will be set to the counted numbers. Continue?',
     field_qty:'Quantity', ph_adjust_qty:'Actual count after stocktake', field_note_opt:'Note (optional)', ph_restock_note:'e.g. supplier delivery, expired write-off…',
     btn_submit:'Submit', err_valid_qty:'Please enter a valid quantity', toast_submitting:'Submitting…', toast_stock_updated:'Stock updated',
     sheet_stock_adjust:' · Stock Adjustment',
@@ -1444,7 +1444,7 @@ const S = {
   lang: (function(){ try{ return localStorage.getItem('bgc_lang')||'zh'; }catch(e){ return 'zh'; } })(),
   employeeId: (function(){ try{ return localStorage.getItem('bgc_employee_id') || null; }catch(e){ return null; } })(),
   employees:[], devices:[], sites:[], products:[], inventory:[],
-  restockLogs:[], stockCounts:[], attendance:[], inspections:[], faults:[], schedules:[], leaveRequests:[], exceptions:[], materialRequests:[],
+  restockLogs:[], stockCounts:[], writeOffs:[], priceRequests:[], attendance:[], inspections:[], faults:[], schedules:[], leaveRequests:[], exceptions:[], materialRequests:[],
   settings:{businessName:'24 Xpress', lowStockDefault:5, geofenceRadius:300, lateGraceMin:10, nightStart:'23:00', nightEnd:'07:00', safetyIntervalMin:120, emergencyPhone:'', slaHighHours:4, slaMediumHours:24, slaLowHours:72, shiftTemplates:'早班 Morning=09:00-18:00\n中班 Afternoon=14:00-23:00\n夜班 Night=23:00-07:00'},
   stockDeviceFilter:'all', equipTab:'devices', faultFilter:'open', historyRange:'today', attnScope:'mine',
   stockSection:'snacks', kegFilter:'tapped', beerZoneFilter:'all', pickerBranch:null, staffBranchFilter:'all', lastGeoMsg:null, clockSub:'records', reportMonth:(function(){const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');})(), reportBranch:'all', reportData:null, reportLoading:false,
@@ -2543,6 +2543,8 @@ function subscribeAll(){
   // database and is reachable through the month export / monthly report.
   sub('restockLogs','restockLogs',{order:'createdAt',limit:600,sinceDays:92});
   sub('stockCounts','stockCounts',{order:'createdAt',limit:300,sinceDays:92});
+  sub('writeOffs','writeOffs',{order:'createdAt',limit:300,sinceDays:92});
+  sub('priceRequests','priceRequests',{order:'createdAt',limit:300,sinceDays:92});
   sub('attendance','attendance',{order:'createdAt',limit:1000,sinceDays:92});
   sub('inspections','inspections',{order:'createdAt',limit:300,sinceDays:92});
   sub('faults','faults',{order:'createdAt',limit:300});
@@ -4110,6 +4112,147 @@ async function rejectStockCount(cn){
     toast(t('cnt_rejected'));
   }catch(err){ toast(dbErrMsg(err)); }
 }
+/* ===== Phase 1 (24 Nov 2026): price-tag / price-change requests and expiry write-off, both confirmed by a manager ===== */
+function pendingWriteOffs(){ return canApproveCounts() ? (S.writeOffs||[]).filter(w => w.status==='pending') : []; }
+function pendingPriceReqs(){ return canApproveCounts() ? (S.priceRequests||[]).filter(r => r.status==='pending') : []; }
+function phase1Bar(){
+  const wrap = el('<div style="margin:6px 0 10px;"></div>');
+  const row = el('<div class="row" style="gap:8px; flex-wrap:wrap;"></div>');
+  const bPrice = el(`<button class="btn sm">🏷 ${esc(t('prq_title'))}</button>`);
+  bPrice.onclick = () => openPriceRequest();
+  const bWo = el(`<button class="btn sm">🗑 ${esc(t('wo_btn'))}</button>`);
+  bWo.onclick = () => openWriteOff();
+  row.appendChild(bPrice); row.appendChild(bWo);
+  wrap.appendChild(row);
+  const pr = pendingPriceReqs();
+  if(pr.length){
+    const box = el(`<div class="card card-tight" style="margin-top:8px;"><div style="font-weight:800;">${esc(t('prq_pending'))} (${pr.length})</div></div>`);
+    pr.forEach(r => {
+      const p = byId(S.products, r.productId);
+      const item = el(`<div class="list-row" style="margin-top:8px; flex-wrap:wrap;"><div class="lr-main"><div class="lr-title">${esc(p ? p.name : r.productId)}</div><div class="lr-sub">${esc(r.kind==='change' ? t('prq_change') + ' RM ' + (r.newPrice!=null ? r.newPrice : '?') : t('prq_tag'))} · ${esc(r.createdBy||'')} · ${esc(r.note||'')}</div></div></div>`);
+      const ok = el(`<button class="btn sm primary">${esc(t('cnt_approve'))}</button>`);
+      const no = el(`<button class="btn sm">${esc(t('cnt_reject'))}</button>`);
+      ok.onclick = () => decidePriceReq(r, 'approved');
+      no.onclick = () => decidePriceReq(r, 'rejected');
+      item.appendChild(ok); item.appendChild(no);
+      box.appendChild(item);
+    });
+    wrap.appendChild(box);
+  }
+  const wo = pendingWriteOffs();
+  if(wo.length){
+    const box = el(`<div class="card card-tight" style="margin-top:8px;"><div style="font-weight:800;">${esc(t('wo_pending'))} (${wo.length})</div></div>`);
+    wo.forEach(w => {
+      const p = byId(S.products, w.productId), dv = byId(S.devices, w.deviceId);
+      const item = el(`<div class="list-row" style="margin-top:8px; flex-wrap:wrap;"><div class="lr-main"><div class="lr-title">${esc(p ? p.name : w.productId)} × ${w.qty}</div><div class="lr-sub">${esc(dv ? dv.name : w.deviceId)} · ${esc(t('wo_r_' + w.reason))} · ${esc(w.createdBy||'')}${w.note ? ' · ' + esc(w.note) : ''}</div></div></div>`);
+      const ok = el(`<button class="btn sm primary">${esc(t('cnt_approve'))}</button>`);
+      const no = el(`<button class="btn sm">${esc(t('cnt_reject'))}</button>`);
+      ok.onclick = () => approveWriteOff(w);
+      no.onclick = () => rejectWriteOff(w);
+      item.appendChild(ok); item.appendChild(no);
+      box.appendChild(item);
+    });
+    wrap.appendChild(box);
+  }
+  return wrap;
+}
+function openPriceRequest(){
+  const e = currentEmployee(); if(!e) return;
+  if(!S.products.length){ toast(t('empty_add_product')); return; }
+  const body = el('<div></div>');
+  const kind = el(`<select style="width:100%; margin-bottom:10px;"><option value="tag">${esc(t('prq_tag'))}</option><option value="change">${esc(t('prq_change'))}</option></select>`);
+  const prod = el('<select style="width:100%; margin-bottom:10px;"></select>');
+  prod.innerHTML = S.products.map(p => `<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('');
+  const price = el(`<input type="number" min="0" step="0.01" inputmode="decimal" placeholder="${esc(t('prq_new_price'))}" style="width:100%; margin-bottom:10px;">`);
+  const note = el(`<textarea placeholder="${esc(t('prq_note'))}" style="width:100%;"></textarea>`);
+  body.appendChild(kind); body.appendChild(prod); body.appendChild(price); body.appendChild(note);
+  const foot = el('<div class="sheet-foot"></div>');
+  const go = el(`<button class="btn primary block">${esc(t('prq_submit'))}</button>`);
+  go.onclick = async () => {
+    const isChange = kind.value === 'change';
+    const np = price.value === '' ? null : Number(price.value);
+    if(isChange && !(np > 0)){ toast(t('prq_need_price')); return; }
+    if(np !== null && (isNaN(np) || np < 0)){ toast(t('err_valid_qty')); return; }
+    if(!isChange && !note.value.trim()){ toast(t('prq_need_note')); return; }
+    go.disabled = true;
+    const id = 'prq_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,7);
+    try{
+      await S.db.doc('priceRequests/'+id).set({id, kind:kind.value, productId:prod.value, newPrice:isChange ? np : null, note:note.value.trim(), status:'pending', branch:(myBranch()||e.homeBranch||''), createdAt:new Date().toISOString(), createdBy:e.name, createdById:e.id});
+      toast(t('prq_sent')); closeSheet();
+    }catch(err){ toast(dbErrMsg(err)); go.disabled = false; }
+  };
+  foot.appendChild(go);
+  body.appendChild(foot);
+  openSheet(t('prq_title'), body);
+}
+async function decidePriceReq(r, status){
+  const e = currentEmployee();
+  try{
+    await S.db.doc('priceRequests/'+r.id).set(Object.assign({}, r, {status, decidedBy:e.name, decidedAt:new Date().toISOString()}));
+    toast(status==='approved' ? t('prq_approved') : t('prq_rejected'));
+  }catch(err){ toast(dbErrMsg(err)); }
+}
+function openWriteOff(){
+  const e = currentEmployee(); if(!e) return;
+  if(!S.devices.length || !S.products.length){ toast(t('empty_add_device')); return; }
+  const body = el('<div></div>');
+  const dev = el('<select style="width:100%; margin-bottom:10px;"></select>');
+  dev.innerHTML = S.devices.map(d => `<option value="${esc(d.id)}">${esc(d.name)}</option>`).join('');
+  const prod = el('<select style="width:100%; margin-bottom:10px;"></select>');
+  const fillProd = () => {
+    const dv = byId(S.devices, dev.value);
+    const rows = S.products.map(p => ({p, inv: dv ? invRow(dv.id, p.id) : null})).filter(x => x.inv && x.inv.qty > 0);
+    rows.sort((a, b) => (expiryState(b.inv) ? 1 : 0) - (expiryState(a.inv) ? 1 : 0));   // items that are expiring first
+    prod.innerHTML = rows.length ? rows.map(x => `<option value="${esc(x.p.id)}">${esc(x.p.name)} (${x.inv.qty})${expiryState(x.inv) ? ' · ' + esc(expiryState(x.inv).t) : ''}</option>`).join('') : `<option value="">${esc(t('wo_none'))}</option>`;
+  };
+  dev.onchange = fillProd;
+  fillProd();
+  const qty = el(`<input type="number" min="1" step="1" inputmode="numeric" placeholder="${esc(t('wo_qty'))}" style="width:100%; margin-bottom:10px;">`);
+  const reason = el(`<select style="width:100%; margin-bottom:10px;"><option value="expired">${esc(t('wo_r_expired'))}</option><option value="damaged">${esc(t('wo_r_damaged'))}</option><option value="other">${esc(t('wo_r_other'))}</option></select>`);
+  const note = el(`<textarea placeholder="${esc(t('field_note_opt'))}" style="width:100%;"></textarea>`);
+  body.appendChild(dev); body.appendChild(prod); body.appendChild(qty); body.appendChild(reason); body.appendChild(note);
+  const foot = el('<div class="sheet-foot"></div>');
+  const go = el(`<button class="btn primary block">${esc(t('wo_submit'))}</button>`);
+  go.onclick = async () => {
+    const dv = byId(S.devices, dev.value), inv = dv && prod.value ? invRow(dv.id, prod.value) : null;
+    const n = Number(qty.value);
+    if(!inv || !(n >= 1) || n !== Math.floor(n)){ toast(t('err_valid_qty')); return; }
+    if(n > inv.qty){ toast(t('wo_bad_qty')); return; }
+    go.disabled = true;
+    const id = 'wo_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,7);
+    try{
+      await S.db.doc('writeOffs/'+id).set({id, deviceId:dv.id, productId:prod.value, qty:n, reason:reason.value, note:note.value.trim(), status:'pending', createdAt:new Date().toISOString(), createdBy:e.name, createdById:e.id});
+      toast(t('wo_sent')); closeSheet();
+    }catch(err){ toast(dbErrMsg(err)); go.disabled = false; }
+  };
+  foot.appendChild(go);
+  body.appendChild(foot);
+  openSheet(t('wo_title'), body);
+}
+async function approveWriteOff(w){
+  if(!confirm(t('wo_confirm'))) return;
+  const e = currentEmployee();
+  try{
+    const now = new Date().toISOString();
+    const inv = invRow(w.deviceId, w.productId);
+    const cur = inv ? inv.qty : 0;
+    const take = Math.min(w.qty, cur);
+    if(take > 0){
+      const newQty = cur - take;
+      await S.db.collection('restockLogs').add({deviceId:w.deviceId, productId:w.productId, type:'writeoff', deltaQty:-take, qtyAfter:newQty, expiry:newQty>0 ? (inv.expiry||null) : null, employeeId:e.id, employeeName:e.name, note:(w.reason||'') + (w.note ? ' · ' + w.note : '') + ' · ' + w.id, createdAt:now});
+      await S.db.doc('inventory/'+w.deviceId+'__'+w.productId).set({deviceId:w.deviceId, productId:w.productId, qty:newQty, expiry:newQty>0 ? (inv.expiry||null) : null, updatedAt:now, updatedBy:e.name});
+    }
+    await S.db.doc('writeOffs/'+w.id).set(Object.assign({}, w, {status:'approved', takenQty:take, approvedBy:e.name, approvedAt:now}));
+    toast(t('wo_approved'));
+  }catch(err){ toast(dbErrMsg(err)); }
+}
+async function rejectWriteOff(w){
+  const e = currentEmployee();
+  try{
+    await S.db.doc('writeOffs/'+w.id).set(Object.assign({}, w, {status:'rejected', rejectedBy:e.name, rejectedAt:new Date().toISOString()}));
+    toast(t('wo_rejected'));
+  }catch(err){ toast(dbErrMsg(err)); }
+}
 function snackStockView(){
   const c=el('<div></div>');
   const head=el('<div class="sec-row"><h2 class="sec">'+esc(t('stock_title'))+'</h2></div>');
@@ -4131,6 +4274,7 @@ function snackStockView(){
   });
   c.appendChild(chipRow);
   c.appendChild(stockCountBar());
+  c.appendChild(phase1Bar());
 
   if(S.devices.length===0 || S.products.length===0){
     c.appendChild(el(`<div class="empty">${ICONS.box}<div>${S.devices.length===0?esc(t('empty_add_device')):esc(t('empty_add_product'))}</div></div>`));
@@ -18467,7 +18611,7 @@ function funcGrid(clockedIn){
     {k:'fault', icon:'wrench', cls:'c-orange', label:t('tile_fault'), go:()=>openFaultForm()},
     {k:'incident', icon:'alert', cls:'c-red', label:t('tile_incident'), go:()=>openIncidentForm()},
     {k:'sos', icon:'siren', cls:'c-red', label:t('tile_sos'), go:()=>openSosSheet()},
-    {k:'stock', icon:'box', cls:'c-blue', label:t('tile_stock'), count: expiryAlertCount() + pendingCounts().length, go:()=>{ S.stockSection='snacks'; location.hash='#stock'; }},
+    {k:'stock', icon:'box', cls:'c-blue', label:t('tile_stock'), count: expiryAlertCount() + pendingCounts().length + pendingWriteOffs().length + pendingPriceReqs().length, go:()=>{ S.stockSection='snacks'; location.hash='#stock'; }},
     {k:'order', icon:'download', cls:'c-teal', label:t('tile_order'),
      count: isAdmin() ? S.stockRequests.filter(r => reqOpenForHq(r) && (r.urgent || orderRoundReady(orderRoundOf(r)))).length : 0,   // patch 136b
      go:()=>{ S.orderTab='inbox'; location.hash='#order'; }},
