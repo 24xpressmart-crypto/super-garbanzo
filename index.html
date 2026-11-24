@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-22.336';
+const APP_BUILD = '2026-11-22.337';
 const RECV_OPEN_SITES = ['H1','P5','P8A'];   // 2026-11-21 (Helen, WhatsApp): VM_H1, VM_P5, VM_P8 open as goods-receive locations for every receiver
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
@@ -11432,6 +11432,19 @@ function draftReceiptFor(branch){
 }
 function chooseReceipt(branch, id){ S.receiveDraft = Object.assign({}, S.receiveDraft, {[branch]: id}); renderApp(); window.scrollTo(0,0); }
 function receiptLines(r){ return Array.isArray(r && r.lines) ? r.lines : []; }
+// 2026-11-24 (owner): the net unit cost comes from the invoice, not AutoCount's system cost. The supplier's discount is shared
+// over the lines pro rata to their amounts: netAmount = amount - share; netUnitCost = netAmount / qty (4 decimals).
+// Lines with no amount or no qty get null, so nothing is guessed.
+function recvNetCosts(r){
+  const L = receiptLines(r), disc = Number(r && r.discount) || 0;
+  const tot = L.reduce((s, l) => s + (Number(l && l.amount) || 0), 0);
+  return L.map(l => {
+    const a = Number(l && l.amount), q = Number(l && l.qty);
+    if(!isFinite(a) || l.amount === '' || l.amount == null || !(q > 0)) return Object.assign({}, l, {netAmount: null, netUnitCost: null});
+    const share = tot > 0 ? disc * a / tot : 0, net = Math.round((a - share) * 100) / 100;
+    return Object.assign({}, l, {netAmount: net, netUnitCost: Math.round(net / q * 10000) / 10000});
+  });
+}
 function receiptPhotos(r){ return Array.isArray(r && r.photos) ? r.photos : []; }
 /* Receipt photos live in Storage (bucket 'receipts', private; RUN_12_receipt_photos.sql): the receipt keeps
    'sb:receipts/<branch>/<receipt>/<sha256>.jpg'. The name is the SHA-256 of the bytes, which is how the ledger
@@ -11956,6 +11969,9 @@ function receiveView(){
         const want = lineSum - disc, ok = Math.abs(want - paperT) < 0.005;
         card.appendChild(el(`<div class="lr-sub" style="white-space:normal; margin:4px 0 8px; ${ok ? '' : 'color:var(--bad,#C1392B); font-weight:700;'}">${esc(t('recv_disc_check').split('{w}').join(want.toFixed(2)).split('{a}').join(paperT.toFixed(2)))}</div>`));
       }
+      // 2026-11-24: the net unit cost of each line, from the invoice (saved on submit as netUnitCost)
+      const nets = recvNetCosts(draft).filter(l => l.netUnitCost != null);
+      if(nets.length) card.appendChild(el(`<div class="lr-sub" style="white-space:normal; margin:0 0 8px;">${nets.map(l => esc((l.name || l.code || '?') + ' × ' + l.qty + ' → RM ' + l.netUnitCost.toFixed(4) + ' / ' + (l.unit || 'unit'))).join('<br>')}</div>`));
     }
     // COD: cash handed to the driver from the till, right now. Accounting settles it from the outlet cash
     // account and checks it against that day's POS cash-out; it never enters a bank payment run.
@@ -12077,6 +12093,8 @@ function receiveView(){
         { const blankAmt = cur.docKind !== 'online' ? receiptLines(cur).filter(l => l && Number(l.qty) > 0 && (l.amount == null || String(l.amount).trim() === '')) : [];   // 20 Nov: a line with no RM amount went in blank (Premio, 13 cases); FOC items are typed as 0
           if(blankAmt.length){ toast(t('recv_amt_blank').split('{n}').join(blankAmt.length).split('{x}').join(blankAmt.slice(0, 3).map(l => l.name || l.code || '?').join(', '))); return; } }
         if(!confirm(t('recv_confirm_send'))) return;
+        // 2026-11-24: save each line's net unit cost (from the invoice, after the discount) before the server freezes the receipt
+        if(draft.docKind !== 'online' && receiptLines(draft).length) await recvUpdate(draft.id, d => ({lines: recvNetCosts(d)}));
         await rpc('submit_receipt', {rec_id: draft.id}); sentOk = true;     // server time, server identity, then frozen
         const i = S.receipts.findIndex(r => r.id === draft.id);   // shown as sent at once, not as a colleague's open receipt
         if(i >= 0) S.receipts[i] = Object.assign({}, S.receipts[i], {status:'submitted', submittedAt:new Date().toISOString()});
