@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-24.338';
+const APP_BUILD = '2026-11-24.339';
 const RECV_OPEN_SITES = ['H1','P5','P8A'];   // 2026-11-21 (Helen, WhatsApp): VM_H1, VM_P5, VM_P8 open as goods-receive locations for every receiver
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
@@ -7391,6 +7391,11 @@ function checklistNowCard(open){
   card.onclick = () => openTaskRun(rows[0].tp, b, today);
   return card;
 }
+// 23 Nov: is today's fridge reading in for this store? (a store with no fridge listed never blocks the temperature item)
+function tempDoneToday(branch, date){
+  const logs = proofLogs(branch); if(logs === null) return true;
+  return hasTempReading(logs, branch, date) || heldTempReading(branch) || !!(S.tempSavedAt && S.tempSavedAt[String(branch).toUpperCase()] === date);
+}
 function runIdFor(tp, branch, date){ return (tp.id+'__'+branch+'__'+date).replace(/[^A-Za-z0-9_\-]/g,'-'); }
 function runFor(tp, branch, date){ return byId(S.taskRuns, runIdFor(tp,branch,date)); }
 function runProgress(run, tp){ const items=run?run.items:(tp.items||[]); const done=items.filter(i=>i.done).length; return {done, total:items.length}; }
@@ -7809,6 +7814,15 @@ function openTaskRun(tp, branch, date){
         if(isNetErr(e) && !photo && S.db && S.db.outboxRpc && S.db.outboxRpc('task_run_item', {p_run:header, p_idx:idx, p_done:done, p_photo:null}, run.id + '__' + idx + '__' + Date.now().toString(36))){
           const it1=run.items[idx]; if(it1) it1.queued=true; toast(t('ob_queued')); refresh(); return; }
         toast(taskErrMsg(e)); const it0=run.items[idx]; if(it0){ it0.done=!done; if(!done) it0.by=it0.by||''; } refresh(); if(S.db.refresh) S.db.refresh('taskRuns'); }); return chain; };
+  // 23 Nov: a fridge reading saved while this list is open ticks its temperature item (only inside the list's time)
+  S.onTempSaved = b => {
+    if(!document.body.contains(list)){ S.onTempSaved = null; return; }
+    if(String(b).toUpperCase() !== String(branch).toUpperCase() || run.status === 'done') return;
+    const ph = checklistPhase(tp, date);
+    if(ph !== 'early' && ph !== 'closed') run.items.forEach((it, idx) => { if(!it.done && checklistTempItem(tp, it.text)){
+      it.done = true; it.by = me.name; it.at = new Date().toISOString(); sendItem(idx, true, null); } });
+    refresh();
+  };
   function refresh(){
     list.innerHTML='';
     run.items.forEach(it=>{
@@ -7819,12 +7833,14 @@ function openTaskRun(tp, branch, date){
       tick.onclick=()=>{
         if(run.status==='done') return;
         if(!it.done && it.photo && !it.photoUrl){ toast(t('task_need_photo')); return; }
-        if(!it.done && isTemp && !hasTempReading(tLogs, branch, date) && !heldTempReading(branch)){ toast(t('task_need_temp')); return; }
+        if(!it.done && isTemp && !tempDoneToday(branch, date)){ toast(t('task_need_temp')); return; }
         if(!it.done){ const ph = checklistPhase(tp, date);   // 22 Nov (patch159): outside the list's time the server refuses the tick - say so here first
           if(ph === 'early' || ph === 'closed'){ toast(t(ph === 'early' ? 'tw_no_early' : 'tw_no_closed').split('{t}').join(checklistTimeText(tp))); return; } }
         it.done=!it.done; it.by=it.done?me.name:''; it.at=it.done?new Date().toISOString():'';
         refresh(); sendItem(idx, it.done, it.done && it.photo ? (it.photoUrl || null) : null);
       };
+      if(isTemp && !it.done && run.status!=='done' && !tempDoneToday(branch, date)){   // 23 Nov: read the fridges right here
+        const tb = temperatureBlock(branch); tb.style.marginTop = '6px'; row.querySelector('.lr-main').appendChild(tb); }
       if(it.photo && run.status!=='done'){
         const pw=photoPicker(async (url)=>{ if(!url){ it.photoUrl=''; if(it.done){ it.done=false; it.by=''; it.at=''; sendItem(idx, false, null); } refresh(); return; }
           if(!it.done){ const ph = checklistPhase(tp, date);   // 22 Nov (patch159): same as a plain tick
@@ -8244,9 +8260,11 @@ function temperatureBlock(branch){
         const targs = {p_equipment:eq.id, p_value:v, p_action:action, p_read_at:new Date().toISOString(), p_client_id:(self.crypto && crypto.randomUUID ? crypto.randomUUID() : uidLocal())};   // patch 158
         let r;
         try{ r = await rpc('temp_log', targs); }
-        catch(e1){ if(isNetErr(e1) && S.db && S.db.outboxRpc && S.db.outboxRpc('temp_log', targs, targs.p_client_id)){ inp.value=''; btn.disabled=false; toast(t('ob_queued')); renderFromData(); return; } throw e1; }
+        catch(e1){ if(isNetErr(e1) && S.db && S.db.outboxRpc && S.db.outboxRpc('temp_log', targs, targs.p_client_id)){ inp.value=''; btn.disabled=false; toast(t('ob_queued')); renderFromData(); if(typeof S.onTempSaved === 'function') S.onTempSaved(branch); return; } throw e1; }
         const ok = r ? r.ok !== false : tempOk(eq, v);
         toast(ok ? t('toast_temp_saved') : (r && r.faultId ? t('temp_fault_opened') : t('temp_recheck_toast')));
+        S.tempSavedAt = Object.assign(S.tempSavedAt || {}, {[String(branch).toUpperCase()]: taskDay()});   // 23 Nov: the checklist sees it at once
+        if(typeof S.onTempSaved === 'function') S.onTempSaved(branch);
         if(r && r.faultId && S.db.refresh) S.db.refresh('faults');
         if(S.db.refresh) S.db.refresh('tempLogs');
       }catch(e){ const m = String(e && e.message); toast(/bad_value/.test(m) ? t('temp_bad_value') : (/need_action/.test(m) ? t('temp_action_ask') : (/too_old/.test(m) ? t('temp_too_old') : dbErrMsg(e)))); }
