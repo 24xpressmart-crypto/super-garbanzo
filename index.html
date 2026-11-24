@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-22.337';
+const APP_BUILD = '2026-11-24.338';
 const RECV_OPEN_SITES = ['H1','P5','P8A'];   // 2026-11-21 (Helen, WhatsApp): VM_H1, VM_P5, VM_P8 open as goods-receive locations for every receiver
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
@@ -840,7 +840,7 @@ const I18N = {
     clock_in_short:'上班', clock_out_short:'下班', dist_to_device:' · 距点位 ', dist_meters:'米',
     stock_title:'库存与补货', btn_back_to_list:'返回列表', btn_view_report:'查看报表', zone_all:'全部区域',
     empty_add_device:'请先在「我的」中添加点位', empty_add_product:'请先在「我的」中添加商品',
-    stock_current:'当前 ', seg_restock:'补货 +', seg_out:'出库 −', seg_adjust:'盘点校正 =',
+    stock_current:'当前 ', seg_restock:'补货 +', seg_out:'出库 −', seg_adjust:'盘点校正 =', field_expiry:'到期日（可选）', exp_expired:'已过期', exp_soon:'{n} 天内到期', cnt_start:'做盘点单', cnt_title:'盘点单', cnt_hint:'只填你数了的货。空白的不改。', cnt_submit:'交给经理确认', cnt_empty:'至少填一个数', cnt_sent:'已交给经理确认', cnt_pending:'待确认的盘点单', cnt_lines:'{n} 项有差异', cnt_approve:'确认改库存', cnt_reject:'退回', cnt_approved:'已确认，库存已改', cnt_rejected:'已退回', cnt_confirm:'确认后，库存改成盘点的数字。继续？',
     field_qty:'数量', ph_adjust_qty:'盘点后的实际数量', field_note_opt:'备注（可选）', ph_restock_note:'例如：供应商送货、临期报损…',
     btn_submit:'提交', err_valid_qty:'请输入有效数量', toast_submitting:'提交中…', toast_stock_updated:'库存已更新',
     sheet_stock_adjust:' · 库存调整',
@@ -1095,7 +1095,7 @@ const I18N = {
     clock_in_short:'In', clock_out_short:'Out', dist_to_device:' · ', dist_meters:'m from machine',
     stock_title:'Stock & Restocking', btn_back_to_list:'Back to List', btn_view_report:'View Report', zone_all:'All Zones',
     empty_add_device:'Please add a machine under Me first', empty_add_product:'Please add a product under Me first',
-    stock_current:'Current ', seg_restock:'Restock +', seg_out:'Dispense/Out −', seg_adjust:'Count Adjustment =',
+    stock_current:'Current ', seg_restock:'Restock +', seg_out:'Dispense/Out −', seg_adjust:'Count Adjustment =', field_expiry:'Expiry date (optional)', exp_expired:'Expired', exp_soon:'Expires in {n} day(s)', cnt_start:'Stock count', cnt_title:'Stock count', cnt_hint:'Fill only what you counted. Blank = no change.', cnt_submit:'Send to manager', cnt_empty:'Fill at least one count', cnt_sent:'Sent to the manager', cnt_pending:'Counts waiting for approval', cnt_lines:'{n} line(s) differ', cnt_approve:'Approve, update stock', cnt_reject:'Send back', cnt_approved:'Approved, stock updated', cnt_rejected:'Sent back', cnt_confirm:'Stock will be set to the counted numbers. Continue?',
     field_qty:'Quantity', ph_adjust_qty:'Actual count after stocktake', field_note_opt:'Note (optional)', ph_restock_note:'e.g. supplier delivery, expired write-off…',
     btn_submit:'Submit', err_valid_qty:'Please enter a valid quantity', toast_submitting:'Submitting…', toast_stock_updated:'Stock updated',
     sheet_stock_adjust:' · Stock Adjustment',
@@ -1444,7 +1444,7 @@ const S = {
   lang: (function(){ try{ return localStorage.getItem('bgc_lang')||'zh'; }catch(e){ return 'zh'; } })(),
   employeeId: (function(){ try{ return localStorage.getItem('bgc_employee_id') || null; }catch(e){ return null; } })(),
   employees:[], devices:[], sites:[], products:[], inventory:[],
-  restockLogs:[], attendance:[], inspections:[], faults:[], schedules:[], leaveRequests:[], exceptions:[], materialRequests:[],
+  restockLogs:[], stockCounts:[], attendance:[], inspections:[], faults:[], schedules:[], leaveRequests:[], exceptions:[], materialRequests:[],
   settings:{businessName:'24 Xpress', lowStockDefault:5, geofenceRadius:300, lateGraceMin:10, nightStart:'23:00', nightEnd:'07:00', safetyIntervalMin:120, emergencyPhone:'', slaHighHours:4, slaMediumHours:24, slaLowHours:72, shiftTemplates:'早班 Morning=09:00-18:00\n中班 Afternoon=14:00-23:00\n夜班 Night=23:00-07:00'},
   stockDeviceFilter:'all', equipTab:'devices', faultFilter:'open', historyRange:'today', attnScope:'mine',
   stockSection:'snacks', kegFilter:'tapped', beerZoneFilter:'all', pickerBranch:null, staffBranchFilter:'all', lastGeoMsg:null, clockSub:'records', reportMonth:(function(){const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');})(), reportBranch:'all', reportData:null, reportLoading:false,
@@ -2542,6 +2542,7 @@ function subscribeAll(){
   // Live views keep a rolling window (about 3 months); older history stays in the
   // database and is reachable through the month export / monthly report.
   sub('restockLogs','restockLogs',{order:'createdAt',limit:600,sinceDays:92});
+  sub('stockCounts','stockCounts',{order:'createdAt',limit:300,sinceDays:92});
   sub('attendance','attendance',{order:'createdAt',limit:1000,sinceDays:92});
   sub('inspections','inspections',{order:'createdAt',limit:300,sinceDays:92});
   sub('faults','faults',{order:'createdAt',limit:300});
@@ -3991,6 +3992,124 @@ function stockView(){
   c.appendChild(S.stockSection==='beer' ? beerStockView() : vendingView());
   return c;
 }
+/* ===== Expiry dates (vending snacks) and store stock count with manager approval (A + B, 24 Nov 2026) ===== */
+const EXP_WARN_DAYS = 3;
+function daysToExpiry(dateStr){
+  if(!dateStr) return null;
+  const d = new Date(String(dateStr).slice(0,10)+'T00:00:00'), today = new Date(todayStr()+'T00:00:00');
+  return isNaN(d) ? null : Math.round((d - today) / 86400000);
+}
+function expiryState(inv){
+  const n = daysToExpiry(inv && inv.expiry);
+  if(n===null || !(inv.qty>0)) return null;
+  if(n<0) return {c:'critical', t:t('exp_expired')};
+  if(n<=EXP_WARN_DAYS) return {c:'warn', t:t('exp_soon').split('{n}').join(String(n))};
+  return null;
+}
+function expiryPill(inv){ const es = expiryState(inv); return es ? `<span class="pill ${es.c}" style="margin-top:3px;">${esc(es.t)}</span>` : ''; }
+function expiryAlertCount(){ return S.inventory.filter(inv => byId(S.devices, inv.deviceId) && byId(S.products, inv.productId) && expiryState(inv)).length; }
+function canApproveCounts(){ return isAdmin() || isManager(); }
+function pendingCounts(){ return canApproveCounts() ? (S.stockCounts||[]).filter(c => c.status==='pending') : []; }
+function stockCountBar(){
+  const wrap = el('<div style="margin:10px 0;"></div>');
+  const btn = el(`<button class="btn sm primary">📋 ${esc(t('cnt_start'))}</button>`);
+  btn.onclick = () => openStockCount();
+  wrap.appendChild(btn);
+  const pend = pendingCounts();
+  if(pend.length){
+    const box = el(`<div class="card card-tight" style="margin-top:10px;"><div style="font-weight:800;">${esc(t('cnt_pending'))} (${pend.length})</div></div>`);
+    pend.forEach(cn => {
+      const dv = byId(S.devices, cn.deviceId);
+      const diffs = (cn.lines||[]).filter(l => l.counted !== l.before).length;
+      const row = el(`<div class="list-row" style="margin-top:8px; flex-wrap:wrap;"><div class="lr-main"><div class="lr-title">${esc(dv ? dv.name : cn.deviceId)}</div><div class="lr-sub">${esc(cn.createdBy||'')} · ${esc(String(cn.createdAt||'').slice(0,16).replace('T',' '))} · ${esc(t('cnt_lines').split('{n}').join(String(diffs)))}</div></div></div>`);
+      const ok = el(`<button class="btn sm primary">${esc(t('cnt_approve'))}</button>`);
+      const no = el(`<button class="btn sm">${esc(t('cnt_reject'))}</button>`);
+      ok.onclick = () => approveStockCount(cn);
+      no.onclick = () => rejectStockCount(cn);
+      row.appendChild(ok); row.appendChild(no);
+      box.appendChild(row);
+    });
+    wrap.appendChild(box);
+  }
+  return wrap;
+}
+function openStockCount(){
+  const e = currentEmployee();
+  if(!e) return;
+  if(!S.devices.length || !S.products.length){ toast(t('empty_add_device')); return; }
+  const body = el('<div></div>');
+  const sel = el('<select style="width:100%; margin-bottom:10px;"></select>');
+  sel.innerHTML = S.devices.map(d => `<option value="${esc(d.id)}">${esc(d.name)}</option>`).join('');
+  body.appendChild(sel);
+  body.appendChild(el(`<p class="hint" style="margin:0 0 10px;">${esc(t('cnt_hint'))}</p>`));
+  const list = el('<div class="list"></div>');
+  body.appendChild(list);
+  const inputs = new Map();
+  const fill = () => {
+    list.innerHTML = ''; inputs.clear();
+    const dv = byId(S.devices, sel.value);
+    S.products.forEach(p => {
+      const inv = dv ? invRow(dv.id, p.id) : null;
+      const qty = inv ? inv.qty : 0;
+      const inp = el(`<input type="number" min="0" inputmode="numeric" placeholder="${esc(String(qty))}" style="width:90px;">`);
+      inputs.set(p.id, inp);
+      const row = el(`<div class="list-row"><div class="lr-main"><div class="lr-title">${esc(p.name)}</div><div class="lr-sub">${esc(t('stock_current'))}${qty}${esc(p.unit||'')}</div></div></div>`);
+      row.appendChild(inp);
+      list.appendChild(row);
+    });
+  };
+  sel.onchange = fill;
+  fill();
+  const foot = el('<div class="sheet-foot"></div>');
+  const go = el(`<button class="btn primary block">${esc(t('cnt_submit'))}</button>`);
+  go.onclick = async () => {
+    const dv = byId(S.devices, sel.value);
+    if(!dv) return;
+    const lines = []; let bad = false;
+    S.products.forEach(p => {
+      const v = inputs.get(p.id).value;
+      if(v === '') return;
+      const n = Number(v);
+      if(isNaN(n) || n < 0 || n !== Math.floor(n)){ bad = true; return; }
+      const inv = invRow(dv.id, p.id);
+      lines.push({productId:p.id, before:inv ? inv.qty : 0, counted:n});
+    });
+    if(bad){ toast(t('err_valid_qty')); return; }
+    if(!lines.length){ toast(t('cnt_empty')); return; }
+    go.disabled = true;
+    const id = 'cnt_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,7);
+    try{
+      await S.db.doc('stockCounts/'+id).set({id, deviceId:dv.id, status:'pending', lines, createdAt:new Date().toISOString(), createdBy:e.name, createdById:e.id});
+      toast(t('cnt_sent')); closeSheet();
+    }catch(err){ toast(dbErrMsg(err)); go.disabled = false; }
+  };
+  foot.appendChild(go);
+  body.appendChild(foot);
+  openSheet(t('cnt_title'), body);
+}
+async function approveStockCount(cn){
+  if(!confirm(t('cnt_confirm'))) return;
+  const e = currentEmployee();
+  try{
+    const now = new Date().toISOString();
+    for(const l of (cn.lines||[])){
+      const inv = invRow(cn.deviceId, l.productId);
+      const cur = inv ? inv.qty : 0;
+      if(cur === l.counted) continue;   // already applied: safe to run again
+      await S.db.collection('restockLogs').add({deviceId:cn.deviceId, productId:l.productId, type:'adjust', deltaQty:l.counted - cur, qtyAfter:l.counted, employeeId:e.id, employeeName:e.name, note:'stock count '+cn.id, createdAt:now});
+      await S.db.doc('inventory/'+cn.deviceId+'__'+l.productId).set({deviceId:cn.deviceId, productId:l.productId, qty:l.counted, expiry:(inv && inv.expiry) || null, updatedAt:now, updatedBy:e.name});
+    }
+    await S.db.doc('stockCounts/'+cn.id).set(Object.assign({}, cn, {status:'approved', approvedBy:e.name, approvedAt:now}));
+    toast(t('cnt_approved'));
+  }catch(err){ toast(dbErrMsg(err)); }
+}
+async function rejectStockCount(cn){
+  const e = currentEmployee();
+  try{
+    await S.db.doc('stockCounts/'+cn.id).set(Object.assign({}, cn, {status:'rejected', rejectedBy:e.name, rejectedAt:new Date().toISOString()}));
+    toast(t('cnt_rejected'));
+  }catch(err){ toast(dbErrMsg(err)); }
+}
 function snackStockView(){
   const c=el('<div></div>');
   const head=el('<div class="sec-row"><h2 class="sec">'+esc(t('stock_title'))+'</h2></div>');
@@ -4011,6 +4130,7 @@ function snackStockView(){
     chipRow.appendChild(chip);
   });
   c.appendChild(chipRow);
+  c.appendChild(stockCountBar());
 
   if(S.devices.length===0 || S.products.length===0){
     c.appendChild(el(`<div class="empty">${ICONS.box}<div>${S.devices.length===0?esc(t('empty_add_device')):esc(t('empty_add_product'))}</div></div>`));
@@ -4026,7 +4146,7 @@ function snackStockView(){
       const qty = inv ? inv.qty : 0;
       const st = stockStatus(qty, lowThreshold(p));
       const row=el(`<div class="list-row">${p.image?`<img class="lr-thumb" src="${safeSrc(p.image)}">`:''}<div class="lr-main"><div class="lr-title">${esc(p.name)}</div><div class="lr-sub">${esc(p.spec||'')}</div></div>
-        <div class="lr-end"><div class="num" style="font-weight:900; font-size:15px;">${qty}${esc(p.unit||'')}</div><span class="pill ${st.c}" style="margin-top:3px;">${st.t}</span></div></div>`);
+        <div class="lr-end"><div class="num" style="font-weight:900; font-size:15px;">${qty}${esc(p.unit||'')}</div><span class="pill ${st.c}" style="margin-top:3px;">${st.t}</span>${expiryPill(inv)}</div></div>`);
       row.onclick=()=>openRestockForm(dv,p,qty);
       list.appendChild(row);
     });
@@ -4042,12 +4162,16 @@ function openRestockForm(device, product, qty){
     <button data-v="out">${esc(t('seg_out'))}</button>
     <button data-v="adjust">${esc(t('seg_adjust'))}</button></div>`);
   let mode='restock';
-  seg.querySelectorAll('button').forEach(b=>b.onclick=()=>{ mode=b.dataset.v; seg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b)); qtyInput.placeholder = mode==='adjust'?t('ph_adjust_qty'):t('field_qty'); });
+  seg.querySelectorAll('button').forEach(b=>b.onclick=()=>{ mode=b.dataset.v; seg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b)); qtyInput.placeholder = mode==='adjust'?t('ph_adjust_qty'):t('field_qty'); expWrap.style.display = mode==='restock' ? '' : 'none'; });
   body.appendChild(seg);
+  const curInv=invRow(device.id,product.id); const curExp=(curInv&&curInv.expiry)||null;
   const qtyWrap=el(`<label class="field"><span class="fl">${esc(t('field_qty'))}</span></label>`);
   const qtyInput=el(`<input type="number" min="0" placeholder="${esc(t('field_qty'))}">`);
   qtyWrap.appendChild(qtyInput);
   body.appendChild(qtyWrap);
+  const expWrap=el(`<label class="field"><span class="fl">${esc(t('field_expiry'))}</span></label>`);
+  const expInput=el(`<input type="date" value="${esc(curExp||'')}">`);
+  expWrap.appendChild(expInput); body.appendChild(expWrap);
   const noteWrap=el(`<label class="field"><span class="fl">${esc(t('field_note_opt'))}</span></label>`);
   const noteInput=el(`<textarea placeholder="${esc(t('ph_restock_note'))}"></textarea>`);
   noteWrap.appendChild(noteInput);
@@ -4065,8 +4189,9 @@ function openRestockForm(device, product, qty){
     submitBtn.disabled=true; submitBtn.textContent=t('toast_submitting');
     const e=currentEmployee();
     try{
-      await S.db.collection('restockLogs').add({deviceId:device.id, productId:product.id, type:mode, deltaQty:delta, qtyAfter:newQty, employeeId:e.id, employeeName:e.name, note:noteInput.value||'', createdAt:new Date().toISOString()});
-      await S.db.doc('inventory/'+device.id+'__'+product.id).set({deviceId:device.id, productId:product.id, qty:newQty, updatedAt:new Date().toISOString(), updatedBy:e.name});
+      const newExp=newQty>0 ? (mode==='restock' ? (expInput.value||null) : curExp) : null;
+      await S.db.collection('restockLogs').add({deviceId:device.id, productId:product.id, type:mode, deltaQty:delta, qtyAfter:newQty, expiry:newExp, employeeId:e.id, employeeName:e.name, note:noteInput.value||'', createdAt:new Date().toISOString()});
+      await S.db.doc('inventory/'+device.id+'__'+product.id).set({deviceId:device.id, productId:product.id, qty:newQty, expiry:newExp, updatedAt:new Date().toISOString(), updatedBy:e.name});
       toast(t('toast_stock_updated'));
       closeSheet();
     }catch(err){ toast(dbErrMsg(err)); submitBtn.disabled=false; submitBtn.textContent=t('btn_submit'); }
@@ -18324,7 +18449,7 @@ function funcGrid(clockedIn){
     {k:'fault', icon:'wrench', cls:'c-orange', label:t('tile_fault'), go:()=>openFaultForm()},
     {k:'incident', icon:'alert', cls:'c-red', label:t('tile_incident'), go:()=>openIncidentForm()},
     {k:'sos', icon:'siren', cls:'c-red', label:t('tile_sos'), go:()=>openSosSheet()},
-    {k:'stock', icon:'box', cls:'c-blue', label:t('tile_stock'), go:()=>{ S.stockSection='snacks'; location.hash='#stock'; }},
+    {k:'stock', icon:'box', cls:'c-blue', label:t('tile_stock'), count: expiryAlertCount() + pendingCounts().length, go:()=>{ S.stockSection='snacks'; location.hash='#stock'; }},
     {k:'order', icon:'download', cls:'c-teal', label:t('tile_order'),
      count: isAdmin() ? S.stockRequests.filter(r => reqOpenForHq(r) && (r.urgent || orderRoundReady(orderRoundOf(r)))).length : 0,   // patch 136b
      go:()=>{ S.orderTab='inbox'; location.hash='#order'; }},
