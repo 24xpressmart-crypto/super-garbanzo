@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-26.341';
+const APP_BUILD = '2026-11-26.342';
 const RECV_OPEN_SITES = ['H1','P5','P8A'];   // 2026-11-21 (Helen, WhatsApp): VM_H1, VM_P5, VM_P8 open as goods-receive locations for every receiver
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
@@ -11249,9 +11249,13 @@ function accStockOutView(){
       ap.disabled=!tick.length; ap.onclick=()=>{ ap.disabled=true; accSoDecide(tick.map(r=>r.stock_out_id), true).then(()=>{ ap.disabled=false; }); };
       const rj=el(`<button class="btn sm danger">${esc(t('acc_so_reject_ticked'))}</button>`);
       rj.disabled=!tick.length; rj.onclick=()=>accSoDecide(tick.map(r=>r.stock_out_id), false);
-      const all=el(`<button class="btn sm">${esc(t(tick.length===dr.length?'acc_so_tick_none':'acc_so_tick_all'))}</button>`);
-      all.onclick=()=>{ const off=tick.length===dr.length; dr.forEach(r=>{ if(off) un[r.stock_out_id]=true; else delete un[r.stock_out_id]; }); renderApp(); };
-      btns.appendChild(ap); btns.appendChild(rj); btns.appendChild(all); card.appendChild(btns);
+      const tickAll=el(`<button class="btn sm">${esc(t('acc_so_tick_all'))}</button>`);
+      tickAll.disabled=tick.length===dr.length;
+      tickAll.onclick=()=>{ dr.forEach(r=>{ delete un[r.stock_out_id]; }); renderApp(); };
+      const untickAll=el(`<button class="btn sm">${esc(t('acc_so_tick_none'))}</button>`);
+      untickAll.disabled=!tick.length;
+      untickAll.onclick=()=>{ dr.forEach(r=>{ un[r.stock_out_id]=true; }); renderApp(); };
+      btns.appendChild(ap); btns.appendChild(rj); btns.appendChild(tickAll); btns.appendChild(untickAll); card.appendChild(btns);
     }
     const byOut={}; dr.forEach(r=>{ (byOut[r.branch_code]=byOut[r.branch_code]||[]).push(r); });
     Object.keys(byOut).sort().forEach(o=>{
