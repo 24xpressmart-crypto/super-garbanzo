@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-26.342';
+const APP_BUILD = '2026-11-26.343';
 const RECV_OPEN_SITES = ['H1','P5','P8A'];   // 2026-11-21 (Helen, WhatsApp): VM_H1, VM_P5, VM_P8 open as goods-receive locations for every receiver
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
@@ -11129,9 +11129,11 @@ function accGrniView(){
   return w;
 }
 
+// Helen (TAY KOK HENG, emp-M00021) may approve returns, disposals and journals too (owner, 26 Nov). Server side: patch162.
+function accCanApprove(){ const e=currentEmployee(); return !!(S.acc.summary && S.acc.summary.is_owner) || !!(e && e.id==='emp-M00021'); }
 function accJournalsView(){
   const w=el('<div class="list"></div>');
-  const owner=!!(S.acc.summary && S.acc.summary.is_owner);
+  const owner=accCanApprove();
   if(!S.acc.journals.length){ w.appendChild(el(`<div class="hint">${esc(t('acc_no_journals'))}</div>`)); return w; }
   S.acc.journals.forEach(j=>{
     const lines=j.journal_line||[]; const dr=lines.reduce((a,l)=>a+Number(l.debit||0),0);
@@ -11199,7 +11201,7 @@ async function accSoDecide(ids, ok){
   }catch(err){ toast(t('acc_failed_prefix')+String((err&&err.message)||err)); return false; }
 }
 function accSoDetail(r){
-  const owner=!!(S.acc.summary && S.acc.summary.is_owner);
+  const owner=accCanApprove();
   const body=el('<div></div>');
   const kind=r.kind==='return'?t('so_kind_return'):t('so_kind_disposal');
   body.appendChild(el(`<div class="card"><div style="font-weight:900; font-size:16px;">${esc(r.ref_no)} · ${esc(kind)} · ${esc(r.branch_code)}</div>
@@ -11230,7 +11232,7 @@ function accSoDetail(r){
 }
 function accStockOutView(){
   const w=el('<div></div>');
-  const owner=!!(S.acc.summary && S.acc.summary.is_owner);
+  const owner=accCanApprove();
   const rows=S.acc.soPending||[];
   w.appendChild(el(`<div class="hint" style="margin-bottom:8px; white-space:normal;">${esc(t(owner?'acc_so_intro':'acc_so_readonly'))}</div>`));
   if(S.acc.soErr){ w.appendChild(el(`<div class="card" style="border-color:var(--danger,#b00);"><div class="lr-sub">${esc(S.acc.soErr)}</div></div>`)); return w; }
