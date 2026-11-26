@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-26.343';
+const APP_BUILD = '2026-11-26.344';
 const RECV_OPEN_SITES = ['H1','P5','P8A'];   // 2026-11-21 (Helen, WhatsApp): VM_H1, VM_P5, VM_P8 open as goods-receive locations for every receiver
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
@@ -11129,8 +11129,8 @@ function accGrniView(){
   return w;
 }
 
-// Helen (TAY KOK HENG, emp-M00021) may approve returns, disposals and journals too (owner, 26 Nov). Server side: patch162.
-function accCanApprove(){ const e=currentEmployee(); return !!(S.acc.summary && S.acc.summary.is_owner) || !!(e && e.id==='emp-M00021'); }
+// Helen (TAY KOK HENG, emp-M00021) and Yati (NORHAYATI, emp-M00003) may approve returns, disposals and journals too (owner, 26 Nov). Server side: patch162, patch163.
+function accCanApprove(){ const e=currentEmployee(); return !!(S.acc.summary && S.acc.summary.is_owner) || !!(e && (e.id==='emp-M00021' || e.id==='emp-M00003')); }
 function accJournalsView(){
   const w=el('<div class="list"></div>');
   const owner=accCanApprove();
