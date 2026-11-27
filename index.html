@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-26.344';
+const APP_BUILD = '2026-11-26.345';
 const RECV_OPEN_SITES = ['H1','P5','P8A'];   // 2026-11-21 (Helen, WhatsApp): VM_H1, VM_P5, VM_P8 open as goods-receive locations for every receiver
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
@@ -10417,7 +10417,7 @@ async function accLoad(){
     const [sum, recv, exc, jrn, pay, cod, owed, owedInv, grni, posDay, posTender, posShift, posLoad, tillCash, tillGrn, posHist, soP] = await Promise.all([
       accRpc('hq_summary', {p_entity:null}),
       accDb().from('v_receiving').select('*').limit(80),
-      accDb().from('exception').select('*').eq('status','open').order('severity',{ascending:true}).order('created_at',{ascending:false}).limit(100),
+      accDb().from('exception').select('*').eq('status','open').order('severity',{ascending:true}).order('created_at',{ascending:false}).limit(1000),
       accDb().from('journal').select('id,ref_no,doc_date,description,status,entity_code,source_doc,journal_line(line_no,account_code,debit,credit,description,item_code,quantity)').eq('status','draft').order('created_at',{ascending:false}).limit(50),
       accDb().from('v_payment_runs').select('*').limit(30),
       accDb().from('v_cod_by_day').select('*').limit(60),
