@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-28.346';
+const APP_BUILD = '2026-11-28.347';
 const RECV_OPEN_SITES = ['H1','P5','P8A'];   // 2026-11-21 (Helen, WhatsApp): VM_H1, VM_P5, VM_P8 open as goods-receive locations for every receiver
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
@@ -8905,6 +8905,167 @@ async function readXlsxRows(file){
   });
   return Array.from(rows, r=>Array.from(r || [], x=>x == null ? '' : String(x)));
 }
+/* ---- roster PDF import (28 Nov, owner: "in whatapp the roaster post out for auto put in ur app" ->
+   "两种都有" / "App 里加一个贴入口") -------------------------------------------------------------
+   The weekly roster is posted in WhatsApp as a PDF (Excel "print to PDF", one page: a title, a row of 7
+   DD.MM.YYYY date headers, a weekday-name row, then one row per employee with "8AM-5PM" / "OFFDAY" cells -
+   exactly what schedTime/parseShiftCell/SCHED_OFF above already read). No PDF library: every FlateDecode
+   stream is inflated with the browser's own DecompressionStream (the same trick readXlsxRows uses for
+   .xlsx's deflate-raw - a PDF stream is zlib-wrapped, which is plain 'deflate' here), then read with a
+   minimal content-stream interpreter (Tm/Td/TD for position, Tj/TJ for text - the handful of operators a
+   printed table actually uses; nothing here resolves embedded-font glyph IDs, so a PDF whose text is a
+   Type0/Identity-H font - not this generator - would come out unreadable and simply match nothing below).
+   The output is schedUploadPlan's own `rows` shape (DD.MM.YYYY normalized to ISO) so nothing about
+   schedUploadPlan/saveScheduleUpload itself needs to change - a PDF just becomes another way to fill the
+   same rows a pasted CSV would. */
+async function pdfRosterObjectStreams(buf){
+  const s = new TextDecoder('latin1').decode(buf);
+  const heads = [];
+  { const re = /(\d+)[ \t]+(\d+)[ \t]+obj\b/g; let m; while((m = re.exec(s))) heads.push({n: m[1], g: m[2], pos: m.index, hdrEnd: m.index + m[0].length}); }
+  const offByKey = new Map(heads.map(h => [h.n + ' ' + h.g, h]));
+  const texts = [];
+  for(let i = 0; i < heads.length; i++){
+    const h = heads[i];
+    const windowEnd = i + 1 < heads.length ? heads[i + 1].pos : s.length;
+    const dictEnd = s.indexOf('stream', h.hdrEnd);
+    if(dictEnd < 0 || dictEnd >= windowEnd) continue;   // no stream inside this object's own window - a non-stream object
+    const dict = s.slice(h.hdrEnd, dictEnd);
+    if(!/FlateDecode/.test(dict)) continue;
+    let start = dictEnd + 6;
+    if(s[start] === '\r') start++;
+    if(s[start] === '\n') start++;
+    const lm = dict.match(/\/Length\s+(\d+)(?:\s+(\d+)\s+R)?/);
+    let raw;
+    if(lm && lm[2] == null) raw = buf.subarray(start, start + Number(lm[1]));
+    else if(lm){
+      const ref = offByKey.get(lm[1] + ' ' + lm[2]);
+      const lenTxt = ref ? (s.slice(ref.hdrEnd, ref.hdrEnd + 40).match(/^\s*(\d+)/) || [])[1] : null;
+      if(lenTxt != null) raw = buf.subarray(start, start + Number(lenTxt));
+    }
+    if(!raw){   // /Length missing or unresolved: fall back to a literal endstream search, bounded to this object's own window
+      const ei = s.indexOf('endstream', start);
+      if(ei < 0 || ei > windowEnd) continue;
+      let end = ei;
+      while(end > start && (s[end - 1] === '\n' || s[end - 1] === '\r')) end--;
+      raw = buf.subarray(start, end);
+    }
+    let inflated;
+    try{ inflated = new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new DecompressionStream('deflate'))).arrayBuffer()); }
+    catch(e){ continue; }   // not a FlateDecode stream we can read (e.g. an image XObject) - skip, not fatal
+    const txt = new TextDecoder('latin1').decode(inflated);
+    if(txt.includes('BT') && (txt.includes(' Tj') || txt.includes(' TJ'))) texts.push(txt);
+  }
+  return texts;
+}
+function pdfContentTokens(cs){
+  const toks = []; let i = 0;
+  while(i < cs.length){
+    const c = cs[i];
+    if(c === ' ' || c === '\t' || c === '\r' || c === '\n'){ i++; continue; }
+    if(c === '%'){ while(i < cs.length && cs[i] !== '\n' && cs[i] !== '\r') i++; continue; }
+    if(c === '('){
+      let depth = 1, j = i + 1, out = '';
+      while(j < cs.length && depth > 0){
+        const ch = cs[j];
+        if(ch === '\\'){
+          const nx = cs[j + 1];
+          const esc = {n: '\n', r: '\r', t: '\t', b: '\b', f: '\f', '(': '(', ')': ')', '\\': '\\'};
+          if(esc[nx] != null){ out += esc[nx]; j += 2; }
+          else if(/[0-7]/.test(nx)){ let oct = nx; let k = j + 2; for(let c2 = 0; c2 < 2 && /[0-7]/.test(cs[k]); c2++){ oct += cs[k]; k++; } out += String.fromCharCode(parseInt(oct, 8) & 0xff); j = k; }
+          else if(nx === '\n'){ j += 2; }
+          else if(nx === '\r'){ j += (cs[j + 2] === '\n' ? 3 : 2); }
+          else { out += nx; j += 2; }
+          continue;
+        }
+        if(ch === '('){ depth++; out += ch; j++; continue; }
+        if(ch === ')'){ depth--; j++; if(depth > 0) out += ch; continue; }
+        out += ch; j++;
+      }
+      toks.push({t: 'str', v: out}); i = j; continue;
+    }
+    if(c === '['){ toks.push({t: '['}); i++; continue; }
+    if(c === ']'){ toks.push({t: ']'}); i++; continue; }
+    if(c === '<'){
+      if(cs[i + 1] === '<'){ let j = cs.indexOf('>>', i + 2); i = j < 0 ? cs.length : j + 2; continue; }
+      let j = cs.indexOf('>', i + 1); const hex = cs.slice(i + 1, j < 0 ? cs.length : j).replace(/\s+/g, '');
+      let out = ''; for(let k = 0; k < hex.length; k += 2) out += String.fromCharCode(parseInt(hex.substr(k, 2), 16) || 0);
+      toks.push({t: 'str', v: out}); i = (j < 0 ? cs.length : j + 1); continue;
+    }
+    if(c === '/'){ let j = i + 1; while(j < cs.length && !/[\s\/\[\]()<>%]/.test(cs[j])) j++; toks.push({t: 'name', v: cs.slice(i + 1, j)}); i = j; continue; }
+    if(/[-+.\d]/.test(c)){ let j = i + 1; while(j < cs.length && /[0-9.\-+]/.test(cs[j])) j++; toks.push({t: 'num', v: Number(cs.slice(i, j))}); i = j; continue; }
+    let j = i + 1; while(j < cs.length && /[A-Za-z*'"]/.test(cs[j])) j++;
+    toks.push({t: 'op', v: cs.slice(i, j)}); i = j; continue;
+  }
+  return toks;
+}
+// a text run's (x,y): no page rotation/scale is assumed (true for a plain printed page) - Tm sets it directly,
+// Td/TD add to it. Good enough to tell which table cell a run belongs to; not a general PDF text layout engine.
+function pdfContentSpans(cs){
+  const toks = pdfContentTokens(cs);
+  const spans = []; let x = 0, y = 0, stack = [];
+  for(let i = 0; i < toks.length; i++){
+    const tk = toks[i];
+    if(tk.t === 'op'){
+      if(tk.v === 'BT'){ x = 0; y = 0; stack = []; }
+      else if(tk.v === 'Tm'){ const n = stack.filter(s => s.t === 'num').map(s => s.v); if(n.length >= 6){ x = n[4]; y = n[5]; } stack = []; }
+      else if(tk.v === 'Td' || tk.v === 'TD'){ const n = stack.filter(s => s.t === 'num').map(s => s.v); if(n.length >= 2){ x += n[0]; y += n[1]; } stack = []; }
+      else if(tk.v === 'Tj'){ const str = stack.filter(s => s.t === 'str').map(s => s.v).join(''); if(str.trim()) spans.push({x, y, text: str}); stack = []; }
+      else if(tk.v === 'TJ'){ const arrTok = stack.find(s => s.t === 'arr'); const str = arrTok ? arrTok.v.filter(e => e.t === 'str').map(e => e.v).join('') : ''; if(str.trim()) spans.push({x, y, text: str}); stack = []; }
+      else stack = [];
+    } else if(tk.t === '['){
+      const arr = []; let depth = 1; i++;
+      while(i < toks.length && depth > 0){
+        if(toks[i].t === '[') depth++;
+        else if(toks[i].t === ']'){ depth--; if(depth === 0) break; }
+        arr.push(toks[i]); i++;
+      }
+      stack.push({t: 'arr', v: arr});
+    } else stack.push(tk);
+  }
+  return spans;
+}
+function pdfDateIso(s){
+  s = String(s || '').trim();
+  let m = s.match(/(\d{4})-(\d{2})-(\d{2})/); if(m) return m[0];
+  m = s.match(/(\d{1,2})[.\/](\d{1,2})[.\/](\d{4})/);   // DD.MM.YYYY or DD/MM/YYYY - day first (the roster's own convention)
+  if(m){ const d = +m[1], mo = +m[2], y = +m[3]; if(d >= 1 && d <= 31 && mo >= 1 && mo <= 12) return y + '-' + pad2(mo) + '-' + pad2(d); }
+  return null;
+}
+// positioned text spans -> schedUploadPlan's own `rows` shape (name, '', then one cell per date, same column
+// index as the header's date) - a translation layer, not a second copy of schedUploadPlan's matching/diffing.
+function pdfRosterRows(spans){
+  const rows = [];
+  spans.forEach(sp => {
+    let r = rows.find(r => Math.abs(r.y - sp.y) <= 3);   // same printed line, allowing for sub-point baseline jitter
+    if(!r){ r = {y: sp.y, cells: []}; rows.push(r); }
+    r.cells.push(sp);
+  });
+  rows.forEach(r => r.cells.sort((a, b) => a.x - b.x));
+  const hdr = rows.find(r => r.cells.filter(c => pdfDateIso(c.text)).length >= 2);
+  if(!hdr) return [];
+  const cols = hdr.cells.filter(c => pdfDateIso(c.text)).map(c => ({x: c.x, iso: pdfDateIso(c.text)}));
+  const nameX = cols[0].x - 20;   // the name column sits well left of the first date column; the weekday-label
+  const gaps = cols.slice(1).map((c, i) => c.x - cols[i].x);   // row's own text ("MONDAY" etc.) starts under that
+  const tol = (gaps.length ? gaps.reduce((a, b) => a + b, 0) / gaps.length : 100) * 0.6;   // column, not left of it
+  const out = [['', ''].concat(cols.map(c => c.iso))];
+  rows.filter(r => r !== hdr && r.y < hdr.y).forEach(r => {   // the title/period lines sit above the date row
+    const nameCell = r.cells.find(c => c.x < nameX);
+    if(!nameCell) return;   // no name in this column (the weekday-label row, or a stray decorative line) - skip
+    const line = [nameCell.text, ''];
+    cols.forEach(col => {
+      const best = r.cells.filter(c => c !== nameCell).reduce((b, c) => (Math.abs(c.x - col.x) < tol && (!b || Math.abs(c.x - col.x) < Math.abs(b.x - col.x))) ? c : b, null);
+      line.push(best ? best.text : '');
+    });
+    out.push(line);
+  });
+  return out;
+}
+async function pdfRosterRowsFromFile(file){
+  const buf = new Uint8Array(await file.arrayBuffer());
+  const streams = await pdfRosterObjectStreams(buf);
+  const spans = [].concat(...streams.map(pdfContentSpans));
+  return pdfRosterRows(spans);
+}
 // the shifts this person may change: HQ all; a manager those at their store or of their own staff (as the database allows)
 function schedMine(s, e){ if(isAdmin()) return true; const mb = myBranch(); return s.branch === mb || (!!e && e.homeBranch === mb); }
 const schedCsvCell = v=>/[",\r\n]/.test(String(v)) ? '"' + String(v).replace(/"/g, '""') + '"' : String(v);
@@ -8962,7 +9123,7 @@ function openScheduleUpload(emps, days, branch){
   tplBtn.onclick = ()=>S.downloads.save({filename:'schedule-' + (branch || 'all') + '-' + todayStr(days[0]) + '.csv', data:schedTemplateCsv(emps, days)});
   body.appendChild(tplBtn);
   body.appendChild(el(`<p style="margin:14px 0 6px; font-size:13.5px;">${esc(t('sched_up_step2'))}</p>`));
-  const file = el('<input type="file" accept=".xlsx,.csv,.txt,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">');
+  const file = el('<input type="file" accept=".xlsx,.csv,.txt,.pdf,text/csv,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">');
   body.appendChild(file);
   const ta = el(`<textarea rows="4" style="margin-top:8px;" placeholder="${esc(t('ph_sched_paste'))}"></textarea>`);
   body.appendChild(ta);
@@ -8979,6 +9140,7 @@ function openScheduleUpload(emps, days, branch){
       let rows;
       const f = file.files && file.files[0];
       if(f && /\.xlsx$/i.test(f.name)) rows = await readXlsxRows(f);
+      else if(f && (/\.pdf$/i.test(f.name) || f.type === 'application/pdf')) rows = await pdfRosterRowsFromFile(f);   // 28 Nov: WhatsApp roster PDF
       else if(f) rows = parseDelimited(await f.text());
       else rows = parseDelimited(ta.value);
       const dates = days.map(d=>todayStr(d));
