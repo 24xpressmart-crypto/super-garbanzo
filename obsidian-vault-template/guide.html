@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><title>Obsidian + Claude Code 第二大脑</title>
+<style>
+@page{size:A4;margin:16mm}
+body{font-family:"WenQuanYi Zen Hei",sans-serif;color:#222;font-size:11pt;line-height:1.55}
+h1{font-size:20pt;margin:0 0 4px;color:#5b3fd6}
+.sub{color:#666;margin-bottom:14px}
+h2{font-size:13pt;border-left:4px solid #7c5cff;padding-left:8px;margin:16px 0 6px;page-break-after:avoid}
+.en{color:#555}
+code,pre{font-family:"WenQuanYi Zen Hei",monospace;background:#f3f1fb;border-radius:4px}
+code{padding:0 4px}
+pre{padding:8px 10px;font-size:9.5pt;white-space:pre-wrap}
+table{border-collapse:collapse;width:100%;font-size:10pt}
+td,th{border:1px solid #ddd;padding:5px 7px;text-align:left}
+th{background:#f3f1fb}
+.note{background:#fff7e0;border:1px solid #f0d58a;padding:8px 10px;border-radius:4px;font-size:10pt}
+section{page-break-inside:avoid}
+</style></head><body>
+<h1>Obsidian + Claude Code 第二大脑</h1>
+<div class="sub">搭建指南 / Setup Guide · 约 5 分钟 / about 5 minutes</div>
+
+<section><h2>核心思路 / Core idea</h2>
+<p>第二大脑本质是一堆文本文件。你负责放入资料，AI 负责整理，你只需要阅读。<br>
+<span class="en">A second brain is just text files. You add sources, the AI organizes them, you read.</span></p></section>
+
+<section><h2>第 1 步：创建库 / Step 1: Create a vault</h2>
+<p>打开 Obsidian → 创建新库。<br><span class="en">Open Obsidian → Create new vault.</span></p></section>
+
+<section><h2>第 2 步：用 Claude Code 打开 / Step 2: Open it in Claude Code</h2>
+<p>在库所在的文件夹里打开终端，然后运行：<br><span class="en">Open a terminal in the vault folder, then run:</span></p>
+<pre>claude</pre></section>
+
+<section><h2>第 3 步：放入模板 / Step 3: Add the template</h2>
+<p>把模板中的 <code>CLAUDE.md</code>、<code>raw/</code>、<code>wiki/</code> 复制进库。<br>
+<span class="en">Copy <code>CLAUDE.md</code>, <code>raw/</code> and <code>wiki/</code> from the template into the vault.</span></p>
+<pre>库 / vault
+├── CLAUDE.md      规则 / rules
+├── raw/           原始素材（只读）/ sources (read-only)
+└── wiki/          整理后的页面 / processed pages
+    └── index.md   目录 / index</pre></section>
+
+<section><h2>第 4 步：喂资料 / Step 4: Feed it</h2>
+<p>把文档拖进 <code>raw/</code>，然后对 Claude 说"处理这个"。<code>wiki/</code> 里会出现双语页面，图谱视图里也会多出节点。<br>
+<span class="en">Drag a document into <code>raw/</code> and tell Claude "process this". A bilingual page appears in <code>wiki/</code>, and new nodes show up in Graph view.</span></p></section>
+
+<section><h2>第 5 步：自动归档 / Step 5: Auto-filing</h2>
+<table><tr><th>内容 / Output</th><th>写到哪里 / Goes to</th></tr>
+<tr><td>任务运行日志 / Run log</td><td>今日日记 <code>## log</code> / today's daily note</td></tr>
+<tr><td>会议总结 / Meeting summary</td><td>项目笔记 <code>## decisions</code> / project note</td></tr>
+<tr><td>研究资料 / Research</td><td><code>## reading</code></td></tr></table>
+<p>Claude 只在这个标题下追加内容，文件其余部分保持不变。<br><span class="en">Claude appends under that heading only; the rest of the file stays unchanged.</span></p>
+<div class="note">按标题写入需要 Obsidian 1.15 抢先体验版的 CLI，CLI 从 1.12 起内置（引自原帖，未核实）。确切命令请运行 <code>obsidian help</code> 查看。版本更早时，Claude 会直接编辑 .md 文件，效果相同。<br>
+<span class="en">Heading inserts need the Obsidian 1.15 early-access CLI; the CLI has been built in since 1.12 (claims from the source post, not verified). Run <code>obsidian help</code> for the exact commands. On older versions, Claude edits the .md files directly with the same result.</span></div></section>
+
+<section><h2>链接 / Links</h2>
+<p>Obsidian: obsidian.md · CLI: obsidian.md/help/cli · Claude Code: claude.ai · Karpathy LLM wiki: gist.github.com/karpathy</p></section>
+</body></html>
