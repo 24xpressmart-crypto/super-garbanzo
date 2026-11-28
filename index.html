@@ -560,7 +560,7 @@ const ICONS = {
    An App left open (or kept by the phone for up to 10 minutes) keeps running the build it loaded. Every few minutes,
    and whenever it comes back on screen, it reads the published page's APP_BUILD; when that differs, a bar offers the
    update. APP_BUILD must change with every deploy. */
-const APP_BUILD = '2026-11-26.345';
+const APP_BUILD = '2026-11-28.346';
 const RECV_OPEN_SITES = ['H1','P5','P8A'];   // 2026-11-21 (Helen, WhatsApp): VM_H1, VM_P5, VM_P8 open as goods-receive locations for every receiver
 function buildKey(b){ const m=String(b||'').match(/^\s*(\d{4})-(\d{2})-(\d{2})\.(\d+)\s*$/); return m ? [Number(m[1]+m[2]+m[3]), Number(m[4])] : null; }
 function buildNewer(a, b){ const x=buildKey(a), y=buildKey(b); if(!x || !y) return false; return x[0]>y[0] || (x[0]===y[0] && x[1]>y[1]); }
@@ -12131,10 +12131,10 @@ function receiveView(){
     c.appendChild(seg);
     if(S.recvAdminMode!=='receive'){ c.appendChild(receiveInboxView()); return c; }
   }
-  else if(isAccHandler()){ c.appendChild(receiveInboxView()); return c; }   // 205: checker reads every store's deliveries, receives nothing
+  // 2026-11-28 owner "B": accounts handlers may receive for the stores they cover (Yati: BR07). Old rule (205) removed.
 
   const pilot = receivingBranches();
-  const branches = [...new Set(allBranchIds().concat(pilot))].filter(b => (isAdmin() || b === myBranch() || coversBranch(e, b) || (recvAllOutlets(e) && /^BR\d+$/i.test(b)) || (recvVmSites(e) && !/^BR\d+$/i.test(b) && String(b).toUpperCase() !== 'HQ') || RECV_OPEN_SITES.includes(String(b).toUpperCase())) && pilot.includes(String(b).toUpperCase()));   // 202: + vending sites; 208: all-outlet receiver; 220: vending-site receiver; 2026-11-21 Helen: H1/P5/P8 open to every receiver
+  const branches = [...new Set(allBranchIds().concat(pilot))].filter(b => (isAdmin() || isAccHandler() || b === myBranch() || coversBranch(e, b) || (recvAllOutlets(e) && /^BR\d+$/i.test(b)) || (recvVmSites(e) && !/^BR\d+$/i.test(b) && String(b).toUpperCase() !== 'HQ') || RECV_OPEN_SITES.includes(String(b).toUpperCase())) && pilot.includes(String(b).toUpperCase()));   // 202: + vending sites; 208: all-outlet receiver; 220: vending-site receiver; 2026-11-21 Helen: H1/P5/P8 open to every receiver
   const branch = branches.includes(receiveBranchFor()) ? receiveBranchFor() : (branches[0] || '');
   if(branches.length > 1){
     const chipRow = el('<div class="chiprow"></div>');
